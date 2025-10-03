@@ -10,106 +10,106 @@ Environment variables are used to configure the application for different enviro
 
 ### Supabase Configuration
 
-| Variable | Description | Example | Required |
-|----------|-------------|---------|----------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | `https://your-project.supabase.co` | ✅ |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` | ✅ |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` | ✅ |
+| Variable                        | Description               | Example                                   | Required |
+| ------------------------------- | ------------------------- | ----------------------------------------- | -------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase project URL      | `https://your-project.supabase.co`        | ✅       |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key    | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` | ✅       |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Supabase service role key | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` | ✅       |
 
 ### Database Configuration
 
-| Variable | Description | Example | Required |
-|----------|-------------|---------|----------|
-| `POSTGRES_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/db` | ✅ |
-| `DATABASE_URL` | Alternative database URL | `postgresql://user:pass@host:5432/db` | ❌ |
+| Variable       | Description                  | Example                               | Required |
+| -------------- | ---------------------------- | ------------------------------------- | -------- |
+| `POSTGRES_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/db` | ✅       |
+| `DATABASE_URL` | Alternative database URL     | `postgresql://user:pass@host:5432/db` | ❌       |
 
 ### Authentication
 
-| Variable | Description | Example | Required |
-|----------|-------------|---------|----------|
-| `NEXTAUTH_SECRET` | NextAuth.js secret key | `your-secret-key-here` | ✅ |
-| `NEXTAUTH_URL` | Application URL | `http://localhost:3000` | ✅ |
+| Variable          | Description            | Example                 | Required |
+| ----------------- | ---------------------- | ----------------------- | -------- |
+| `NEXTAUTH_SECRET` | NextAuth.js secret key | `your-secret-key-here`  | ✅       |
+| `NEXTAUTH_URL`    | Application URL        | `http://localhost:3000` | ✅       |
 
 ## Optional Variables
 
 ### Email Configuration
 
-| Variable | Description | Example | Default |
-|----------|-------------|---------|---------|
-| `SMTP_HOST` | SMTP server hostname | `smtp.gmail.com` | - |
-| `SMTP_PORT` | SMTP server port | `587` | `587` |
-| `SMTP_USER` | SMTP username | `your-email@gmail.com` | - |
-| `SMTP_PASS` | SMTP password | `your-app-password` | - |
-| `SMTP_FROM` | From email address | `noreply@alanhirsch.com` | - |
+| Variable    | Description          | Example                  | Default |
+| ----------- | -------------------- | ------------------------ | ------- |
+| `SMTP_HOST` | SMTP server hostname | `smtp.gmail.com`         | -       |
+| `SMTP_PORT` | SMTP server port     | `587`                    | `587`   |
+| `SMTP_USER` | SMTP username        | `your-email@gmail.com`   | -       |
+| `SMTP_PASS` | SMTP password        | `your-app-password`      | -       |
+| `SMTP_FROM` | From email address   | `noreply@alanhirsch.com` | -       |
 
 ### File Upload
 
-| Variable | Description | Example | Default |
-|----------|-------------|---------|---------|
-| `MAX_FILE_SIZE` | Maximum file size in bytes | `10485760` | `10485760` (10MB) |
-| `UPLOAD_DIR` | Upload directory path | `./uploads` | `./uploads` |
+| Variable        | Description                | Example     | Default           |
+| --------------- | -------------------------- | ----------- | ----------------- |
+| `MAX_FILE_SIZE` | Maximum file size in bytes | `10485760`  | `10485760` (10MB) |
+| `UPLOAD_DIR`    | Upload directory path      | `./uploads` | `./uploads`       |
 
 ### Rate Limiting
 
-| Variable | Description | Example | Default |
-|----------|-------------|---------|---------|
-| `UPSTASH_REDIS_REST_URL` | Upstash Redis REST URL | `https://your-redis.upstash.io` | - |
-| `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis REST token | `your-redis-token` | - |
+| Variable                   | Description              | Example                         | Default |
+| -------------------------- | ------------------------ | ------------------------------- | ------- |
+| `UPSTASH_REDIS_REST_URL`   | Upstash Redis REST URL   | `https://your-redis.upstash.io` | -       |
+| `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis REST token | `your-redis-token`              | -       |
 
 ### Analytics
 
-| Variable | Description | Example | Default |
-|----------|-------------|---------|---------|
-| `VERCEL_ANALYTICS_ID` | Vercel Analytics ID | `your-analytics-id` | - |
-| `GOOGLE_ANALYTICS_ID` | Google Analytics ID | `GA-XXXXXXXXX-X` | - |
+| Variable              | Description         | Example             | Default |
+| --------------------- | ------------------- | ------------------- | ------- |
+| `VERCEL_ANALYTICS_ID` | Vercel Analytics ID | `your-analytics-id` | -       |
+| `GOOGLE_ANALYTICS_ID` | Google Analytics ID | `GA-XXXXXXXXX-X`    | -       |
 
 ### Payments (Stripe)
 
-| Variable | Description | Example | Default |
-|----------|-------------|---------|---------|
-| `STRIPE_SECRET_KEY` | Stripe secret key | `sk_test_...` | - |
-| `STRIPE_PUBLISHABLE_KEY` | Stripe publishable key | `pk_test_...` | - |
-| `STRIPE_WEBHOOK_SECRET` | Stripe webhook secret | `whsec_...` | - |
+| Variable                 | Description            | Example       | Default |
+| ------------------------ | ---------------------- | ------------- | ------- |
+| `STRIPE_SECRET_KEY`      | Stripe secret key      | `sk_test_...` | -       |
+| `STRIPE_PUBLISHABLE_KEY` | Stripe publishable key | `pk_test_...` | -       |
+| `STRIPE_WEBHOOK_SECRET`  | Stripe webhook secret  | `whsec_...`   | -       |
 
 ### Application Settings
 
-| Variable | Description | Example | Default |
-|----------|-------------|---------|---------|
-| `APP_NAME` | Application name | `Alan Hirsch Digital Platform` | `Alan Hirsch Digital Platform` |
-| `APP_URL` | Application URL | `https://alanhirsch.com` | `http://localhost:3000` |
-| `ADMIN_EMAIL` | Admin email address | `admin@alanhirsch.com` | - |
+| Variable      | Description         | Example                        | Default                        |
+| ------------- | ------------------- | ------------------------------ | ------------------------------ |
+| `APP_NAME`    | Application name    | `Alan Hirsch Digital Platform` | `Alan Hirsch Digital Platform` |
+| `APP_URL`     | Application URL     | `https://alanhirsch.com`       | `http://localhost:3000`        |
+| `ADMIN_EMAIL` | Admin email address | `admin@alanhirsch.com`         | -                              |
 
 ### Security
 
-| Variable | Description | Example | Default |
-|----------|-------------|---------|---------|
-| `JWT_SECRET` | JWT signing secret | `your-jwt-secret` | - |
-| `ENCRYPTION_KEY` | Encryption key (32 chars) | `your-32-character-encryption-key` | - |
-| `CORS_ORIGIN` | CORS allowed origins | `https://alanhirsch.com,https://app.alanhirsch.com` | `*` |
+| Variable         | Description               | Example                                             | Default |
+| ---------------- | ------------------------- | --------------------------------------------------- | ------- |
+| `JWT_SECRET`     | JWT signing secret        | `your-jwt-secret`                                   | -       |
+| `ENCRYPTION_KEY` | Encryption key (32 chars) | `your-32-character-encryption-key`                  | -       |
+| `CORS_ORIGIN`    | CORS allowed origins      | `https://alanhirsch.com,https://app.alanhirsch.com` | `*`     |
 
 ### Feature Flags
 
-| Variable | Description | Example | Default |
-|----------|-------------|---------|---------|
-| `ENABLE_AI_FEATURES` | Enable AI features | `true` | `false` |
-| `ENABLE_ANALYTICS` | Enable analytics | `true` | `true` |
-| `ENABLE_DEBUG_MODE` | Enable debug mode | `true` | `false` |
-| `ENABLE_REGISTRATION` | Enable user registration | `true` | `true` |
+| Variable              | Description              | Example | Default |
+| --------------------- | ------------------------ | ------- | ------- |
+| `ENABLE_AI_FEATURES`  | Enable AI features       | `true`  | `false` |
+| `ENABLE_ANALYTICS`    | Enable analytics         | `true`  | `true`  |
+| `ENABLE_DEBUG_MODE`   | Enable debug mode        | `true`  | `false` |
+| `ENABLE_REGISTRATION` | Enable user registration | `true`  | `true`  |
 
 ### Development
 
-| Variable | Description | Example | Default |
-|----------|-------------|---------|---------|
-| `NODE_ENV` | Node.js environment | `development` | `development` |
-| `DEBUG` | Debug mode | `true` | `false` |
-| `LOG_LEVEL` | Logging level | `debug` | `info` |
+| Variable    | Description         | Example       | Default       |
+| ----------- | ------------------- | ------------- | ------------- |
+| `NODE_ENV`  | Node.js environment | `development` | `development` |
+| `DEBUG`     | Debug mode          | `true`        | `false`       |
+| `LOG_LEVEL` | Logging level       | `debug`       | `info`        |
 
 ### Testing
 
-| Variable | Description | Example | Default |
-|----------|-------------|---------|---------|
-| `JEST_WORKER_ID` | Jest worker ID | `1` | - |
-| `TEST_DATABASE_URL` | Test database URL | `postgresql://test:test@localhost:5432/test` | - |
+| Variable            | Description       | Example                                      | Default |
+| ------------------- | ----------------- | -------------------------------------------- | ------- |
+| `VITEST_WORKER_ID`  | Vitest worker ID  | `1`                                          | -       |
+| `TEST_DATABASE_URL` | Test database URL | `postgresql://test:test@localhost:5432/test` | -       |
 
 ## Environment-Specific Configuration
 
@@ -294,12 +294,14 @@ For questions about environment variables:
 ## Changelog
 
 ### v1.0.0
+
 - Initial environment variable configuration
 - Supabase integration
 - Authentication setup
 - Database configuration
 
 ### v1.1.0
+
 - Added Stripe payment integration
 - Added email configuration
 - Added feature flags

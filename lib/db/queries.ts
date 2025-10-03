@@ -72,7 +72,7 @@ export async function getUser(): Promise<
     )
     .limit(1);
 
-  return userProfile.length > 0 ? userProfile[0] : null;
+  return hasResults(userProfile) ? userProfile[0] : null;
 }
 
 export async function getUserById(
@@ -138,9 +138,9 @@ export async function getPublishedContent(limit = 20, offset = 0) {
     author: author
       ? {
           id: author.id,
-          displayName: author.displayName,
-          subdomain: author.subdomain,
-          avatarUrl: author.avatarUrl,
+          displayName: author.displayName ?? '',
+          subdomain: author.subdomain ?? '',
+          avatarUrl: author.avatarUrl ?? '',
         }
       : null,
     category: category
@@ -177,10 +177,10 @@ export async function getContentBySlug(slug: string) {
     author: author
       ? {
           id: author.id,
-          displayName: author.displayName,
-          subdomain: author.subdomain,
-          avatarUrl: author.avatarUrl,
-          bio: author.bio,
+          displayName: author.displayName ?? '',
+          subdomain: author.subdomain ?? '',
+          avatarUrl: author.avatarUrl ?? '',
+          bio: author.bio ?? '',
         }
       : null,
     category,
@@ -227,8 +227,8 @@ export async function searchContent(query: string, limit = 20) {
     content,
     author: author
       ? {
-          displayName: author.displayName,
-          subdomain: author.subdomain,
+          displayName: author.displayName ?? '',
+          subdomain: author.subdomain ?? '',
         }
       : null,
   }));
@@ -369,8 +369,8 @@ export async function getPublicCommunities(limit = 20) {
     community,
     creator: creator
       ? {
-          displayName: creator.displayName,
-          avatarUrl: creator.avatarUrl,
+          displayName: creator.displayName ?? '',
+          avatarUrl: creator.avatarUrl ?? '',
         }
       : null,
   }));
@@ -541,7 +541,7 @@ export async function getRecentAuditLogs(limit = 50) {
     log,
     user: user
       ? {
-          displayName: user.displayName,
+          displayName: user.displayName ?? '',
           email: user.email,
         }
       : null,

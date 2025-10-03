@@ -7,7 +7,6 @@ import {
   jsonb,
   boolean,
   decimal,
-  vector,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { userProfiles } from './auth';
@@ -212,7 +211,6 @@ export const contentItems = pgTable('content_items', {
   aiEnhanced: boolean('ai_enhanced').default(false),
   aiSummary: text('ai_summary'),
   aiKeyPoints: jsonb('ai_key_points').$type<string[]>().default([]),
-  semanticEmbedding: vector('semantic_embedding', { dimensions: 1536 }), // OpenAI embeddings
 
   // Media & Assets
   featuredImageUrl: text('featured_image_url'),

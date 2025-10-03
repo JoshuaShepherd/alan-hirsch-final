@@ -6,6 +6,7 @@ import {
   paginatedUserAssessmentListResponseSchema,
   userAssessmentResponseSchema,
 } from '@/lib/contracts';
+import { hasResults } from '@/lib/db/type-guards';
 import { z } from 'zod';
 import {
   getUserAssessmentsWithDetails,
@@ -56,14 +57,16 @@ export const GET = createApiRoute(
 
     // Create standardized response
     return {
-      items: paginatedAssessments,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-        hasNext: page < Math.ceil(total / limit),
-        hasPrev: page > 1,
+      items: {
+        data: paginatedAssessments,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+          hasNext: page < Math.ceil(total / limit),
+          hasPrev: page > 1,
+        },
       },
       success: true,
     };

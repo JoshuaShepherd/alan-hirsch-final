@@ -1,5 +1,6 @@
 # Environment Setup Guide
-*Alan Hirsch Digital Platform - Complete Environment Configuration*
+
+_Alan Hirsch Digital Platform - Complete Environment Configuration_
 
 ## Overview
 
@@ -10,6 +11,7 @@ This guide provides comprehensive instructions for setting up development, stagi
 ## Prerequisites
 
 ### Required Software
+
 - **Node.js**: Version 18.x or higher
 - **pnpm**: Package manager (recommended) or npm
 - **Git**: Version control
@@ -17,6 +19,7 @@ This guide provides comprehensive instructions for setting up development, stagi
 - **Supabase CLI**: For database management
 
 ### Required Accounts
+
 - **Supabase**: Database and authentication
 - **Vercel**: Deployment platform
 - **Stripe**: Payment processing
@@ -30,6 +33,7 @@ This guide provides comprehensive instructions for setting up development, stagi
 ### Core Configuration
 
 #### Supabase Setup
+
 ```env
 # Get these from your Supabase project settings
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
@@ -38,6 +42,7 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 #### Database Configuration
+
 ```env
 # Direct PostgreSQL connection (for Drizzle)
 POSTGRES_URL=postgresql://username:password@localhost:5432/alan_hirsch_dev
@@ -47,6 +52,7 @@ POSTGRES_URL=postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/
 ```
 
 #### Authentication
+
 ```env
 # NextAuth.js configuration
 NEXTAUTH_SECRET=your-32-character-secret-key-here
@@ -59,6 +65,7 @@ JWT_SECRET=your-jwt-secret-key
 ### Third-Party Services
 
 #### Stripe (Payment Processing)
+
 ```env
 # Test keys (development)
 STRIPE_SECRET_KEY=sk_test_51...
@@ -72,6 +79,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 ```
 
 #### Email Service
+
 ```env
 # SendGrid example
 SMTP_HOST=smtp.sendgrid.net
@@ -87,6 +95,7 @@ SMTP_PASS=your-ses-secret-key
 ```
 
 #### Rate Limiting (Upstash Redis)
+
 ```env
 UPSTASH_REDIS_REST_URL=https://your-redis-url.upstash.io
 UPSTASH_REDIS_REST_TOKEN=your-redis-token
@@ -95,6 +104,7 @@ UPSTASH_REDIS_REST_TOKEN=your-redis-token
 ### Application Settings
 
 #### Basic Configuration
+
 ```env
 APP_NAME=Alan Hirsch Digital Platform
 APP_URL=http://localhost:3000  # Change for production
@@ -102,12 +112,14 @@ ADMIN_EMAIL=admin@alanhirsch.com
 ```
 
 #### File Upload
+
 ```env
 MAX_FILE_SIZE=10485760  # 10MB in bytes
 UPLOAD_DIR=./uploads
 ```
 
 #### Security
+
 ```env
 # 32-character encryption key for sensitive data
 ENCRYPTION_KEY=your-32-character-encryption-key
@@ -117,6 +129,7 @@ CORS_ORIGINS=http://localhost:3000,https://alanhirsch.com
 ```
 
 #### Feature Flags
+
 ```env
 ENABLE_AI_FEATURES=false
 ENABLE_ANALYTICS=true
@@ -125,6 +138,7 @@ ENABLE_TEST_MODE=false
 ```
 
 #### Analytics (Optional)
+
 ```env
 VERCEL_ANALYTICS_ID=your-vercel-analytics-id
 GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
@@ -141,7 +155,7 @@ Create `.env.local` for local development:
 ```env
 # Copy from .env.example and fill in values
 NODE_ENV=development
-JEST_WORKER_ID=1
+VITEST_WORKER_ID=1
 
 # Use local Supabase instance or development project
 NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321
@@ -260,6 +274,7 @@ pnpm dev
 ### 2. Supabase Project Setup
 
 #### Create New Project
+
 1. Go to [Supabase Dashboard](https://supabase.com/dashboard)
 2. Click "New Project"
 3. Choose organization and enter project details
@@ -267,12 +282,14 @@ pnpm dev
 5. Wait for project creation (2-3 minutes)
 
 #### Get Project Credentials
+
 1. Go to Project Settings > API
 2. Copy Project URL and anon key
 3. Copy service_role key (keep secret!)
 4. Go to Settings > Database for connection string
 
 #### Enable Row Level Security
+
 ```sql
 -- Enable RLS on all tables
 ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
@@ -300,11 +317,13 @@ pnpm db:studio
 ### 4. Stripe Setup
 
 #### Create Stripe Account
+
 1. Go to [Stripe Dashboard](https://dashboard.stripe.com)
 2. Complete account setup
 3. Get API keys from Developers > API keys
 
 #### Configure Webhooks
+
 1. Go to Developers > Webhooks
 2. Add endpoint: `https://your-domain.com/api/stripe/webhook`
 3. Select events: `checkout.session.completed`, `invoice.payment_succeeded`, etc.
@@ -313,12 +332,14 @@ pnpm db:studio
 ### 5. Email Service Setup
 
 #### SendGrid (Recommended)
+
 1. Create [SendGrid account](https://sendgrid.com)
 2. Verify sender identity
 3. Create API key with Mail Send permissions
 4. Use API key as SMTP password with username "apikey"
 
 #### AWS SES
+
 1. Create AWS account
 2. Verify email addresses/domains
 3. Create IAM user with SES permissions
@@ -327,6 +348,7 @@ pnpm db:studio
 ### 6. Redis Setup (Upstash)
 
 #### Create Upstash Account
+
 1. Go to [Upstash Console](https://console.upstash.com)
 2. Create new Redis database
 3. Copy REST URL and token
@@ -337,10 +359,11 @@ pnpm db:studio
 ## Testing Environment
 
 ### Test Configuration
+
 ```env
 # Testing-specific variables
 NODE_ENV=test
-JEST_WORKER_ID=1
+VITEST_WORKER_ID=1
 
 # Use test database
 POSTGRES_URL=postgresql://test:test@localhost:5432/alan_hirsch_test
@@ -352,6 +375,7 @@ SMTP_PORT=1025
 ```
 
 ### Running Tests
+
 ```bash
 # Run all tests
 pnpm test
@@ -373,6 +397,7 @@ pnpm test:watch
 ### Vercel Deployment
 
 #### 1. Connect Repository
+
 1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
 2. Import your GitHub repository
 3. Configure build settings:
@@ -381,12 +406,15 @@ pnpm test:watch
    - Install Command: `pnpm install`
 
 #### 2. Environment Variables
+
 Add all production environment variables in Vercel dashboard:
+
 - Go to Project Settings > Environment Variables
 - Add each variable from your `.env.production` file
 - Set appropriate environments (Production, Preview, Development)
 
 #### 3. Custom Domains
+
 1. Go to Project Settings > Domains
 2. Add your custom domain
 3. Configure DNS records as instructed
@@ -394,6 +422,7 @@ Add all production environment variables in Vercel dashboard:
 ### Database Deployment
 
 #### Production Database Setup
+
 ```bash
 # Create production Supabase project
 supabase projects create alan-hirsch-prod
@@ -413,6 +442,7 @@ supabase db push --file supabase/migrations/20250101_rls_policies.sql
 ## Security Checklist
 
 ### Environment Variables
+
 - [ ] All secrets are in environment variables, not code
 - [ ] `.env.local` is in `.gitignore`
 - [ ] Production secrets are different from development
@@ -420,18 +450,21 @@ supabase db push --file supabase/migrations/20250101_rls_policies.sql
 - [ ] JWT secrets are cryptographically secure
 
 ### Database Security
+
 - [ ] Row Level Security is enabled on all tables
 - [ ] RLS policies are properly configured
 - [ ] Database connection uses SSL
 - [ ] Service role key has minimal required permissions
 
 ### API Security
+
 - [ ] Rate limiting is configured
 - [ ] CORS is properly configured
 - [ ] Input validation is enabled
 - [ ] Authentication is required for protected routes
 
 ### Deployment Security
+
 - [ ] HTTPS is enforced
 - [ ] Security headers are configured
 - [ ] Secrets are not exposed in client-side code
@@ -444,6 +477,7 @@ supabase db push --file supabase/migrations/20250101_rls_policies.sql
 ### Common Issues
 
 #### Database Connection Errors
+
 ```bash
 # Check connection string format
 POSTGRES_URL=postgresql://username:password@host:port/database
@@ -453,21 +487,25 @@ psql $POSTGRES_URL -c "SELECT 1;"
 ```
 
 #### Supabase Authentication Issues
+
 - Verify project URL and keys are correct
 - Check if RLS policies are blocking access
 - Ensure user has proper permissions
 
 #### Stripe Webhook Issues
+
 - Verify webhook endpoint URL is accessible
 - Check webhook signing secret matches
 - Ensure webhook events are properly configured
 
 #### Email Delivery Issues
+
 - Verify SMTP credentials are correct
 - Check sender email is verified
 - Review email service logs for errors
 
 ### Debug Mode
+
 Enable debug mode for detailed logging:
 
 ```env
@@ -476,6 +514,7 @@ NODE_ENV=development
 ```
 
 ### Logs and Monitoring
+
 - **Vercel**: View deployment logs in dashboard
 - **Supabase**: Check logs in project dashboard
 - **Stripe**: Monitor webhook delivery in dashboard
@@ -486,6 +525,7 @@ NODE_ENV=development
 ## Maintenance
 
 ### Regular Tasks
+
 - [ ] Update dependencies monthly
 - [ ] Review and rotate secrets quarterly
 - [ ] Monitor database performance
@@ -493,6 +533,7 @@ NODE_ENV=development
 - [ ] Backup database regularly
 
 ### Monitoring
+
 - [ ] Set up uptime monitoring
 - [ ] Monitor API response times
 - [ ] Track error rates

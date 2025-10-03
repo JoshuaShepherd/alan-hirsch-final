@@ -3,16 +3,12 @@ import { db } from '@/lib/db/drizzle';
 import { assessments } from '@/lib/db/schema';
 import { desc, eq, and, like, or, sql } from 'drizzle-orm';
 import {
-  assessmentSearchRequestSchema,
   createAssessmentRequestSchema,
-  assessmentSchema,
   assessmentListResponseSchema,
-  assessmentResponseSchema,
+  assessmentResponseDTOSchema,
 } from '@/lib/contracts';
-import {
-  toAssessmentResponseDTO,
-  toPaginatedAssessmentListResponseDTO,
-} from '@/lib/mappers/assessments';
+import { toAssessmentResponseDTO } from '@/lib/mappers/assessments';
+import { hasResults, isDefined } from '@/lib/db/type-guards';
 import { z } from 'zod';
 
 // Input validation schemas
@@ -111,21 +107,23 @@ export async function GET(request: NextRequest) {
       .from(assessments)
       .where(conditions.length > 0 ? and(...conditions) : undefined);
 
-    const count = countResult[0]?.count || 0;
+    const count = countResult[0]?.count ?? 0;
 
     // Map to DTOs
     const assessmentDTOs = assessmentList.map(toAssessmentResponseDTO);
 
     // Create standardized response
     const response = {
-      items: assessmentDTOs,
-      pagination: {
-        page,
-        limit,
-        total: count,
-        totalPages: Math.ceil(count / limit),
-        hasNext: page < Math.ceil(count / limit),
-        hasPrev: page > 1,
+      items: {
+        data: assessmentDTOs,
+        pagination: {
+          page,
+          limit,
+          total: count,
+          totalPages: Math.ceil(count / limit),
+          hasNext: page < Math.ceil(count / limit),
+          hasPrev: page > 1,
+        },
       },
       success: true,
     };
@@ -171,7 +169,7 @@ export async function POST(request: NextRequest) {
       .returning();
 
     // Ensure we have a valid assessment
-    if (!insertedAssessments || insertedAssessments.length === 0) {
+    if (!hasResults(insertedAssessments)) {
       return NextResponse.json(
         { error: 'Failed to create assessment' },
         { status: 500 }
@@ -179,7 +177,7 @@ export async function POST(request: NextRequest) {
     }
 
     const newAssessment = insertedAssessments[0];
-    if (!newAssessment) {
+    if (!isDefined(newAssessment)) {
       return NextResponse.json(
         { error: 'Failed to create assessment' },
         { status: 500 }
@@ -196,7 +194,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Validate response with Zod schema
-    const validatedResponse = assessmentResponseSchema.parse(response);
+    const validatedResponse = assessmentResponseDTOSchema.parse(response);
 
     return NextResponse.json(validatedResponse, { status: 201 });
   } catch (error) {

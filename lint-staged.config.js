@@ -3,40 +3,27 @@ module.exports = {
   '*.{ts,tsx,js,jsx}': [
     'eslint --cache --fix',
     'prettier --write',
+    'bash -c "npx tsc --noEmit"',
   ],
-  
+
   // JSON files
-  '*.json': [
-    'prettier --write',
-  ],
-  
+  '*.json': ['prettier --write'],
+
   // Markdown files
-  '*.md': [
-    'prettier --write',
-  ],
-  
+  '*.md': ['prettier --write'],
+
   // CSS, SCSS, and PostCSS files
-  '*.{css,scss,postcss}': [
-    'prettier --write',
-  ],
-  
+  '*.{css,scss,postcss}': ['prettier --write'],
+
   // HTML files
-  '*.html': [
-    'prettier --write',
-  ],
-  
+  '*.html': ['prettier --write'],
+
   // YAML files
-  '*.{yml,yaml}': [
-    'prettier --write',
-  ],
-  
+  '*.{yml,yaml}': ['prettier --write'],
+
   // SQL files
-  '*.sql': [
-    'prettier --write',
-  ],
-  
+  '*.sql': ['prettier --write'],
+
   // Configuration files
-  '*.{toml,ini,cfg,conf}': [
-    'prettier --write',
-  ],
+  '*.{toml,ini,cfg,conf}': ['prettier --write'],
 };

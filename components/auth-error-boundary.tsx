@@ -37,7 +37,7 @@ export class AuthErrorBoundary extends React.Component<
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('🔐 AuthErrorBoundary: Error details', {
       error: error.message,
       stack: error.stack,
@@ -56,7 +56,7 @@ export class AuthErrorBoundary extends React.Component<
     this.setState({ hasError: false, error: undefined, errorInfo: undefined });
   };
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
         const FallbackComponent = this.props.fallback;
@@ -124,4 +124,3 @@ export class AuthErrorBoundary extends React.Component<
     return this.props.children;
   }
 }
-

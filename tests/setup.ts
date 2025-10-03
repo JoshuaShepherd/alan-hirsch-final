@@ -1,13 +1,5 @@
-import '@testing-library/jest-dom';
-import {
-  vi,
-  describe,
-  it,
-  expect,
-  beforeAll,
-  afterEach,
-  afterAll,
-} from 'vitest';
+import { vi } from 'vitest';
+import { expect, afterEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
 
 // Mock environment variables for testing
@@ -15,8 +7,6 @@ process.env['NEXT_PUBLIC_SUPABASE_URL'] = 'https://test.supabase.co';
 process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'] = 'test-anon-key';
 process.env['SUPABASE_SERVICE_ROLE_KEY'] = 'test-service-role-key';
 process.env['POSTGRES_URL'] = 'postgresql://test:test@localhost:5432/test';
-process.env['NEXTAUTH_SECRET'] = 'test-secret';
-process.env['NEXTAUTH_URL'] = 'http://localhost:3000';
 
 // Mock Next.js router
 vi.mock('next/navigation', () => ({
@@ -59,34 +49,51 @@ vi.mock('@supabase/supabase-js', () => ({
   })),
 }));
 
-// Mock Drizzle ORM
-vi.mock('@/lib/db/drizzle', () => ({
-  db: {
-    select: vi.fn(),
-    insert: vi.fn(),
-    update: vi.fn(),
-    delete: vi.fn(),
-  },
-}));
-
-// Global test setup
-beforeAll(() => {
-  // Setup any global test configuration
-});
-
-// Cleanup after each test
+// Cleanup after each test case
 afterEach(() => {
   cleanup();
-  vi.clearAllMocks();
-});
-
-// Global test teardown
-afterAll(() => {
-  // Cleanup any global resources
 });
 
 // Global test timeout
 vi.setConfig({
   testTimeout: 10000,
-  hookTimeout: 10000,
+});
+
+// Extend expect with custom matchers for DOM testing
+expect.extend({
+  toBeInTheDocument: (received: any) => {
+    const pass =
+      received &&
+      received.ownerDocument &&
+      received.ownerDocument.contains(received);
+    return {
+      pass,
+      message: () =>
+        pass
+          ? `Expected element not to be in the document`
+          : `Expected element to be in the document`,
+    };
+  },
+  toHaveClass: (received: any, className: string) => {
+    const pass =
+      received && received.classList && received.classList.contains(className);
+    return {
+      pass,
+      message: () =>
+        pass
+          ? `Expected element not to have class "${className}"`
+          : `Expected element to have class "${className}"`,
+    };
+  },
+  toHaveTextContent: (received: any, text: string) => {
+    const pass =
+      received && received.textContent && received.textContent.includes(text);
+    return {
+      pass,
+      message: () =>
+        pass
+          ? `Expected element not to have text content "${text}"`
+          : `Expected element to have text content "${text}"`,
+    };
+  },
 });

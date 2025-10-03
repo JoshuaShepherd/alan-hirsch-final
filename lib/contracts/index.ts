@@ -10,10 +10,10 @@ export type {
   CulturalContext,
   Visibility,
   Attachment,
-  MembershipRole,
+  MembershipRole as SharedMembershipRole,
   OrganizationType,
-  SubscriptionStatus,
-  MinistryRole,
+  SubscriptionStatus as SharedSubscriptionStatus,
+  MinistryRole as SharedMinistryRole,
 } from '../../validations/shared';
 
 // Auth & User Management DTOs
@@ -70,7 +70,10 @@ export type {
 } from './assessments.response';
 
 // Scoring DTOs
-export type { ApestScores, ApestScoreResult } from './scoring';
+export type {
+  ApestScores as ScoringApestScores,
+  ApestScoreResult,
+} from './scoring';
 
 // Content Management DTOs
 export type {
@@ -241,6 +244,37 @@ export {
   newContentCrossReferenceSchema,
 } from '../../validations/content';
 
+// Content Request Schemas
+export {
+  createContentItemRequestSchema,
+  updateContentItemRequestSchema,
+  contentSearchRequestSchema,
+  createContentCategoryRequestSchema,
+  updateContentCategoryRequestSchema,
+  createContentSeriesRequestSchema,
+  updateContentSeriesRequestSchema,
+} from './content.request';
+
+// Content Response Schemas
+export {
+  contentItemResponseSchema,
+  contentCategoryResponseSchema,
+  contentSeriesResponseSchema,
+  paginatedContentItemListResponseSchema,
+  paginatedContentCategoryListResponseSchema,
+  paginatedContentSeriesListResponseSchema,
+} from './content.response';
+
+// Content Response Types
+export type {
+  ContentItemResponse,
+  ContentCategoryResponse,
+  ContentSeriesResponse,
+  PaginatedContentItemListResponse,
+  PaginatedContentCategoryListResponse,
+  PaginatedContentSeriesListResponse,
+} from './content.response';
+
 // AI System Schemas
 export {
   aiConversationSchema,
@@ -254,6 +288,34 @@ export {
   theologicalConceptSchema,
   newTheologicalConceptSchema,
 } from '../../validations/ai';
+
+// AI Response Schemas
+export {
+  aiConversationResponseSchema,
+  aiMessageResponseSchema,
+  aiContentJobResponseSchema,
+  aiCrossReferenceSuggestionResponseSchema,
+  theologicalConceptResponseSchema,
+  paginatedAiConversationListResponseSchema,
+  paginatedAiMessageListResponseSchema,
+  paginatedAiContentJobListResponseSchema,
+  paginatedAiCrossReferenceSuggestionListResponseSchema,
+  paginatedTheologicalConceptListResponseSchema,
+} from './ai.response';
+
+// AI Response Types
+export type {
+  AiConversationResponse,
+  AiMessageResponse,
+  AiContentJobResponse,
+  AiCrossReferenceSuggestionResponse,
+  TheologicalConceptResponse,
+  PaginatedAiConversationListResponse,
+  PaginatedAiMessageListResponse,
+  PaginatedAiContentJobListResponse,
+  PaginatedAiCrossReferenceSuggestionListResponse,
+  PaginatedTheologicalConceptListResponse,
+} from './ai.response';
 
 // Community System Schemas
 export {
@@ -499,53 +561,6 @@ export type ApiKeyRow = InferSelectModel<typeof apiKeys>;
 export type ApiKeyInsert = InferInsertModel<typeof apiKeys>;
 
 // ============================================================================
-// TABLE/GRID ROW DTOs
-// ============================================================================
-
-// Content table/grid row DTO
-export type ContentRowDTO = ContentItem & {
-  author: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    displayName?: string;
-    avatarUrl?: string;
-  };
-  category?: {
-    id: string;
-    name: string;
-    slug: string;
-  };
-};
-
-// User profile table/grid row DTO
-export type UserProfileRowDTO = UserProfile;
-
-// Assessment table/grid row DTO
-export type AssessmentRowDTO = Assessment;
-
-// User assessment table/grid row DTO
-export type UserAssessmentRowDTO = UserAssessment & {
-  assessment: {
-    id: string;
-    name: string;
-    slug: string;
-  };
-  user: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    displayName?: string;
-  };
-};
-
-// Organization table/grid row DTO
-export type OrganizationRowDTO = Organization;
-
-// Community table/grid row DTO
-export type CommunityRowDTO = Community;
-
-// ============================================================================
 // API RESPONSE SCHEMAS
 // ============================================================================
 
@@ -678,3 +693,52 @@ export type ApiError = {
   message: string;
   details?: Record<string, any>;
 };
+
+// ============================================================================
+// TABLE/GRID ROW DTOs
+// ============================================================================
+
+// Content table/grid row DTO
+export type ContentRowDTO = import('../../validations/content').ContentItem & {
+  author: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    displayName?: string;
+    avatarUrl?: string;
+  };
+  category?: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+};
+
+// User profile table/grid row DTO
+export type UserProfileRowDTO = import('../../validations/auth').UserProfile;
+
+// Assessment table/grid row DTO
+export type AssessmentRowDTO =
+  import('../../validations/assessments').Assessment;
+
+// User assessment table/grid row DTO
+export type UserAssessmentRowDTO =
+  import('../../validations/assessments').UserAssessment & {
+    assessment: {
+      id: string;
+      name: string;
+      slug: string;
+    };
+    user: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      displayName?: string;
+    };
+  };
+
+// Organization table/grid row DTO
+export type OrganizationRowDTO = import('../../validations/auth').Organization;
+
+// Community table/grid row DTO
+export type CommunityRowDTO = import('../../validations/community').Community;

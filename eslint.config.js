@@ -9,6 +9,23 @@ const compat = new FlatCompat({
 module.exports = [
   ...compat.extends('next/core-web-vitals'),
   {
+    ignores: [
+      'node_modules/**',
+      '.next/**',
+      'dist/**',
+      'build/**',
+      'coverage/**',
+      'docs-env/**',
+      'docs/_build/**',
+      'docs/_static/**',
+      'docs/_templates/**',
+      '**/*.d.ts',
+      '*.config.js',
+      '*.config.mjs',
+      '*.config.ts',
+    ],
+  },
+  {
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
       parser: require('@typescript-eslint/parser'),

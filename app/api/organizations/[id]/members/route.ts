@@ -119,6 +119,7 @@ export const GET = createPaginatedApiRoute(
       .from(organizationMemberships)
       .where(and(...conditions));
 
+    const total = countResult[0]?.count || 0;
     return {
       items: members
         .filter(member => member.user !== null) // Filter out members without user data
@@ -133,7 +134,15 @@ export const GET = createPaginatedApiRoute(
             avatarUrl: member.user!.avatarUrl || undefined,
           },
         })),
-      total: countResult[0]?.count || 0,
+      pagination: {
+        page: page || 1,
+        limit: limit || 20,
+        total,
+        totalPages: Math.ceil(total / (limit || 20)),
+        hasNext: (page || 1) < Math.ceil(total / (limit || 20)),
+        hasPrev: (page || 1) > 1,
+      },
+      success: true,
     };
   }
 );

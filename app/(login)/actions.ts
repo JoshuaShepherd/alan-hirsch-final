@@ -7,10 +7,13 @@ import {
   userProfiles,
   organizations,
   organizationMemberships,
+} from '@/lib/db/schema';
+import {
   type NewUserProfile,
   type NewOrganization,
   type NewOrganizationMembership,
-} from '@/lib/db/schema';
+} from '@/lib/contracts';
+import { ministryRoleSchema } from '@/lib/contracts';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getUserByEmail } from '@/lib/db/queries';
@@ -67,25 +70,7 @@ const signUpSchema = z.object({
     .string()
     .min(1, 'Last name is required')
     .max(50, 'Last name too long'),
-  ministryRole: z.enum(
-    [
-      'senior_pastor',
-      'associate_pastor',
-      'church_planter',
-      'denominational_leader',
-      'seminary_professor',
-      'seminary_student',
-      'ministry_staff',
-      'missionary',
-      'marketplace_minister',
-      'nonprofit_leader',
-      'consultant',
-      'academic_researcher',
-      'emerging_leader',
-      'other',
-    ],
-    { errorMap: () => ({ message: 'Please select your ministry role' }) }
-  ),
+  ministryRole: ministryRoleSchema,
   organizationName: emptyToUndefined.optional(),
   priceId: emptyToUndefined.optional(),
   organizationId: optionalUuid.optional(),
@@ -279,7 +264,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
     // Create user profile
     console.log('🔐 Creating user profile');
     const newUserProfile: NewUserProfile = {
-      id: authData.user.id, // Use Supabase Auth user ID
+      id: authData.user.id!, // Use Supabase Auth user ID (non-null assertion since we just created the user)
       email,
       firstName,
       lastName,
@@ -289,9 +274,26 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
       accountStatus: 'pending_verification',
       onboardingCompleted: false,
       onboardingStep: 1,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      lastActiveAt: new Date(),
+      languagePrimary: 'en',
+      subscriptionTier: 'free',
+      theologicalFocus: [],
+      brandColors: {
+        primary: '#2563eb',
+        secondary: '#64748b',
+        accent: '#059669',
+      },
+      emailNotifications: {
+        dailyDigest: true,
+        collaborationRequests: true,
+        revenueReports: true,
+        communityUpdates: true,
+      },
+      privacySettings: {
+        publicProfile: true,
+        showAssessmentResults: false,
+        allowNetworking: true,
+        shareAnalytics: false,
+      },
     };
 
     console.log('🔐 User Profile Data:', {
@@ -304,7 +306,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
 
     const [createdUser] = await db
       .insert(userProfiles)
-      .values(newUserProfile)
+      .values(newUserProfile as any)
       .returning();
 
     console.log('🔐 User Profile Creation Result:', {
@@ -347,9 +349,8 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
           organizationId: organizationId,
           role: 'member',
           status: 'active',
+          permissions: [],
           joinedAt: new Date(),
-          createdAt: new Date(),
-          updatedAt: new Date(),
         };
 
         await db.insert(organizationMemberships).values(newMembership);
@@ -364,6 +365,8 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
         organizationType: 'other', // Default, user can update later
         accountOwnerId: createdUser.id,
         status: 'trial',
+        licenseType: 'individual',
+        maxUsers: 1,
       };
 
       console.log('🔐 New Organization Data:', {
@@ -392,9 +395,8 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
           organizationId: createdOrg.id,
           role: 'owner',
           status: 'active',
+          permissions: [],
           joinedAt: new Date(),
-          createdAt: new Date(),
-          updatedAt: new Date(),
         };
 
         await db.insert(organizationMemberships).values(newMembership);

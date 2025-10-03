@@ -38,10 +38,24 @@ import { hasResults, isDefined } from '../type-guards';
  * Get all active assessments with optional filtering
  */
 export async function getAssessments(filters?: {
-  assessmentType?: string;
-  status?: string;
+  assessmentType?:
+    | 'apest'
+    | 'mdna'
+    | 'cultural_intelligence'
+    | 'leadership_style'
+    | 'spiritual_gifts'
+    | 'other';
+  status?: 'draft' | 'active' | 'archived' | 'under_review';
   language?: string;
-  culturalAdaptation?: string;
+  culturalAdaptation?:
+    | 'western'
+    | 'eastern'
+    | 'african'
+    | 'latin_american'
+    | 'middle_eastern'
+    | 'oceanic'
+    | 'universal'
+    | 'global';
   researchBacked?: boolean;
 }) {
   const conditions = [];
@@ -107,8 +121,9 @@ export async function createAssessment(assessmentData: NewAssessment) {
     .insert(assessments)
     .values({
       ...assessmentData,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      // Convert decimal fields to strings
+      validityScore: assessmentData.validityScore?.toString(),
+      reliabilityScore: assessmentData.reliabilityScore?.toString(),
     })
     .returning();
 
@@ -130,6 +145,9 @@ export async function updateAssessment(
     .update(assessments)
     .set({
       ...updates,
+      // Convert decimal fields to strings
+      validityScore: updates.validityScore?.toString(),
+      reliabilityScore: updates.reliabilityScore?.toString(),
       updatedAt: new Date(),
     })
     .where(eq(assessments.id, assessmentId))
@@ -191,8 +209,8 @@ export async function createAssessmentQuestion(
     .insert(assessmentQuestions)
     .values({
       ...questionData,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      // Convert decimal fields to strings
+      weight: questionData.weight?.toString(),
     })
     .returning();
 
@@ -214,6 +232,8 @@ export async function updateAssessmentQuestion(
     .update(assessmentQuestions)
     .set({
       ...updates,
+      // Convert decimal fields to strings
+      weight: updates.weight?.toString(),
       updatedAt: new Date(),
     })
     .where(eq(assessmentQuestions.id, questionId))
@@ -317,9 +337,10 @@ export async function startUserAssessment(
     .insert(userAssessments)
     .values({
       ...userAssessmentData,
-      startedAt: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      // Convert decimal fields to strings
+      responseConsistency: userAssessmentData.responseConsistency?.toString(),
+      culturalAdjustmentFactor:
+        userAssessmentData.culturalAdjustmentFactor?.toString(),
     })
     .returning();
 
@@ -341,6 +362,9 @@ export async function updateUserAssessment(
     .update(userAssessments)
     .set({
       ...updates,
+      // Convert decimal fields to strings
+      responseConsistency: updates.responseConsistency?.toString(),
+      culturalAdjustmentFactor: updates.culturalAdjustmentFactor?.toString(),
       updatedAt: new Date(),
     })
     .where(eq(userAssessments.id, userAssessmentId))
@@ -364,7 +388,7 @@ export async function completeUserAssessment(
     primaryGift?: string;
     secondaryGift?: string;
     completionTime: number;
-    responseConsistency?: string;
+    responseConsistency?: number;
     aiInsights?: string;
     personalizedRecommendations?: any;
   }
@@ -373,6 +397,8 @@ export async function completeUserAssessment(
     .update(userAssessments)
     .set({
       ...completionData,
+      // Convert decimal fields to strings
+      responseConsistency: completionData.responseConsistency?.toString(),
       updatedAt: new Date(),
     })
     .where(eq(userAssessments.id, userAssessmentId))
@@ -584,7 +610,7 @@ export async function getSimilarApestProfiles(
   limit: number = 10
 ) {
   const userProfile = await getUserAssessmentById(userAssessmentId);
-  if (!userProfile) return [];
+  if (!userProfile || !userProfile.primaryGift) return [];
 
   // Get users with similar APEST scores (within 10 points)
   const results = await db

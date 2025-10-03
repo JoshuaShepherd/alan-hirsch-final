@@ -1,15 +1,13 @@
 import { createApiRoute, idInputSchema } from '@/lib/api/utils';
 import {
-  contentItemSchema,
-  ContentItemRow,
   contentItemResponseSchema,
+  updateContentItemRequestSchema,
 } from '@/lib/contracts';
 import { contentItems, userProfiles, contentCategories } from '@/lib/db/schema';
+import { toContentItemWithDetailsDTO } from '@/lib/mappers/content';
+import { hasResults, isDefined } from '@/lib/db/type-guards';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-
-// Mapper function to convert Drizzle row to DTO
-const mapContentItemRow = (row: any) => contentItemSchema.parse(row);
 
 // Response schemas are now imported from contracts
 
@@ -85,7 +83,12 @@ export const GET = createApiRoute(
       .where(eq(contentItems.id, input.id))
       .limit(1);
 
-    if (!content[0]) {
+    if (!hasResults(content)) {
+      throw new Error('Content not found');
+    }
+
+    const contentData = content[0];
+    if (!isDefined(contentData)) {
       throw new Error('Content not found');
     }
 
@@ -93,73 +96,20 @@ export const GET = createApiRoute(
     await db
       .update(contentItems)
       .set({
-        viewCount: (content[0].viewCount || 0) + 1,
+        viewCount: (contentData.viewCount ?? 0) + 1,
         updatedAt: new Date(),
       })
       .where(eq(contentItems.id, input.id));
 
-    const mappedContent = mapContentItemRow(content[0]);
+    const mappedContent = toContentItemWithDetailsDTO(contentData);
 
-    // Create standardized response
-    return {
-      data: mappedContent,
-      success: true,
-    };
+    return mappedContent;
   }
 );
 
 // PUT /api/content/[id] - Update content item
 export const PUT = createApiRoute(
-  idInputSchema.extend({
-    title: z.string().min(1).optional(),
-    excerpt: z.string().optional(),
-    content: z.string().optional(),
-    contentType: z
-      .enum([
-        'article',
-        'video',
-        'podcast',
-        'framework',
-        'tool',
-        'case_study',
-        'interview',
-        'course_lesson',
-      ])
-      .optional(),
-    format: z
-      .enum(['text', 'video', 'audio', 'interactive', 'pdf', 'presentation'])
-      .optional(),
-    primaryCategoryId: z.string().uuid().optional(),
-    secondaryCategories: z.array(z.string().uuid()).optional(),
-    tags: z.array(z.string()).optional(),
-    theologicalThemes: z.array(z.string()).optional(),
-    seriesId: z.string().uuid().optional(),
-    seriesOrder: z.number().int().min(0).optional(),
-    visibility: z
-      .enum(['public', 'premium', 'vip', 'private', 'organization'])
-      .optional(),
-    status: z
-      .enum(['draft', 'published', 'archived', 'under_review', 'scheduled'])
-      .optional(),
-    featuredImageUrl: z.string().url().optional(),
-    videoUrl: z.string().url().optional(),
-    audioUrl: z.string().url().optional(),
-    metaTitle: z.string().optional(),
-    metaDescription: z.string().optional(),
-    canonicalUrl: z.string().url().optional(),
-    originalSource: z.string().optional(),
-    licenseType: z
-      .enum([
-        'all_rights_reserved',
-        'creative_commons',
-        'public_domain',
-        'fair_use',
-      ])
-      .optional(),
-    attributionRequired: z.boolean().optional(),
-    publishedAt: z.date().optional(),
-    scheduledAt: z.date().optional(),
-  }),
+  updateContentItemRequestSchema,
   contentItemResponseSchema,
   async (input, { user, db }) => {
     const { id, ...updateData } = input;
@@ -171,16 +121,21 @@ export const PUT = createApiRoute(
       .where(eq(contentItems.id, id))
       .limit(1);
 
-    if (!existingContent[0]) {
+    if (!hasResults(existingContent)) {
+      throw new Error('Content not found');
+    }
+
+    const existingContentData = existingContent[0];
+    if (!isDefined(existingContentData)) {
       throw new Error('Content not found');
     }
 
     // Only author can update their content
-    if (existingContent[0].authorId !== user.id) {
+    if (existingContentData.authorId !== user.id) {
       throw new Error('Insufficient permissions');
     }
 
-    const [updatedContent] = await db
+    const updatedContents = await db
       .update(contentItems)
       .set({
         ...updateData,
@@ -189,13 +144,18 @@ export const PUT = createApiRoute(
       .where(eq(contentItems.id, id))
       .returning();
 
-    const mappedContent = mapContentItemRow(updatedContent);
+    if (!hasResults(updatedContents)) {
+      throw new Error('Failed to update content');
+    }
 
-    // Create standardized response
-    return {
-      data: mappedContent,
-      success: true,
-    };
+    const updatedContent = updatedContents[0];
+    if (!isDefined(updatedContent)) {
+      throw new Error('Failed to update content');
+    }
+
+    const mappedContent = toContentItemWithDetailsDTO(updatedContent);
+
+    return mappedContent;
   }
 );
 
@@ -214,12 +174,17 @@ export const DELETE = createApiRoute(
       .where(eq(contentItems.id, input.id))
       .limit(1);
 
-    if (!existingContent[0]) {
+    if (!hasResults(existingContent)) {
+      throw new Error('Content not found');
+    }
+
+    const existingContentData = existingContent[0];
+    if (!isDefined(existingContentData)) {
       throw new Error('Content not found');
     }
 
     // Only author can delete their content
-    if (existingContent[0].authorId !== user.id) {
+    if (existingContentData.authorId !== user.id) {
       throw new Error('Insufficient permissions');
     }
 

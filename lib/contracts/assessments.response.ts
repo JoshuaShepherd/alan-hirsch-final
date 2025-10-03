@@ -221,14 +221,16 @@ export const userAssessmentWithDetailsResponseSchema =
 
 // Paginated Assessment List Response DTO
 export const paginatedAssessmentListResponseSchema = z.object({
-  items: z.array(assessmentResponseSchema),
-  pagination: z.object({
-    page: z.number().int(),
-    limit: z.number().int(),
-    total: z.number().int(),
-    totalPages: z.number().int(),
-    hasNext: z.boolean(),
-    hasPrev: z.boolean(),
+  items: z.object({
+    data: z.array(assessmentResponseSchema),
+    pagination: z.object({
+      page: z.number().int(),
+      limit: z.number().int(),
+      total: z.number().int(),
+      totalPages: z.number().int(),
+      hasNext: z.boolean(),
+      hasPrev: z.boolean(),
+    }),
   }),
   success: z.boolean(),
   message: z.string().optional(),
@@ -236,14 +238,16 @@ export const paginatedAssessmentListResponseSchema = z.object({
 
 // Paginated User Assessment List Response DTO
 export const paginatedUserAssessmentListResponseSchema = z.object({
-  items: z.array(userAssessmentWithDetailsResponseSchema),
-  pagination: z.object({
-    page: z.number().int(),
-    limit: z.number().int(),
-    total: z.number().int(),
-    totalPages: z.number().int(),
-    hasNext: z.boolean(),
-    hasPrev: z.boolean(),
+  items: z.object({
+    data: z.array(userAssessmentWithDetailsResponseSchema),
+    pagination: z.object({
+      page: z.number().int(),
+      limit: z.number().int(),
+      total: z.number().int(),
+      totalPages: z.number().int(),
+      hasNext: z.boolean(),
+      hasPrev: z.boolean(),
+    }),
   }),
   success: z.boolean(),
   message: z.string().optional(),

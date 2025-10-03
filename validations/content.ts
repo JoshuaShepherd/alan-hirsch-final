@@ -215,11 +215,10 @@ export const contentItemSchema = z.object({
   networkAmplificationScore: z.number().min(0).default(0),
   crossReferenceCount: z.number().int().min(0).default(0),
 
-  // AI Enhancement - ⏳ PLANNED
+  // AI Enhancement
   aiEnhanced: z.boolean().default(false),
   aiSummary: z.string().optional(),
   aiKeyPoints: z.array(z.string()).default([]),
-  semanticEmbedding: z.array(z.number()).optional(), // Vector embedding
 
   // Media & Assets
   featuredImageUrl: z.string().url().optional(),

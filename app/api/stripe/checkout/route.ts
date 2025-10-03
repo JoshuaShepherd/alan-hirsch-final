@@ -6,6 +6,7 @@ import {
   organizationMemberships,
 } from '@/lib/db/schema';
 import { setSession } from '@/lib/auth/session';
+import { toUserProfileDTO } from '@/lib/mappers/user-profiles';
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/payments/stripe';
 import Stripe from 'stripe';
@@ -107,7 +108,7 @@ export async function GET(request: NextRequest) {
       })
       .where(eq(userProfiles.id, currentUser.id));
 
-    await setSession(currentUser);
+    await setSession(toUserProfileDTO(currentUser));
     return NextResponse.redirect(new URL('/dashboard', request.url));
   } catch (error) {
     console.error('Error handling successful checkout:', error);

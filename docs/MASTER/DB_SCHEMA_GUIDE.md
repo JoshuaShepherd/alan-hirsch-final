@@ -1,5 +1,6 @@
 # Database Schema Guide
-*Alan Hirsch Digital Platform - Current Database Architecture*
+
+_Alan Hirsch Digital Platform - Current Database Architecture_
 
 ## Overview
 
@@ -12,6 +13,7 @@ This database currently supports the foundational platform with core user manage
 ## Current Implementation Status
 
 **✅ DEPLOYED TABLES:**
+
 - `user_profiles` - Extended user profiles with ministry context
 - `organizations` - Churches, denominations, seminaries, networks
 - `organization_memberships` - User-organization relationships
@@ -20,14 +22,19 @@ This database currently supports the foundational platform with core user manage
 - `subscription_plans` - Tiered access plans
 - `user_subscriptions` - Active user subscriptions
 - `communities` - Discussion groups and networking spaces
+- `assessments` - APEST and other ministry assessment frameworks
+- `assessment_questions` - Question bank for assessments
+- `user_assessments` - Individual assessment results
+- `assessment_responses` - Individual question responses
 
 **⏳ PLANNED TABLES (Not Yet Deployed):**
-- Assessment system (APEST, MDNA, etc.)
+
 - AI conversation system
 - Analytics and tracking system
 - System administration features
 
 **✅ ADDITIONAL DEPLOYED TABLES:**
+
 - `series_content_items` - Ordered content within series
 - `content_cross_references` - Network amplification system
 - `community_post_votes` - User voting on community posts
@@ -49,9 +56,11 @@ This database currently supports the foundational platform with core user manage
 ## Authentication & User Management
 
 ### Supabase Auth Integration ✅ **IMPLEMENTED**
+
 **Purpose**: Secure, scalable authentication with built-in features
 
 **Key Features**:
+
 - JWT-based authentication
 - Email/password and social login support
 - Built-in password reset and email verification
@@ -59,9 +68,11 @@ This database currently supports the foundational platform with core user manage
 - Session management
 
 ### `user_profiles`
+
 **Purpose**: Extended user profiles beyond Supabase auth, rich ministry context and personalization
 
 **Key Features**:
+
 - APEST assessment integration
 - Ministry role classification
 - Leader tier evaluation (100-point rubric)
@@ -69,6 +80,7 @@ This database currently supports the foundational platform with core user manage
 - Geographic and cultural context
 
 **Example Row**:
+
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -89,14 +101,17 @@ This database currently supports the foundational platform with core user manage
 ```
 
 ### `organizations`
+
 **Purpose**: Churches, denominations, seminaries, and ministry networks
 
 **Key Features**:
+
 - Multi-user licensing
 - Organizational billing
 - Ministry context classification
 
 **Example Row**:
+
 ```json
 {
   "id": "660e8400-e29b-41d4-a716-446655440001",
@@ -111,33 +126,88 @@ This database currently supports the foundational platform with core user manage
 ```
 
 ### `organization_memberships`
+
 **Purpose**: User-organization relationships with roles and permissions
 
 ---
 
-## Assessment System & Personalization ⏳ **PLANNED**
+## Assessment System & Personalization ✅ **IMPLEMENTED**
 
-> **Note**: The assessment system is planned but not yet deployed. The following tables will be implemented in future migrations:
-> - `assessments` - APEST and other ministry assessment frameworks
-> - `user_assessments` - Individual assessment results with insights
-> - `assessment_questions` - Question bank for assessments
-> - `assessment_responses` - Individual question responses
+The assessment system is fully deployed and operational with the following tables:
 
-**Planned Features**:
+### `assessments` ✅ **IMPLEMENTED**
+
+**Purpose**: APEST and other ministry assessment frameworks
+
+**Key Features**:
+
 - Multiple assessment types (APEST, MDNA, cultural intelligence)
 - Versioning and cultural adaptations
-- Research-backed validity
+- Research-backed validity scoring
+- Multiple scoring methods (Likert, binary, ranking, weighted)
+
+**Example Row**:
+
+```json
+{
+  "id": "770e8400-e29b-41d4-a716-446655440002",
+  "name": "APEST Assessment",
+  "slug": "apest-assessment",
+  "assessment_type": "apest",
+  "questions_count": 25,
+  "estimated_duration": 15,
+  "cultural_adaptation": "universal",
+  "research_backed": true,
+  "validity_score": 0.87,
+  "reliability_score": 0.91,
+  "status": "active"
+}
+```
+
+### `assessment_questions` ✅ **IMPLEMENTED**
+
+**Purpose**: Question bank for assessments with APEST dimension mapping
+
+**Key Features**:
+
+- Question types (Likert, multiple choice, binary, ranking, text)
+- APEST dimension mapping
+- Weighted scoring and reverse scoring
+- Answer options in JSONB format
+
+### `user_assessments` ✅ **IMPLEMENTED**
+
+**Purpose**: Individual assessment results with insights
+
+**Key Features**:
+
+- APEST dimension scores
+- Completion tracking and quality metrics
+- Cultural adjustment factors
 - AI-generated insights and peer matching
-- Quality metrics (consistency, cultural adjustment)
+- Personalized recommendations
+
+### `assessment_responses` ✅ **IMPLEMENTED**
+
+**Purpose**: Individual question responses
+
+**Key Features**:
+
+- Response values and text
+- Response time tracking
+- Confidence levels
+- Skip tracking
 
 ---
 
 ## Content Management System
 
 ### `content_items`
+
 **Purpose**: Main content repository - articles, videos, courses, frameworks
 
 **Key Features**:
+
 - Rich categorization and tagging
 - AI embeddings for semantic search
 - Network amplification scoring
@@ -145,6 +215,7 @@ This database currently supports the foundational platform with core user manage
 - Multi-format support
 
 **Example Row**:
+
 ```json
 {
   "id": "880e8400-e29b-41d4-a716-446655440003",
@@ -164,9 +235,11 @@ This database currently supports the foundational platform with core user manage
 ```
 
 ### `content_categories`
+
 **Purpose**: Hierarchical taxonomy with APEST relevance scoring
 
 **Example Row**:
+
 ```json
 {
   "id": "990e8400-e29b-41d4-a716-446655440004",
@@ -185,15 +258,18 @@ This database currently supports the foundational platform with core user manage
 ```
 
 ### `content_series` ✅ **IMPLEMENTED**
+
 **Purpose**: Structured learning paths and course organization
 
 **Key Features**:
+
 - Series types (course, learning_path, book_series, etc.)
 - Difficulty levels and estimated duration
 - Author collaboration support
 - SEO and media management
 
 **Example Row**:
+
 ```json
 {
   "id": "aa0e8400-e29b-41d4-a716-446655440005",
@@ -210,9 +286,11 @@ This database currently supports the foundational platform with core user manage
 ```
 
 ### `series_content_items` ✅ **IMPLEMENTED**
+
 **Purpose**: Ordered content within series
 
 **Key Features**:
+
 - Content ordering and prerequisites
 - Series-content relationship management
 - Learning path progression tracking
@@ -222,9 +300,11 @@ This database currently supports the foundational platform with core user manage
 ## Network Amplification System ✅ **IMPLEMENTED**
 
 ### `content_cross_references` ✅ **IMPLEMENTED**
+
 **Purpose**: Core network feature connecting content pieces
 
 **Key Features**:
+
 - Relationship types (builds_on, contradicts, supports, extends, applies, critiques, synthesizes)
 - Quality scoring and relevance metrics
 - Author approval workflow
@@ -232,6 +312,7 @@ This database currently supports the foundational platform with core user manage
 - Click tracking and analytics
 
 **Example Row**:
+
 ```json
 {
   "id": "bb0e8400-e29b-41d4-a716-446655440006",
@@ -247,9 +328,11 @@ This database currently supports the foundational platform with core user manage
 ```
 
 ### `collaborations` ✅ **IMPLEMENTED**
+
 **Purpose**: Multi-author content creation with revenue sharing
 
 **Key Features**:
+
 - Collaboration types (content_creation, research_project, course_development, etc.)
 - Revenue sharing models (equal, weighted, lead_majority, custom)
 - Project management and timeline tracking
@@ -257,6 +340,7 @@ This database currently supports the foundational platform with core user manage
 - Network impact measurement
 
 **Example Row**:
+
 ```json
 {
   "id": "dd0e8400-e29b-41d4-a716-446655440008",
@@ -271,6 +355,7 @@ This database currently supports the foundational platform with core user manage
 ```
 
 ### `theological_concepts` ⏳ **PLANNED**
+
 **Purpose**: Knowledge graph for AI cross-referencing
 
 ---
@@ -278,12 +363,14 @@ This database currently supports the foundational platform with core user manage
 ## AI Conversation System ⏳ **PLANNED**
 
 > **Note**: The AI conversation system is planned but not yet deployed. The following tables will be implemented in future migrations:
+>
 > - `ai_conversations` - AI chat sessions with context and quality tracking
 > - `ai_messages` - Individual messages with content references and feedback
 > - `ai_content_jobs` - Background AI processing tasks
 > - `ai_cross_reference_suggestions` - AI-generated content connection suggestions
 
 **Planned Features**:
+
 - Conversation type classification
 - Personalization context (APEST, ministry, cultural)
 - Quality metrics and satisfaction ratings
@@ -295,14 +382,17 @@ This database currently supports the foundational platform with core user manage
 ## Learning Progress & Community
 
 ### `communities` ✅ **IMPLEMENTED**
+
 **Purpose**: Discussion groups and networking spaces
 
 **Key Features**:
+
 - Geographic and ministry focus
 - Cultural context support
 - Activity level tracking
 
 **Example Row**:
+
 ```json
 {
   "id": "dd0e8400-e29b-41d4-a716-446655440008",
@@ -316,15 +406,18 @@ This database currently supports the foundational platform with core user manage
 ```
 
 ### `community_memberships` ✅ **IMPLEMENTED**
+
 **Purpose**: User participation in communities
 
 **Key Features**:
+
 - Role-based access (member, moderator, admin, owner)
 - Status tracking (active, inactive, pending, banned, left)
 - Engagement metrics (posts, comments, last active)
 - Notification preferences
 
 **Example Row**:
+
 ```json
 {
   "id": "ee0e8400-e29b-41d4-a716-446655440009",
@@ -339,9 +432,11 @@ This database currently supports the foundational platform with core user manage
 ```
 
 ### `community_posts` ✅ **IMPLEMENTED**
+
 **Purpose**: Community discussions and content sharing
 
 **Key Features**:
+
 - Post types (discussion, question, announcement, resource_share, prayer_request, testimony)
 - Threading and reply management
 - Voting system (upvotes, downvotes)
@@ -349,6 +444,7 @@ This database currently supports the foundational platform with core user manage
 - Media attachments
 
 **Example Row**:
+
 ```json
 {
   "id": "ff0e8400-e29b-41d4-a716-446655440010",
@@ -365,17 +461,21 @@ This database currently supports the foundational platform with core user manage
 ```
 
 ### `community_post_votes` ✅ **IMPLEMENTED**
+
 **Purpose**: User voting on community posts
 
 **Key Features**:
+
 - Upvote/downvote tracking
 - User-post relationship management
 - Vote history and analytics
 
 ### `user_content_interactions` ⏳ **PLANNED**
+
 **Purpose**: Track user engagement and learning progress
 
 **Planned Features**:
+
 - Progress tracking (view, bookmark, complete)
 - Implementation status
 - Time spent and notes
@@ -385,17 +485,19 @@ This database currently supports the foundational platform with core user manage
 ## Subscription & Financial Management
 
 ### `subscription_plans`
+
 **Purpose**: Tiered access plans with feature matrices
 
 **Example Row**:
+
 ```json
 {
   "id": "ee0e8400-e29b-41d4-a716-446655440009",
   "name": "Professional",
   "slug": "professional",
   "plan_type": "individual",
-  "price_monthly": 97.00,
-  "price_annual": 970.00,
+  "price_monthly": 97.0,
+  "price_annual": 970.0,
   "content_access_level": "vip",
   "features": {
     "content_limit": null,
@@ -407,17 +509,21 @@ This database currently supports the foundational platform with core user manage
 ```
 
 ### `user_subscriptions`
+
 **Purpose**: Active subscriptions with network leader attribution
 
 **Key Features**:
+
 - Leader-specific subscriptions (network tier)
 - Usage tracking (AI interactions)
 - Stripe integration
 
 ### `transactions` ✅ **IMPLEMENTED**
+
 **Purpose**: Complete financial history with revenue attribution
 
 **Key Features**:
+
 - Revenue sharing calculations (90/10 split)
 - Network effect attribution
 - Multi-currency support
@@ -425,15 +531,16 @@ This database currently supports the foundational platform with core user manage
 - Payment status tracking
 
 **Example Row**:
+
 ```json
 {
   "id": "gg0e8400-e29b-41d4-a716-446655440011",
   "user_id": "550e8400-e29b-41d4-a716-446655440000",
   "subscription_id": "hh0e8400-e29b-41d4-a716-446655440012",
   "transaction_type": "subscription",
-  "gross_amount": 97.00,
-  "platform_fee": 9.70,
-  "leader_amount": 87.30,
+  "gross_amount": 97.0,
+  "platform_fee": 9.7,
+  "leader_amount": 87.3,
   "currency": "USD",
   "payment_status": "succeeded",
   "attributed_to_network_effect": true,
@@ -442,15 +549,18 @@ This database currently supports the foundational platform with core user manage
 ```
 
 ### `payment_methods` ✅ **IMPLEMENTED**
+
 **Purpose**: Stored payment methods for users
 
 **Key Features**:
+
 - Card, bank account, and PayPal support
 - Masked card details for security
 - Default payment method management
 - Stripe payment method integration
 
 **Example Row**:
+
 ```json
 {
   "id": "ii0e8400-e29b-41d4-a716-446655440013",
@@ -466,9 +576,11 @@ This database currently supports the foundational platform with core user manage
 ```
 
 ### `coupons` ✅ **IMPLEMENTED**
+
 **Purpose**: Discount and promotion management
 
 **Key Features**:
+
 - Percentage and fixed amount discounts
 - Usage limits and restrictions
 - Validity periods
@@ -476,13 +588,14 @@ This database currently supports the foundational platform with core user manage
 - Stripe coupon integration
 
 **Example Row**:
+
 ```json
 {
   "id": "jj0e8400-e29b-41d4-a716-446655440014",
   "code": "LAUNCH2024",
   "name": "Launch Special",
   "discount_type": "percentage",
-  "discount_value": 20.00,
+  "discount_value": 20.0,
   "max_uses": 1000,
   "used_count": 45,
   "valid_from": "2024-01-01T00:00:00Z",
@@ -496,6 +609,7 @@ This database currently supports the foundational platform with core user manage
 ## Analytics & Business Intelligence ⏳ **PLANNED**
 
 > **Note**: The analytics system is planned but not yet deployed. The following tables will be implemented in future migrations:
+>
 > - `user_analytics_events` - Detailed user behavior tracking
 > - `user_content_interactions` - Track user engagement and learning progress
 > - `learning_outcomes` - Measure actual ministry impact and behavior change
@@ -503,6 +617,7 @@ This database currently supports the foundational platform with core user manage
 > - `performance_reports` - Leader dashboard data and network analytics
 
 **Planned Features**:
+
 - Event categorization and network attribution
 - Personalization data and UTM tracking
 - Ministry impact measurement
@@ -514,6 +629,7 @@ This database currently supports the foundational platform with core user manage
 ## Security & Audit Trail ⏳ **PLANNED**
 
 > **Note**: The security and audit system is planned but not yet deployed. The following tables will be implemented in future migrations:
+>
 > - `audit_logs` - Complete activity audit trail
 > - `feature_flags` - Gradual feature rollout and A/B testing
 > - `user_consents` - GDPR compliance and consent management
@@ -521,6 +637,7 @@ This database currently supports the foundational platform with core user manage
 > - `api_keys` - External integrations and API access
 
 **Planned Features**:
+
 - Risk level classification and change tracking
 - Security context and audit trails
 - Gradual feature rollout and A/B testing
@@ -532,6 +649,7 @@ This database currently supports the foundational platform with core user manage
 ## Key Relationships
 
 ### ✅ **IMPLEMENTED RELATIONSHIPS:**
+
 1. **User → Content**: One-to-many (authors create content)
 2. **Content → Categories**: Many-to-many (rich categorization)
 3. **User → Subscriptions**: One-to-many (including leader attribution)
@@ -545,20 +663,25 @@ This database currently supports the foundational platform with core user manage
 11. **User → Payment Methods**: One-to-many (stored payment methods)
 12. **Community → Posts**: One-to-many (community discussions)
 13. **Posts → Votes**: One-to-many (post voting system)
+14. **User → Assessments**: Many-to-many (multiple assessment types)
+15. **Assessment → Questions**: One-to-many (assessment questions)
+16. **User → Assessment Responses**: One-to-many (individual responses)
 
 ### ⏳ **PLANNED RELATIONSHIPS:**
-14. **User → AI Conversations**: One-to-many (personalized interactions)
-15. **User → Assessments**: Many-to-many (multiple assessment types)
-16. **User → Analytics**: One-to-many (behavior tracking and learning progress)
+
+17. **User → AI Conversations**: One-to-many (personalized interactions)
+18. **User → Analytics**: One-to-many (behavior tracking and learning progress)
 
 ## Performance Considerations
 
 ### ✅ **IMPLEMENTED:**
+
 - **Full-Text Search**: Content discovery
 - **Composite Indexes**: Common query patterns
 - **Row Level Security**: Fine-grained access control
 
 ### ⏳ **PLANNED:**
+
 - **Vector Indexes**: AI embeddings for semantic search
 - **Partitioning Ready**: Analytics tables can be partitioned by date
 - **Caching Strategy**: Views for common dashboard queries
@@ -566,10 +689,12 @@ This database currently supports the foundational platform with core user manage
 ## Data Integrity
 
 ### ✅ **IMPLEMENTED:**
+
 - **Foreign Key Constraints**: Referential integrity
 - **Row Level Security**: Fine-grained access control
 
 ### ⏳ **PLANNED:**
+
 - **Check Constraints**: Data validation
 - **Triggers**: Automatic calculations (word count, amplification scores)
 - **Generated Columns**: Assessment totals, computed metrics

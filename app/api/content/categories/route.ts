@@ -7,21 +7,14 @@ import {
 import {
   contentCategorySchema,
   newContentCategorySchema,
-  ContentCategoryRow,
+  paginatedContentCategoryListResponseSchema,
+  contentCategoryResponseSchema,
 } from '@/lib/contracts';
 import { contentCategories } from '@/lib/db/schema';
+import { toContentCategoryResponseDTO } from '@/lib/mappers/content';
+import { hasResults, isDefined } from '@/lib/db/type-guards';
 import { desc, eq, and, like, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
-
-// Mapper function to convert Drizzle row to DTO
-const mapContentCategoryRow = (row: ContentCategoryRow) =>
-  contentCategorySchema.parse(row);
-
-// Response schemas
-const categoryResponseSchema = z.object({
-  data: contentCategorySchema,
-  success: z.boolean(),
-});
 
 // Input schema for category search
 const categorySearchInputSchema = paginationInputSchema.extend({
@@ -44,7 +37,7 @@ const categorySearchInputSchema = paginationInputSchema.extend({
 // GET /api/content/categories - Get content categories
 export const GET = createPaginatedApiRoute(
   categorySearchInputSchema,
-  contentCategorySchema,
+  paginatedContentCategoryListResponseSchema,
   async (input, { user, db }) => {
     const { page, limit, search, theologicalDiscipline, parentId, isActive } =
       input;
@@ -91,9 +84,20 @@ export const GET = createPaginatedApiRoute(
       .from(contentCategories)
       .where(conditions.length > 0 ? and(...conditions) : undefined);
 
+    const mappedCategories = categories.map(toContentCategoryResponseDTO);
+    const total = countResult[0]?.count ?? 0;
+
     return {
-      items: categories.map(mapContentCategoryRow),
-      total: countResult[0]?.count || 0,
+      items: mappedCategories,
+      pagination: {
+        page: page || 1,
+        limit: limit || 20,
+        total,
+        totalPages: Math.ceil(total / (limit || 20)),
+        hasNext: (page || 1) < Math.ceil(total / (limit || 20)),
+        hasPrev: (page || 1) > 1,
+      },
+      success: true,
     };
   }
 );
@@ -101,7 +105,7 @@ export const GET = createPaginatedApiRoute(
 // POST /api/content/categories - Create new content category
 export const POST = createApiRoute(
   newContentCategorySchema,
-  categoryResponseSchema,
+  contentCategoryResponseSchema,
   async (input, { user, db }) => {
     const insertedCategories = await db
       .insert(contentCategories)
@@ -113,15 +117,15 @@ export const POST = createApiRoute(
       .returning();
 
     // Ensure we have a valid category
-    if (!insertedCategories || insertedCategories.length === 0) {
+    if (!hasResults(insertedCategories)) {
       throw new Error('Failed to create content category');
     }
 
     const newCategory = insertedCategories[0];
+    if (!isDefined(newCategory)) {
+      throw new Error('Failed to create content category');
+    }
 
-    return {
-      data: mapContentCategoryRow(newCategory),
-      success: true,
-    };
+    return toContentCategoryResponseDTO(newCategory);
   }
 );

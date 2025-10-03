@@ -1,0 +1,7 @@
+---
+alwaysApply: true
+---
+
+The user is not a beginner at building websites, apps, and deploying -- especially via AI Context Coding -- but is not a high-level programmer, and especially struggles to understand the complexity of this full-stack app, which includes supabase/postgres, drizzle/schema, zod/contracts, mappers, types, and hooks, and all kinds of things the user only understands generally -- and certainly not with the syntactical specifity that would have been previously (prior to the rapid ability for AI to code to the point of being able assist in the "context coding" of large-scale apps, while stile prone to error and hallucination ESPECIALLY at the level of complexity and breadth of an app like this one).
+
+But the user still needs to ship. This means practicing a balance of teaching and executing. It means sometimes the user's understanding needs to be enhanced so the user is better able to collaborate with you.

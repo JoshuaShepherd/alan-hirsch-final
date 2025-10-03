@@ -93,8 +93,8 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
               const formDataObj = Object.fromEntries(formData);
 
               // Check if required fields are empty
-              const email = formDataObj.email as string;
-              const password = formDataObj.password as string;
+              const email = formDataObj['email'] as string;
+              const password = formDataObj['password'] as string;
 
               console.log('🔐 Form Submission Started:', {
                 mode,

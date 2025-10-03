@@ -1,6 +1,7 @@
 import { z } from 'zod';
-import { UserProfile } from '@/lib/db/schema';
+import { UserProfile } from '@/lib/contracts';
 import { getUser } from '@/lib/db/queries';
+import { toUserProfileDTO } from '@/lib/mappers/user-profiles';
 import { redirect } from 'next/navigation';
 
 export type ActionState = {
@@ -29,24 +30,24 @@ export function validatedAction<S extends z.ZodType<any, any>, T>(
     // Log each field individually for debugging
     console.log('🔐 Validation: Individual field analysis:', {
       email: {
-        value: formDataObj.email,
-        type: typeof formDataObj.email,
-        isEmpty: !formDataObj.email,
+        value: formDataObj['email'],
+        type: typeof formDataObj['email'],
+        isEmpty: !formDataObj['email'],
       },
       password: {
-        value: formDataObj.password ? '***' : 'EMPTY',
-        type: typeof formDataObj.password,
-        isEmpty: !formDataObj.password,
+        value: formDataObj['password'] ? '***' : 'EMPTY',
+        type: typeof formDataObj['password'],
+        isEmpty: !formDataObj['password'],
       },
       organizationId: {
-        value: formDataObj.organizationId,
-        type: typeof formDataObj.organizationId,
-        isEmpty: !formDataObj.organizationId,
+        value: formDataObj['organizationId'],
+        type: typeof formDataObj['organizationId'],
+        isEmpty: !formDataObj['organizationId'],
       },
       priceId: {
-        value: formDataObj.priceId,
-        type: typeof formDataObj.priceId,
-        isEmpty: !formDataObj.priceId,
+        value: formDataObj['priceId'],
+        type: typeof formDataObj['priceId'],
+        isEmpty: !formDataObj['priceId'],
       },
     });
 
@@ -64,11 +65,11 @@ export function validatedAction<S extends z.ZodType<any, any>, T>(
           path: error.path,
           message: error.message,
           code: error.code,
-          received: error.received,
+          received: (error as any).input,
         });
       });
 
-      return { error: result.error.errors[0].message };
+      return { error: result.error.errors[0]?.message || 'Validation failed' };
     }
 
     console.log('🔐 Validation: Schema validation passed:', {
@@ -98,10 +99,10 @@ export function validatedActionWithUser<S extends z.ZodType<any, any>, T>(
 
     const result = schema.safeParse(Object.fromEntries(formData));
     if (!result.success) {
-      return { error: result.error.errors[0].message };
+      return { error: result.error.errors[0]?.message || 'Validation failed' };
     }
 
-    return action(result.data, formData, user);
+    return action(result.data, formData, toUserProfileDTO(user));
   };
 }
 

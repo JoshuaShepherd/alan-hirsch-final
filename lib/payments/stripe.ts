@@ -7,7 +7,12 @@ import {
   updateTeamSubscription,
 } from '@/lib/db/queries';
 
-export const stripe = new Stripe(process.env['STRIPE_SECRET_KEY']!, {
+const stripeSecretKey = process.env['STRIPE_SECRET_KEY'];
+if (!stripeSecretKey) {
+  throw new Error('STRIPE_SECRET_KEY environment variable is required');
+}
+
+export const stripe = new Stripe(stripeSecretKey, {
   apiVersion: '2025-08-27.basil',
 });
 
@@ -43,7 +48,10 @@ export async function createCheckoutSession({
     },
   });
 
-  redirect(session.url!);
+  if (!session.url) {
+    throw new Error('Failed to create checkout session URL');
+  }
+  redirect(session.url);
 }
 
 export async function createCustomerPortalSession(
@@ -137,17 +145,30 @@ export async function handleSubscriptionChange(
   if (status === 'active' || status === 'trialing') {
     const plan = subscription.items.data[0]?.price;
     if (plan?.product) {
-      await updateTeamSubscription(team.id, {
-        stripeSubscriptionId: subscriptionId,
-        stripeProductId:
-          typeof plan.product === 'string' ? plan.product : plan.product.id,
-        planName:
-          typeof plan.product === 'string' ? 'Unknown' : plan.product.name,
-        subscriptionStatus: status,
-      });
+      const productId =
+        typeof plan.product === 'string'
+          ? plan.product
+          : 'deleted' in plan.product
+            ? null
+            : (plan.product as any).id;
+      const productName =
+        typeof plan.product === 'string'
+          ? 'Unknown'
+          : 'deleted' in plan.product
+            ? 'Deleted Product'
+            : (plan.product as any).name;
+
+      if (productId) {
+        await updateTeamSubscription((team as any).id, {
+          stripeSubscriptionId: subscriptionId,
+          stripeProductId: productId,
+          planName: productName,
+          subscriptionStatus: status,
+        });
+      }
     }
   } else if (status === 'canceled' || status === 'unpaid') {
-    await updateTeamSubscription(team.id, {
+    await updateTeamSubscription((team as any).id, {
       stripeSubscriptionId: null,
       stripeProductId: null,
       planName: null,

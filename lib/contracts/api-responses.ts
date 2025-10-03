@@ -35,8 +35,10 @@ export const paginatedResponseSchema = <T extends z.ZodTypeAny>(
   itemSchema: T
 ) =>
   z.object({
-    items: z.array(itemSchema),
-    pagination: paginationSchema,
+    items: z.object({
+      data: z.array(itemSchema),
+      pagination: paginationSchema,
+    }),
     success: z.boolean(),
     message: z.string().optional(),
   });
@@ -93,7 +95,7 @@ export const organizationMembershipListResponseSchema = paginatedResponseSchema(
 );
 
 // Assessment Responses
-export const assessmentResponseSchema = apiResponseSchema(assessmentSchema);
+export const assessmentApiResponseSchema = apiResponseSchema(assessmentSchema);
 export const assessmentListResponseSchema =
   paginatedResponseSchema(assessmentSchema);
 
@@ -210,7 +212,7 @@ export type OrganizationMembershipListResponse = z.infer<
   typeof organizationMembershipListResponseSchema
 >;
 
-export type AssessmentResponse = z.infer<typeof assessmentResponseSchema>;
+export type AssessmentApiResponse = z.infer<typeof assessmentApiResponseSchema>;
 export type AssessmentListResponse = z.infer<
   typeof assessmentListResponseSchema
 >;

@@ -1,86 +1,88 @@
-import { db } from '@/lib/db/drizzle'
-import { userProfiles, organizations, assessments, contentItems } from '@/lib/db/schema'
-import { eq, and } from 'drizzle-orm'
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import {
+  userProfiles,
+  organizations,
+  assessments,
+  contentItems,
+} from '@/lib/db/schema';
+import { eq, and } from 'drizzle-orm';
+import { createMockDatabase, testDataFactories } from '@/lib/mocks';
 
-// Mock the database for testing
-const mockDb = {
-  select: jest.fn().mockReturnThis(),
-  from: jest.fn().mockReturnThis(),
-  where: jest.fn().mockReturnThis(),
-  limit: jest.fn().mockReturnThis(),
-  insert: jest.fn().mockReturnThis(),
-  values: jest.fn().mockReturnThis(),
-  returning: jest.fn().mockReturnThis(),
-  update: jest.fn().mockReturnThis(),
-  set: jest.fn().mockReturnThis(),
-  leftJoin: jest.fn().mockReturnThis(),
-  orderBy: jest.fn().mockReturnThis(),
-} as any
+// Create a mock database with proper chaining
+const mockDb = createMockDatabase();
 
-jest.mock('@/lib/db/drizzle', () => ({
-  db: mockDb
-}))
+vi.mock('@/lib/db/drizzle', () => ({
+  db: mockDb,
+}));
 
 // Integration tests for database operations
 describe('Database Integration Tests', () => {
-  const testUserId = 'test-user-id'
-  const testEmail = 'integration@example.com'
+  const testUserId = 'test-user-id';
+  const testEmail = 'integration@example.com';
 
   beforeEach(() => {
-    jest.clearAllMocks()
-  })
+    vi.clearAllMocks();
+  });
 
   describe('User Profiles', () => {
     it('should create and retrieve user profile', async () => {
-      const profileData = {
+      // Use contract-compliant test data
+      const profileData = testDataFactories.userProfileResponse({
         id: testUserId,
         email: testEmail,
         firstName: 'Integration',
         lastName: 'Test',
-        ministryRole: 'senior_pastor' as const,
+        ministryRole: 'senior_pastor',
         denomination: 'Baptist',
-        churchSize: 'medium' as const,
-        experience: 5,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        lastActiveAt: new Date()
-      }
+        yearsInMinistry: 5,
+      });
 
-      const mockCreatedProfile = { ...profileData }
+      // Mock the insert chain to return the profile data
+      mockDb.insert.mockImplementationOnce(() => ({
+        values: vi.fn().mockReturnValue({
+          returning: vi.fn().mockResolvedValue([profileData]),
+        }),
+      }));
 
-      mockDb.insert.mockResolvedValueOnce([mockCreatedProfile] as any)
-      mockDb.select.mockResolvedValueOnce([mockCreatedProfile] as any)
+      // Mock the select chain to return the profile data
+      mockDb.select.mockImplementationOnce(() => ({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue([profileData]),
+          }),
+        }),
+      }));
 
       // Test creating a user profile
       const createdProfiles = await mockDb
         .insert(userProfiles)
         .values(profileData)
-        .returning()
+        .returning();
 
-      const createdProfile = createdProfiles[0]
-      expect(createdProfile).toBeDefined()
-      expect(createdProfile?.firstName).toBe('Integration')
-      expect(createdProfile?.lastName).toBe('Test')
+      const createdProfile = createdProfiles[0];
+      expect(createdProfile).toBeDefined();
+      expect(createdProfile?.firstName).toBe('Integration');
+      expect(createdProfile?.lastName).toBe('Test');
 
       // Test retrieving the profile
       const retrievedProfiles = await mockDb
         .select()
         .from(userProfiles)
         .where(eq(userProfiles.id, testUserId))
-        .limit(1)
+        .limit(1);
 
-      const retrievedProfile = retrievedProfiles[0]
-      expect(retrievedProfile).toBeDefined()
-      expect(retrievedProfile?.firstName).toBe('Integration')
-    })
+      const retrievedProfile = retrievedProfiles[0];
+      expect(retrievedProfile).toBeDefined();
+      expect(retrievedProfile?.firstName).toBe('Integration');
+    });
 
     it('should update user profile', async () => {
       const updateData = {
         firstName: 'Updated',
         lastName: 'Name',
         experience: 10,
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      };
 
       const updatedProfile = {
         id: testUserId,
@@ -88,23 +90,30 @@ describe('Database Integration Tests', () => {
         ...updateData,
         ministryRole: 'senior_pastor' as const,
         createdAt: new Date(),
-        lastActiveAt: new Date()
-      }
+        lastActiveAt: new Date(),
+      };
 
-      mockDb.update.mockResolvedValueOnce([updatedProfile] as any)
+      // Mock the update chain
+      mockDb.update.mockReturnValueOnce({
+        set: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            returning: vi.fn().mockResolvedValue([updatedProfile]),
+          }),
+        }),
+      });
 
       const results = await mockDb
         .update(userProfiles)
         .set(updateData)
         .where(eq(userProfiles.id, testUserId))
-        .returning()
-      
-      const result = results[0]
+        .returning();
 
-      expect(result?.firstName).toBe('Updated')
-      expect(result?.lastName).toBe('Name')
-    })
-  })
+      const result = results[0];
+
+      expect(result?.firstName).toBe('Updated');
+      expect(result?.lastName).toBe('Name');
+    });
+  });
 
   describe('Organizations', () => {
     it('should create and manage organization', async () => {
@@ -114,35 +123,52 @@ describe('Database Integration Tests', () => {
         website: 'https://testchurch.com',
         isPublic: true,
         createdAt: new Date(),
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      };
 
-      const mockCreatedOrg = { id: 'org-id', ...orgData }
+      const mockCreatedOrg = { id: 'org-id', ...orgData };
 
-      mockDb.insert.mockResolvedValueOnce([mockCreatedOrg] as any)
-      mockDb.select.mockResolvedValueOnce([mockCreatedOrg] as any)
+      // Mock the insert chain
+      mockDb.insert.mockReturnValueOnce({
+        values: vi.fn().mockReturnValue({
+          returning: vi.fn().mockResolvedValue([mockCreatedOrg]),
+        }),
+      });
+
+      // Mock the select chain
+      mockDb.select.mockReturnValueOnce({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue([mockCreatedOrg]),
+          }),
+        }),
+      });
 
       const createdOrgs = await mockDb
         .insert(organizations)
-        .values({ ...orgData, slug: 'test-church', organizationType: 'church' as const })
-        .returning()
-      
-      const createdOrg = createdOrgs[0]
+        .values({
+          ...orgData,
+          slug: 'test-church',
+          organizationType: 'church' as const,
+        })
+        .returning();
 
-      expect(createdOrg).toBeDefined()
-      expect(createdOrg?.name).toBe('Test Church')
+      const createdOrg = createdOrgs[0];
+
+      expect(createdOrg).toBeDefined();
+      expect(createdOrg?.name).toBe('Test Church');
 
       // Test retrieving organization
       const retrievedOrgs = await mockDb
         .select()
         .from(organizations)
         .where(eq(organizations.id, createdOrg.id))
-        .limit(1)
+        .limit(1);
 
-      const retrievedOrg = retrievedOrgs[0]
-      expect(retrievedOrg?.name).toBe('Test Church')
-    })
-  })
+      const retrievedOrg = retrievedOrgs[0];
+      expect(retrievedOrg?.name).toBe('Test Church');
+    });
+  });
 
   describe('Assessments', () => {
     it('should create and query assessments', async () => {
@@ -159,33 +185,44 @@ describe('Database Integration Tests', () => {
         researchBacked: true,
         questionsCount: 10,
         createdAt: new Date(),
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      };
 
-      const mockCreatedAssessment = { id: 'assessment-id', ...assessmentData }
-      const mockAssessmentList = [mockCreatedAssessment]
+      const mockCreatedAssessment = { id: 'assessment-id', ...assessmentData };
+      const mockAssessmentList = [mockCreatedAssessment];
 
-      mockDb.insert.mockResolvedValueOnce([mockCreatedAssessment] as any)
-      mockDb.select.mockResolvedValueOnce(mockAssessmentList as any)
+      // Mock the insert chain
+      mockDb.insert.mockReturnValueOnce({
+        values: vi.fn().mockReturnValue({
+          returning: vi.fn().mockResolvedValue([mockCreatedAssessment]),
+        }),
+      });
+
+      // Mock the select chain
+      mockDb.select.mockReturnValueOnce({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockResolvedValue(mockAssessmentList),
+        }),
+      });
 
       const [createdAssessment] = await mockDb
         .insert(assessments)
         .values(assessmentData)
-        .returning()
+        .returning();
 
-      expect(createdAssessment).toBeDefined()
-      expect(createdAssessment.name).toBe('Integration Test Assessment')
+      expect(createdAssessment).toBeDefined();
+      expect(createdAssessment.name).toBe('Integration Test Assessment');
 
       // Test querying assessments by type
       const assessmentList = await mockDb
         .select()
         .from(assessments)
-        .where(eq(assessments.assessmentType, 'leadership_style'))
+        .where(eq(assessments.assessmentType, 'leadership_style'));
 
-      expect(assessmentList.length).toBeGreaterThan(0)
-      expect(assessmentList[0].assessmentType).toBe('leadership_style')
-    })
-  })
+      expect(assessmentList.length).toBeGreaterThan(0);
+      expect(assessmentList[0].assessmentType).toBe('leadership_style');
+    });
+  });
 
   describe('Content Items', () => {
     it('should create and query content items', async () => {
@@ -203,32 +240,43 @@ describe('Database Integration Tests', () => {
         estimatedReadingTime: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
-        publishedAt: new Date()
-      }
+        publishedAt: new Date(),
+      };
 
-      const mockCreatedContent = { id: 'content-id', ...contentData }
-      const mockUserContent = [mockCreatedContent]
+      const mockCreatedContent = { id: 'content-id', ...contentData };
+      const mockUserContent = [mockCreatedContent];
 
-      mockDb.insert.mockResolvedValueOnce([mockCreatedContent] as any)
-      mockDb.select.mockResolvedValueOnce(mockUserContent as any)
+      // Mock the insert chain
+      mockDb.insert.mockReturnValueOnce({
+        values: vi.fn().mockReturnValue({
+          returning: vi.fn().mockResolvedValue([mockCreatedContent]),
+        }),
+      });
+
+      // Mock the select chain
+      mockDb.select.mockReturnValueOnce({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockResolvedValue(mockUserContent),
+        }),
+      });
 
       const [createdContent] = await mockDb
         .insert(contentItems)
         .values(contentData)
-        .returning()
+        .returning();
 
-      expect(createdContent).toBeDefined()
-      expect(createdContent.title).toBe('Integration Test Content')
+      expect(createdContent).toBeDefined();
+      expect(createdContent.title).toBe('Integration Test Content');
 
       // Test querying content by author
       const userContent = await mockDb
         .select()
         .from(contentItems)
-        .where(eq(contentItems.authorId, testUserId))
+        .where(eq(contentItems.authorId, testUserId));
 
-      expect(userContent.length).toBeGreaterThan(0)
-      expect(userContent[0].authorId).toBe(testUserId)
-    })
+      expect(userContent.length).toBeGreaterThan(0);
+      expect(userContent[0].authorId).toBe(testUserId);
+    });
 
     it('should query content with joins', async () => {
       const mockContentWithAuthor = [
@@ -237,11 +285,20 @@ describe('Database Integration Tests', () => {
           title: 'Test Content',
           authorId: testUserId,
           authorName: 'John',
-          authorLastName: 'Doe'
-        }
-      ]
+          authorLastName: 'Doe',
+        },
+      ];
 
-      mockDb.select.mockResolvedValueOnce(mockContentWithAuthor as any)
+      // Mock the select chain with joins
+      mockDb.select.mockReturnValueOnce({
+        from: vi.fn().mockReturnValue({
+          leftJoin: vi.fn().mockReturnValue({
+            where: vi.fn().mockReturnValue({
+              limit: vi.fn().mockResolvedValue(mockContentWithAuthor),
+            }),
+          }),
+        }),
+      });
 
       // Test complex query with joins
       const contentWithAuthor = await mockDb
@@ -250,53 +307,68 @@ describe('Database Integration Tests', () => {
           title: contentItems.title,
           authorId: contentItems.authorId,
           authorName: userProfiles.firstName,
-          authorLastName: userProfiles.lastName
+          authorLastName: userProfiles.lastName,
         })
         .from(contentItems)
         .leftJoin(userProfiles, eq(contentItems.authorId, userProfiles.id))
         .where(eq(contentItems.authorId, testUserId))
-        .limit(1)
+        .limit(1);
 
       if (contentWithAuthor.length > 0) {
-        expect(contentWithAuthor[0].authorId).toBe(testUserId)
-        expect(contentWithAuthor[0].authorName).toBeDefined()
+        expect(contentWithAuthor[0].authorId).toBe(testUserId);
+        expect(contentWithAuthor[0].authorName).toBeDefined();
       }
-    })
-  })
+    });
+  });
 
   describe('Complex Queries', () => {
     it('should handle pagination queries', async () => {
       const mockPaginatedContent = [
         { id: '1', title: 'Content 1' },
-        { id: '2', title: 'Content 2' }
-      ]
+        { id: '2', title: 'Content 2' },
+      ];
 
-      mockDb.select.mockResolvedValueOnce(mockPaginatedContent as any)
+      // Mock the select chain with pagination
+      mockDb.select.mockReturnValueOnce({
+        from: vi.fn().mockReturnValue({
+          orderBy: vi.fn().mockReturnValue({
+            limit: vi.fn().mockReturnValue({
+              offset: vi.fn().mockResolvedValue(mockPaginatedContent),
+            }),
+          }),
+        }),
+      });
 
-      const page = 1
-      const limit = 5
-      const offset = (page - 1) * limit
+      const page = 1;
+      const limit = 5;
+      const offset = (page - 1) * limit;
 
       const paginatedContent = await mockDb
         .select()
         .from(contentItems)
         .orderBy(contentItems.createdAt)
         .limit(limit)
-        .offset(offset)
+        .offset(offset);
 
-      expect(paginatedContent.length).toBeLessThanOrEqual(limit)
-    })
+      expect(paginatedContent.length).toBeLessThanOrEqual(limit);
+    });
 
     it('should handle search queries', async () => {
       const mockSearchResults = [
-        { id: '1', title: 'Test Article', status: 'published' }
-      ]
+        { id: '1', title: 'Test Article', status: 'published' },
+      ];
 
-      mockDb.select.mockResolvedValueOnce(mockSearchResults as any)
+      // Mock the select chain with search
+      mockDb.select.mockReturnValueOnce({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue(mockSearchResults),
+          }),
+        }),
+      });
 
       // This would test LIKE queries and full-text search
-      const searchTerm = 'test'
-      
+
       const searchResults = await mockDb
         .select()
         .from(contentItems)
@@ -307,11 +379,11 @@ describe('Database Integration Tests', () => {
             // This is a simplified version for testing
           )
         )
-        .limit(10)
+        .limit(10);
 
-      expect(Array.isArray(searchResults)).toBe(true)
-    })
-  })
+      expect(Array.isArray(searchResults)).toBe(true);
+    });
+  });
 
   describe('Data Integrity', () => {
     it('should enforce foreign key constraints', async () => {
@@ -325,17 +397,21 @@ describe('Database Integration Tests', () => {
         status: 'published' as const,
         visibility: 'public' as const,
         createdAt: new Date(),
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      };
 
-      // Mock the database to throw an error for invalid foreign key
-      mockDb.insert.mockRejectedValueOnce(new Error('Foreign key constraint violation') as any)
+      // Mock the insert chain to throw an error for invalid foreign key
+      mockDb.insert.mockReturnValueOnce({
+        values: vi
+          .fn()
+          .mockRejectedValue(new Error('Foreign key constraint violation')),
+      });
 
       // This should throw an error due to foreign key constraint
       await expect(
         mockDb.insert(contentItems).values(invalidContentData)
-      ).rejects.toThrow('Foreign key constraint violation')
-    })
+      ).rejects.toThrow('Foreign key constraint violation');
+    });
 
     it('should handle unique constraints', async () => {
       const duplicateProfileData = {
@@ -346,16 +422,20 @@ describe('Database Integration Tests', () => {
         ministryRole: 'senior_pastor' as const,
         createdAt: new Date(),
         updatedAt: new Date(),
-        lastActiveAt: new Date()
-      }
+        lastActiveAt: new Date(),
+      };
 
-      // Mock the database to throw an error for unique constraint violation
-      mockDb.insert.mockRejectedValueOnce(new Error('Unique constraint violation') as any)
+      // Mock the insert chain to throw an error for unique constraint violation
+      mockDb.insert.mockReturnValueOnce({
+        values: vi
+          .fn()
+          .mockRejectedValue(new Error('Unique constraint violation')),
+      });
 
       // This should fail due to unique constraint on id
       await expect(
         mockDb.insert(userProfiles).values(duplicateProfileData)
-      ).rejects.toThrow('Unique constraint violation')
-    })
-  })
-})
+      ).rejects.toThrow('Unique constraint violation');
+    });
+  });
+});

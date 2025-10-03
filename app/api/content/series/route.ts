@@ -1,22 +1,22 @@
 import {
   createPaginatedApiRoute,
   paginationInputSchema,
+  createApiRoute,
 } from '@/lib/api/utils';
 import {
   contentSeriesSchema,
   newContentSeriesSchema,
-  ContentSeriesRow,
+  paginatedContentSeriesListResponseSchema,
+  contentSeriesResponseSchema,
 } from '@/lib/contracts';
 import {
   contentSeries,
   userProfiles,
   contentCategories,
 } from '@/lib/db/schema';
+import { toContentSeriesWithDetailsDTO } from '@/lib/mappers/content';
 import { desc, eq, and, like, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
-
-// Mapper function to convert Drizzle row to DTO
-const mapContentSeriesRow = (row: any) => contentSeriesSchema.parse(row);
 
 // Input schema for series search
 const seriesSearchInputSchema = paginationInputSchema.extend({
@@ -47,24 +47,7 @@ const seriesSearchInputSchema = paginationInputSchema.extend({
 // GET /api/content/series - Get content series
 export const GET = createPaginatedApiRoute(
   seriesSearchInputSchema,
-  contentSeriesSchema.extend({
-    author: z
-      .object({
-        id: z.string(),
-        firstName: z.string(),
-        lastName: z.string(),
-        displayName: z.string().optional(),
-        avatarUrl: z.string().optional(),
-      })
-      .optional(),
-    category: z
-      .object({
-        id: z.string(),
-        name: z.string(),
-        slug: z.string(),
-      })
-      .optional(),
-  }),
+  paginatedContentSeriesListResponseSchema,
   async (input, { user, db }) => {
     const {
       page,
@@ -166,17 +149,105 @@ export const GET = createPaginatedApiRoute(
       .from(contentSeries)
       .where(conditions.length > 0 ? and(...conditions) : undefined);
 
+    const mappedSeries = series.map(seriesItem =>
+      toContentSeriesWithDetailsDTO(
+        seriesItem,
+        seriesItem.author
+          ? {
+              id: seriesItem.author.id,
+              firstName: seriesItem.author.firstName,
+              lastName: seriesItem.author.lastName,
+              displayName: seriesItem.author.displayName,
+              avatarUrl: seriesItem.author.avatarUrl,
+              ministryRole: 'other' as const,
+              email: '',
+              bio: null,
+              denomination: null,
+              organizationName: null,
+              yearsInMinistry: null,
+              countryCode: null,
+              timezone: null,
+              languagePrimary: 'en',
+              culturalContext: null,
+              assessmentMovementAlignment: null,
+              assessmentAudienceEngagement: null,
+              assessmentContentReadiness: null,
+              assessmentRevenuePotential: null,
+              assessmentNetworkEffects: null,
+              assessmentStrategicFit: null,
+              assessmentTotal: null,
+              leaderTier: null,
+              subdomain: null,
+              customDomain: null,
+              platformTitle: null,
+              subscriptionTier: 'free' as const,
+              theologicalFocus: [],
+              brandColors: {
+                primary: '#2563eb',
+                secondary: '#64748b',
+                accent: '#059669',
+              },
+              emailNotifications: {
+                dailyDigest: true,
+                collaborationRequests: true,
+                revenueReports: true,
+                communityUpdates: true,
+              },
+              privacySettings: {
+                publicProfile: true,
+                showAssessmentResults: false,
+                allowNetworking: true,
+                shareAnalytics: false,
+              },
+              onboardingCompleted: false,
+              onboardingStep: 1,
+              accountStatus: 'active' as const,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              lastActiveAt: new Date(),
+            }
+          : undefined,
+        seriesItem.category
+          ? {
+              id: seriesItem.category.id,
+              name: seriesItem.category.name,
+              slug: seriesItem.category.slug,
+              description: '',
+              isActive: true,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              orderIndex: 0,
+              metaDescription: '',
+              parentId: '',
+              theologicalDiscipline: 'systematic' as const,
+              keywords: [],
+              hasChildren: false,
+            }
+          : undefined
+      )
+    );
+    const total = countResult[0]?.count || 0;
+
+    // Create standardized response
     return {
-      items: series.map(mapContentSeriesRow),
-      total: countResult[0]?.count || 0,
+      items: mappedSeries,
+      pagination: {
+        page: page || 1,
+        limit: limit || 20,
+        total,
+        totalPages: Math.ceil(total / (limit || 20)),
+        hasNext: (page || 1) < Math.ceil(total / (limit || 20)),
+        hasPrev: (page || 1) > 1,
+      },
+      success: true,
     };
   }
 );
 
 // POST /api/content/series - Create new content series
-export const POST = createPaginatedApiRoute(
+export const POST = createApiRoute(
   newContentSeriesSchema,
-  contentSeriesSchema,
+  contentSeriesResponseSchema,
   async (input, { user, db }) => {
     const insertedSeries = await db
       .insert(contentSeries)
@@ -195,9 +266,19 @@ export const POST = createPaginatedApiRoute(
 
     const newSeries = insertedSeries[0];
 
-    return {
-      items: [mapContentSeriesRow(newSeries)],
-      total: 1,
-    };
+    // Get the author profile for the response
+    const authorProfile = await db
+      .select()
+      .from(userProfiles)
+      .where(eq(userProfiles.id, user.id))
+      .limit(1);
+
+    const mappedSeries = toContentSeriesWithDetailsDTO(
+      newSeries,
+      authorProfile[0],
+      undefined // No category for now
+    );
+
+    return mappedSeries;
   }
 );

@@ -45,10 +45,26 @@ export default defineConfig({
     },
     testTimeout: 10000,
     hookTimeout: 10000,
+    // Ensure proper module resolution for tests
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
   },
   resolve: {
     alias: {
       '@': resolve(__dirname, './'),
+      '@/lib': resolve(__dirname, './lib'),
+      '@/components': resolve(__dirname, './components'),
+      '@/app': resolve(__dirname, './app'),
+      '@/types': resolve(__dirname, './types'),
+      '@/validations': resolve(__dirname, './validations'),
     },
+  },
+  // Ensure proper handling of ES modules and CommonJS
+  esbuild: {
+    target: 'node14',
   },
 });

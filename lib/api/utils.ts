@@ -171,12 +171,12 @@ export function createApiRouteInputOnly<TInput>(
 }
 
 // Create paginated API route
-export function createPaginatedApiRoute<TInput, TOutput>(
+export function createPaginatedApiRoute<TInput, TItemOutput, TResponseOutput>(
   inputSchema: ZodSchema<TInput>,
-  outputSchema: ZodSchema<TOutput>,
+  outputSchema: ZodSchema<TResponseOutput>,
   handler: ApiHandler<
     TInput,
-    { items: TOutput[]; pagination: any; success: boolean }
+    { items: TItemOutput[]; pagination: any; success: boolean }
   >
 ) {
   return async (request: NextRequest) => {
@@ -249,14 +249,16 @@ export const createResponseSchema = <T>(dataSchema: ZodSchema<T>) =>
 
 export const createPaginatedResponseSchema = <T>(itemSchema: ZodSchema<T>) =>
   z.object({
-    items: z.array(itemSchema),
-    pagination: z.object({
-      page: z.number(),
-      limit: z.number(),
-      total: z.number(),
-      totalPages: z.number(),
-      hasNext: z.boolean(),
-      hasPrev: z.boolean(),
+    items: z.object({
+      data: z.array(itemSchema),
+      pagination: z.object({
+        page: z.number(),
+        limit: z.number(),
+        total: z.number(),
+        totalPages: z.number(),
+        hasNext: z.boolean(),
+        hasPrev: z.boolean(),
+      }),
     }),
     success: z.boolean(),
     error: z.string().optional(),

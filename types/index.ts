@@ -2,7 +2,6 @@
 // This file provides centralized type definitions and utilities
 
 import { z } from 'zod';
-import type { UserProfile, Organization, OrganizationMembership } from '@/lib/contracts';
 
 // ============================================================================
 // API Response Types
@@ -25,7 +24,7 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
   };
 }
 
-export interface ValidationError {
+export interface ValidationErrorDetail {
   field: string;
   message: string;
   code: string;
@@ -42,8 +41,8 @@ export interface AuthUser {
 }
 
 export interface SessionUser extends AuthUser {
-  profile?: UserProfile;
-  organizations?: Organization[];
+  profile?: import('@/lib/contracts').UserProfile;
+  organizations?: import('@/lib/contracts').Organization[];
 }
 
 // ============================================================================
@@ -91,126 +90,46 @@ export interface FilterOptions {
 }
 
 // ============================================================================
-// Content Types
+// Content Types (Re-exported from contracts)
 // ============================================================================
 
-export interface ContentItem {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt?: string;
-  content: string;
-  status: 'draft' | 'published' | 'archived';
-  visibility: 'public' | 'private' | 'members_only';
-  authorId: string;
-  publishedAt?: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface ContentWithAuthor extends ContentItem {
-  author: {
-    id: string;
-    displayName: string;
-    avatarUrl?: string;
-  };
-}
+// Re-export content types from contracts
+export type {
+  ContentItemResponse,
+  ContentCategoryResponse,
+  ContentSeriesResponse,
+  PaginatedContentItemListResponse,
+  PaginatedContentCategoryListResponse,
+  PaginatedContentSeriesListResponse,
+} from '@/lib/contracts';
 
 // ============================================================================
-// Assessment Types
+// Assessment Types (Re-exported from contracts)
 // ============================================================================
 
-export interface Assessment {
-  id: string;
-  name: string;
-  description?: string;
-  assessmentType: 'apest' | 'leadership' | 'spiritual_gifts';
-  status: 'active' | 'inactive' | 'draft';
-  estimatedDuration: number; // in minutes
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface AssessmentQuestion {
-  id: string;
-  assessmentId: string;
-  questionText: string;
-  questionType: 'multiple_choice' | 'scale' | 'text';
-  options?: string[];
-  order: number;
-  required: boolean;
-}
-
-export interface UserAssessment {
-  id: string;
-  userId: string;
-  assessmentId: string;
-  status: 'not_started' | 'in_progress' | 'completed';
-  startedAt?: Date;
-  completedAt?: Date;
-  score?: number;
-  responses?: AssessmentResponse[];
-}
-
-export interface AssessmentResponse {
-  id: string;
-  userAssessmentId: string;
-  questionId: string;
-  responseValue: string | number;
-  createdAt: Date;
-}
+// Re-export assessment types from contracts
+export type {
+  AssessmentResponse as AssessmentResponseDTO,
+  AssessmentQuestionResponse,
+  UserAssessmentResponse,
+  AssessmentResponseResponse,
+  AssessmentWithQuestionsResponse,
+  UserAssessmentWithDetailsResponse,
+  PaginatedAssessmentListResponse,
+  PaginatedUserAssessmentListResponse,
+} from '@/lib/contracts';
 
 // ============================================================================
-// Subscription & Payment Types
+// Subscription & Payment Types (Re-exported from contracts)
 // ============================================================================
 
-export interface SubscriptionPlan {
-  id: string;
-  name: string;
-  description?: string;
-  price: number; // in cents
-  currency: string;
-  interval: 'month' | 'year';
-  features: string[];
-  isActive: boolean;
-  sortOrder: number;
-}
-
-export interface UserSubscription {
-  id: string;
-  userId: string;
-  planId: string;
-  status: 'active' | 'inactive' | 'canceled' | 'past_due';
-  currentPeriodStart: Date;
-  currentPeriodEnd: Date;
-  cancelAtPeriodEnd: boolean;
-  stripeSubscriptionId?: string;
-}
+// These types are now re-exported from contracts to avoid duplication
 
 // ============================================================================
-// Community Types
+// Community Types (Re-exported from contracts)
 // ============================================================================
 
-export interface Community {
-  id: string;
-  name: string;
-  description?: string;
-  visibility: 'public' | 'private' | 'invite_only';
-  isActive: boolean;
-  createdBy: string;
-  currentMemberCount: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface CommunityMembership {
-  id: string;
-  userId: string;
-  communityId: string;
-  role: 'admin' | 'moderator' | 'member';
-  status: 'active' | 'inactive' | 'pending';
-  joinedAt: Date;
-}
+// These types are now re-exported from contracts to avoid duplication
 
 // ============================================================================
 // Analytics Types
@@ -260,7 +179,9 @@ export function isApiResponse<T>(value: unknown): value is ApiResponse<T> {
   );
 }
 
-export function isPaginatedResponse<T>(value: unknown): value is PaginatedResponse<T> {
+export function isPaginatedResponse<T>(
+  value: unknown
+): value is PaginatedResponse<T> {
   return (
     isApiResponse<T[]>(value) &&
     'pagination' in value &&
@@ -268,14 +189,16 @@ export function isPaginatedResponse<T>(value: unknown): value is PaginatedRespon
   );
 }
 
-export function isValidationError(value: unknown): value is ValidationError {
+export function isValidationError(
+  value: unknown
+): value is ValidationErrorDetail {
   return (
     typeof value === 'object' &&
     value !== null &&
     'field' in value &&
     'message' in value &&
-    typeof (value as ValidationError).field === 'string' &&
-    typeof (value as ValidationError).message === 'string'
+    typeof (value as ValidationErrorDetail).field === 'string' &&
+    typeof (value as ValidationErrorDetail).message === 'string'
   );
 }
 
@@ -345,8 +268,8 @@ export class AppError extends Error {
 }
 
 export class ValidationError extends AppError {
-  public readonly code: string = 'VALIDATION_ERROR';
-  
+  public override readonly code: string = 'VALIDATION_ERROR';
+
   constructor(message: string, details?: unknown) {
     super(message, 'VALIDATION_ERROR', 400, details);
   }
@@ -354,7 +277,9 @@ export class ValidationError extends AppError {
 
 export class NotFoundError extends AppError {
   constructor(resource: string, id?: string) {
-    const message = id ? `${resource} with ID ${id} not found` : `${resource} not found`;
+    const message = id
+      ? `${resource} with ID ${id} not found`
+      : `${resource} not found`;
     super(message, 'NOT_FOUND', 404);
   }
 }
@@ -372,11 +297,117 @@ export class ForbiddenError extends AppError {
 }
 
 // ============================================================================
-// Export all types
+// Export all types from contracts
 // ============================================================================
 
+// Re-export all contract types to maintain backward compatibility
 export type {
+  // Auth & User Management
   UserProfile,
+  NewUserProfile,
   Organization,
+  NewOrganization,
   OrganizationMembership,
+  NewOrganizationMembership,
+
+  // Assessment System
+  Assessment,
+  NewAssessment,
+  AssessmentQuestion,
+  NewAssessmentQuestion,
+  UserAssessment,
+  NewUserAssessment,
+  AssessmentResponse,
+  NewAssessmentResponse,
+  AssessmentWithQuestions,
+  StartAssessmentInput,
+  SaveResponsesInput,
+  CompleteAssessmentInput,
+  AssessmentSearch,
+  UserAssessmentFilters,
+
+  // Content Management
+  ContentCategory,
+  NewContentCategory,
+  ContentSeries,
+  NewContentSeries,
+  ContentItem,
+  NewContentItem,
+  SeriesContentItem,
+  NewSeriesContentItem,
+  ContentCrossReference,
+  NewContentCrossReference,
+
+  // AI System
+  AiConversation,
+  NewAiConversation,
+  AiMessage,
+  NewAiMessage,
+  AiContentJob,
+  NewAiContentJob,
+  AiCrossReferenceSuggestion,
+  NewAiCrossReferenceSuggestion,
+  TheologicalConcept,
+  NewTheologicalConcept,
+
+  // Community & Networking
+  Community,
+  NewCommunity,
+  CommunityMembership,
+  NewCommunityMembership,
+  CommunityPost,
+  NewCommunityPost,
+  CommunityPostVote,
+  NewCommunityPostVote,
+  Collaboration,
+  NewCollaboration,
+
+  // Subscriptions & Financial
+  SubscriptionPlan,
+  NewSubscriptionPlan,
+  UserSubscription,
+  NewUserSubscription,
+  Transaction,
+  NewTransaction,
+  PaymentMethod,
+  NewPaymentMethod,
+  Coupon,
+  NewCoupon,
+
+  // Analytics & Tracking
+  UserAnalyticsEvent,
+  NewUserAnalyticsEvent,
+  UserContentInteraction,
+  NewUserContentInteraction,
+  LearningOutcome,
+  NewLearningOutcome,
+  MovementMetric,
+  NewMovementMetric,
+  PerformanceReport,
+  NewPerformanceReport,
+
+  // System & Administration
+  AuditLog,
+  NewAuditLog,
+  FeatureFlag,
+  NewFeatureFlag,
+  UserFeatureFlag,
+  NewUserFeatureFlag,
+  UserConsent,
+  NewUserConsent,
+  SystemNotification,
+  NewSystemNotification,
+  UserNotificationStatus,
+  NewUserNotificationStatus,
+  ApiKey,
+  NewApiKey,
+
+  // Shared Types
+  CulturalContext,
+  Visibility,
+  Attachment,
+  MembershipRole,
+  OrganizationType,
+  SubscriptionStatus,
+  MinistryRole,
 } from '@/lib/contracts';

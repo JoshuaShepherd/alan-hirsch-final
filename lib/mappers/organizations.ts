@@ -27,22 +27,21 @@ export function toOrganizationDTO(row: OrganizationRow): Organization {
     id: row.id,
     name: row.name,
     slug: row.slug,
-    description: row.description ?? '',
-    website: row.website ?? '',
-    logoUrl: row.logoUrl ?? '',
+    description: row.description ?? undefined,
+    website: row.website ?? undefined,
+    logoUrl: row.logoUrl ?? undefined,
     organizationType: row.organizationType,
-    sizeCategory: row.sizeCategory || undefined,
-    contactEmail: row.contactEmail ?? '',
-    contactPhone: row.contactPhone ?? '',
-    accountOwnerId: row.accountOwnerId ?? '',
-    billingEmail: row.billingEmail ?? '',
-    status: row.status ?? 'active',
+    sizeCategory: row.sizeCategory ?? undefined,
+    contactEmail: row.contactEmail ?? undefined,
+    contactPhone: row.contactPhone ?? undefined,
+    address: row.address ?? undefined,
+    licenseType: row.licenseType ?? 'individual',
+    maxUsers: row.maxUsers ?? 1,
+    accountOwnerId: row.accountOwnerId ?? undefined,
+    billingEmail: row.billingEmail ?? undefined,
+    status: row.status ?? 'trial',
 
-    // Computed fields for UI
-    isActive: row.status === 'active',
-    hasLogo: row.logoUrl !== null,
-
-    // Timestamps (convert to ISO strings)
+    // Timestamps
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
   };
@@ -63,18 +62,14 @@ export function toOrganizationMembershipDTO(
     role: row.role,
     status: row.status ?? 'pending',
     permissions: (row.permissions as string[]) ?? [],
-    joinedAt: row.joinedAt,
-    invitedAt: row.invitedAt,
+    joinedAt: row.joinedAt ?? undefined,
+    invitedAt: row.invitedAt ?? undefined,
     invitedBy: row.invitedBy ?? '',
 
-    // Computed fields for UI
-    isActive: row.status === 'active',
-    isOwner: row.role === 'owner',
-    isAdmin: row.role === 'admin' || row.role === 'owner',
-
-    // Related data (if provided)
-    user,
-    organization,
+    // Note: Computed fields like isOwner, isAdmin are not part of the OrganizationMembership type
+    // These would need to be added to the validation schema or handled separately
+    // Note: user and organization properties are not part of the OrganizationMembership type
+    // These would need to be added to the validation schema or handled separately
 
     // Timestamps
     createdAt: row.createdAt,

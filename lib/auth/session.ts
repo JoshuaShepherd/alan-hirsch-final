@@ -1,7 +1,7 @@
 import { compare, hash } from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
-import { UserProfile, NewUserProfile } from '@/lib/db/schema';
+import { UserProfile, NewUserProfile } from '@/lib/contracts';
 
 const key = new TextEncoder().encode(process.env['AUTH_SECRET']);
 const SALT_ROUNDS = 10;

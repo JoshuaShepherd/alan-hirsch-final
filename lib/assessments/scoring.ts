@@ -18,7 +18,13 @@ export const APEST_DIMENSIONS = [
 export type ApestDimension = (typeof APEST_DIMENSIONS)[number];
 
 // APEST scores interface
-export type ApestScores = Record<string, number>;
+export type ApestScores = {
+  apostolic: number;
+  prophetic: number;
+  evangelistic: number;
+  shepherding: number;
+  teaching: number;
+};
 
 // Assessment scoring result
 export interface AssessmentScoreResult {
@@ -52,7 +58,7 @@ export function calculateApestScores(
   const responseMap = new Map(responses.map(r => [r.questionId, r]));
 
   // Calculate scores for each APEST dimension
-  for (const [dimension, _] of Object.entries(scores)) {
+  for (const dimension of APEST_DIMENSIONS) {
     const dimensionQuestions = questions.filter(
       q => q.apestDimension === dimension
     );
@@ -96,9 +102,12 @@ export function determineApestGifts(scores: ApestScores): {
   primaryGift: string;
   secondaryGift: string;
 } {
-  const sortedScores = Object.entries(scores)
-    .sort(([, a], [, b]) => b - a)
-    .map(([dimension]) => dimension);
+  const sortedScores = APEST_DIMENSIONS.map(dimension => ({
+    dimension,
+    score: scores[dimension],
+  }))
+    .sort((a, b) => b.score - a.score)
+    .map(({ dimension }) => dimension);
 
   return {
     primaryGift: sortedScores[0] || 'teaching',
@@ -269,11 +278,12 @@ export function generateApestInsights(
   }
 
   // Balance insights
-  const sortedScores = Object.entries(apestScores).sort(
-    ([, a], [, b]) => b - a
-  );
-  const highestScore = sortedScores[0]?.[1] ?? 0;
-  const lowestScore = sortedScores[sortedScores.length - 1]?.[1] ?? 0;
+  const sortedScores = APEST_DIMENSIONS.map(dimension => ({
+    dimension,
+    score: apestScores[dimension],
+  })).sort((a, b) => b.score - a.score);
+  const highestScore = sortedScores[0]?.score ?? 0;
+  const lowestScore = sortedScores[sortedScores.length - 1]?.score ?? 0;
 
   if (highestScore - lowestScore > 20) {
     insights.push(
@@ -305,7 +315,8 @@ export function generatePersonalizedRecommendations(
 
   // Strength-based recommendations
   const strengthThreshold = 75;
-  Object.entries(apestScores).forEach(([dimension, score]) => {
+  APEST_DIMENSIONS.forEach(dimension => {
+    const score = apestScores[dimension];
     if (score >= strengthThreshold) {
       recommendations.strengths.push(
         `Strong ${dimension} gifts - leverage this in your ministry`
@@ -315,7 +326,8 @@ export function generatePersonalizedRecommendations(
 
   // Growth area recommendations
   const growthThreshold = 50;
-  Object.entries(apestScores).forEach(([dimension, score]) => {
+  APEST_DIMENSIONS.forEach(dimension => {
+    const score = apestScores[dimension];
     if (score < growthThreshold) {
       recommendations.growthAreas.push(
         `Develop your ${dimension} gifts through intentional practice`

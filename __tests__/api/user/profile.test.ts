@@ -1,53 +1,52 @@
-import { createTestUser, cleanupTestUser, testData } from '@/lib/test-utils'
+import { createMockDatabase, testDataFactories } from '@/lib/mocks';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Mock the database
-const mockDb = {
-  select: jest.fn().mockReturnThis(),
-  from: jest.fn().mockReturnThis(),
-  where: jest.fn().mockReturnThis(),
-  limit: jest.fn().mockReturnThis(),
-  update: jest.fn().mockReturnThis(),
-  set: jest.fn().mockReturnThis(),
-  returning: jest.fn().mockReturnThis(),
-  insert: jest.fn().mockReturnThis(),
-  values: jest.fn().mockReturnThis(),
-}
+// Mock the database module
+vi.mock('@/lib/db/drizzle', () => ({
+  db: createMockDatabase(),
+}));
 
-jest.mock('@/lib/db/drizzle', () => ({
-  db: mockDb
-}))
+// Import the mocked database
+import { db } from '@/lib/db/drizzle';
 
 // Mock API route handlers
-const mockHandler = jest.fn()
+const mockHandler = vi.fn();
 
 describe('/api/user/profile', () => {
-  let testUser: any
+  let testUser: any;
 
-  beforeAll(async () => {
+  beforeAll(() => {
     // Mock test user creation
     testUser = {
       id: 'test-user-id',
       email: 'test@example.com',
-      access_token: 'test-token'
-    }
-  })
+      access_token: 'test-token',
+    };
+  });
 
   beforeEach(() => {
-    jest.clearAllMocks()
-  })
+    vi.clearAllMocks();
+  });
 
   describe('GET /api/user/profile', () => {
     it('should get user profile successfully', async () => {
-      const mockProfile = {
-        ...testData.userProfile,
+      // Use contract-compliant test data
+      const mockProfile = testDataFactories.userProfileResponse({
         id: testUser.id,
         email: testUser.email,
         firstName: 'John',
         lastName: 'Doe',
-        ministryRole: 'senior_pastor'
-      }
+        ministryRole: 'senior_pastor',
+      });
 
-      mockDb.select.mockResolvedValueOnce([mockProfile])
+      // Mock the database chain
+      vi.mocked(db).select.mockReturnValueOnce({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue([mockProfile]),
+          }),
+        }),
+      });
 
       // Mock the handler function
       mockHandler.mockImplementation(async (input, { user, db }) => {
@@ -55,71 +54,88 @@ describe('/api/user/profile', () => {
           .select()
           .from('user_profiles')
           .where('id', user.id)
-          .limit(1)
+          .limit(1);
 
         if (!profile[0]) {
-          throw new Error('Profile not found')
+          throw new Error('Profile not found');
         }
 
         return {
           data: profile[0],
-          success: true
-        }
-      })
+          success: true,
+        };
+      });
 
-      const result = await mockHandler(
-        testData.userProfile,
-        { user: testUser, db: mockDb }
-      )
+      const result = await mockHandler(testDataFactories.userProfile(), {
+        user: testUser,
+        db: db,
+      });
 
-      expect(result.success).toBe(true)
-      expect(result.data).toEqual(mockProfile)
-      expect(mockDb.select).toHaveBeenCalled()
-    })
+      expect(result.success).toBe(true);
+      expect(result.data).toEqual(mockProfile);
+      expect(vi.mocked(db).select).toHaveBeenCalled();
+    });
 
     it('should throw error when profile not found', async () => {
-      mockDb.select.mockResolvedValueOnce([])
+      // Mock the database chain to return empty result
+      vi.mocked(db).select.mockReturnValueOnce({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue([]),
+          }),
+        }),
+      });
 
       mockHandler.mockImplementation(async (input, { user, db }) => {
         const profile = await db
           .select()
           .from('user_profiles')
           .where('id', user.id)
-          .limit(1)
+          .limit(1);
 
         if (!profile[0]) {
-          throw new Error('Profile not found')
+          throw new Error('Profile not found');
         }
 
         return {
           data: profile[0],
-          success: true
-        }
-      })
+          success: true,
+        };
+      });
 
       await expect(
-        mockHandler(testData.userProfile, { user: testUser, db: mockDb })
-      ).rejects.toThrow('Profile not found')
-    })
-  })
+        mockHandler(testDataFactories.userProfile(), {
+          user: testUser,
+          db: db,
+        })
+      ).rejects.toThrow('Profile not found');
+    });
+  });
 
   describe('PUT /api/user/profile', () => {
     it('should update user profile successfully', async () => {
       const updateData = {
         firstName: 'Jane',
         lastName: 'Smith',
-        ministryRole: 'associate_pastor' as const
-      }
+        ministryRole: 'associate_pastor' as const,
+      };
 
       const updatedProfile = {
         id: testUser.id,
         email: testUser.email,
         ...updateData,
         updatedAt: expect.any(Date),
-        lastActiveAt: expect.any(Date)
-      }
+        lastActiveAt: expect.any(Date),
+      };
 
-      mockDb.update.mockResolvedValueOnce([updatedProfile])
+      // Mock the database chain for update
+      vi.mocked(db).update.mockReturnValueOnce({
+        set: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            returning: vi.fn().mockResolvedValue([updatedProfile]),
+          }),
+        }),
+      });
 
       mockHandler.mockImplementation(async (input, { user, db }) => {
         const [updatedProfile] = await db
@@ -127,31 +143,31 @@ describe('/api/user/profile', () => {
           .set({
             ...input,
             updatedAt: new Date(),
-            lastActiveAt: new Date()
+            lastActiveAt: new Date(),
           })
           .where('id', user.id)
-          .returning()
+          .returning();
 
         if (!updatedProfile) {
-          throw new Error('Profile not found')
+          throw new Error('Profile not found');
         }
 
         return {
           data: updatedProfile,
-          success: true
-        }
-      })
+          success: true,
+        };
+      });
 
-      const result = await mockHandler(
-        updateData,
-        { user: testUser, db: mockDb }
-      )
+      const result = await mockHandler(updateData, {
+        user: testUser,
+        db: db,
+      });
 
-      expect(result.success).toBe(true)
-      expect(result.data).toEqual(updatedProfile)
-      expect(mockDb.update).toHaveBeenCalled()
-    })
-  })
+      expect(result.success).toBe(true);
+      expect(result.data).toEqual(updatedProfile);
+      expect(vi.mocked(db).update).toHaveBeenCalled();
+    });
+  });
 
   describe('POST /api/user/profile', () => {
     it('should create new user profile successfully', async () => {
@@ -161,8 +177,8 @@ describe('/api/user/profile', () => {
         ministryRole: 'senior_pastor' as const,
         denomination: 'Baptist',
         churchSize: 'large' as const,
-        experience: 10
-      }
+        experience: 10,
+      };
 
       const createdProfile = {
         id: testUser.id,
@@ -170,13 +186,24 @@ describe('/api/user/profile', () => {
         ...newProfileData,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
-        lastActiveAt: expect.any(Date)
-      }
+        lastActiveAt: expect.any(Date),
+      };
 
       // Mock existing profile check (should return empty)
-      mockDb.select.mockResolvedValueOnce([])
+      vi.mocked(db).select.mockReturnValueOnce({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue([]),
+          }),
+        }),
+      });
+
       // Mock profile creation
-      mockDb.insert.mockResolvedValueOnce([createdProfile])
+      vi.mocked(db).insert.mockReturnValueOnce({
+        values: vi.fn().mockReturnValue({
+          returning: vi.fn().mockResolvedValue([createdProfile]),
+        }),
+      });
 
       mockHandler.mockImplementation(async (input, { user, db }) => {
         // Check if profile already exists
@@ -184,10 +211,10 @@ describe('/api/user/profile', () => {
           .select()
           .from('user_profiles')
           .where('id', user.id)
-          .limit(1)
+          .limit(1);
 
         if (existingProfile[0]) {
-          throw new Error('Profile already exists')
+          throw new Error('Profile already exists');
         }
 
         const [newProfile] = await db
@@ -198,54 +225,64 @@ describe('/api/user/profile', () => {
             email: user.email,
             createdAt: new Date(),
             updatedAt: new Date(),
-            lastActiveAt: new Date()
+            lastActiveAt: new Date(),
           })
-          .returning()
+          .returning();
 
         return {
           data: newProfile,
-          success: true
-        }
-      })
+          success: true,
+        };
+      });
 
-      const result = await mockHandler(
-        newProfileData,
-        { user: testUser, db: mockDb }
-      )
+      const result = await mockHandler(newProfileData, {
+        user: testUser,
+        db: db,
+      });
 
-      expect(result.success).toBe(true)
-      expect(result.data).toEqual(createdProfile)
-      expect(mockDb.insert).toHaveBeenCalled()
-    })
+      expect(result.success).toBe(true);
+      expect(result.data).toEqual(createdProfile);
+      expect(vi.mocked(db).insert).toHaveBeenCalled();
+    });
 
     it('should throw error when profile already exists', async () => {
       const existingProfile = {
         id: testUser.id,
         email: testUser.email,
         firstName: 'John',
-        lastName: 'Doe'
-      }
+        lastName: 'Doe',
+      };
 
-      mockDb.select.mockResolvedValueOnce([existingProfile])
+      // Mock the database chain to return existing profile
+      vi.mocked(db).select.mockReturnValueOnce({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue([existingProfile]),
+          }),
+        }),
+      });
 
       mockHandler.mockImplementation(async (input, { user, db }) => {
         const existingProfile = await db
           .select()
           .from('user_profiles')
           .where('id', user.id)
-          .limit(1)
+          .limit(1);
 
         if (existingProfile[0]) {
-          throw new Error('Profile already exists')
+          throw new Error('Profile already exists');
         }
 
         // This shouldn't be reached
-        return { data: null, success: false }
-      })
+        return { data: null, success: false };
+      });
 
       await expect(
-        mockHandler(testData.userProfile, { user: testUser, db: mockDb })
-      ).rejects.toThrow('Profile already exists')
-    })
-  })
-})
+        mockHandler(testDataFactories.userProfile(), {
+          user: testUser,
+          db: db,
+        })
+      ).rejects.toThrow('Profile already exists');
+    });
+  });
+});

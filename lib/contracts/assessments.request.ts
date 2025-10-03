@@ -40,6 +40,7 @@ export const createAssessmentRequestSchema = z.object({
       'middle_eastern',
       'oceanic',
       'universal',
+      'global',
     ])
     .default('universal'),
 
@@ -175,6 +176,7 @@ export const assessmentSearchRequestSchema = z.object({
       'middle_eastern',
       'oceanic',
       'universal',
+      'global',
     ])
     .optional(),
   researchBacked: z.boolean().optional(),

@@ -1,0 +1,87 @@
+# Jupyter Book Configuration
+title: 'Alan Hirsch Platform - Database Schema Documentation'
+author: 'Alan Hirsch Platform Team'
+
+# Build settings
+sphinx:
+  config:
+    # HTML output settings
+    html_theme: sphinx_book_theme
+    html_theme_options:
+      # Navigation
+      navigation_depth: 4
+      show_navbar_depth: 2
+      show_toc_level: 3
+      # Sidebar
+      sidebar_secondary: []
+      sidebar_primary: ['page-toc', 'sourcelink']
+      # Footer
+      footer_start: ['copyright', 'sphinx-version']
+      footer_end: ['theme-version']
+      # Search
+      search_bar_text: 'Search documentation...'
+      # Home page
+      home_page_in_toc: true
+    # Extensions
+    extensions:
+      - myst_parser
+      - sphinx_design
+      - sphinx_copybutton
+    # MyST settings
+    myst_enable_extensions:
+      - colon_fence
+      - deflist
+      - html_admonition
+      - html_image
+      - linkify
+      - replacements
+      - smartquotes
+      - substitution
+      - tasklist
+      - fieldlist
+      - dollarmath
+      - amsmath
+    # Numbering
+    numfig: true
+
+# Execution settings
+execute:
+  execute_notebooks: 'off'
+  timeout: 30
+
+# Parse settings
+parse:
+  myst_enable_extensions:
+    - colon_fence
+    - deflist
+    - html_admonition
+    - html_image
+    - linkify
+    - replacements
+    - smartquotes
+    - substitution
+    - tasklist
+    - fieldlist
+    - dollarmath
+    - amsmath
+
+# Repository settings
+repository:
+  url: 'https://github.com/alan-hirsch/platform'
+  branch: 'main'
+  path: 'docs'
+
+# Launch buttons
+launch_buttons:
+  notebook_interface: 'jupyterlab'
+  thebe: false
+
+# Comments
+comments:
+  hypothesis: false
+  utterances: false
+
+# Search
+search:
+  language: 'en'
+  indexing: 'full'

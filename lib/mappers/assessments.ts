@@ -105,7 +105,8 @@ export function toAssessmentResponseDTO(
     // Computed fields for UI
     isPublished: row.publishedAt !== null,
     isActive: row.status === 'active',
-    estimatedDurationText: formatDuration(row.estimatedDuration),
+    estimatedDurationText:
+      formatDuration(row.estimatedDuration) ?? 'Not specified',
 
     // Timestamps (convert to ISO strings)
     createdAt: row.createdAt.toISOString(),
@@ -134,8 +135,8 @@ export function toAssessmentQuestionResponseDTO(
     answerOptions:
       (row.answerOptions as Array<{
         value: number;
-        description: string;
         label: string;
+        description: string;
       }>) ?? [],
 
     // Computed fields for UI
@@ -208,11 +209,9 @@ export function toUserAssessmentResponseDTO(
     isCompleted: row.completedAt !== null,
     isInProgress:
       row.completedAt === null && (row.completionPercentage ?? 0) > 0,
-    completionTimeText: formatDuration(row.completionTime),
-    scorePercentage: calculateScorePercentage(
-      row.totalScore,
-      row.maxPossibleScore
-    ),
+    completionTimeText: formatDuration(row.completionTime) ?? 'Not completed',
+    scorePercentage:
+      calculateScorePercentage(row.totalScore, row.maxPossibleScore) ?? 0,
     apestScores: {
       apostolic: row.apostolicScore ?? 0,
       prophetic: row.propheticScore ?? 0,
@@ -245,7 +244,7 @@ export function toAssessmentResponseResponseDTO(
 
     // Computed fields for UI
     hasResponse: row.responseValue !== null || row.responseText !== null,
-    responseTimeText: formatResponseTime(row.responseTime),
+    responseTimeText: formatResponseTime(row.responseTime) ?? 'Not recorded',
 
     // Timestamps
     createdAt: row.createdAt.toISOString(),
@@ -300,16 +299,19 @@ export function toPaginatedAssessmentListResponseDTO(
   const totalPages = Math.ceil(pagination.total / pagination.limit);
 
   return {
-    items: assessments.map(toAssessmentResponseDTO),
-    pagination: {
-      page: pagination.page,
-      limit: pagination.limit,
-      total: pagination.total,
-      totalPages,
-      hasNext: pagination.page < totalPages,
-      hasPrev: pagination.page > 1,
+    items: {
+      data: assessments.map(toAssessmentResponseDTO),
+      pagination: {
+        page: pagination.page,
+        limit: pagination.limit,
+        total: pagination.total,
+        totalPages,
+        hasNext: pagination.page < totalPages,
+        hasPrev: pagination.page > 1,
+      },
     },
     success: true,
+    message: undefined,
   };
 }
 
@@ -330,17 +332,20 @@ export function toPaginatedUserAssessmentListResponseDTO(
   const totalPages = Math.ceil(pagination.total / pagination.limit);
 
   return {
-    items: userAssessments.map(({ userAssessment, assessment }) =>
-      toUserAssessmentWithDetailsResponseDTO(userAssessment, assessment)
-    ),
-    pagination: {
-      page: pagination.page,
-      limit: pagination.limit,
-      total: pagination.total,
-      totalPages,
-      hasNext: pagination.page < totalPages,
-      hasPrev: pagination.page > 1,
+    items: {
+      data: userAssessments.map(({ userAssessment, assessment }) =>
+        toUserAssessmentWithDetailsResponseDTO(userAssessment, assessment)
+      ),
+      pagination: {
+        page: pagination.page,
+        limit: pagination.limit,
+        total: pagination.total,
+        totalPages,
+        hasNext: pagination.page < totalPages,
+        hasPrev: pagination.page > 1,
+      },
     },
     success: true,
+    message: undefined,
   };
 }

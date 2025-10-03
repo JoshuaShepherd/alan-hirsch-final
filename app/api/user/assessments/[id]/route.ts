@@ -162,7 +162,9 @@ export const POST = createApiRoute(
       primaryGift: input.data.primaryGift,
       secondaryGift: input.data.secondaryGift,
       completionTime: input.data.completionTime,
-      responseConsistency: input.data.responseConsistency,
+      responseConsistency: input.data.responseConsistency
+        ? parseFloat(input.data.responseConsistency)
+        : undefined,
       aiInsights: input.data.aiInsights,
       personalizedRecommendations: input.data.personalizedRecommendations,
     };
