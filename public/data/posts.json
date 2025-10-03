@@ -1,0 +1,30 @@
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440005",
+    "tenant_id": "550e8400-e29b-41d4-a716-446655440001",
+    "author_id": "550e8400-e29b-41d4-a716-446655440003",
+    "title": "Test Post 1",
+    "slug": "test-post-1",
+    "excerpt": null,
+    "body": "This is test post 1 content",
+    "status": "published",
+    "published_at": null,
+    "seo": null,
+    "created_at": "2025-10-01 20:41:15.812006+00",
+    "updated_at": "2025-10-01 20:41:15.812006+00"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440006",
+    "tenant_id": "550e8400-e29b-41d4-a716-446655440002",
+    "author_id": "550e8400-e29b-41d4-a716-446655440004",
+    "title": "Test Post 2",
+    "slug": "test-post-2",
+    "excerpt": null,
+    "body": "This is test post 2 content",
+    "status": "draft",
+    "published_at": null,
+    "seo": null,
+    "created_at": "2025-10-01 20:41:15.812006+00",
+    "updated_at": "2025-10-01 20:41:15.812006+00"
+  }
+]

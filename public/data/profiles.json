@@ -1,0 +1,20 @@
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440003",
+    "tenant_id": "550e8400-e29b-41d4-a716-446655440001",
+    "display_name": "Test User 1",
+    "role": "admin",
+    "avatar_url": null,
+    "created_at": "2025-10-01 20:41:15.735386+00",
+    "updated_at": "2025-10-01 20:41:15.735386+00"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440004",
+    "tenant_id": "550e8400-e29b-41d4-a716-446655440002",
+    "display_name": "Test User 2",
+    "role": "admin",
+    "avatar_url": null,
+    "created_at": "2025-10-01 20:41:15.735386+00",
+    "updated_at": "2025-10-01 20:41:15.735386+00"
+  }
+]
