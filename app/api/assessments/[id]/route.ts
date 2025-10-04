@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/drizzle';
-import { assessments, assessmentQuestions } from '@/lib/db/schema';
-import { eq, asc } from 'drizzle-orm';
+import { assessmentQuestions, assessments } from '@/lib/db/schema';
+import { asc, eq } from 'drizzle-orm';
 import {
-  updateAssessmentRequestSchema,
-  assessmentWithQuestionsResponseSchema,
   assessmentResponseDTOSchema,
+  assessmentWithQuestionsResponseSchema,
+  updateAssessmentRequestSchema,
 } from '@/lib/contracts';
 import {
   toAssessmentResponseDTO,
@@ -37,7 +37,10 @@ export async function GET(
 
     if (!assessment[0]) {
       return NextResponse.json(
-        { error: 'Assessment not found' },
+        {
+          error: 'Assessment not found',
+          message: 'The requested assessment could not be found',
+        },
         { status: 404 }
       );
     }
@@ -65,13 +68,23 @@ export async function GET(
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid assessment ID', details: error.errors },
+        {
+          error: 'Invalid assessment ID',
+          message: 'The provided assessment ID is not valid',
+          details: error.errors,
+        },
         { status: 400 }
       );
     }
 
     return NextResponse.json(
-      { error: 'Internal server error' },
+      {
+        error: 'Internal server error',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'An unexpected error occurred',
+      },
       { status: 500 }
     );
   }

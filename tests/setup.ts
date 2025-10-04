@@ -1,6 +1,10 @@
-import { vi } from 'vitest';
-import { expect, afterEach } from 'vitest';
+import '@testing-library/jest-dom';
 import { cleanup } from '@testing-library/react';
+import React from 'react';
+import { afterEach, expect, vi } from 'vitest';
+
+// Make React available globally for tests
+global.React = React;
 
 // Mock environment variables for testing
 process.env['NEXT_PUBLIC_SUPABASE_URL'] = 'https://test.supabase.co';

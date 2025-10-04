@@ -137,13 +137,23 @@ export async function GET(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request parameters', details: error.errors },
+        {
+          error: 'Invalid request parameters',
+          message: 'Request validation failed',
+          details: error.errors,
+        },
         { status: 400 }
       );
     }
 
     return NextResponse.json(
-      { error: 'Internal server error' },
+      {
+        error: 'Internal server error',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'An unexpected error occurred',
+      },
       { status: 500 }
     );
   }
