@@ -386,7 +386,7 @@ ${this.generateRecommendations()}
   }
 
   private displaySummary(): void {
-    console.log('\n' + '='.repeat(60));
+    console.log(`\n${  '='.repeat(60)}`);
     console.log('📊 PHASE 6: END-TO-END USER JOURNEY TESTING SUMMARY');
     console.log('='.repeat(60));
 
@@ -427,7 +427,7 @@ ${this.generateRecommendations()}
       );
     }
 
-    console.log('\n' + '='.repeat(60));
+    console.log(`\n${  '='.repeat(60)}`);
   }
 }
 

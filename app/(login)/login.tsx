@@ -40,7 +40,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
     if (pending && !state.error) {
       console.log('🔐 Resetting unexpected pending state');
     }
-  }, []);
+  }, [pending, state.error]);
 
   // Log state changes
   useEffect(() => {

@@ -1,5 +1,6 @@
 'use client';
 
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -34,7 +35,7 @@ import { toast } from 'sonner';
 export default function AssessmentResultsPage() {
   const params = useParams();
   const router = useRouter();
-  const userAssessmentId = params.id as string;
+  const userAssessmentId = params['id'] as string;
 
   const {
     data: userAssessmentResponse,
@@ -43,8 +44,8 @@ export default function AssessmentResultsPage() {
   } = useUserAssessment(userAssessmentId);
   const { data: responsesResponse } = useAssessmentResponses(userAssessmentId);
 
-  const userAssessment = userAssessmentResponse?.data;
-  const responses = responsesResponse?.data || [];
+  const userAssessment = userAssessmentResponse;
+  const responses = responsesResponse || [];
 
   const getApestColor = (dimension: string) => {
     const colors: Record<string, string> = {
@@ -81,6 +82,13 @@ export default function AssessmentResultsPage() {
   };
 
   const getLeaderTier = (totalScore: number) => {
+    if (typeof totalScore !== 'number' || totalScore < 0) {
+      return {
+        tier: 'Emerging',
+        color: 'text-orange-600',
+        bg: 'bg-orange-100',
+      };
+    }
     if (totalScore >= 500)
       return {
         tier: 'Advanced',
@@ -105,7 +113,7 @@ export default function AssessmentResultsPage() {
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: `${userAssessment?.assessment?.name} Results`,
+        title: `Assessment Results`,
         text: `Check out my assessment results!`,
         url: window.location.href,
       });
@@ -169,19 +177,29 @@ export default function AssessmentResultsPage() {
     );
   }
 
-  const apestScores = userAssessment.rawScores || {};
-  const normalizedScores = userAssessment.normalizedScores || {};
-  const leaderTier = getLeaderTier(userAssessment.totalScore || 0);
-  const maxScore = userAssessment.maxPossibleScore || 600;
+  const apestScores = userAssessment?.rawScores || {};
+  const normalizedScores = userAssessment?.normalizedScores || {};
+  const leaderTier = getLeaderTier(userAssessment?.totalScore || 0);
+  const maxScore = userAssessment?.maxPossibleScore || 600;
 
   // Sort APEST dimensions by score
   const sortedApestScores = Object.entries(apestScores)
-    .sort(([, a], [, b]) => b - a)
+    .sort(([, a], [, b]) =>
+      typeof b === 'number' && typeof a === 'number' ? b - a : 0
+    )
     .map(([dimension, score]) => ({
       dimension,
-      score,
-      normalizedScore: normalizedScores[dimension] || 0,
-      percentage: (score / (maxScore / 5)) * 100, // Assuming equal distribution across 5 dimensions
+      score: typeof score === 'number' ? score : 0,
+      normalizedScore:
+        typeof normalizedScores[dimension] === 'number'
+          ? normalizedScores[dimension]
+          : 0,
+      percentage:
+        typeof score === 'number' &&
+        typeof maxScore === 'number' &&
+        maxScore > 0
+          ? (score / (maxScore / 5)) * 100
+          : 0, // Assuming equal distribution across 5 dimensions
     }));
 
   return (
@@ -211,7 +229,7 @@ export default function AssessmentResultsPage() {
 
         <div className='text-center'>
           <h1 className='text-3xl font-bold text-gray-900 mb-2'>
-            {userAssessment.assessment?.name} Results
+            Assessment Results
           </h1>
           <p className='text-gray-600 mb-4'>
             Completed on{' '}
@@ -450,7 +468,8 @@ export default function AssessmentResultsPage() {
                 </div>
                 <div className='text-center'>
                   <div className='text-2xl font-bold text-gray-900'>
-                    {userAssessment.responseConsistency
+                    {userAssessment.responseConsistency &&
+                    typeof userAssessment.responseConsistency === 'number'
                       ? `${Math.round(userAssessment.responseConsistency * 100)}%`
                       : 'N/A'}
                   </div>
@@ -477,7 +496,7 @@ export default function AssessmentResultsPage() {
                 <CardContent>
                   <ul className='space-y-2'>
                     {userAssessment.personalizedRecommendations.strengths.map(
-                      (strength, index) => (
+                      (strength: string, index: number) => (
                         <li key={index} className='flex items-center'>
                           <CheckCircle className='h-4 w-4 text-green-500 mr-2' />
                           <span className='capitalize'>{strength}</span>
@@ -498,7 +517,7 @@ export default function AssessmentResultsPage() {
                 <CardContent>
                   <ul className='space-y-2'>
                     {userAssessment.personalizedRecommendations.growthAreas.map(
-                      (area, index) => (
+                      (area: string, index: number) => (
                         <li key={index} className='flex items-center'>
                           <Target className='h-4 w-4 text-blue-500 mr-2' />
                           <span className='capitalize'>{area}</span>
@@ -519,7 +538,7 @@ export default function AssessmentResultsPage() {
                 <CardContent>
                   <ul className='space-y-2'>
                     {userAssessment.personalizedRecommendations.actionItems.map(
-                      (item, index) => (
+                      (item: string, index: number) => (
                         <li key={index} className='flex items-center'>
                           <Zap className='h-4 w-4 text-orange-500 mr-2' />
                           <span>{item}</span>
@@ -540,7 +559,7 @@ export default function AssessmentResultsPage() {
                 <CardContent>
                   <ul className='space-y-2'>
                     {userAssessment.personalizedRecommendations.contentRecommendations.map(
-                      (content, index) => (
+                      (content: string, index: number) => (
                         <li key={index} className='flex items-center'>
                           <BookOpen className='h-4 w-4 text-green-500 mr-2' />
                           <span>{content}</span>

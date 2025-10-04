@@ -1,14 +1,13 @@
+import { relations } from 'drizzle-orm';
 import {
-  pgTable,
-  uuid,
-  text,
-  timestamp,
+  boolean,
   integer,
   jsonb,
-  boolean,
-  varchar,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
 } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
 
 // User Profiles - Extended profiles beyond Supabase auth
 export const userProfiles = pgTable('user_profiles', {
@@ -228,13 +227,10 @@ export const organizationMemberships = pgTable('organization_memberships', {
 });
 
 // Relations
-export const userProfilesRelations = relations(
-  userProfiles,
-  ({ many, one }) => ({
-    organizationMemberships: many(organizationMemberships),
-    ownedOrganizations: many(organizations),
-  })
-);
+export const userProfilesRelations = relations(userProfiles, ({ many }) => ({
+  organizationMemberships: many(organizationMemberships),
+  ownedOrganizations: many(organizations),
+}));
 
 export const organizationsRelations = relations(
   organizations,

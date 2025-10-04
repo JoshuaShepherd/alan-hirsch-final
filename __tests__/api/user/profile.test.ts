@@ -68,7 +68,7 @@ describe('/api/user/profile', () => {
 
       const result = await mockHandler(testDataFactories.userProfile(), {
         user: testUser,
-        db: db,
+        db,
       });
 
       expect(result.success).toBe(true);
@@ -106,7 +106,7 @@ describe('/api/user/profile', () => {
       await expect(
         mockHandler(testDataFactories.userProfile(), {
           user: testUser,
-          db: db,
+          db,
         })
       ).rejects.toThrow('Profile not found');
     });
@@ -160,7 +160,7 @@ describe('/api/user/profile', () => {
 
       const result = await mockHandler(updateData, {
         user: testUser,
-        db: db,
+        db,
       });
 
       expect(result.success).toBe(true);
@@ -237,7 +237,7 @@ describe('/api/user/profile', () => {
 
       const result = await mockHandler(newProfileData, {
         user: testUser,
-        db: db,
+        db,
       });
 
       expect(result.success).toBe(true);
@@ -280,7 +280,7 @@ describe('/api/user/profile', () => {
       await expect(
         mockHandler(testDataFactories.userProfile(), {
           user: testUser,
-          db: db,
+          db,
         })
       ).rejects.toThrow('Profile already exists');
     });

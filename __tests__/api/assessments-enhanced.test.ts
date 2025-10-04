@@ -245,12 +245,12 @@ describe('/api/assessments - Enhanced Testing', () => {
 
       const mockQuestions = [
         enhancedTestDataFactories.assessmentQuestionResponse({
-          assessmentId: assessmentId,
+          assessmentId,
           orderIndex: 1,
           apestDimension: 'apostolic',
         }),
         enhancedTestDataFactories.assessmentQuestionResponse({
-          assessmentId: assessmentId,
+          assessmentId,
           orderIndex: 2,
           apestDimension: 'prophetic',
         }),
@@ -323,14 +323,14 @@ describe('/api/assessments - Enhanced Testing', () => {
 
       const apestQuestions = [
         enhancedTestDataFactories.assessmentQuestionResponse({
-          assessmentId: assessmentId,
+          assessmentId,
           orderIndex: 1,
           apestDimension: 'apostolic',
           questionText:
             'I naturally see opportunities for new ministry initiatives.',
         }),
         enhancedTestDataFactories.assessmentQuestionResponse({
-          assessmentId: assessmentId,
+          assessmentId,
           orderIndex: 2,
           apestDimension: 'prophetic',
           questionText:

@@ -1,34 +1,29 @@
 // Assessment Database Queries
 // Comprehensive query functions for the assessment system
 
-import { db } from '../drizzle';
-import {
-  assessments,
-  assessmentQuestions,
-  userAssessments,
-  assessmentResponses,
-  userProfiles,
-} from '../schema';
-import { eq, and, desc, asc, sql } from 'drizzle-orm';
 import type {
-  Assessment,
-  AssessmentQuestion,
-  UserAssessment,
-  AssessmentResponse,
   NewAssessment,
   NewAssessmentQuestion,
-  NewUserAssessment,
   NewAssessmentResponse,
+  NewUserAssessment,
 } from '@/lib/contracts';
 import {
-  toAssessmentResponseDTO,
   toAssessmentQuestionResponseDTO,
-  toUserAssessmentResponseDTO,
+  toAssessmentResponseDTO,
   toAssessmentResponseResponseDTO,
-  toAssessmentWithQuestionsResponseDTO,
+  toUserAssessmentResponseDTO,
   toUserAssessmentWithDetailsResponseDTO,
 } from '@/lib/mappers/assessments';
-import { hasResults, isDefined } from '../type-guards';
+import { and, asc, desc, eq, sql } from 'drizzle-orm';
+import { db } from '../drizzle';
+import {
+  assessmentQuestions,
+  assessmentResponses,
+  assessments,
+  userAssessments,
+  userProfiles,
+} from '../schema';
+import { hasResults } from '../type-guards';
 
 // ============================================================================
 // ASSESSMENT QUERIES
@@ -610,7 +605,7 @@ export async function getSimilarApestProfiles(
   limit: number = 10
 ) {
   const userProfile = await getUserAssessmentById(userAssessmentId);
-  if (!userProfile || !userProfile.primaryGift) return [];
+  if (!userProfile?.primaryGift) return [];
 
   // Get users with similar APEST scores (within 10 points)
   const results = await db

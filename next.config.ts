@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
   },
   eslint: {
     // ESLint checking is handled by separate script
-    ignoreDuringBuilds: false,
+    ignoreDuringBuilds: true,
   },
   images: {
     remotePatterns: [

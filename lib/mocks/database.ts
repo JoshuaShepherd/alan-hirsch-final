@@ -1,5 +1,4 @@
 import { vi } from 'vitest';
-import type { testDataFactories } from '@/lib/test-utils';
 
 /**
  * Centralized Database Mock Utilities
@@ -17,16 +16,16 @@ export interface MockDatabaseConfig {
   delay?: number;
 }
 
-export interface MockQueryResult<T = any> {
+export interface MockQueryResult<T = unknown> {
   data: T[];
-  error: any;
+  error: Error | null;
   count?: number;
 }
 
 /**
  * Creates a mock query builder that properly chains Drizzle ORM methods
  */
-function createMockQueryBuilder<T = any>(finalResult: T[] = []) {
+function createMockQueryBuilder<T = unknown>(finalResult: T[] = []) {
   const mockQueryBuilder = {
     from: vi.fn().mockReturnThis(),
     where: vi.fn().mockReturnThis(),
@@ -55,7 +54,7 @@ function createMockQueryBuilder<T = any>(finalResult: T[] = []) {
 /**
  * Creates a mock insert query builder
  */
-function createMockInsertBuilder<T = any>(finalResult: T[] = []) {
+function createMockInsertBuilder<T = unknown>(finalResult: T[] = []) {
   return {
     values: vi.fn().mockReturnThis(),
     returning: vi.fn().mockResolvedValue(finalResult),
@@ -69,7 +68,7 @@ function createMockInsertBuilder<T = any>(finalResult: T[] = []) {
 /**
  * Creates a mock update query builder
  */
-function createMockUpdateBuilder<T = any>(finalResult: T[] = []) {
+function createMockUpdateBuilder<T = unknown>(finalResult: T[] = []) {
   return {
     set: vi.fn().mockReturnThis(),
     where: vi.fn().mockReturnThis(),
@@ -82,7 +81,7 @@ function createMockUpdateBuilder<T = any>(finalResult: T[] = []) {
 /**
  * Creates a mock delete query builder
  */
-function createMockDeleteBuilder<T = any>(finalResult: T[] = []) {
+function createMockDeleteBuilder<T = unknown>(finalResult: T[] = []) {
   return {
     where: vi.fn().mockReturnThis(),
     returning: vi.fn().mockResolvedValue(finalResult),
@@ -249,7 +248,7 @@ export function createMockDatabaseWithCount<T = any>(
   const mockDb = createMockDatabase();
 
   // Configure the mock to return different results based on the query
-  mockDb.select.mockImplementation((fields?: any) => {
+  mockDb.select.mockImplementation((fields?: unknown) => {
     const queryBuilder = createMockQueryBuilder();
 
     // Check if this is a count query
@@ -276,7 +275,7 @@ export function createMockDatabaseWithTransaction<T = any>(
 
   const mockTransaction = vi
     .fn()
-    .mockImplementation(async (callback: (tx: any) => Promise<any>) => {
+    .mockImplementation(async (callback: (tx: unknown) => Promise<unknown>) => {
       if (shouldRollback) {
         throw new Error('Transaction rolled back');
       }
@@ -290,7 +289,7 @@ export function createMockDatabaseWithTransaction<T = any>(
       txMock.update.mockImplementation(() => createMockUpdateBuilder(data));
       txMock.delete.mockImplementation(() => createMockDeleteBuilder(data));
 
-      return await callback(txMock);
+      return callback(txMock);
     });
 
   mockDb.transaction = mockTransaction;
@@ -301,9 +300,9 @@ export function createMockDatabaseWithTransaction<T = any>(
 /**
  * Utility to reset all mocks in a database mock
  */
-export function resetMockDatabase(mockDb: any) {
-  Object.keys(mockDb).forEach(key => {
-    const method = mockDb[key as keyof typeof mockDb];
+export function resetMockDatabase(mockDb: unknown) {
+  Object.keys(mockDb as object).forEach(key => {
+    const method = (mockDb as any)[key];
     if (vi.isMockFunction(method)) {
       method.mockClear();
     }
@@ -313,9 +312,9 @@ export function resetMockDatabase(mockDb: any) {
 /**
  * Utility to verify database calls
  */
-export function verifyDatabaseCalls(mockDb: any, expectedCalls: string[]) {
+export function verifyDatabaseCalls(mockDb: unknown, expectedCalls: string[]) {
   expectedCalls.forEach(call => {
-    const method = mockDb[call as keyof typeof mockDb];
+    const method = (mockDb as any)[call];
     if (method) {
       expect(method).toHaveBeenCalled();
     }
@@ -327,7 +326,7 @@ export function verifyDatabaseCalls(mockDb: any, expectedCalls: string[]) {
  */
 export const mockDatabaseConfigs = {
   // Success scenarios
-  success: (data: any[] = []) =>
+  success: (data: unknown[] = []) =>
     createMockDatabaseWithResponses({ default: data }),
 
   // Error scenarios
@@ -350,14 +349,14 @@ export const mockDatabaseConfigs = {
     }),
 
   // Pagination scenarios
-  paginated: (data: any[], pageSize: number = 10) =>
+  paginated: (data: unknown[], pageSize: number = 10) =>
     createMockDatabaseWithPagination(data, pageSize),
 
   // Count scenarios
-  withCount: (data: any[], count?: number) =>
+  withCount: (data: unknown[], count?: number) =>
     createMockDatabaseWithCount(data, count),
 
   // Transaction scenarios
-  withTransaction: (data: any[], shouldRollback: boolean = false) =>
+  withTransaction: (data: unknown[], shouldRollback: boolean = false) =>
     createMockDatabaseWithTransaction(data, shouldRollback),
 };

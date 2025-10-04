@@ -67,9 +67,7 @@ vi.setConfig({
 expect.extend({
   toBeInTheDocument: (received: any) => {
     const pass =
-      received &&
-      received.ownerDocument &&
-      received.ownerDocument.contains(received);
+      received?.ownerDocument?.contains(received);
     return {
       pass,
       message: () =>
@@ -80,7 +78,7 @@ expect.extend({
   },
   toHaveClass: (received: any, className: string) => {
     const pass =
-      received && received.classList && received.classList.contains(className);
+      received?.classList?.contains(className);
     return {
       pass,
       message: () =>
@@ -91,7 +89,7 @@ expect.extend({
   },
   toHaveTextContent: (received: any, text: string) => {
     const pass =
-      received && received.textContent && received.textContent.includes(text);
+      received?.textContent?.includes(text);
     return {
       pass,
       message: () =>

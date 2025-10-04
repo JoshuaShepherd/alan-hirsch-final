@@ -343,7 +343,7 @@ export function createMockStripeClientWithResponses(
     const [service, method] = parts;
     if (!service || !method) return; // Skip if service or method is undefined
     const serviceObj = (mockStripe as any)[service];
-    if (serviceObj && serviceObj[method as keyof typeof serviceObj]) {
+    if (serviceObj?.[method as keyof typeof serviceObj]) {
       const methodObj = serviceObj[method as keyof typeof serviceObj];
       methodObj.mockImplementation(() => {
         const response = responses[methodPath as keyof typeof responses];
@@ -360,7 +360,7 @@ export function createMockStripeClientWithResponses(
  * Creates a mock Stripe client that simulates webhook events
  */
 export function createMockStripeClientWithWebhooks(
-  webhookEvents: Array<{ type: string; data: any }>,
+  webhookEvents: Array<{ type: string; data: unknown }>,
   config: MockStripeConfig = {}
 ) {
   const mockStripe = createMockStripeClient(config);
@@ -383,9 +383,9 @@ export function createMockStripeClientWithWebhooks(
 /**
  * Utility to reset all mocks in a Stripe client mock
  */
-export function resetMockStripeClient(mockStripe: any) {
-  Object.keys(mockStripe).forEach(service => {
-    const serviceObj = mockStripe[service as keyof typeof mockStripe];
+export function resetMockStripeClient(mockStripe: unknown) {
+  Object.keys(mockStripe as object).forEach(service => {
+    const serviceObj = (mockStripe as any)[service];
     if (typeof serviceObj === 'object') {
       Object.keys(serviceObj).forEach(method => {
         const methodObj = serviceObj[method as keyof typeof serviceObj];
@@ -427,6 +427,6 @@ export const mockStripeConfigs = {
     }),
 
   // Webhook scenarios
-  withWebhooks: (events: Array<{ type: string; data: any }>) =>
+  withWebhooks: (events: Array<{ type: string; data: unknown }>) =>
     createMockStripeClientWithWebhooks(events),
 };

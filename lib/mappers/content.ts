@@ -113,7 +113,7 @@ export function toContentItemResponseDTO(
           avatarUrl: author.avatarUrl ?? '',
         }
       : undefined,
-    category: category,
+    category,
 
     // Timestamps (formatted as ISO strings)
     createdAt: row.createdAt.toISOString(),

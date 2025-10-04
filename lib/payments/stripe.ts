@@ -133,7 +133,7 @@ export async function handleSubscriptionChange(
 ) {
   const customerId = subscription.customer as string;
   const subscriptionId = subscription.id;
-  const status = subscription.status;
+  const {status} = subscription;
 
   const team = await getTeamByStripeCustomerId(customerId);
 

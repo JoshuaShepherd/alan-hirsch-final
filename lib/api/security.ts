@@ -333,7 +333,7 @@ export function withIPFilter(
         );
       }
 
-      return await handler({} as T, request);
+      return handler({} as T, request);
     };
   };
 }

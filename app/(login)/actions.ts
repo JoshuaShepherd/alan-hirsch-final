@@ -1,26 +1,26 @@
 'use server';
 
-import { z } from 'zod';
-import { eq } from 'drizzle-orm';
-import { db } from '@/lib/db/drizzle';
-import {
-  userProfiles,
-  organizations,
-  organizationMemberships,
-} from '@/lib/db/schema';
-import {
-  type NewUserProfile,
-  type NewOrganization,
-  type NewOrganizationMembership,
-} from '@/lib/contracts';
-import { ministryRoleSchema } from '@/lib/contracts';
-import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
-import { getUserByEmail } from '@/lib/db/queries';
 import {
   validatedAction,
   validatedActionWithUser,
 } from '@/lib/auth/middleware';
+import {
+  ministryRoleSchema,
+  type NewOrganization,
+  type NewOrganizationMembership,
+  type NewUserProfile,
+} from '@/lib/contracts';
+import { db } from '@/lib/db/drizzle';
+import { getUserByEmail } from '@/lib/db/queries';
+import {
+  organizationMemberships,
+  organizations,
+  userProfiles,
+} from '@/lib/db/schema';
+import { createClient } from '@/lib/supabase/server';
+import { eq } from 'drizzle-orm';
+import { redirect } from 'next/navigation';
+import { z } from 'zod';
 
 /**
  * Helpers: treat empty strings as "absent" so optional fields
@@ -77,42 +77,53 @@ const signUpSchema = z.object({
 });
 
 export const signIn = validatedAction(signInSchema, async (data, _formData) => {
-  console.log('🔐 SignIn Action Started:', {
-    email: data.email,
-    hasPassword: !!data.password,
-    priceId: data.priceId,
-    organizationId: data.organizationId,
-    timestamp: new Date().toISOString(),
-  });
+  // Development logging - remove in production
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔐 SignIn Action Started:', {
+      email: data.email,
+      hasPassword: !!data.password,
+      priceId: data.priceId,
+      organizationId: data.organizationId,
+      timestamp: new Date().toISOString(),
+    });
+  }
 
   const { email, password } = data;
 
   try {
     const supabase = await createClient();
-    console.log('🔐 Supabase Client Created');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 Supabase Client Created');
+    }
 
     // Sign in with Supabase Auth
-    console.log('🔐 Attempting Supabase Auth SignIn');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 Attempting Supabase Auth SignIn');
+    }
     const { data: authData, error: authError } =
       await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-    console.log('🔐 Supabase Auth Response:', {
-      hasUser: !!authData?.user,
-      userId: authData?.user?.id,
-      userEmail: authData?.user?.email,
-      hasError: !!authError,
-      errorMessage: authError?.message,
-      errorCode: authError?.status,
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 Supabase Auth Response:', {
+        hasUser: !!authData?.user,
+        userId: authData?.user?.id,
+        userEmail: authData?.user?.email,
+        hasError: !!authError,
+        errorMessage: authError?.message,
+        errorCode: authError?.status,
+      });
+    }
 
     if (authError || !authData.user) {
-      console.error('🔐 Supabase Auth Failed:', {
-        error: authError,
-        hasUser: !!authData?.user,
-      });
+      if (process.env.NODE_ENV === 'development') {
+        console.error('🔐 Supabase Auth Failed:', {
+          error: authError,
+          hasUser: !!authData?.user,
+        });
+      }
       return {
         error: 'Invalid email or password. Please try again.',
         email,
@@ -121,18 +132,24 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
     }
 
     // Find user profile
-    console.log('🔐 Looking up user profile by email:', email);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 Looking up user profile by email:', email);
+    }
     const foundUser = await getUserByEmail(email);
 
-    console.log('🔐 User Profile Lookup Result:', {
-      foundUser: !!foundUser,
-      userId: foundUser?.id,
-      accountStatus: foundUser?.accountStatus,
-      email: foundUser?.email,
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 User Profile Lookup Result:', {
+        foundUser: !!foundUser,
+        userId: foundUser?.id,
+        accountStatus: foundUser?.accountStatus,
+        email: foundUser?.email,
+      });
+    }
 
     if (!foundUser) {
-      console.error('🔐 User Profile Not Found:', { email });
+      if (process.env.NODE_ENV === 'development') {
+        console.error('🔐 User Profile Not Found:', { email });
+      }
       return {
         error: 'User profile not found. Please contact support.',
         email,
@@ -141,16 +158,20 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
     }
 
     // Check if user account is active
-    console.log('🔐 Checking account status:', {
-      status: foundUser.accountStatus,
-      isActive: foundUser.accountStatus === 'active',
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 Checking account status:', {
+        status: foundUser.accountStatus,
+        isActive: foundUser.accountStatus === 'active',
+      });
+    }
 
     if (foundUser.accountStatus !== 'active') {
-      console.error('🔐 Account Not Active:', {
-        status: foundUser.accountStatus,
-        email,
-      });
+      if (process.env.NODE_ENV === 'development') {
+        console.error('🔐 Account Not Active:', {
+          status: foundUser.accountStatus,
+          email,
+        });
+      }
       return {
         error: 'Your account is not active. Please contact support.',
         email,
@@ -159,22 +180,28 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
     }
 
     // Update last active timestamp
-    console.log('🔐 Updating last active timestamp');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 Updating last active timestamp');
+    }
     await db
       .update(userProfiles)
       .set({ lastActiveAt: new Date() })
       .where(eq(userProfiles.id, foundUser.id));
 
-    console.log('🔐 SignIn Successful - Redirecting to dashboard');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 SignIn Successful - Redirecting to dashboard');
+    }
 
     redirect('/dashboard/');
   } catch (error) {
-    console.error('🔐 SignIn Action Error:', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
-      email,
-      timestamp: new Date().toISOString(),
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.error('🔐 SignIn Action Error:', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        email,
+        timestamp: new Date().toISOString(),
+      });
+    }
     return {
       error: 'An unexpected error occurred. Please try again.',
       email,
@@ -184,16 +211,18 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
 });
 
 export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
-  console.log('🔐 SignUp Action Started:', {
-    email: data.email,
-    firstName: data.firstName,
-    lastName: data.lastName,
-    ministryRole: data.ministryRole,
-    organizationName: data.organizationName,
-    organizationId: data.organizationId,
-    hasPassword: !!data.password,
-    timestamp: new Date().toISOString(),
-  });
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔐 SignUp Action Started:', {
+      email: data.email,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      ministryRole: data.ministryRole,
+      organizationName: data.organizationName,
+      organizationId: data.organizationId,
+      hasPassword: !!data.password,
+      timestamp: new Date().toISOString(),
+    });
+  }
 
   const {
     email,
@@ -207,20 +236,28 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
 
   try {
     const supabase = await createClient();
-    console.log('🔐 Supabase Client Created for SignUp');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 Supabase Client Created for SignUp');
+    }
 
     // Check if user already exists
-    console.log('🔐 Checking if user already exists:', email);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 Checking if user already exists:', email);
+    }
     const existingUser = await getUserByEmail(email);
 
-    console.log('🔐 Existing User Check Result:', {
-      exists: !!existingUser,
-      userId: existingUser?.id,
-      email: existingUser?.email,
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 Existing User Check Result:', {
+        exists: !!existingUser,
+        userId: existingUser?.id,
+        email: existingUser?.email,
+      });
+    }
 
     if (existingUser) {
-      console.log('🔐 User Already Exists:', { email });
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔐 User Already Exists:', { email });
+      }
       return {
         error:
           'An account with this email already exists. Please sign in instead.',
@@ -232,26 +269,32 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
     }
 
     // Sign up with Supabase Auth
-    console.log('🔐 Creating Supabase Auth user');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 Creating Supabase Auth user');
+    }
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
     });
 
-    console.log('🔐 Supabase SignUp Response:', {
-      hasUser: !!authData?.user,
-      userId: authData?.user?.id,
-      userEmail: authData?.user?.email,
-      hasError: !!authError,
-      errorMessage: authError?.message,
-      errorCode: authError?.status,
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 Supabase SignUp Response:', {
+        hasUser: !!authData?.user,
+        userId: authData?.user?.id,
+        userEmail: authData?.user?.email,
+        hasError: !!authError,
+        errorMessage: authError?.message,
+        errorCode: authError?.status,
+      });
+    }
 
     if (authError || !authData.user) {
-      console.error('🔐 Supabase SignUp Failed:', {
-        error: authError,
-        hasUser: !!authData?.user,
-      });
+      if (process.env.NODE_ENV === 'development') {
+        console.error('🔐 Supabase SignUp Failed:', {
+          error: authError,
+          hasUser: !!authData?.user,
+        });
+      }
       return {
         error: 'Failed to create account. Please try again.',
         email,
@@ -262,7 +305,9 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
     }
 
     // Create user profile
-    console.log('🔐 Creating user profile');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 Creating user profile');
+    }
     const newUserProfile: NewUserProfile = {
       id: authData.user.id!, // Use Supabase Auth user ID (non-null assertion since we just created the user)
       email,
@@ -296,27 +341,33 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
       },
     };
 
-    console.log('🔐 User Profile Data:', {
-      id: newUserProfile.id,
-      email: newUserProfile.email,
-      displayName: newUserProfile.displayName,
-      ministryRole: newUserProfile.ministryRole,
-      organizationName: newUserProfile.organizationName,
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 User Profile Data:', {
+        id: newUserProfile.id,
+        email: newUserProfile.email,
+        displayName: newUserProfile.displayName,
+        ministryRole: newUserProfile.ministryRole,
+        organizationName: newUserProfile.organizationName,
+      });
+    }
 
     const [createdUser] = await db
       .insert(userProfiles)
       .values(newUserProfile as any)
       .returning();
 
-    console.log('🔐 User Profile Creation Result:', {
-      success: !!createdUser,
-      userId: createdUser?.id,
-      email: createdUser?.email,
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 User Profile Creation Result:', {
+        success: !!createdUser,
+        userId: createdUser?.id,
+        email: createdUser?.email,
+      });
+    }
 
     if (!createdUser) {
-      console.error('🔐 Failed to create user profile');
+      if (process.env.NODE_ENV === 'development') {
+        console.error('🔐 Failed to create user profile');
+      }
       return {
         error: 'Failed to create user profile. Please try again.',
         email,
@@ -328,25 +379,31 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
 
     if (organizationId) {
       // User is joining an existing organization
-      console.log('🔐 User joining existing organization:', organizationId);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔐 User joining existing organization:', organizationId);
+      }
       const [existingOrg] = await db
         .select()
         .from(organizations)
         .where(eq(organizations.id, organizationId))
         .limit(1);
 
-      console.log('🔐 Existing Organization Lookup:', {
-        found: !!existingOrg,
-        orgId: existingOrg?.id,
-        orgName: existingOrg?.name,
-      });
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔐 Existing Organization Lookup:', {
+          found: !!existingOrg,
+          orgId: existingOrg?.id,
+          orgName: existingOrg?.name,
+        });
+      }
 
       if (existingOrg) {
         // Create organization membership
-        console.log('🔐 Creating organization membership for existing org');
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🔐 Creating organization membership for existing org');
+        }
         const newMembership: NewOrganizationMembership = {
           userId: createdUser.id,
-          organizationId: organizationId,
+          organizationId,
           role: 'member',
           status: 'active',
           permissions: [],
@@ -354,11 +411,15 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
         };
 
         await db.insert(organizationMemberships).values(newMembership);
-        console.log('🔐 Organization membership created');
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🔐 Organization membership created');
+        }
       }
     } else if (organizationName) {
       // Create a new organization for the user
-      console.log('🔐 Creating new organization:', organizationName);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔐 Creating new organization:', organizationName);
+      }
       const newOrg: NewOrganization = {
         name: organizationName,
         slug: organizationName.toLowerCase().replace(/[^a-z0-9]/g, '-'),
@@ -369,27 +430,33 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
         maxUsers: 1,
       };
 
-      console.log('🔐 New Organization Data:', {
-        name: newOrg.name,
-        slug: newOrg.slug,
-        ownerId: newOrg.accountOwnerId,
-        status: newOrg.status,
-      });
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔐 New Organization Data:', {
+          name: newOrg.name,
+          slug: newOrg.slug,
+          ownerId: newOrg.accountOwnerId,
+          status: newOrg.status,
+        });
+      }
 
       const [createdOrg] = await db
         .insert(organizations)
         .values(newOrg)
         .returning();
 
-      console.log('🔐 Organization Creation Result:', {
-        success: !!createdOrg,
-        orgId: createdOrg?.id,
-        orgName: createdOrg?.name,
-      });
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔐 Organization Creation Result:', {
+          success: !!createdOrg,
+          orgId: createdOrg?.id,
+          orgName: createdOrg?.name,
+        });
+      }
 
       if (createdOrg) {
         // Create organization membership as owner
-        console.log('🔐 Creating organization membership as owner');
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🔐 Creating organization membership as owner');
+        }
         const newMembership: NewOrganizationMembership = {
           userId: createdUser.id,
           organizationId: createdOrg.id,
@@ -400,24 +467,32 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
         };
 
         await db.insert(organizationMemberships).values(newMembership);
-        console.log('🔐 Organization membership created as owner');
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🔐 Organization membership created as owner');
+        }
       }
     } else {
-      console.log('🔐 No organization specified - user will be standalone');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔐 No organization specified - user will be standalone');
+      }
     }
 
-    console.log('🔐 SignUp Successful - Redirecting to dashboard');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔐 SignUp Successful - Redirecting to dashboard');
+    }
 
     redirect('/dashboard/');
   } catch (error) {
-    console.error('🔐 SignUp Action Error:', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
-      email,
-      firstName,
-      lastName,
-      timestamp: new Date().toISOString(),
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.error('🔐 SignUp Action Error:', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        email,
+        firstName,
+        lastName,
+        timestamp: new Date().toISOString(),
+      });
+    }
     return {
       error: 'An unexpected error occurred during sign up. Please try again.',
       email,
@@ -456,7 +531,7 @@ export const updateAccount = validatedActionWithUser(
       .update(userProfiles)
       .set({
         displayName: name,
-        email: email,
+        email,
         updatedAt: new Date(),
       })
       .where(eq(userProfiles.id, user.id));
@@ -542,7 +617,7 @@ export const deleteAccount = validatedActionWithUser(
     // Verify password
     const { error: verifyError } = await supabase.auth.signInWithPassword({
       email: user.email,
-      password: password,
+      password,
     });
 
     if (verifyError) {

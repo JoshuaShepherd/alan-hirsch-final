@@ -1,5 +1,6 @@
 'use client';
 
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,7 +26,7 @@ import { useParams, useRouter } from 'next/navigation';
 export default function AssessmentDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const assessmentId = params.id as string;
+  const assessmentId = params['id'] as string;
 
   const {
     data: assessmentResponse,
@@ -34,8 +35,8 @@ export default function AssessmentDetailPage() {
   } = useAssessment(assessmentId);
   const { data: userAssessmentsResponse } = useUserAssessments();
 
-  const assessment = assessmentResponse?.data;
-  const userAssessments = userAssessmentsResponse?.data?.items?.data || [];
+  const assessment = assessmentResponse;
+  const userAssessments = userAssessmentsResponse?.items?.data || [];
 
   // Find user's assessment for this assessment
   const userAssessment = userAssessments.find(

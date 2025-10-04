@@ -1,23 +1,22 @@
 // Assessment Data Hooks
 // Specialized hooks for assessment data management with standard return shapes
 
-import { useDataState, useSWRDataState } from './useDataState';
-import { useState, useCallback } from 'react';
-import type { 
-  AssessmentResponseDTO, 
-  AssessmentWithQuestionsResponse,
-  UserAssessmentResponse,
+import type {
   AssessmentResponseResponse,
+  AssessmentSearchRequest,
+  AssessmentWithQuestionsResponse,
+  CompleteAssessmentRequest,
+  CreateAssessmentRequest,
   PaginatedAssessmentListResponse,
   PaginatedUserAssessmentListResponse,
-  CreateAssessmentRequest,
-  UpdateAssessmentRequest,
-  StartAssessmentRequest,
   SaveAssessmentResponsesRequest,
-  CompleteAssessmentRequest,
-  AssessmentSearchRequest,
-  UserAssessmentFiltersRequest
+  StartAssessmentRequest,
+  UpdateAssessmentRequest,
+  UserAssessmentFiltersRequest,
+  UserAssessmentResponse,
 } from '@/lib/contracts';
+import { useCallback, useState } from 'react';
+import { useSWRDataState } from './useDataState';
 
 // ============================================================================
 // ASSESSMENT HOOKS
@@ -41,9 +40,11 @@ export function useUserAssessments(filters?: UserAssessmentFiltersRequest) {
   const params = new URLSearchParams();
   if (filters?.page) params.set('page', filters.page.toString());
   if (filters?.limit) params.set('limit', filters.limit.toString());
-  if (filters?.assessmentType) params.set('assessmentType', filters.assessmentType);
-  if (filters?.completed !== undefined) params.set('completed', filters.completed.toString());
-  
+  if (filters?.assessmentType)
+    params.set('assessmentType', filters.assessmentType);
+  if (filters?.completed !== undefined)
+    params.set('completed', filters.completed.toString());
+
   const queryString = params.toString();
   return useSWRDataState<PaginatedUserAssessmentListResponse>(
     `/api/user/assessments${queryString ? `?${queryString}` : ''}`
@@ -66,7 +67,9 @@ export function useUserAssessment(userAssessmentId: string) {
  */
 export function useAssessmentResponses(userAssessmentId: string) {
   return useSWRDataState<AssessmentResponseResponse[]>(
-    userAssessmentId ? `/api/user/assessments/${userAssessmentId}/responses` : null
+    userAssessmentId
+      ? `/api/user/assessments/${userAssessmentId}/responses`
+      : null
   );
 }
 
@@ -81,7 +84,7 @@ export function useStartAssessment() {
   const startAssessment = useCallback(async (input: StartAssessmentRequest) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch('/api/user/assessments', {
         method: 'POST',
@@ -122,34 +125,41 @@ export function useSaveAssessmentResponses() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const saveResponses = useCallback(async (input: SaveAssessmentResponsesRequest) => {
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const response = await fetch(`/api/user/assessments/${input.userAssessmentId}/responses`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(input),
-      });
+  const saveResponses = useCallback(
+    async (input: SaveAssessmentResponsesRequest) => {
+      setIsLoading(true);
+      setError(null);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save responses');
+      try {
+        const response = await fetch(
+          `/api/user/assessments/${input.userAssessmentId}/responses`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(input),
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to save responses');
+        }
+
+        const result = await response.json();
+        return result.data; // Return the saved responses
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMessage);
+        throw err;
+      } finally {
+        setIsLoading(false);
       }
-
-      const result = await response.json();
-      return result.data; // Return the saved responses
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   return {
     saveResponses,
@@ -166,34 +176,41 @@ export function useCompleteAssessment() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const completeAssessment = useCallback(async (input: CompleteAssessmentRequest) => {
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const response = await fetch(`/api/user/assessments/${input.userAssessmentId}/complete`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(input),
-      });
+  const completeAssessment = useCallback(
+    async (input: CompleteAssessmentRequest) => {
+      setIsLoading(true);
+      setError(null);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to complete assessment');
+      try {
+        const response = await fetch(
+          `/api/user/assessments/${input.userAssessmentId}/complete`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(input),
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to complete assessment');
+        }
+
+        const result = await response.json();
+        return result.data; // Return the completed assessment
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMessage);
+        throw err;
+      } finally {
+        setIsLoading(false);
       }
-
-      const result = await response.json();
-      return result.data; // Return the completed assessment
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   return {
     completeAssessment,
@@ -215,12 +232,15 @@ export function useAssessments(filters?: AssessmentSearchRequest) {
   if (filters?.page) params.set('page', filters.page.toString());
   if (filters?.limit) params.set('limit', filters.limit.toString());
   if (filters?.search) params.set('search', filters.search);
-  if (filters?.assessmentType) params.set('assessmentType', filters.assessmentType);
+  if (filters?.assessmentType)
+    params.set('assessmentType', filters.assessmentType);
   if (filters?.status) params.set('status', filters.status);
   if (filters?.language) params.set('language', filters.language);
-  if (filters?.culturalAdaptation) params.set('culturalAdaptation', filters.culturalAdaptation);
-  if (filters?.researchBacked !== undefined) params.set('researchBacked', filters.researchBacked.toString());
-  
+  if (filters?.culturalAdaptation)
+    params.set('culturalAdaptation', filters.culturalAdaptation);
+  if (filters?.researchBacked !== undefined)
+    params.set('researchBacked', filters.researchBacked.toString());
+
   const queryString = params.toString();
   return useSWRDataState<PaginatedAssessmentListResponse>(
     `/api/assessments${queryString ? `?${queryString}` : ''}`
@@ -235,34 +255,38 @@ export function useCreateAssessment() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const createAssessment = useCallback(async (input: CreateAssessmentRequest) => {
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const response = await fetch('/api/assessments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(input),
-      });
+  const createAssessment = useCallback(
+    async (input: CreateAssessmentRequest) => {
+      setIsLoading(true);
+      setError(null);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create assessment');
+      try {
+        const response = await fetch('/api/assessments', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(input),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to create assessment');
+        }
+
+        const result = await response.json();
+        return result.data; // Return the created assessment
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMessage);
+        throw err;
+      } finally {
+        setIsLoading(false);
       }
-
-      const result = await response.json();
-      return result.data; // Return the created assessment
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   return {
     createAssessment,
@@ -279,34 +303,38 @@ export function useUpdateAssessment() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const updateAssessment = useCallback(async (input: UpdateAssessmentRequest) => {
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const response = await fetch(`/api/assessments/${input.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(input),
-      });
+  const updateAssessment = useCallback(
+    async (input: UpdateAssessmentRequest) => {
+      setIsLoading(true);
+      setError(null);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update assessment');
+      try {
+        const response = await fetch(`/api/assessments/${input.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(input),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to update assessment');
+        }
+
+        const result = await response.json();
+        return result.data; // Return the updated assessment
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMessage);
+        throw err;
+      } finally {
+        setIsLoading(false);
       }
-
-      const result = await response.json();
-      return result.data; // Return the updated assessment
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   return {
     updateAssessment,
@@ -326,7 +354,7 @@ export function useDeleteAssessment() {
   const deleteAssessment = useCallback(async (assessmentId: string) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(`/api/assessments/${assessmentId}`, {
         method: 'DELETE',
@@ -361,7 +389,7 @@ export function useDeleteAssessment() {
  */
 export function useAssessmentAdapter(assessmentId: string) {
   const dataState = useAssessment(assessmentId);
-  
+
   return {
     assessment: dataState.data,
     isLoading: dataState.isLoading,
@@ -377,12 +405,12 @@ export function useAssessmentAdapter(assessmentId: string) {
  */
 export function useAssessmentWithControls(assessmentId: string) {
   const dataState = useAssessment(assessmentId);
-  
+
   const refetch = async () => {
     // SWR will handle refetching automatically
     // This is here for compatibility with manual state management
   };
-  
+
   return {
     ...dataState,
     refetch,

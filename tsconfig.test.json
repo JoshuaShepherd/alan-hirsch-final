@@ -1,9 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "strict": false,
+    "strict": true,
     "noImplicitAny": false,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "noUncheckedIndexedAccess": false,
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": false,
@@ -19,4 +19,3 @@
   ],
   "exclude": ["node_modules"]
 }
-

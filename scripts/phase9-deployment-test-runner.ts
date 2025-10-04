@@ -484,7 +484,7 @@ _Status: ${summary.overallStatus === 'success' ? 'Ready for production deploymen
   }
 
   private displaySummary(): void {
-    console.log('\n' + '='.repeat(60));
+    console.log(`\n${  '='.repeat(60)}`);
     console.log('📊 PHASE 9: DEPLOYMENT VERIFICATION TESTING SUMMARY');
     console.log('='.repeat(60));
 
@@ -542,7 +542,7 @@ _Status: ${summary.overallStatus === 'success' ? 'Ready for production deploymen
       );
     }
 
-    console.log('\n' + '='.repeat(60));
+    console.log(`\n${  '='.repeat(60)}`);
   }
 }
 

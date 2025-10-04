@@ -91,7 +91,7 @@ async function getPostgresURL(): Promise<string> {
     console.log(
       'You can find Postgres databases at: https://vercel.com/marketplace?category=databases'
     );
-    return await question('Enter your POSTGRES_URL: ');
+    return question('Enter your POSTGRES_URL: ');
   }
 }
 
@@ -152,7 +152,7 @@ async function getStripeSecretKey(): Promise<string> {
   console.log(
     'You can find your Stripe Secret Key at: https://dashboard.stripe.com/test/apikeys'
   );
-  return await question('Enter your Stripe Secret Key: ');
+  return question('Enter your Stripe Secret Key: ');
 }
 
 async function createStripeWebhook(): Promise<string> {

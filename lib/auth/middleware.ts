@@ -1,8 +1,7 @@
-import { z } from 'zod';
 import { UserProfile } from '@/lib/contracts';
 import { getUser } from '@/lib/db/queries';
 import { toUserProfileDTO } from '@/lib/mappers/user-profiles';
-import { redirect } from 'next/navigation';
+import { z } from 'zod';
 
 export type ActionState = {
   error?: string;

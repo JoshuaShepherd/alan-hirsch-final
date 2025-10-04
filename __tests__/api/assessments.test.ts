@@ -180,14 +180,14 @@ describe('/api/assessments', () => {
       const mockQuestions = [
         testDataFactories.assessmentQuestionResponse({
           id: 'q1',
-          assessmentId: assessmentId,
+          assessmentId,
           questionText: 'Test question 1',
           orderIndex: 1,
           questionType: 'multiple_choice',
         }),
         testDataFactories.assessmentQuestionResponse({
           id: 'q2',
-          assessmentId: assessmentId,
+          assessmentId,
           questionText: 'Test question 2',
           orderIndex: 2,
           questionType: 'multiple_choice',

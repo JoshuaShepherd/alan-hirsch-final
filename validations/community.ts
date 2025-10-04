@@ -1,9 +1,8 @@
 import { z } from 'zod';
 import {
+  attachmentSchema,
   culturalContextSchema,
   visibilitySchema,
-  membershipRoleSchema,
-  attachmentSchema,
 } from './shared';
 
 // Community Validation Schemas

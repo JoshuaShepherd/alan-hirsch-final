@@ -47,9 +47,27 @@ export default function AssessmentSelectPage() {
     page: 1,
     limit: 20,
     search: searchTerm || undefined,
-    assessmentType: selectedType || undefined,
-    status: selectedStatus as any,
-    culturalAdaptation: selectedCulturalAdaptation || undefined,
+    assessmentType: selectedType
+      ? (selectedType as
+          | 'apest'
+          | 'mdna'
+          | 'cultural_intelligence'
+          | 'leadership_style'
+          | 'spiritual_gifts'
+          | 'other')
+      : undefined,
+    status: selectedStatus as 'draft' | 'active' | 'archived' | 'under_review',
+    culturalAdaptation: selectedCulturalAdaptation
+      ? (selectedCulturalAdaptation as
+          | 'western'
+          | 'eastern'
+          | 'african'
+          | 'latin_american'
+          | 'middle_eastern'
+          | 'oceanic'
+          | 'global'
+          | 'universal')
+      : undefined,
     researchBacked: researchBackedOnly || undefined,
   };
 
@@ -66,8 +84,8 @@ export default function AssessmentSelectPage() {
     error: startError,
   } = useStartAssessment();
 
-  const assessments = assessmentsResponse?.data?.items?.data || [];
-  const userAssessments = userAssessmentsResponse?.data?.items?.data || [];
+  const assessments = assessmentsResponse?.items?.data || [];
+  const userAssessments = userAssessmentsResponse?.items?.data || [];
 
   // Create a map of user assessments by assessment ID for quick lookup
   const userAssessmentMap = new Map(

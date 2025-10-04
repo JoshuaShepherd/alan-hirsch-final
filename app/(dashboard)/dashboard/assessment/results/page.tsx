@@ -51,7 +51,7 @@ export default function AssessmentResultsPage() {
     isLoading,
     error,
   } = useUserAssessments(filters);
-  const userAssessments = userAssessmentsResponse?.data?.items?.data || [];
+  const userAssessments = userAssessmentsResponse?.items?.data || [];
 
   const getAssessmentTypeLabel = (type: string) => {
     const labels: Record<string, string> = {

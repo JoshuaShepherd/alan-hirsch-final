@@ -2,46 +2,33 @@
 // Comprehensive query operations for the platform
 
 import {
-  desc,
-  and,
-  eq,
-  isNull,
-  count,
-  sql,
-  like,
-  or,
-  gte,
-  lte,
-  inArray,
-} from 'drizzle-orm';
-import { db } from './drizzle';
-import {
-  userProfiles,
-  organizations,
-  organizationMemberships,
-  contentItems,
-  contentCategories,
-  contentSeries,
-  userSubscriptions,
-  subscriptionPlans,
-  assessments,
-  userAssessments,
-  aiConversations,
-  communities,
-  communityMemberships,
-  userAnalyticsEvents,
-  auditLogs,
-} from './schema';
-import { createClient } from '@/lib/supabase/server';
+  toAssessmentResponseDTO,
+  toUserAssessmentResponseDTO,
+} from '@/lib/mappers/assessments';
 import {
   toOrganizationDTO,
   toOrganizationMembershipDTO,
 } from '@/lib/mappers/organizations';
+import { createClient } from '@/lib/supabase/server';
+import { and, count, desc, eq, isNull, like, or, sql } from 'drizzle-orm';
+import { db } from './drizzle';
 import {
-  toAssessmentResponseDTO,
-  toUserAssessmentResponseDTO,
-} from '@/lib/mappers/assessments';
-import { hasResults, isDefined, exists } from './type-guards';
+  aiConversations,
+  assessments,
+  auditLogs,
+  communities,
+  communityMemberships,
+  contentCategories,
+  contentItems,
+  organizationMemberships,
+  organizations,
+  subscriptionPlans,
+  userAnalyticsEvents,
+  userAssessments,
+  userProfiles,
+  userSubscriptions,
+} from './schema';
+import { hasResults } from './type-guards';
 
 // ============================================================================
 // User & Authentication Queries
@@ -188,7 +175,7 @@ export async function getContentBySlug(slug: string) {
 }
 
 export async function getContentByAuthor(authorId: string, limit = 10) {
-  return await db
+  return db
     .select()
     .from(contentItems)
     .where(
@@ -300,7 +287,7 @@ export * from './queries/assessments';
 // ============================================================================
 
 export async function getActiveSubscriptionPlans() {
-  return await db
+  return db
     .select()
     .from(subscriptionPlans)
     .where(eq(subscriptionPlans.isActive, true))
@@ -406,7 +393,7 @@ export async function getUserCommunities(userId: string) {
 // ============================================================================
 
 export async function getUserAIConversations(userId: string, limit = 10) {
-  return await db
+  return db
     .select()
     .from(aiConversations)
     .where(eq(aiConversations.userId, userId))
@@ -554,21 +541,21 @@ export async function getRecentAuditLogs(limit = 50) {
 
 // Keeping some legacy functions for backward compatibility
 export async function getTeamByStripeCustomerId(
-  customerId: string
+  _customerId: string
 ): Promise<null> {
   // This can be mapped to organization queries if needed
   return null;
 }
 
 export async function updateTeamSubscription(
-  teamId: number,
-  subscriptionData: unknown
+  _teamId: number,
+  _subscriptionData: unknown
 ): Promise<null> {
   // Legacy function - can be updated to work with new schema
   return null;
 }
 
-export async function getUserWithTeam(userId: number): Promise<null> {
+export async function getUserWithTeam(_userId: number): Promise<null> {
   // Legacy function - can be updated to work with new schema
   return null;
 }
@@ -580,7 +567,7 @@ export async function getActivityLogs() {
     throw new Error('User not authenticated');
   }
 
-  return await getRecentAuditLogs(10);
+  return getRecentAuditLogs(10);
 }
 
 export async function getTeamForUser() {

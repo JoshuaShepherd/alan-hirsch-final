@@ -1,23 +1,23 @@
 import { z } from 'zod';
 // Import types and schemas with fallback for testing
-let assessmentResponseSchema: any;
-let assessmentQuestionResponseSchema: any;
-let userAssessmentResponseSchema: any;
-let assessmentResponseResponseSchema: any;
-let assessmentWithQuestionsResponseSchema: any;
-let contentItemResponseSchema: any;
-let contentCategoryResponseSchema: any;
-let contentSeriesResponseSchema: any;
+let assessmentResponseSchema: unknown;
+let assessmentQuestionResponseSchema: unknown;
+let userAssessmentResponseSchema: unknown;
+let assessmentResponseResponseSchema: unknown;
+let assessmentWithQuestionsResponseSchema: unknown;
+let contentItemResponseSchema: unknown;
+let contentCategoryResponseSchema: unknown;
+let contentSeriesResponseSchema: unknown;
 
 // Type definitions (fallback)
-type AssessmentResponse = any;
-type AssessmentQuestionResponse = any;
-type UserAssessmentResponse = any;
-type AssessmentResponseResponse = any;
-type AssessmentWithQuestionsResponse = any;
-type ContentItemResponse = any;
-type ContentCategoryResponse = any;
-type ContentSeriesResponse = any;
+type AssessmentResponse = unknown;
+type AssessmentQuestionResponse = unknown;
+type UserAssessmentResponse = unknown;
+type AssessmentResponseResponse = unknown;
+type AssessmentWithQuestionsResponse = unknown;
+type ContentItemResponse = unknown;
+type ContentCategoryResponse = unknown;
+type ContentSeriesResponse = unknown;
 
 try {
   const contracts = require('@/lib/contracts');
@@ -110,7 +110,7 @@ export const enhancedTestDataFactories = {
     const result = { ...(base as any), ...(overrides as any) };
 
     // Validate against contract schema
-    return assessmentResponseSchema.parse(result);
+    return (assessmentResponseSchema as any).parse(result);
   },
 
   /**
@@ -163,7 +163,7 @@ export const enhancedTestDataFactories = {
     const result = { ...(base as any), ...(overrides as any) };
 
     // Validate against contract schema
-    return assessmentQuestionResponseSchema.parse(result);
+    return (assessmentQuestionResponseSchema as any).parse(result);
   },
 
   /**
@@ -247,7 +247,7 @@ export const enhancedTestDataFactories = {
     const result = { ...(base as any), ...(overrides as any) };
 
     // Validate against contract schema
-    return userAssessmentResponseSchema.parse(result);
+    return (userAssessmentResponseSchema as any).parse(result);
   },
 
   /**
@@ -274,7 +274,7 @@ export const enhancedTestDataFactories = {
     const result = { ...(base as any), ...(overrides as any) };
 
     // Validate against contract schema
-    return assessmentResponseResponseSchema.parse(result);
+    return (assessmentResponseResponseSchema as any).parse(result);
   },
 
   /**
@@ -305,7 +305,7 @@ export const enhancedTestDataFactories = {
     const result = { ...(assessment as any), questions, ...(overrides as any) };
 
     // Validate against contract schema
-    return assessmentWithQuestionsResponseSchema.parse(result);
+    return (assessmentWithQuestionsResponseSchema as any).parse(result);
   },
 
   // ============================================================================
@@ -398,7 +398,7 @@ export const enhancedTestDataFactories = {
     const result = { ...(base as any), ...(overrides as any) };
 
     // Validate against contract schema
-    return contentItemResponseSchema.parse(result);
+    return (contentItemResponseSchema as any).parse(result);
   },
 
   /**
@@ -443,7 +443,7 @@ export const enhancedTestDataFactories = {
     const result = { ...(base as any), ...(overrides as any) };
 
     // Validate against contract schema
-    return contentCategoryResponseSchema.parse(result);
+    return (contentCategoryResponseSchema as any).parse(result);
   },
 
   /**
@@ -496,7 +496,7 @@ export const enhancedTestDataFactories = {
     const result = { ...(base as any), ...(overrides as any) };
 
     // Validate against contract schema
-    return contentSeriesResponseSchema.parse(result);
+    return (contentSeriesResponseSchema as any).parse(result);
   },
 
   // ============================================================================

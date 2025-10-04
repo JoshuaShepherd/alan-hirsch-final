@@ -1,22 +1,24 @@
 // Alan Hirsch Digital Platform - Comprehensive Seed Data
 import { db } from './drizzle';
 import {
-  userProfiles,
-  subscriptionPlans,
-  contentCategories,
-  assessments,
   assessmentQuestions,
-  communities,
-  theologicalConcepts,
+  assessments,
+  contentCategories,
   contentItems,
+  subscriptionPlans,
+  userProfiles,
 } from './schema';
 
 async function seed() {
-  console.log('🌱 Seeding Alan Hirsch Digital Platform database...');
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🌱 Seeding Alan Hirsch Digital Platform database...');
+  }
 
   try {
     // 1. Create subscription plans
-    console.log('📋 Creating subscription plans...');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📋 Creating subscription plans...');
+    }
     const plans = await db
       .insert(subscriptionPlans)
       .values([
@@ -64,7 +66,9 @@ async function seed() {
       .returning();
 
     // 2. Create content categories
-    console.log('📚 Creating content categories...');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📚 Creating content categories...');
+    }
     const categories = await db
       .insert(contentCategories)
       .values([
@@ -102,7 +106,9 @@ async function seed() {
       .returning();
 
     // 3. Create Alan Hirsch profile
-    console.log('👤 Creating Alan Hirsch profile...');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('👤 Creating Alan Hirsch profile...');
+    }
     const alanProfile = await db
       .insert(userProfiles)
       .values([
@@ -139,7 +145,9 @@ async function seed() {
       .returning();
 
     // 4. Create APEST assessment
-    console.log('📝 Creating APEST assessment...');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📝 Creating APEST assessment...');
+    }
     const apestAssessment = await db
       .insert(assessments)
       .values([
@@ -165,7 +173,9 @@ async function seed() {
       .returning();
 
     // 5. Create assessment questions
-    console.log('❓ Creating assessment questions...');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('❓ Creating assessment questions...');
+    }
     const questions = await db.insert(assessmentQuestions).values([
       // Apostolic questions
       {
@@ -593,7 +603,9 @@ async function seed() {
     ]);
 
     // 6. Create sample content
-    console.log('📄 Creating sample content...');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📄 Creating sample content...');
+    }
     const contentItemsResult = await db
       .insert(contentItems)
       .values([
@@ -643,21 +655,27 @@ The incarnational model challenges us to step out of our comfort zones and into 
       ])
       .returning();
 
-    console.log('✅ Database seeded successfully!');
-    console.log(`📊 Created subscription plans`);
-    console.log(`📚 Created content categories`);
-    console.log(`👤 Created Alan Hirsch profile`);
-    console.log(`📝 Created assessment`);
-    console.log(`❓ Created assessment questions`);
-    console.log(`📄 Created content items`);
-    console.log('\n🎉 Alan Hirsch Digital Platform is ready to go!');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ Database seeded successfully!');
+      console.log(`📊 Created subscription plans`);
+      console.log(`📚 Created content categories`);
+      console.log(`👤 Created Alan Hirsch profile`);
+      console.log(`📝 Created assessment`);
+      console.log(`❓ Created assessment questions`);
+      console.log(`📄 Created content items`);
+      console.log('\n🎉 Alan Hirsch Digital Platform is ready to go!');
+    }
   } catch (error) {
-    console.error('❌ Error seeding database:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('❌ Error seeding database:', error);
+    }
     throw error;
   }
 }
 
 seed().catch(error => {
-  console.error('Seeding failed:', error);
+  if (process.env.NODE_ENV === 'development') {
+    console.error('Seeding failed:', error);
+  }
   process.exit(1);
 });

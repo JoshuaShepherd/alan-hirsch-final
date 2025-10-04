@@ -74,7 +74,7 @@ describe('Production Readiness Testing', () => {
       const vercelConfig = join(process.cwd(), 'vercel.json');
       const config = JSON.parse(readFileSync(vercelConfig, 'utf8'));
 
-      const headers = config.headers[0].headers;
+      const {headers} = config.headers[0];
       const headerKeys = headers.map((h: any) => h.key);
 
       const requiredHeaders = [
@@ -94,7 +94,7 @@ describe('Production Readiness Testing', () => {
       const vercelConfig = join(process.cwd(), 'vercel.json');
       const config = JSON.parse(readFileSync(vercelConfig, 'utf8'));
 
-      const headers = config.headers[0].headers;
+      const {headers} = config.headers[0];
       const hsts = headers.find(
         (h: any) => h.key === 'Strict-Transport-Security'
       );

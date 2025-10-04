@@ -371,7 +371,7 @@ export const contractValidators = {
     expect(response.items).toHaveProperty('data');
     expect(response.items).toHaveProperty('pagination');
 
-    const pagination = response.items.pagination;
+    const {pagination} = response.items;
     expect(pagination).toHaveProperty('page');
     expect(pagination).toHaveProperty('limit');
     expect(pagination).toHaveProperty('total');

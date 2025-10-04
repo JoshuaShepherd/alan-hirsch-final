@@ -209,7 +209,8 @@ export default function DashboardPage() {
       <div className='mb-8'>
         <h1 className='text-3xl font-bold text-gray-900 mb-2'>Dashboard</h1>
         <p className='text-gray-600'>
-          Welcome back! Here's an overview of your ministry development journey.
+          Welcome back! Here&apos;s an overview of your ministry development
+          journey.
         </p>
       </div>
 
@@ -332,7 +333,8 @@ export default function DashboardPage() {
                   <div className='flex-1'>
                     <p className='text-sm font-medium'>Content Read</p>
                     <p className='text-xs text-gray-500'>
-                      "Understanding Your Apostolic Calling" - Yesterday
+                      &ldquo;Understanding Your Apostolic Calling&rdquo; -
+                      Yesterday
                     </p>
                   </div>
                 </div>

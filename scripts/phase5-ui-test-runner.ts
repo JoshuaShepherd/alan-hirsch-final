@@ -50,7 +50,7 @@ async function runTestSuite(
   let passed = 0;
   let failed = 0;
   let total = 0;
-  let details: string[] = [];
+  const details: string[] = [];
 
   try {
     const output = execSync(command, {
@@ -64,22 +64,22 @@ async function runTestSuite(
     for (const line of lines) {
       if (line.includes('✓') && line.includes('passed')) {
         const match = line.match(/(\d+)\s+passed/);
-        if (match && match[1]) passed = parseInt(match[1]);
+        if (match?.[1]) passed = parseInt(match[1]);
       }
       if (line.includes('✗') || line.includes('failed')) {
         const match = line.match(/(\d+)\s+failed/);
-        if (match && match[1]) failed = parseInt(match[1]);
+        if (match?.[1]) failed = parseInt(match[1]);
       }
       if (line.includes('Test Files:')) {
         const match = line.match(/(\d+)\s+passed/);
-        if (match && match[1]) total = parseInt(match[1]);
+        if (match?.[1]) total = parseInt(match[1]);
       }
     }
 
     // If no specific counts found, try to extract from summary
     if (passed === 0 && failed === 0) {
       const summaryMatch = output.match(/(\d+)\s+passed.*?(\d+)\s+failed/);
-      if (summaryMatch && summaryMatch[1] && summaryMatch[2]) {
+      if (summaryMatch?.[1] && summaryMatch[2]) {
         passed = parseInt(summaryMatch[1]);
         failed = parseInt(summaryMatch[2]);
         total = passed + failed;
@@ -313,7 +313,7 @@ async function main(): Promise<void> {
   try {
     const results = await runPhase5Tests();
 
-    console.log('\n' + '='.repeat(60));
+    console.log(`\n${  '='.repeat(60)}`);
     console.log('📊 PHASE 5 UI TESTING RESULTS');
     console.log('='.repeat(60));
 

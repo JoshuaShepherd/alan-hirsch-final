@@ -67,21 +67,28 @@ export default function AssessmentManagePage() {
     page: 1,
     limit: 50,
     search: searchTerm || undefined,
-    assessmentType: selectedType || undefined,
-    status: selectedStatus as any,
+    assessmentType: selectedType
+      ? (selectedType as
+          | 'apest'
+          | 'mdna'
+          | 'cultural_intelligence'
+          | 'leadership_style'
+          | 'spiritual_gifts'
+          | 'other')
+      : undefined,
+    status: selectedStatus as 'draft' | 'active' | 'archived' | 'under_review',
   };
 
   const {
     data: assessmentsResponse,
     isLoading,
     error,
-    mutate,
   } = useAssessments(filters);
   const { createAssessment, isLoading: creating } = useCreateAssessment();
   const { updateAssessment, isLoading: updating } = useUpdateAssessment();
   const { deleteAssessment, isLoading: deleting } = useDeleteAssessment();
 
-  const assessments = assessmentsResponse?.data?.items?.data || [];
+  const assessments = assessmentsResponse?.items?.data || [];
 
   const getAssessmentTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
@@ -109,7 +116,7 @@ export default function AssessmentManagePage() {
     try {
       await deleteAssessment(assessmentId);
       toast.success('Assessment deleted successfully');
-      mutate(); // Refresh the list
+      // Note: SWR will automatically refresh the list
       setDeleteDialogOpen(false);
       setAssessmentToDelete(null);
     } catch (error) {
@@ -125,10 +132,10 @@ export default function AssessmentManagePage() {
     try {
       await updateAssessment({
         id: assessmentId,
-        status: newStatus as any,
+        status: newStatus as 'draft' | 'active' | 'archived' | 'under_review',
       });
       toast.success('Assessment status updated');
-      mutate(); // Refresh the list
+      // Note: SWR will automatically refresh the list
     } catch (error) {
       console.error('Failed to update assessment:', error);
       toast.error('Failed to update assessment');
@@ -291,7 +298,11 @@ export default function AssessmentManagePage() {
               <div>
                 <div className='text-2xl font-bold'>
                   {assessments.reduce(
-                    (sum, a) => sum + (a.questionsCount || 0),
+                    (sum, a) =>
+                      sum +
+                      (typeof a.questionsCount === 'number'
+                        ? a.questionsCount
+                        : 0),
                     0
                   )}
                 </div>

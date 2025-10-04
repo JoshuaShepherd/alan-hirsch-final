@@ -39,7 +39,7 @@ interface QuestionResponse {
 export default function TakeAssessmentPage() {
   const params = useParams();
   const router = useRouter();
-  const assessmentId = params.id as string;
+  const assessmentId = params['id'] as string;
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [responses, setResponses] = useState<Map<string, QuestionResponse>>(
@@ -63,8 +63,8 @@ export default function TakeAssessmentPage() {
   const { completeAssessment, isLoading: completingAssessment } =
     useCompleteAssessment();
 
-  const assessment = assessmentResponse?.data;
-  const userAssessment = userAssessmentResponse?.data;
+  const assessment = assessmentResponse;
+  const userAssessment = userAssessmentResponse;
   const questions = assessment?.questions || [];
 
   // Initialize start time when assessment loads
@@ -75,22 +75,11 @@ export default function TakeAssessmentPage() {
     }
   }, [assessment, startTime]);
 
-  // Load existing responses
+  // Load existing responses - responses are stored separately via useAssessmentResponses hook
+  // This effect is kept for potential future use when responses are included in userAssessment
   useEffect(() => {
-    if (userAssessment?.responses) {
-      const responseMap = new Map<string, QuestionResponse>();
-      userAssessment.responses.forEach((response: any) => {
-        responseMap.set(response.questionId, {
-          questionId: response.questionId,
-          responseValue: response.responseValue,
-          responseText: response.responseText,
-          responseTime: response.responseTime,
-          confidence: response.confidence,
-          skipped: response.skipped,
-        });
-      });
-      setResponses(responseMap);
-    }
+    // Responses are loaded separately via the useAssessmentResponses hook
+    // This effect can be used for other initialization logic
   }, [userAssessment]);
 
   const currentQuestion = questions[currentQuestionIndex];
@@ -151,7 +140,11 @@ export default function TakeAssessmentPage() {
     try {
       // Calculate scores (simplified - in real implementation, this would be more sophisticated)
       const totalScore = Array.from(responses.values()).reduce(
-        (sum, response) => sum + (response.responseValue || 0),
+        (sum, response) =>
+          sum +
+          (typeof response.responseValue === 'number'
+            ? response.responseValue
+            : 0),
         0
       );
 
@@ -166,16 +159,27 @@ export default function TakeAssessmentPage() {
         teaching: 0,
       };
 
-      questions.forEach(question => {
+      questions.forEach((question: any) => {
         const response = responses.get(question.id);
-        if (response?.responseValue && question.apestDimension) {
-          apestScores[question.apestDimension] += response.responseValue;
+        if (
+          response?.responseValue &&
+          question.apestDimension &&
+          typeof response.responseValue === 'number' &&
+          typeof question.apestDimension === 'string'
+        ) {
+          const dimension = question.apestDimension as keyof typeof apestScores;
+          if (
+            dimension in apestScores &&
+            apestScores[dimension] !== undefined
+          ) {
+            apestScores[dimension] += response.responseValue ?? 0;
+          }
         }
       });
 
       // Find primary and secondary gifts
-      const sortedScores = Object.entries(apestScores).sort(
-        ([, a], [, b]) => b - a
+      const sortedScores = Object.entries(apestScores).sort(([, a], [, b]) =>
+        typeof b === 'number' && typeof a === 'number' ? b - a : 0
       );
       const primaryGift = sortedScores[0]?.[0];
       const secondaryGift = sortedScores[1]?.[0];
@@ -185,7 +189,7 @@ export default function TakeAssessmentPage() {
         : 0;
 
       await completeAssessment({
-        userAssessmentId: userAssessment.id,
+        userAssessmentId: userAssessment?.id ?? '',
         totalScore,
         maxPossibleScore,
         rawScores: apestScores,
@@ -268,7 +272,7 @@ export default function TakeAssessmentPage() {
                   }
                   className='space-y-3'
                 >
-                  {currentQuestion.answerOptions?.map(option => (
+                  {currentQuestion.answerOptions?.map((option: any) => (
                     <div
                       key={option.value}
                       className='flex items-center space-x-2'

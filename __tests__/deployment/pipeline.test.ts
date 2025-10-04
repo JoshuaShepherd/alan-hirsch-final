@@ -91,7 +91,7 @@ describe('Deployment Pipeline Testing', () => {
       const vercelConfig = join(process.cwd(), 'vercel.json');
       const config = JSON.parse(readFileSync(vercelConfig, 'utf8'));
 
-      const maxDuration = config.functions['app/api/**/*.ts'].maxDuration;
+      const {maxDuration} = config.functions['app/api/**/*.ts'];
       expect(maxDuration).toBeGreaterThan(0);
       expect(maxDuration).toBeLessThanOrEqual(300); // 5 minutes max
       console.log(`✅ Function timeout reasonable: ${maxDuration}s`);
@@ -113,7 +113,7 @@ describe('Deployment Pipeline Testing', () => {
       const vercelConfig = join(process.cwd(), 'vercel.json');
       const config = JSON.parse(readFileSync(vercelConfig, 'utf8'));
 
-      const headers = config.headers[0].headers;
+      const {headers} = config.headers[0];
       const frameOptions = headers.find(
         (h: any) => h.key === 'X-Frame-Options'
       );
@@ -127,7 +127,7 @@ describe('Deployment Pipeline Testing', () => {
       const vercelConfig = join(process.cwd(), 'vercel.json');
       const config = JSON.parse(readFileSync(vercelConfig, 'utf8'));
 
-      const headers = config.headers[0].headers;
+      const {headers} = config.headers[0];
       const contentTypeOptions = headers.find(
         (h: any) => h.key === 'X-Content-Type-Options'
       );
@@ -141,7 +141,7 @@ describe('Deployment Pipeline Testing', () => {
       const vercelConfig = join(process.cwd(), 'vercel.json');
       const config = JSON.parse(readFileSync(vercelConfig, 'utf8'));
 
-      const headers = config.headers[0].headers;
+      const {headers} = config.headers[0];
       const referrerPolicy = headers.find(
         (h: any) => h.key === 'Referrer-Policy'
       );
@@ -155,7 +155,7 @@ describe('Deployment Pipeline Testing', () => {
       const vercelConfig = join(process.cwd(), 'vercel.json');
       const config = JSON.parse(readFileSync(vercelConfig, 'utf8'));
 
-      const headers = config.headers[0].headers;
+      const {headers} = config.headers[0];
       const hsts = headers.find(
         (h: any) => h.key === 'Strict-Transport-Security'
       );
@@ -364,7 +364,7 @@ describe('Deployment Pipeline Testing', () => {
       const vercelConfig = join(process.cwd(), 'vercel.json');
       const config = JSON.parse(readFileSync(vercelConfig, 'utf8'));
 
-      const headers = config.headers[0].headers;
+      const {headers} = config.headers[0];
       const securityHeaders = headers.map((h: any) => h.key);
 
       expect(securityHeaders).toContain('X-Frame-Options');

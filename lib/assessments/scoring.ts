@@ -1,11 +1,7 @@
 // Assessment Scoring Utilities
 // Handles APEST scoring and other assessment calculations
 
-import type {
-  AssessmentQuestion,
-  AssessmentResponse,
-  UserAssessment,
-} from '@/lib/contracts';
+import type { AssessmentQuestion, AssessmentResponse } from '@/lib/contracts';
 
 // APEST dimensions
 export const APEST_DIMENSIONS = [
@@ -304,7 +300,7 @@ export function generateApestInsights(
 export function generatePersonalizedRecommendations(
   apestScores: ApestScores,
   primaryGift: string,
-  secondaryGift: string
+  _secondaryGift: string
 ) {
   const recommendations = {
     strengths: [] as string[],
