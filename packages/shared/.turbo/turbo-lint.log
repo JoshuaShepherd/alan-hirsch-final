@@ -1,0 +1,4 @@
+
+> @platform/shared@0.1.0 lint /Users/joshshepherd/Projects/alan-hirsch-final/packages/shared
+> eslint src --ext .ts
+
