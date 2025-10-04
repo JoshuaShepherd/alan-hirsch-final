@@ -1,0 +1,515 @@
+{
+  "timestamp": "2025-10-03T23:40:42.130Z",
+  "totalTests": 82,
+  "passedTests": 81,
+  "failedTests": 1,
+  "skippedTests": 0,
+  "totalDuration": 25631,
+  "testResults": [
+    {
+      "testName": "Build Process",
+      "status": "failed",
+      "duration": 0,
+      "error": "Command failed: npx vitest run __tests__/deployment/build-process.test.ts --reporter=json\n\u001b[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.\u001b[39m\n"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have Vercel configuration",
+      "status": "passed",
+      "duration": 0.43429200000002766,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have proper Vercel configuration structure",
+      "status": "passed",
+      "duration": 0.3839580000000069,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should configure build command correctly",
+      "status": "passed",
+      "duration": 0.12904199999991306,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should configure install command correctly",
+      "status": "passed",
+      "duration": 0.08412500000008549,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should set framework to Next.js",
+      "status": "passed",
+      "duration": 0.12462500000003729,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should configure deployment regions",
+      "status": "passed",
+      "duration": 0.12954100000001745,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should configure API function settings",
+      "status": "passed",
+      "duration": 0.09012499999994361,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have reasonable function timeout",
+      "status": "passed",
+      "duration": 0.24824999999998454,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should configure security headers",
+      "status": "passed",
+      "duration": 0.19799999999997908,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should include X-Frame-Options header",
+      "status": "passed",
+      "duration": 0.19545899999991434,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should include X-Content-Type-Options header",
+      "status": "passed",
+      "duration": 0.1424170000000231,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should include Referrer-Policy header",
+      "status": "passed",
+      "duration": 0.0877500000000282,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should include Strict-Transport-Security header",
+      "status": "passed",
+      "duration": 0.13516600000002654,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have environment example file",
+      "status": "passed",
+      "duration": 0.048874999999952706,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should document required environment variables",
+      "status": "passed",
+      "duration": 0.28387499999996635,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have proper environment variable format",
+      "status": "passed",
+      "duration": 0.2982089999999289,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have database migration files",
+      "status": "passed",
+      "duration": 0.053541999999993095,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have Drizzle configuration",
+      "status": "passed",
+      "duration": 0.045707999999990534,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have database setup scripts",
+      "status": "passed",
+      "duration": 0.1652920000000222,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have health check script",
+      "status": "passed",
+      "duration": 0.053541999999993095,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have health check npm script",
+      "status": "passed",
+      "duration": 0.1241659999999456,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have weekly audit script",
+      "status": "passed",
+      "duration": 0.0432500000000573,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have pre-deployment test scripts",
+      "status": "passed",
+      "duration": 0.08262500000000728,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have linting and formatting scripts",
+      "status": "passed",
+      "duration": 0.07587499999999636,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have type checking script",
+      "status": "passed",
+      "duration": 0.053875000000061846,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have proper package.json configuration",
+      "status": "passed",
+      "duration": 0.06929200000001856,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have proper Next.js configuration",
+      "status": "passed",
+      "duration": 0.11450000000002092,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have proper TypeScript configuration",
+      "status": "passed",
+      "duration": 0.04291600000010476,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have proper ESLint configuration",
+      "status": "passed",
+      "duration": 0.041040999999950145,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have Tailwind CSS configuration",
+      "status": "passed",
+      "duration": 0.041583000000059656,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have PostCSS configuration",
+      "status": "passed",
+      "duration": 0.04025000000001455,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have proper image optimization",
+      "status": "passed",
+      "duration": 0.062041000000021995,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have middleware configuration",
+      "status": "passed",
+      "duration": 0.03995899999995345,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have proper security headers in Next.js config",
+      "status": "passed",
+      "duration": 0.06337500000006457,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/pipeline.test.ts - should have proper security headers in Vercel config",
+      "status": "passed",
+      "duration": 0.3705000000001064,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have all required environment variables documented",
+      "status": "passed",
+      "duration": 0.6365829999999733,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper environment variable validation",
+      "status": "passed",
+      "duration": 0.36320899999998346,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have secure default values",
+      "status": "passed",
+      "duration": 0.17099999999999227,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have comprehensive security headers",
+      "status": "passed",
+      "duration": 0.6544579999999769,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper HSTS configuration",
+      "status": "passed",
+      "duration": 0.21383400000001984,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have middleware security",
+      "status": "passed",
+      "duration": 0.1861250000000041,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper CORS configuration",
+      "status": "passed",
+      "duration": 0.061666999999999916,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper image optimization",
+      "status": "passed",
+      "duration": 0.2346249999999941,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper caching configuration",
+      "status": "passed",
+      "duration": 0.16558400000002393,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper bundle optimization",
+      "status": "passed",
+      "duration": 0.0687499999999659,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper static file optimization",
+      "status": "passed",
+      "duration": 0.05545900000004167,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper database connection configuration",
+      "status": "passed",
+      "duration": 0.045000000000015916,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have database migration setup",
+      "status": "passed",
+      "duration": 0.05254200000001674,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper database seeding",
+      "status": "passed",
+      "duration": 0.04837499999996453,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have database backup strategy",
+      "status": "passed",
+      "duration": 0.15512499999999818,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have health check endpoint",
+      "status": "passed",
+      "duration": 0.045291000000020176,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have monitoring scripts",
+      "status": "passed",
+      "duration": 0.038792000000000826,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper error handling",
+      "status": "passed",
+      "duration": 0.04008300000003828,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper logging configuration",
+      "status": "passed",
+      "duration": 0.03550000000001319,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper API rate limiting",
+      "status": "passed",
+      "duration": 0.038250000000005,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper API validation",
+      "status": "passed",
+      "duration": 0.08495900000002621,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper API security",
+      "status": "passed",
+      "duration": 0.05112500000001319,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper API timeout configuration",
+      "status": "passed",
+      "duration": 0.05987499999997681,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper content validation",
+      "status": "passed",
+      "duration": 0.040374999999983174,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper input sanitization",
+      "status": "passed",
+      "duration": 0.031124999999974534,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper file upload security",
+      "status": "passed",
+      "duration": 0.030167000000005828,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper authentication configuration",
+      "status": "passed",
+      "duration": 0.03816699999998718,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper session management",
+      "status": "passed",
+      "duration": 0.029999999999972715,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper JWT configuration",
+      "status": "passed",
+      "duration": 0.035249999999962256,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper password security",
+      "status": "passed",
+      "duration": 0.029375000000015916,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper Stripe configuration",
+      "status": "passed",
+      "duration": 0.03758299999998371,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper webhook security",
+      "status": "passed",
+      "duration": 0.03125,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper payment validation",
+      "status": "passed",
+      "duration": 0.056290999999987434,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper database connection pooling",
+      "status": "passed",
+      "duration": 0.03845800000004829,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper caching strategy",
+      "status": "passed",
+      "duration": 0.047624999999982265,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper CDN configuration",
+      "status": "passed",
+      "duration": 0.06820899999996755,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper function scaling",
+      "status": "passed",
+      "duration": 0.05020799999999781,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper license file",
+      "status": "passed",
+      "duration": 0.03779200000002447,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper README documentation",
+      "status": "passed",
+      "duration": 0.03954199999998309,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper code formatting",
+      "status": "passed",
+      "duration": 0.11454200000002857,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper linting configuration",
+      "status": "passed",
+      "duration": 0.039874999999995,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper TypeScript configuration",
+      "status": "passed",
+      "duration": 0.039667000000008557,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should pass all production readiness checks",
+      "status": "passed",
+      "duration": 0.10649999999998272,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper build configuration",
+      "status": "passed",
+      "duration": 0.06670800000000554,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper testing configuration",
+      "status": "passed",
+      "duration": 0.0605419999999981,
+      "details": "passed"
+    },
+    {
+      "testName": "/Users/joshshepherd/Projects/alan-hirsch-final/__tests__/deployment/production-readiness.test.ts - should have proper monitoring configuration",
+      "status": "passed",
+      "duration": 0.04783399999996618,
+      "details": "passed"
+    }
+  ],
+  "summary": {
+    "buildProcess": false,
+    "deploymentPipeline": true,
+    "productionReadiness": true,
+    "overallStatus": "partial"
+  },
+  "deploymentMetrics": {
+    "buildTime": 45000,
+    "buildSize": 125,
+    "securityScore": 100,
+    "performanceScore": 100,
+    "complianceScore": 0
+  }
+}

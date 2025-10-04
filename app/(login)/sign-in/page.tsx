@@ -1,6 +1,6 @@
+import { AuthErrorBoundary } from '@/components/auth-error-boundary';
 import { Suspense } from 'react';
 import { Login } from '../login';
-import { AuthErrorBoundary } from '@/components/auth-error-boundary';
 
 export default function SignInPage() {
   return (

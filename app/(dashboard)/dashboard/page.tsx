@@ -1,24 +1,13 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from '@/components/ui/card';
-import { customerPortalAction } from '@/lib/payments/actions';
-import { useActionState } from 'react';
-import { UserProfile } from '@/lib/contracts';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useUserProfileAdapter } from '@/hooks';
-import { Suspense } from 'react';
-import { Input } from '@/components/ui/input';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { Loader2, PlusCircle, BookOpen, ClipboardList } from 'lucide-react';
+import { customerPortalAction } from '@/lib/payments/actions';
+import { BookOpen, ClipboardList, Loader2, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 interface ActionState {
   error?: string;
@@ -217,76 +206,153 @@ function AssessmentProgress() {
 export default function DashboardPage() {
   return (
     <section className='flex-1 p-4 lg:p-8'>
-      <h1 className='text-lg lg:text-2xl font-medium mb-6'>Dashboard</h1>
+      <div className='mb-8'>
+        <h1 className='text-3xl font-bold text-gray-900 mb-2'>Dashboard</h1>
+        <p className='text-gray-600'>
+          Welcome back! Here's an overview of your ministry development journey.
+        </p>
+      </div>
 
       {/* Quick Actions */}
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
-        <Link href='/dashboard/assessment'>
-          <Card className='hover:shadow-lg transition-shadow cursor-pointer'>
+        <Link href='/dashboard/assessment/select'>
+          <Card className='hover:shadow-lg transition-shadow cursor-pointer group'>
             <CardHeader className='pb-3'>
-              <ClipboardList className='h-8 w-8 text-blue-600' />
-              <CardTitle className='text-lg'>Take Assessment</CardTitle>
+              <div className='flex items-center space-x-3'>
+                <div className='p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors'>
+                  <ClipboardList className='h-6 w-6 text-blue-600' />
+                </div>
+                <CardTitle className='text-lg'>Take Assessment</CardTitle>
+              </div>
             </CardHeader>
             <CardContent>
               <p className='text-sm text-gray-600'>
-                Discover your APEST ministry gifts
+                Discover your APEST ministry gifts and leadership strengths
               </p>
             </CardContent>
           </Card>
         </Link>
 
         <Link href='/dashboard/content'>
-          <Card className='hover:shadow-lg transition-shadow cursor-pointer'>
+          <Card className='hover:shadow-lg transition-shadow cursor-pointer group'>
             <CardHeader className='pb-3'>
-              <BookOpen className='h-8 w-8 text-green-600' />
-              <CardTitle className='text-lg'>Browse Content</CardTitle>
+              <div className='flex items-center space-x-3'>
+                <div className='p-2 bg-green-100 rounded-lg group-hover:bg-green-200 transition-colors'>
+                  <BookOpen className='h-6 w-6 text-green-600' />
+                </div>
+                <CardTitle className='text-lg'>Browse Content</CardTitle>
+              </div>
             </CardHeader>
             <CardContent>
               <p className='text-sm text-gray-600'>
-                Read articles and resources
+                Read articles, resources, and ministry insights
               </p>
             </CardContent>
           </Card>
         </Link>
 
         <Link href='/dashboard/general'>
-          <Card className='hover:shadow-lg transition-shadow cursor-pointer'>
+          <Card className='hover:shadow-lg transition-shadow cursor-pointer group'>
             <CardHeader className='pb-3'>
-              <PlusCircle className='h-8 w-8 text-purple-600' />
-              <CardTitle className='text-lg'>Profile</CardTitle>
+              <div className='flex items-center space-x-3'>
+                <div className='p-2 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors'>
+                  <PlusCircle className='h-6 w-6 text-purple-600' />
+                </div>
+                <CardTitle className='text-lg'>Profile</CardTitle>
+              </div>
             </CardHeader>
             <CardContent>
               <p className='text-sm text-gray-600'>
-                Update your profile information
+                Update your profile and ministry information
               </p>
             </CardContent>
           </Card>
         </Link>
 
         <Link href='/dashboard/activity'>
-          <Card className='hover:shadow-lg transition-shadow cursor-pointer'>
+          <Card className='hover:shadow-lg transition-shadow cursor-pointer group'>
             <CardHeader className='pb-3'>
-              <Loader2 className='h-8 w-8 text-orange-600' />
-              <CardTitle className='text-lg'>Activity</CardTitle>
+              <div className='flex items-center space-x-3'>
+                <div className='p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors'>
+                  <Loader2 className='h-6 w-6 text-orange-600' />
+                </div>
+                <CardTitle className='text-lg'>Activity</CardTitle>
+              </div>
             </CardHeader>
             <CardContent>
               <p className='text-sm text-gray-600'>
-                View your activity and progress
+                View your activity and development progress
               </p>
             </CardContent>
           </Card>
         </Link>
       </div>
 
-      <Suspense fallback={<SubscriptionSkeleton />}>
-        <ManageSubscription />
-      </Suspense>
-      <Suspense fallback={<TeamMembersSkeleton />}>
-        <ProfileInfo />
-      </Suspense>
-      <Suspense fallback={<InviteTeamMemberSkeleton />}>
-        <AssessmentProgress />
-      </Suspense>
+      {/* Main Content Grid */}
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+        {/* Left Column - Profile and Subscription */}
+        <div className='lg:col-span-1 space-y-6'>
+          <Suspense fallback={<SubscriptionSkeleton />}>
+            <ManageSubscription />
+          </Suspense>
+          <Suspense fallback={<TeamMembersSkeleton />}>
+            <ProfileInfo />
+          </Suspense>
+        </div>
+
+        {/* Right Column - Assessment Progress and Recent Activity */}
+        <div className='lg:col-span-2 space-y-6'>
+          <Suspense fallback={<InviteTeamMemberSkeleton />}>
+            <AssessmentProgress />
+          </Suspense>
+
+          {/* Recent Activity Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className='space-y-4'>
+                <div className='flex items-center space-x-3 p-3 bg-gray-50 rounded-lg'>
+                  <div className='p-2 bg-blue-100 rounded-full'>
+                    <ClipboardList className='h-4 w-4 text-blue-600' />
+                  </div>
+                  <div className='flex-1'>
+                    <p className='text-sm font-medium'>Assessment Completed</p>
+                    <p className='text-xs text-gray-500'>
+                      APEST Assessment - 2 hours ago
+                    </p>
+                  </div>
+                </div>
+
+                <div className='flex items-center space-x-3 p-3 bg-gray-50 rounded-lg'>
+                  <div className='p-2 bg-green-100 rounded-full'>
+                    <BookOpen className='h-4 w-4 text-green-600' />
+                  </div>
+                  <div className='flex-1'>
+                    <p className='text-sm font-medium'>Content Read</p>
+                    <p className='text-xs text-gray-500'>
+                      "Understanding Your Apostolic Calling" - Yesterday
+                    </p>
+                  </div>
+                </div>
+
+                <div className='flex items-center space-x-3 p-3 bg-gray-50 rounded-lg'>
+                  <div className='p-2 bg-purple-100 rounded-full'>
+                    <PlusCircle className='h-4 w-4 text-purple-600' />
+                  </div>
+                  <div className='flex-1'>
+                    <p className='text-sm font-medium'>Profile Updated</p>
+                    <p className='text-xs text-gray-500'>
+                      Ministry role and organization - 3 days ago
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </section>
   );
 }
