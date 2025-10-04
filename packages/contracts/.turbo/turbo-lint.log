@@ -1,0 +1,6 @@
+
+
+> @platform/contracts@0.1.0 lint /Users/joshshepherd/Projects/alan-hirsch-final/packages/contracts
+> eslint src --ext .ts
+
+Pages directory cannot be found at /Users/joshshepherd/Projects/alan-hirsch-final/packages/contracts/pages or /Users/joshshepherd/Projects/alan-hirsch-final/packages/contracts/src/pages. If using a custom path, please configure with the `no-html-link-for-pages` rule in your eslint config file.

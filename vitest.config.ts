@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitest/config';
 import { resolve } from 'path';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -17,6 +17,9 @@ export default defineConfig({
       'build',
       'coverage',
       'tests/e2e/**/*',
+      'lib/db/setup.ts',
+      'lib/db/seed.ts',
+      'lib/db/reset.ts',
     ],
     coverage: {
       provider: 'v8',
@@ -43,8 +46,9 @@ export default defineConfig({
         },
       },
     },
-    testTimeout: 10000,
-    hookTimeout: 10000,
+    testTimeout: 5000,
+    hookTimeout: 5000,
+    teardownTimeout: 5000,
     // Ensure proper module resolution for tests
     pool: 'forks',
     poolOptions: {

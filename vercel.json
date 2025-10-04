@@ -1,7 +1,8 @@
 {
-  "buildCommand": "pnpm build",
+  "buildCommand": "pnpm build --filter=alan-hirsch-platform",
   "installCommand": "pnpm install",
   "framework": "nextjs",
+  "rootDirectory": "apps/alan-hirsch-platform",
   "regions": ["iad1"],
   "functions": {
     "app/api/**/*.ts": {

@@ -343,7 +343,7 @@ export function createMockStripeClientWithResponses(
     const [service, method] = parts;
     if (!service || !method) return; // Skip if service or method is undefined
     const serviceObj = (mockStripe as any)[service];
-    if (serviceObj && serviceObj[method as keyof typeof serviceObj]) {
+    if (serviceObj?.[method as keyof typeof serviceObj]) {
       const methodObj = serviceObj[method as keyof typeof serviceObj];
       methodObj.mockImplementation(() => {
         const response = responses[methodPath as keyof typeof responses];

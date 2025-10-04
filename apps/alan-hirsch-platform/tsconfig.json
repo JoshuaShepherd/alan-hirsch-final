@@ -1,0 +1,49 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "types": ["vitest/globals"],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"],
+      "@platform/contracts": [
+        "../../packages/contracts/src",
+        "../../packages/contracts/dist"
+      ],
+      "@platform/contracts/*": [
+        "../../packages/contracts/src/*",
+        "../../packages/contracts/dist/*"
+      ],
+      "@platform/ui": ["../../packages/ui/src", "../../packages/ui/dist"],
+      "@platform/ui/*": ["../../packages/ui/src/*", "../../packages/ui/dist/*"],
+      "@platform/database": [
+        "../../packages/database/src",
+        "../../packages/database/dist"
+      ],
+      "@platform/database/*": [
+        "../../packages/database/src/*",
+        "../../packages/database/dist/*"
+      ],
+      "@platform/shared": [
+        "../../packages/shared/src",
+        "../../packages/shared/dist"
+      ],
+      "@platform/shared/*": [
+        "../../packages/shared/src/*",
+        "../../packages/shared/dist/*"
+      ]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ]
+}
