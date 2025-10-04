@@ -54,7 +54,7 @@ export function toResponseTypeDTO(row: TableRow): ResponseType {
     name: row.name,
 
     // Handle optional fields with null coalescing
-    description: row.description ?? undefined,
+    description: row.description ?? '',
 
     // Format dates as ISO strings
     createdAt: row.createdAt.toISOString(),
@@ -68,8 +68,10 @@ export function toResponseTypeDTO(row: TableRow): ResponseType {
     author: row.author
       ? {
           id: row.author.id,
-          name: row.author.name,
-          email: row.author.email,
+          firstName: row.author.firstName,
+          lastName: row.author.lastName,
+          displayName: row.author.displayName,
+          avatarUrl: row.author.avatarUrl,
         }
       : undefined,
 
@@ -79,6 +81,7 @@ export function toResponseTypeDTO(row: TableRow): ResponseType {
       row.categories?.map(cat => ({
         id: cat.id,
         name: cat.name,
+        slug: cat.slug,
       })) || [],
   };
 }

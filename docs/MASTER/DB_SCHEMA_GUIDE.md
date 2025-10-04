@@ -14,34 +14,46 @@ This database currently supports the foundational platform with core user manage
 
 **✅ DEPLOYED TABLES:**
 
-- `user_profiles` - Extended user profiles with ministry context
-- `organizations` - Churches, denominations, seminaries, networks
-- `organization_memberships` - User-organization relationships
-- `content_categories` - Hierarchical content taxonomy
-- `content_items` - Main content repository
-- `subscription_plans` - Tiered access plans
-- `user_subscriptions` - Active user subscriptions
-- `communities` - Discussion groups and networking spaces
+- `user_profiles` - Extended user profiles with ministry context and leader tier evaluation
+- `organizations` - Churches, denominations, seminaries, networks with licensing
+- `organization_memberships` - User-organization relationships with roles
+- `content_categories` - Hierarchical content taxonomy with APEST relevance scoring
+- `content_items` - Main content repository with AI enhancement and network amplification
+- `content_series` - Structured learning paths and course organization
+- `series_content_items` - Ordered content within series
 - `assessments` - APEST and other ministry assessment frameworks
-- `assessment_questions` - Question bank for assessments
-- `user_assessments` - Individual assessment results
-- `assessment_responses` - Individual question responses
+- `assessment_questions` - Question bank for assessments with APEST dimension mapping
+- `user_assessments` - Individual assessment results with insights
+- `assessment_responses` - Individual question responses with timing
 
 **⏳ PLANNED TABLES (Not Yet Deployed):**
 
-- AI conversation system
-- Analytics and tracking system
-- System administration features
-
-**✅ ADDITIONAL DEPLOYED TABLES:**
-
-- `series_content_items` - Ordered content within series
+- `ai_conversations` - AI chat sessions with context and quality tracking
+- `ai_messages` - Individual messages with content references and feedback
+- `ai_content_jobs` - Background AI processing tasks
+- `ai_cross_reference_suggestions` - AI-generated content connection suggestions
+- `theological_concepts` - Knowledge graph for AI cross-referencing
 - `content_cross_references` - Network amplification system
+- `communities` - Discussion groups and networking spaces
+- `community_memberships` - User participation in communities
+- `community_posts` - Community discussions and content sharing
 - `community_post_votes` - User voting on community posts
 - `collaborations` - Multi-author content creation with revenue sharing
+- `subscription_plans` - Tiered access plans with feature matrices
+- `user_subscriptions` - Active subscriptions with network leader attribution
 - `transactions` - Complete financial history with revenue attribution
 - `payment_methods` - Stored payment methods for users
 - `coupons` - Discount and promotion management
+- `user_analytics_events` - Detailed user behavior tracking
+- `user_content_interactions` - Track user engagement and learning progress
+- `learning_outcomes` - Measure actual ministry impact and behavior change
+- `movement_metrics` - Regional and global movement health indicators
+- `performance_reports` - Leader dashboard data and network analytics
+- `audit_logs` - Complete activity audit trail
+- `feature_flags` - Gradual feature rollout and A/B testing
+- `user_consents` - GDPR compliance and consent management
+- `system_notifications` - Platform-wide notifications
+- `api_keys` - External integrations and API access
 
 ## Core Architecture Principles
 
@@ -88,15 +100,49 @@ This database currently supports the foundational platform with core user manage
   "first_name": "Alan",
   "last_name": "Hirsch",
   "display_name": "Alan Hirsch",
+  "bio": "Founder of Forge Mission Training Network",
+  "avatar_url": "https://example.com/alan-avatar.jpg",
   "ministry_role": "seminary_professor",
+  "denomination": "Anglican",
+  "organization_name": "Forge Mission Training Network",
+  "years_in_ministry": 35,
+  "country_code": "AU",
+  "timezone": "Australia/Sydney",
+  "language_primary": "en",
+  "cultural_context": "western",
+  "assessment_movement_alignment": 95,
+  "assessment_audience_engagement": 90,
+  "assessment_content_readiness": 98,
+  "assessment_revenue_potential": 85,
+  "assessment_network_effects": 92,
+  "assessment_strategic_fit": 88,
+  "assessment_total": 548,
   "leader_tier": "core",
-  "assessment_total": 95,
-  "subscription_tier": "leader",
   "subdomain": "alan",
   "custom_domain": "alanhirsch.com",
+  "platform_title": "Alan Hirsch Digital Platform",
+  "subscription_tier": "leader",
   "theological_focus": ["incarnational_theology", "missional_ecclesiology"],
-  "country_code": "AU",
-  "years_in_ministry": 35
+  "brand_colors": {
+    "primary": "#2563eb",
+    "secondary": "#64748b",
+    "accent": "#059669"
+  },
+  "email_notifications": {
+    "daily_digest": true,
+    "collaboration_requests": true,
+    "revenue_reports": true,
+    "community_updates": true
+  },
+  "privacy_settings": {
+    "public_profile": true,
+    "show_assessment_results": false,
+    "allow_networking": true,
+    "share_analytics": false
+  },
+  "onboarding_completed": true,
+  "onboarding_step": 7,
+  "account_status": "active"
 }
 ```
 

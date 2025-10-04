@@ -34,15 +34,84 @@ Database schemas define the structure of our data at the lowest level:
 // lib/db/schema/content.ts
 export const contentItems = pgTable('content_items', {
   id: uuid('id').primaryKey().defaultRandom(),
-  title: varchar('title', { length: 255 }).notNull(),
+  title: text('title').notNull(),
+  slug: text('slug').notNull(),
+  excerpt: text('excerpt'),
   content: text('content'),
-  status: contentStatusEnum('status').notNull().default('draft'),
+  authorId: uuid('author_id')
+    .notNull()
+    .references(() => userProfiles.id),
+  coAuthors: jsonb('co_authors').$type<string[]>().default([]),
+  contentType: text('content_type', {
+    enum: [
+      'article',
+      'video',
+      'podcast',
+      'framework',
+      'tool',
+      'case_study',
+      'interview',
+      'course_lesson',
+    ],
+  }).notNull(),
+  format: text('format', {
+    enum: ['text', 'video', 'audio', 'interactive', 'pdf', 'presentation'],
+  }).default('text'),
+  wordCount: integer('word_count'),
+  estimatedReadingTime: integer('estimated_reading_time'),
+  viewCount: integer('view_count').default(0),
+  likeCount: integer('like_count').default(0),
+  shareCount: integer('share_count').default(0),
+  commentCount: integer('comment_count').default(0),
+  bookmarkCount: integer('bookmark_count').default(0),
+  primaryCategoryId: uuid('primary_category_id').references(
+    () => contentCategories.id
+  ),
+  secondaryCategories: jsonb('secondary_categories')
+    .$type<string[]>()
+    .default([]),
+  tags: jsonb('tags').$type<string[]>().default([]),
+  theologicalThemes: jsonb('theological_themes').$type<string[]>().default([]),
+  seriesId: uuid('series_id').references(() => contentSeries.id),
+  seriesOrder: integer('series_order'),
+  visibility: text('visibility', {
+    enum: ['public', 'premium', 'vip', 'private', 'organization'],
+  }).default('public'),
+  status: text('status', {
+    enum: ['draft', 'published', 'archived', 'under_review', 'scheduled'],
+  }).default('draft'),
+  networkAmplificationScore: text('network_amplification_score'),
+  crossReferenceCount: integer('cross_reference_count').default(0),
+  aiEnhanced: boolean('ai_enhanced').default(false),
+  aiSummary: text('ai_summary'),
+  aiKeyPoints: jsonb('ai_key_points').$type<string[]>().default([]),
+  featuredImageUrl: text('featured_image_url'),
+  videoUrl: text('video_url'),
+  audioUrl: text('audio_url'),
+  attachments: jsonb('attachments')
+    .$type<Array<{ name: string; url: string; type: string; size: number }>>()
+    .default([]),
+  metaTitle: text('meta_title'),
+  metaDescription: text('meta_description'),
+  canonicalUrl: text('canonical_url'),
+  originalSource: text('original_source'),
+  licenseType: text('license_type', {
+    enum: [
+      'all_rights_reserved',
+      'creative_commons',
+      'public_domain',
+      'fair_use',
+    ],
+  }).default('all_rights_reserved'),
+  attributionRequired: boolean('attribution_required').default(true),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  publishedAt: timestamp('published_at'),
+  scheduledAt: timestamp('scheduled_at'),
 });
 
-export type ContentItem = typeof contentItems.$inferSelect;
-export type NewContentItem = typeof contentItems.$inferInsert;
+export type ContentItemRow = typeof contentItems.$inferSelect;
+export type ContentItemInsert = typeof contentItems.$inferInsert;
 ```
 
 **Key Points:**
@@ -105,18 +174,113 @@ import { z } from 'zod';
 
 export const contentItemResponseSchema = z.object({
   id: z.string().uuid(),
-  title: z.string().min(1).max(255),
-  content: z.string().nullable(),
+  title: z.string().min(1),
+  slug: z.string().regex(/^[a-z0-9-]+$/),
+  excerpt: z.string(),
+  content: z.string(),
+  authorId: z.string().uuid(),
+  coAuthors: z.array(z.string()),
+  contentType: z.enum([
+    'article',
+    'video',
+    'podcast',
+    'framework',
+    'tool',
+    'case_study',
+    'interview',
+    'course_lesson',
+  ]),
+  format: z.enum([
+    'text',
+    'video',
+    'audio',
+    'interactive',
+    'pdf',
+    'presentation',
+  ]),
+  wordCount: z.number().int().min(0),
+  estimatedReadingTime: z.number().int().min(0),
+  viewCount: z.number().int().min(0),
+  likeCount: z.number().int().min(0),
+  shareCount: z.number().int().min(0),
+  commentCount: z.number().int().min(0),
+  bookmarkCount: z.number().int().min(0),
+  primaryCategoryId: z.string(),
+  secondaryCategories: z.array(z.string()),
+  tags: z.array(z.string()),
+  theologicalThemes: z.array(z.string()),
+  seriesId: z.string(),
+  seriesOrder: z.number().int().min(0),
+  visibility: z.enum(['public', 'premium', 'vip', 'private', 'organization']),
+  status: z.enum([
+    'draft',
+    'published',
+    'archived',
+    'under_review',
+    'scheduled',
+  ]),
+  networkAmplificationScore: z.string(),
+  crossReferenceCount: z.number().int().min(0),
+  aiEnhanced: z.boolean(),
+  aiSummary: z.string(),
+  aiKeyPoints: z.array(z.string()),
+  featuredImageUrl: z.string(),
+  videoUrl: z.string(),
+  audioUrl: z.string(),
+  attachments: z.array(
+    z.object({
+      name: z.string(),
+      url: z.string(),
+      type: z.string(),
+      size: z.number(),
+    })
+  ),
+  metaTitle: z.string(),
+  metaDescription: z.string(),
+  canonicalUrl: z.string(),
+  originalSource: z.string(),
+  licenseType: z.enum([
+    'all_rights_reserved',
+    'creative_commons',
+    'public_domain',
+    'fair_use',
+  ]),
+  attributionRequired: z.boolean(),
 
-  // Computed fields
+  // Computed fields for UI
   isPublished: z.boolean(),
   isDraft: z.boolean(),
-  wordCount: z.number().int().min(0),
+  isScheduled: z.boolean(),
+  hasFeaturedImage: z.boolean(),
+  hasVideo: z.boolean(),
+  hasAudio: z.boolean(),
+  readingTimeText: z.string(),
+  viewCountText: z.string(),
+  isAiEnhanced: z.boolean(),
+
+  // Related data
+  author: z
+    .object({
+      id: z.string(),
+      firstName: z.string(),
+      lastName: z.string(),
+      displayName: z.string(),
+      avatarUrl: z.string(),
+    })
+    .optional(),
+  category: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      slug: z.string(),
+    })
+    .optional(),
 
   // Date fields (ISO strings)
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
-  publishedAt: z.string().datetime().nullable(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  publishedAt: z.string().nullable(),
+  scheduledAt: z.string().nullable(),
 });
 
 export type ContentItemResponse = z.infer<typeof contentItemResponseSchema>;

@@ -8,7 +8,7 @@ This documentation covers all available API endpoints for the Alan Hirsch Digita
 
 ## Contract-Based Architecture
 
-Our API uses a **contract-first approach** where all responses are validated against Zod schemas defined in `@/lib/contracts`. This ensures:
+Our API uses a **contract-first approach** where all responses are validated against Zod schemas defined in `@/lib/contracts` and `@/validations`. This ensures:
 
 - **Type Safety**: All responses match their contract definitions
 - **Runtime Validation**: Zod validates data at API boundaries
@@ -22,6 +22,24 @@ Database (Drizzle) → Mappers → Contracts → API Responses → Frontend Type
      ↓                ↓           ↓           ↓              ↓
   Raw Data    →  Transform  →  Validate  →  JSON Response → UI Components
 ```
+
+### Current Implementation Status
+
+**✅ IMPLEMENTED:**
+
+- User profile management (GET, PUT, POST)
+- Content management (GET, POST with search/filtering)
+- Assessment system (GET, POST for assessments and user assessments)
+- Organization management (basic CRUD)
+- Stripe payment integration
+
+**⏳ PLANNED:**
+
+- AI conversation system
+- Advanced analytics and tracking
+- Community features (posts, voting)
+- Content cross-referencing system
+- Collaboration management
 
 ## Authentication
 
@@ -130,21 +148,67 @@ Get the current user's profile information.
     firstName: string
     lastName: string
     displayName?: string
+    bio?: string
     avatarUrl?: string
     ministryRole: 'senior_pastor' | 'associate_pastor' | 'church_planter' | 'denominational_leader' | 'seminary_professor' | 'seminary_student' | 'ministry_staff' | 'missionary' | 'marketplace_minister' | 'nonprofit_leader' | 'consultant' | 'academic_researcher' | 'emerging_leader' | 'other'
     denomination?: string
-    churchSize?: 'small' | 'medium' | 'large' | 'enterprise'
-    experience?: number
-    apestProfile?: {
-      apostolic: number
-      prophetic: number
-      evangelistic: number
-      shepherd: number
-      teacher: number
+    organizationName?: string
+    yearsInMinistry?: number
+    countryCode?: string
+    timezone?: string
+    languagePrimary: string
+    culturalContext?: 'western' | 'eastern' | 'african' | 'latin_american' | 'middle_eastern' | 'oceanic' | 'mixed' | 'global'
+
+    // Assessment Scores (0-100 scale) - ⏳ PLANNED
+    assessmentMovementAlignment?: number
+    assessmentAudienceEngagement?: number
+    assessmentContentReadiness?: number
+    assessmentRevenuePotential?: number
+    assessmentNetworkEffects?: number
+    assessmentStrategicFit?: number
+    assessmentTotal?: number
+
+    // Leader Tier
+    leaderTier?: 'core' | 'network' | 'emerging' | 'community'
+
+    // Platform Configuration
+    subdomain?: string
+    customDomain?: string
+    platformTitle?: string
+
+    // Subscription & Access
+    subscriptionTier: 'free' | 'individual' | 'professional' | 'leader' | 'institutional'
+
+    // Theological Focus Areas
+    theologicalFocus: string[]
+
+    // Settings
+    brandColors: {
+      primary: string
+      secondary: string
+      accent: string
     }
-    createdAt: string
-    updatedAt: string
-    lastActiveAt: string
+    emailNotifications: {
+      dailyDigest: boolean
+      collaborationRequests: boolean
+      revenueReports: boolean
+      communityUpdates: boolean
+    }
+    privacySettings: {
+      publicProfile: boolean
+      showAssessmentResults: boolean
+      allowNetworking: boolean
+      shareAnalytics: boolean
+    }
+
+    // Onboarding & Status
+    onboardingCompleted: boolean
+    onboardingStep: number
+    accountStatus: 'active' | 'inactive' | 'suspended' | 'pending_verification'
+
+    createdAt: Date
+    updatedAt: Date
+    lastActiveAt: Date
   }
   success: boolean
 }
@@ -225,64 +289,121 @@ Get a paginated list of content items with search and filtering capabilities.
 
 ```typescript
 {
-  items: Array<{
-    id: string;
-    title: string;
-    slug: string;
-    excerpt: string;
-    content: string;
-    authorId: string;
-    contentType:
-      | 'article'
-      | 'video'
-      | 'podcast'
-      | 'framework'
-      | 'tool'
-      | 'case_study'
-      | 'interview'
-      | 'course_lesson';
-    format: 'text' | 'video' | 'audio' | 'interactive' | 'pdf' | 'presentation';
-    wordCount: number;
-    estimatedReadingTime: number;
-    viewCount: number;
-    likeCount: number;
-    shareCount: number;
-    commentCount: number;
-    bookmarkCount: number;
-    primaryCategoryId: string;
-    secondaryCategories: string[];
-    tags: string[];
-    theologicalThemes: string[];
-    seriesId?: string;
-    seriesOrder?: number;
-    visibility: 'public' | 'premium' | 'vip' | 'private' | 'organization';
-    status: 'draft' | 'published' | 'archived' | 'under_review' | 'scheduled';
-    featuredImageUrl?: string;
-    videoUrl?: string;
-    audioUrl?: string;
-    attachments: string[];
-    createdAt: string;
-    updatedAt: string;
-    publishedAt?: string;
-    scheduledAt?: string;
-    author: {
+  items: {
+    data: Array<{
       id: string;
-      firstName: string;
-      lastName: string;
-      displayName?: string;
-      avatarUrl?: string;
-    };
-    category?: {
-      id: string;
-      name: string;
+      title: string;
       slug: string;
-    };
-  }>;
-  total: number;
-  page: number;
-  limit: number;
-  hasNext: boolean;
-  hasPrev: boolean;
+      excerpt: string;
+      content: string;
+      authorId: string;
+      coAuthors: string[];
+      contentType:
+        | 'article'
+        | 'video'
+        | 'podcast'
+        | 'framework'
+        | 'tool'
+        | 'case_study'
+        | 'interview'
+        | 'course_lesson';
+      format:
+        | 'text'
+        | 'video'
+        | 'audio'
+        | 'interactive'
+        | 'pdf'
+        | 'presentation';
+      wordCount: number;
+      estimatedReadingTime: number;
+      viewCount: number;
+      likeCount: number;
+      shareCount: number;
+      commentCount: number;
+      bookmarkCount: number;
+      primaryCategoryId: string;
+      secondaryCategories: string[];
+      tags: string[];
+      theologicalThemes: string[];
+      seriesId?: string;
+      seriesOrder?: number;
+      visibility: 'public' | 'premium' | 'vip' | 'private' | 'organization';
+      status: 'draft' | 'published' | 'archived' | 'under_review' | 'scheduled';
+
+      // Network Amplification - ⏳ PLANNED
+      networkAmplificationScore: string;
+      crossReferenceCount: number;
+
+      // AI Enhancement
+      aiEnhanced: boolean;
+      aiSummary?: string;
+      aiKeyPoints: string[];
+
+      // Media & Assets
+      featuredImageUrl?: string;
+      videoUrl?: string;
+      audioUrl?: string;
+      attachments: Array<{
+        name: string;
+        url: string;
+        type: string;
+        size: number;
+      }>;
+
+      // SEO & Discovery
+      metaTitle?: string;
+      metaDescription?: string;
+      canonicalUrl?: string;
+
+      // Attribution & Permissions
+      originalSource?: string;
+      licenseType:
+        | 'all_rights_reserved'
+        | 'creative_commons'
+        | 'public_domain'
+        | 'fair_use';
+      attributionRequired: boolean;
+
+      // Computed fields for UI
+      isPublished: boolean;
+      isDraft: boolean;
+      isScheduled: boolean;
+      hasFeaturedImage: boolean;
+      hasVideo: boolean;
+      hasAudio: boolean;
+      readingTimeText: string;
+      viewCountText: string;
+      isAiEnhanced: boolean;
+
+      // Related data
+      author?: {
+        id: string;
+        firstName: string;
+        lastName: string;
+        displayName?: string;
+        avatarUrl?: string;
+      };
+      category?: {
+        id: string;
+        name: string;
+        slug: string;
+      };
+
+      createdAt: string;
+      updatedAt: string;
+      publishedAt?: string;
+      scheduledAt?: string;
+    }>;
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasNext: boolean;
+      hasPrev: boolean;
+    }
+  }
+  success: boolean;
 }
 ```
 
@@ -372,48 +493,63 @@ Get a paginated list of available assessments.
 
 ```typescript
 {
-  items: Array<{
-    id: string;
-    name: string;
-    description: string;
-    assessmentType:
-      | 'apest'
-      | 'mdna'
-      | 'cultural_intelligence'
-      | 'leadership_style'
-      | 'spiritual_gifts'
-      | 'other';
-    category: string;
-    status: 'draft' | 'active' | 'archived' | 'under_review';
-    timeLimitMinutes?: number;
-    language: string;
-    culturalAdaptation?:
-      | 'western'
-      | 'eastern'
-      | 'african'
-      | 'latin_american'
-      | 'middle_eastern'
-      | 'oceanic'
-      | 'universal';
-    researchBacked: boolean;
-    questions: Array<{
+  items: {
+    data: Array<{
       id: string;
-      text: string;
-      type: 'multiple_choice' | 'likert_scale' | 'text' | 'ranking';
-      options?: string[];
-      required: boolean;
+      name: string;
+      slug: string;
+      description: string;
+      assessmentType:
+        | 'apest'
+        | 'mdna'
+        | 'cultural_intelligence'
+        | 'leadership_style'
+        | 'spiritual_gifts'
+        | 'other';
+      questionsCount: number;
+      estimatedDuration?: number;
+      passingScore?: number;
+      version: string;
+      language: string;
+      culturalAdaptation:
+        | 'western'
+        | 'eastern'
+        | 'african'
+        | 'latin_american'
+        | 'middle_eastern'
+        | 'oceanic'
+        | 'universal';
+      researchBacked: boolean;
+      validityScore?: string;
+      reliabilityScore?: string;
+      instructions?: string;
+      scoringMethod:
+        | 'likert_5'
+        | 'likert_7'
+        | 'binary'
+        | 'ranking'
+        | 'weighted';
+      status: 'draft' | 'active' | 'archived' | 'under_review';
+
+      // Computed fields for UI
+      isPublished: boolean;
+      isActive: boolean;
+      estimatedDurationText: string;
+
+      createdAt: string;
+      updatedAt: string;
+      publishedAt?: string;
     }>;
-    scoringAlgorithm: string;
-    resultInterpretation: string;
-    createdAt: string;
-    updatedAt: string;
-    publishedAt?: string;
-  }>;
-  total: number;
-  page: number;
-  limit: number;
-  hasNext: boolean;
-  hasPrev: boolean;
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasNext: boolean;
+      hasPrev: boolean;
+    }
+  }
+  success: boolean;
 }
 ```
 
