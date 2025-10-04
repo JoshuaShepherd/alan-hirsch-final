@@ -7,13 +7,7 @@ const compat = new FlatCompat({
 });
 
 module.exports = [
-  ...compat.extends('next/core-web-vitals', {
-    settings: {
-      next: {
-        rootDir: __dirname,
-      },
-    },
-  }),
+  ...compat.extends('next/core-web-vitals'),
   {
     ignores: [
       'node_modules/**',
