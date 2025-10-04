@@ -1,7 +1,11 @@
-"use strict";
-// Database Package - Future home for database schemas and utilities
-// This will eventually contain Drizzle schemas and database utilities
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.placeholder = void 0;
-exports.placeholder = 'Database package placeholder';
+// Database Package - Database schemas and utilities
+// This package contains Drizzle schemas, Supabase client, and database utilities
+// Export database schemas
+export * from './db/schema';
+// Export database utilities
+export * from './db/drizzle';
+export * from './db/queries';
+// Export Supabase client
+export * from './supabase/client';
+export * from './supabase/server';
 //# sourceMappingURL=index.js.map

@@ -9,6 +9,50 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.js"
+    },
+    "./services": {
+      "types": "./dist/services/index.d.ts",
+      "import": "./dist/services/index.js",
+      "require": "./dist/services/index.js"
+    },
+    "./services/*": {
+      "types": "./dist/services/*.d.ts",
+      "import": "./dist/services/*.js",
+      "require": "./dist/services/*.js"
+    },
+    "./mappers": {
+      "types": "./dist/mappers/index.d.ts",
+      "import": "./dist/mappers/index.js",
+      "require": "./dist/mappers/index.js"
+    },
+    "./mappers/*": {
+      "types": "./dist/mappers/*.d.ts",
+      "import": "./dist/mappers/*.js",
+      "require": "./dist/mappers/*.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js",
+      "require": "./dist/utils/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "services": [
+        "./dist/services/index.d.ts"
+      ],
+      "services/*": [
+        "./dist/services/*.d.ts"
+      ],
+      "mappers": [
+        "./dist/mappers/index.d.ts"
+      ],
+      "mappers/*": [
+        "./dist/mappers/*.d.ts"
+      ],
+      "utils": [
+        "./dist/utils/index.d.ts"
+      ]
     }
   },
   "scripts": {
@@ -21,5 +65,9 @@
   },
   "dependencies": {
     "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
   }
 }

@@ -25,9 +25,9 @@ vi.mock('next/link', () => ({
   ),
 }));
 
-// Mock authentication hooks
-vi.mock('@/hooks', () => ({
-  useUserProfileAdapter: () => ({
+// Mock SWR
+vi.mock('swr', () => ({
+  default: () => ({
     data: {
       data: {
         id: 'test-user-id',
@@ -43,10 +43,41 @@ vi.mock('@/hooks', () => ({
         assessmentTotal: 450,
         leaderTier: 'Apostolic',
       },
+      success: true,
     },
-    isLoading: false,
     error: null,
+    isLoading: false,
   }),
+}));
+
+// Mock authentication hooks
+vi.mock('@/hooks', () => ({
+  useUserProfileAdapter: () => {
+    console.log('🔧 Mock useUserProfileAdapter called');
+    const mockData = {
+      data: {
+        data: {
+          id: 'test-user-id',
+          email: 'test@example.com',
+          firstName: 'Test',
+          lastName: 'User',
+          displayName: 'Test User',
+          ministryRole: 'senior_pastor',
+          accountStatus: 'active',
+          subscriptionTier: 'Free',
+          organizationName: 'Test Organization',
+          yearsInMinistry: 5,
+          assessmentTotal: 450,
+          leaderTier: 'Apostolic',
+        },
+        success: true,
+      },
+      isLoading: false,
+      error: null,
+    };
+    console.log('🔧 Mock returning data:', mockData);
+    return mockData;
+  },
 }));
 
 // Mock payment actions
@@ -174,11 +205,7 @@ describe('Phase 5.1: Page Loading Tests', () => {
     });
 
     it('should display user profile information correctly', () => {
-      render(
-        <Suspense fallback={<div>Loading...</div>}>
-          <DashboardPage />
-        </Suspense>
-      );
+      render(<DashboardPage />);
 
       // Check profile information
       expect(screen.getByText('Profile Information')).toBeInTheDocument();
@@ -190,11 +217,7 @@ describe('Phase 5.1: Page Loading Tests', () => {
     });
 
     it('should display subscription information correctly', () => {
-      render(
-        <Suspense fallback={<div>Loading...</div>}>
-          <DashboardPage />
-        </Suspense>
-      );
+      render(<DashboardPage />);
 
       // Check subscription information
       expect(screen.getByText('Subscription')).toBeInTheDocument();
@@ -204,11 +227,7 @@ describe('Phase 5.1: Page Loading Tests', () => {
     });
 
     it('should display assessment progress correctly', () => {
-      render(
-        <Suspense fallback={<div>Loading...</div>}>
-          <DashboardPage />
-        </Suspense>
-      );
+      render(<DashboardPage />);
 
       // Check assessment information
       expect(screen.getByText('Assessment Progress')).toBeInTheDocument();
@@ -218,11 +237,7 @@ describe('Phase 5.1: Page Loading Tests', () => {
     });
 
     it('should display quick action cards correctly', () => {
-      render(
-        <Suspense fallback={<div>Loading...</div>}>
-          <DashboardPage />
-        </Suspense>
-      );
+      render(<DashboardPage />);
 
       // Check quick action cards
       const takeAssessmentCard = screen
@@ -234,7 +249,7 @@ describe('Phase 5.1: Page Loading Tests', () => {
 
       expect(takeAssessmentCard).toHaveAttribute(
         'href',
-        '/dashboard/assessment'
+        '/dashboard/assessment/select'
       );
       expect(browseContentCard).toHaveAttribute('href', '/dashboard/content');
       expect(profileCard).toHaveAttribute('href', '/dashboard/general');

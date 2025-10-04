@@ -1,0 +1,634 @@
+// Component Props Types - Alan Hirsch Digital Platform
+// This file provides type-safe component prop interfaces derived from Zod schemas
+
+import {
+  assessmentSchema,
+  collaborationSchema,
+  communityPostSchema,
+  communitySchema,
+  contentCategorySchema,
+  contentItemSchema,
+  contentSeriesSchema,
+  organizationSchema,
+  subscriptionPlanSchema,
+  userAssessmentSchema,
+  userProfileSchema,
+  userSubscriptionSchema,
+} from '@/validations';
+import { z } from 'zod';
+
+// ============================================================================
+// Base Component Props
+// ============================================================================
+
+export interface BaseComponentProps {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export interface LoadingStateProps {
+  isLoading: boolean;
+  error?: Error | null;
+}
+
+export interface EmptyStateProps {
+  title: string;
+  description?: string;
+  icon?: React.ReactNode;
+  action?: React.ReactNode;
+}
+
+// ============================================================================
+// Generic Entity Display Props
+// ============================================================================
+
+export interface EntityDisplayProps<T> extends BaseComponentProps {
+  data: T;
+  isLoading?: boolean;
+  error?: Error | null;
+  onEdit?: (item: T) => void;
+  onDelete?: (id: string) => void;
+  onView?: (item: T) => void;
+}
+
+export interface EntityListProps<T> extends BaseComponentProps {
+  items: T[];
+  isLoading?: boolean;
+  error?: Error | null;
+  emptyMessage?: string;
+  emptyIcon?: React.ReactNode;
+  renderItem: (item: T, index: number) => React.ReactNode;
+  onItemClick?: (item: T) => void;
+  onItemEdit?: (item: T) => void;
+  onItemDelete?: (id: string) => void;
+}
+
+export interface EntityCardProps<T> extends BaseComponentProps {
+  item: T;
+  variant?: 'default' | 'compact' | 'detailed' | 'minimal';
+  showActions?: boolean;
+  showStats?: boolean;
+  onEdit?: (item: T) => void;
+  onDelete?: (id: string) => void;
+  onView?: (item: T) => void;
+}
+
+// ============================================================================
+// Data Table Props
+// ============================================================================
+
+export interface ColumnDef<T> {
+  key: keyof T;
+  label: string;
+  sortable?: boolean;
+  filterable?: boolean;
+  render?: (item: T) => React.ReactNode;
+  width?: string;
+  align?: 'left' | 'center' | 'right';
+}
+
+export interface DataTableProps<T> extends BaseComponentProps {
+  data: T[];
+  columns: ColumnDef<T>[];
+  isLoading?: boolean;
+  error?: Error | null;
+  sortBy?: keyof T;
+  sortOrder?: 'asc' | 'desc';
+  onSort?: (column: keyof T) => void;
+  onRowClick?: (item: T) => void;
+  selectable?: boolean;
+  selectedItems?: T[];
+  onSelectionChange?: (items: T[]) => void;
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    onPageChange: (page: number) => void;
+  };
+}
+
+// ============================================================================
+// User Profile Component Props
+// ============================================================================
+
+export interface UserCardProps
+  extends EntityCardProps<z.infer<typeof userProfileSchema>> {
+  showMinistryInfo?: boolean;
+  showAssessmentScores?: boolean;
+  showContactInfo?: boolean;
+  showStats?: boolean;
+}
+
+export interface UserListProps
+  extends EntityListProps<z.infer<typeof userProfileSchema>> {
+  view?: 'grid' | 'list' | 'table';
+  showFilters?: boolean;
+  filters?: {
+    ministryRole?: string;
+    countryCode?: string;
+    leaderTier?: string;
+    subscriptionTier?: string;
+  };
+  onFilterChange?: (filters: Record<string, unknown>) => void;
+}
+
+export interface UserProfileProps
+  extends EntityDisplayProps<z.infer<typeof userProfileSchema>> {
+  showFullProfile?: boolean;
+  showAssessmentResults?: boolean;
+  showCommunityActivity?: boolean;
+  showCollaborationHistory?: boolean;
+}
+
+export interface UserAvatarProps extends BaseComponentProps {
+  user: z.infer<typeof userProfileSchema>;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  showOnlineStatus?: boolean;
+  showMinistryRole?: boolean;
+}
+
+// ============================================================================
+// Organization Component Props
+// ============================================================================
+
+export interface OrganizationCardProps
+  extends EntityCardProps<z.infer<typeof organizationSchema>> {
+  showMemberCount?: boolean;
+  showContactInfo?: boolean;
+  showLicenseInfo?: boolean;
+}
+
+export interface OrganizationListProps
+  extends EntityListProps<z.infer<typeof organizationSchema>> {
+  view?: 'grid' | 'list' | 'table';
+  showFilters?: boolean;
+  filters?: {
+    organizationType?: string;
+    sizeCategory?: string;
+    status?: string;
+  };
+  onFilterChange?: (filters: Record<string, unknown>) => void;
+}
+
+export interface OrganizationProfileProps
+  extends EntityDisplayProps<z.infer<typeof organizationSchema>> {
+  showMembers?: boolean;
+  showSubscriptionInfo?: boolean;
+  showActivity?: boolean;
+}
+
+// ============================================================================
+// Assessment Component Props
+// ============================================================================
+
+export interface AssessmentCardProps
+  extends EntityCardProps<z.infer<typeof assessmentSchema>> {
+  showQuestionCount?: boolean;
+  showDuration?: boolean;
+  showValidityScores?: boolean;
+  showCulturalAdaptation?: boolean;
+}
+
+export interface AssessmentListProps
+  extends EntityListProps<z.infer<typeof assessmentSchema>> {
+  view?: 'grid' | 'list' | 'table';
+  showFilters?: boolean;
+  filters?: {
+    assessmentType?: string;
+    status?: string;
+    language?: string;
+    researchBacked?: boolean;
+  };
+  onFilterChange?: (filters: Record<string, unknown>) => void;
+}
+
+export interface AssessmentDetailsProps
+  extends EntityDisplayProps<z.infer<typeof assessmentSchema>> {
+  showQuestions?: boolean;
+  showStatistics?: boolean;
+  showUserResults?: boolean;
+  allowTakeAssessment?: boolean;
+  onStartAssessment?: (assessmentId: string) => void;
+}
+
+export interface UserAssessmentCardProps
+  extends EntityCardProps<z.infer<typeof userAssessmentSchema>> {
+  showProgress?: boolean;
+  showScores?: boolean;
+  showRecommendations?: boolean;
+  showCompletionStatus?: boolean;
+}
+
+export interface UserAssessmentListProps
+  extends EntityListProps<z.infer<typeof userAssessmentSchema>> {
+  showFilters?: boolean;
+  filters?: {
+    completed?: boolean;
+    assessmentType?: string;
+  };
+  onFilterChange?: (filters: Record<string, unknown>) => void;
+}
+
+// ============================================================================
+// Content Component Props
+// ============================================================================
+
+export interface ContentItemCardProps
+  extends EntityCardProps<z.infer<typeof contentItemSchema>> {
+  showAuthor?: boolean;
+  showStats?: boolean;
+  showExcerpt?: boolean;
+  showTags?: boolean;
+  showCategory?: boolean;
+}
+
+export interface ContentItemListProps
+  extends EntityListProps<z.infer<typeof contentItemSchema>> {
+  view?: 'grid' | 'list' | 'table';
+  showFilters?: boolean;
+  filters?: {
+    contentType?: string;
+    status?: string;
+    category?: string;
+    author?: string;
+  };
+  onFilterChange?: (filters: Record<string, unknown>) => void;
+}
+
+export interface ContentItemDetailsProps
+  extends EntityDisplayProps<z.infer<typeof contentItemSchema>> {
+  showFullContent?: boolean;
+  showRelatedContent?: boolean;
+  showComments?: boolean;
+  allowBookmark?: boolean;
+  onBookmark?: (contentId: string) => void;
+}
+
+export interface ContentSeriesCardProps
+  extends EntityCardProps<z.infer<typeof contentSeriesSchema>> {
+  showItemCount?: boolean;
+  showDuration?: boolean;
+  showDifficulty?: boolean;
+  showAuthor?: boolean;
+}
+
+export interface ContentSeriesListProps
+  extends EntityListProps<z.infer<typeof contentSeriesSchema>> {
+  view?: 'grid' | 'list' | 'table';
+  showFilters?: boolean;
+  filters?: {
+    seriesType?: string;
+    difficulty?: string;
+    status?: string;
+  };
+  onFilterChange?: (filters: Record<string, unknown>) => void;
+}
+
+export interface ContentSeriesDetailsProps
+  extends EntityDisplayProps<z.infer<typeof contentSeriesSchema>> {
+  showItems?: boolean;
+  showProgress?: boolean;
+  allowEnroll?: boolean;
+  onEnroll?: (seriesId: string) => void;
+}
+
+export interface ContentCategoryCardProps
+  extends EntityCardProps<z.infer<typeof contentCategorySchema>> {
+  showItemCount?: boolean;
+  showMovementScore?: boolean;
+  showApesetScores?: boolean;
+}
+
+export interface ContentCategoryListProps
+  extends EntityListProps<z.infer<typeof contentCategorySchema>> {
+  view?: 'grid' | 'list' | 'table';
+  showHierarchy?: boolean;
+  showFilters?: boolean;
+  filters?: {
+    theologicalDiscipline?: string;
+    isActive?: boolean;
+  };
+  onFilterChange?: (filters: Record<string, unknown>) => void;
+}
+
+// ============================================================================
+// Community Component Props
+// ============================================================================
+
+export interface CommunityCardProps
+  extends EntityCardProps<z.infer<typeof communitySchema>> {
+  showMemberCount?: boolean;
+  showPostCount?: boolean;
+  showModerationLevel?: boolean;
+  showJoinStatus?: boolean;
+}
+
+export interface CommunityListProps
+  extends EntityListProps<z.infer<typeof communitySchema>> {
+  view?: 'grid' | 'list' | 'table';
+  showFilters?: boolean;
+  filters?: {
+    communityType?: string;
+    visibility?: string;
+    joinApprovalRequired?: boolean;
+  };
+  onFilterChange?: (filters: Record<string, unknown>) => void;
+}
+
+export interface CommunityDetailsProps
+  extends EntityDisplayProps<z.infer<typeof communitySchema>> {
+  showPosts?: boolean;
+  showMembers?: boolean;
+  showGuidelines?: boolean;
+  allowJoin?: boolean;
+  onJoin?: (communityId: string) => void;
+}
+
+export interface CommunityPostCardProps
+  extends EntityCardProps<z.infer<typeof communityPostSchema>> {
+  showAuthor?: boolean;
+  showEngagement?: boolean;
+  showTags?: boolean;
+  showReplyCount?: boolean;
+  allowVote?: boolean;
+  onVote?: (postId: string, voteType: 'upvote' | 'downvote') => void;
+}
+
+export interface CommunityPostListProps
+  extends EntityListProps<z.infer<typeof communityPostSchema>> {
+  showFilters?: boolean;
+  filters?: {
+    postType?: string;
+    status?: string;
+    author?: string;
+  };
+  onFilterChange?: (filters: Record<string, unknown>) => void;
+}
+
+// ============================================================================
+// Subscription Component Props
+// ============================================================================
+
+export interface SubscriptionPlanCardProps
+  extends EntityCardProps<z.infer<typeof subscriptionPlanSchema>> {
+  showPricing?: boolean;
+  showFeatures?: boolean;
+  showPopular?: boolean;
+  showTrialInfo?: boolean;
+  currentPlan?: boolean;
+}
+
+export interface SubscriptionPlanListProps
+  extends EntityListProps<z.infer<typeof subscriptionPlanSchema>> {
+  view?: 'grid' | 'list' | 'table';
+  showFilters?: boolean;
+  filters?: {
+    planType?: string;
+    isActive?: boolean;
+    isPopular?: boolean;
+  };
+  onFilterChange?: (filters: Record<string, unknown>) => void;
+  onSelectPlan?: (planId: string) => void;
+}
+
+export interface UserSubscriptionCardProps
+  extends EntityCardProps<z.infer<typeof userSubscriptionSchema>> {
+  showUsage?: boolean;
+  showBillingInfo?: boolean;
+  showNextBilling?: boolean;
+  allowManage?: boolean;
+  onManage?: (subscriptionId: string) => void;
+}
+
+export interface UserSubscriptionListProps
+  extends EntityListProps<z.infer<typeof userSubscriptionSchema>> {
+  showFilters?: boolean;
+  filters?: {
+    status?: string;
+    billingCycle?: string;
+  };
+  onFilterChange?: (filters: Record<string, unknown>) => void;
+}
+
+// ============================================================================
+// Collaboration Component Props
+// ============================================================================
+
+export interface CollaborationCardProps
+  extends EntityCardProps<z.infer<typeof collaborationSchema>> {
+  showCollaborators?: boolean;
+  showProgress?: boolean;
+  showRevenue?: boolean;
+  showDeliverables?: boolean;
+}
+
+export interface CollaborationListProps
+  extends EntityListProps<z.infer<typeof collaborationSchema>> {
+  view?: 'grid' | 'list' | 'table';
+  showFilters?: boolean;
+  filters?: {
+    collaborationType?: string;
+    status?: string;
+    leadAuthor?: string;
+  };
+  onFilterChange?: (filters: Record<string, unknown>) => void;
+}
+
+export interface CollaborationDetailsProps
+  extends EntityDisplayProps<z.infer<typeof collaborationSchema>> {
+  showCollaborators?: boolean;
+  showDeliverables?: boolean;
+  showCommunication?: boolean;
+  showRevenue?: boolean;
+  allowJoin?: boolean;
+  onJoin?: (collaborationId: string) => void;
+}
+
+// ============================================================================
+// Search & Filter Props
+// ============================================================================
+
+export interface SearchProps extends BaseComponentProps {
+  placeholder?: string;
+  value?: string;
+  onChange?: (value: string) => void;
+  onSearch?: (query: string) => void;
+  debounceMs?: number;
+  suggestions?: string[];
+  onSuggestionSelect?: (suggestion: string) => void;
+}
+
+export interface FilterProps extends BaseComponentProps {
+  filters: Record<string, unknown>;
+  onFilterChange: (filters: Record<string, unknown>) => void;
+  onClearFilters?: () => void;
+  showClearAll?: boolean;
+}
+
+export interface PaginationProps extends BaseComponentProps {
+  page: number;
+  limit: number;
+  total: number;
+  onPageChange: (page: number) => void;
+  onLimitChange?: (limit: number) => void;
+  showLimitSelector?: boolean;
+  showInfo?: boolean;
+}
+
+// ============================================================================
+// Stats & Analytics Props
+// ============================================================================
+
+export interface StatsCardProps extends BaseComponentProps {
+  title: string;
+  value: string | number;
+  change?: {
+    value: number;
+    type: 'increase' | 'decrease' | 'neutral';
+    period: string;
+  };
+  icon?: React.ReactNode;
+  loading?: boolean;
+}
+
+export interface StatsGridProps extends BaseComponentProps {
+  stats: Array<{
+    title: string;
+    value: string | number;
+    change?: {
+      value: number;
+      type: 'increase' | 'decrease' | 'neutral';
+      period: string;
+    };
+    icon?: React.ReactNode;
+  }>;
+  loading?: boolean;
+}
+
+// ============================================================================
+// Form Integration Props
+// ============================================================================
+
+export interface EntityFormProps<T> extends BaseComponentProps {
+  entity?: T;
+  mode: 'create' | 'edit';
+  onSubmit: (data: T) => void;
+  onCancel?: () => void;
+  loading?: boolean;
+  validationErrors?: Record<string, string>;
+}
+
+export interface EntityFormModalProps<T> extends EntityFormProps<T> {
+  isOpen: boolean;
+  title: string;
+  description?: string;
+}
+
+// ============================================================================
+// Runtime Validation Schemas for Component Props
+// ============================================================================
+
+// User Profile Display Schema
+export const userCardPropsSchema = z.object({
+  item: userProfileSchema,
+  variant: z.enum(['default', 'compact', 'detailed', 'minimal']).optional(),
+  showActions: z.boolean().optional(),
+  showStats: z.boolean().optional(),
+  showMinistryInfo: z.boolean().optional(),
+  showAssessmentScores: z.boolean().optional(),
+  showContactInfo: z.boolean().optional(),
+  className: z.string().optional(),
+});
+
+// Assessment Display Schema
+export const assessmentCardPropsSchema = z.object({
+  item: assessmentSchema,
+  variant: z.enum(['default', 'compact', 'detailed', 'minimal']).optional(),
+  showActions: z.boolean().optional(),
+  showStats: z.boolean().optional(),
+  showQuestionCount: z.boolean().optional(),
+  showDuration: z.boolean().optional(),
+  showValidityScores: z.boolean().optional(),
+  showCulturalAdaptation: z.boolean().optional(),
+  className: z.string().optional(),
+});
+
+// Content Item Display Schema
+export const contentItemCardPropsSchema = z.object({
+  item: contentItemSchema,
+  variant: z.enum(['default', 'compact', 'detailed', 'minimal']).optional(),
+  showActions: z.boolean().optional(),
+  showStats: z.boolean().optional(),
+  showAuthor: z.boolean().optional(),
+  showExcerpt: z.boolean().optional(),
+  showTags: z.boolean().optional(),
+  showCategory: z.boolean().optional(),
+  className: z.string().optional(),
+});
+
+// Community Display Schema
+export const communityCardPropsSchema = z.object({
+  item: communitySchema,
+  variant: z.enum(['default', 'compact', 'detailed', 'minimal']).optional(),
+  showActions: z.boolean().optional(),
+  showStats: z.boolean().optional(),
+  showMemberCount: z.boolean().optional(),
+  showPostCount: z.boolean().optional(),
+  showModerationLevel: z.boolean().optional(),
+  showJoinStatus: z.boolean().optional(),
+  className: z.string().optional(),
+});
+
+// Subscription Plan Display Schema
+export const subscriptionPlanCardPropsSchema = z.object({
+  item: subscriptionPlanSchema,
+  variant: z.enum(['default', 'compact', 'detailed', 'minimal']).optional(),
+  showActions: z.boolean().optional(),
+  showStats: z.boolean().optional(),
+  showPricing: z.boolean().optional(),
+  showFeatures: z.boolean().optional(),
+  showPopular: z.boolean().optional(),
+  showTrialInfo: z.boolean().optional(),
+  currentPlan: z.boolean().optional(),
+  className: z.string().optional(),
+});
+
+// ============================================================================
+// Type Exports
+// ============================================================================
+
+export type UserCardProps = z.infer<typeof userCardPropsSchema>;
+export type AssessmentCardProps = z.infer<typeof assessmentCardPropsSchema>;
+export type ContentItemCardProps = z.infer<typeof contentItemCardPropsSchema>;
+export type CommunityCardProps = z.infer<typeof communityCardPropsSchema>;
+export type SubscriptionPlanCardProps = z.infer<
+  typeof subscriptionPlanCardPropsSchema
+>;
+
+// Generic types for reuse
+export type EntityType =
+  | z.infer<typeof userProfileSchema>
+  | z.infer<typeof organizationSchema>
+  | z.infer<typeof assessmentSchema>
+  | z.infer<typeof contentItemSchema>
+  | z.infer<typeof contentSeriesSchema>
+  | z.infer<typeof contentCategorySchema>
+  | z.infer<typeof communitySchema>
+  | z.infer<typeof subscriptionPlanSchema>
+  | z.infer<typeof userSubscriptionSchema>
+  | z.infer<typeof userAssessmentSchema>
+  | z.infer<typeof communityPostSchema>
+  | z.infer<typeof collaborationSchema>;
+
+// Component prop validation helper
+export function validateComponentProps<T>(
+  props: unknown,
+  schema: z.ZodSchema<T>
+): T {
+  const result = schema.safeParse(props);
+  if (!result.success) {
+    console.error('Component props validation failed:', result.error);
+    throw new Error(`Invalid component props: ${result.error.message}`);
+  }
+  return result.data;
+}

@@ -29,7 +29,29 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@platform/*": ["./packages/*/src"]
+      "@platform/contracts": [
+        "./packages/contracts/src",
+        "./packages/contracts/dist"
+      ],
+      "@platform/contracts/*": [
+        "./packages/contracts/src/*",
+        "./packages/contracts/dist/*"
+      ],
+      "@platform/ui": ["./packages/ui/src", "./packages/ui/dist"],
+      "@platform/ui/*": ["./packages/ui/src/*", "./packages/ui/dist/*"],
+      "@platform/database": [
+        "./packages/database/src",
+        "./packages/database/dist"
+      ],
+      "@platform/database/*": [
+        "./packages/database/src/*",
+        "./packages/database/dist/*"
+      ],
+      "@platform/shared": ["./packages/shared/src", "./packages/shared/dist"],
+      "@platform/shared/*": [
+        "./packages/shared/src/*",
+        "./packages/shared/dist/*"
+      ]
     }
   },
   "exclude": [

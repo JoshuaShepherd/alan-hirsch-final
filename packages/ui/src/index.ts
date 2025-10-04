@@ -1,5 +1,51 @@
-// UI Package - Future home for shared UI components
-// This will eventually contain components extracted from the main app
+// UI Package - Shared UI components
+// This package contains all reusable UI components extracted from the main app
 
-export const placeholder = 'UI package placeholder';
+// Export all UI components
+export * from './accordion';
+export * from './alert';
+export * from './alert-dialog';
+export * from './aspect-ratio';
+export * from './avatar';
+export * from './badge';
+export * from './breadcrumb';
+export * from './button';
+export * from './calendar';
+export * from './card';
+export * from './carousel';
+export * from './checkbox';
+export * from './collapsible';
+export * from './command';
+export * from './context-menu';
+export * from './dialog';
+export * from './drawer';
+export * from './dropdown-menu';
+export * from './form';
+export * from './hover-card';
+export * from './input';
+export * from './input-otp';
+export * from './label';
+export * from './menubar';
+export * from './navigation-menu';
+export * from './pagination';
+export * from './popover';
+export * from './progress';
+export * from './radio-group';
+export * from './resizable';
+export * from './rich-text-editor';
+export * from './scroll-area';
+export * from './select';
+export * from './separator';
+export * from './sheet';
+export * from './skeleton';
+export * from './slider';
+export * from './sonner';
+export * from './switch';
+export * from './table';
+export * from './tabs';
+export * from './textarea';
+export * from './toggle';
+export * from './toggle-group';
+export * from './tooltip';
 
+// Auth components moved to app-specific components since they depend on database package

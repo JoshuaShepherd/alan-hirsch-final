@@ -1,4 +1,2448 @@
 
+
 > @platform/shared@0.1.0 build /Users/joshshepherd/Projects/alan-hirsch-final/packages/shared
 > tsc
 
+[96msrc/api/bulk-operations.ts[0m:[93m216[0m:[93m3[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'BulkOperation'.
+
+[7m216[0m   BulkOperation,
+[7m   [0m [91m  ~~~~~~~~~~~~~[0m
+
+[96msrc/api/bulk-operations.ts[0m:[93m217[0m:[93m3[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'BulkOperationResponse'.
+
+[7m217[0m   BulkOperationResponse,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/bulk-operations.ts[0m:[93m218[0m:[93m3[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'BulkOperationResult'.
+
+[7m218[0m   BulkOperationResult,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/bulk-operations.ts[0m:[93m219[0m:[93m3[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'FileUploadConfig'.
+
+[7m219[0m   FileUploadConfig,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/ministry-platform-middleware.ts[0m:[93m6[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/contracts' or its corresponding type declarations.
+
+[7m6[0m } from '@/lib/contracts';
+[7m [0m [91m       ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/ministry-platform-middleware.ts[0m:[93m420[0m:[93m53[0m - [91merror[0m[90m TS4111: [0mProperty 'viewer' comes from an index signature, so it must be accessed with ['viewer'].
+
+[7m420[0m   return fieldPermissions[role] || fieldPermissions.viewer;
+[7m   [0m [91m                                                    ~~~~~~[0m
+
+[96msrc/api/ministry-platform-validation.ts[0m:[93m6[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/contracts' or its corresponding type declarations.
+
+[7m6[0m } from '@/lib/contracts';
+[7m [0m [91m       ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/ministry-platform-validation.ts[0m:[93m463[0m:[93m53[0m - [91merror[0m[90m TS4111: [0mProperty 'viewer' comes from an index signature, so it must be accessed with ['viewer'].
+
+[7m463[0m   return fieldPermissions[role] || fieldPermissions.viewer;
+[7m   [0m [91m                                                    ~~~~~~[0m
+
+[96msrc/api/ministry-route-handler.ts[0m:[93m4[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/contracts' or its corresponding type declarations.
+
+[7m4[0m } from '@/lib/contracts';
+[7m [0m [91m       ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/ministry-route-handler.ts[0m:[93m5[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/supabase/server' or its corresponding type declarations.
+
+[7m5[0m import { createClient } from '@/lib/supabase/server';
+[7m [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/ministry-route-handler.ts[0m:[93m63[0m:[93m17[0m - [91merror[0m[90m TS2742: [0mThe inferred type of 'createMinistryRouteHandler' cannot be named without a reference to '.pnpm/undici-types@6.21.0/node_modules/undici-types'. This is likely not portable. A type annotation is necessary.
+
+[7m63[0m export function createMinistryRouteHandler<TInput, TOutput>(config: {
+[7m  [0m [91m                ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/ministry-route-handler.ts[0m:[93m225[0m:[93m17[0m - [91merror[0m[90m TS2742: [0mThe inferred type of 'createMinistryPaginatedRouteHandler' cannot be named without a reference to '.pnpm/undici-types@6.21.0/node_modules/undici-types'. This is likely not portable. A type annotation is necessary.
+
+[7m225[0m export function createMinistryPaginatedRouteHandler<TInput, TOutput>(config: {
+[7m   [0m [91m                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/ministry-route-handler.ts[0m:[93m405[0m:[93m17[0m - [91merror[0m[90m TS2742: [0mThe inferred type of 'createMinistrySuccessResponse' cannot be named without a reference to '.pnpm/undici-types@6.21.0/node_modules/undici-types'. This is likely not portable. A type annotation is necessary.
+
+[7m405[0m export function createMinistrySuccessResponse<T>(
+[7m   [0m [91m                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/ministry-route-handler.ts[0m:[93m458[0m:[93m17[0m - [91merror[0m[90m TS2742: [0mThe inferred type of 'createMinistryPaginatedResponse' cannot be named without a reference to '.pnpm/undici-types@6.21.0/node_modules/undici-types'. This is likely not portable. A type annotation is necessary.
+
+[7m458[0m export function createMinistryPaginatedResponse<T>(
+[7m   [0m [91m                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/ministry-route-handler.ts[0m:[93m558[0m:[93m3[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'AuthenticatedMinistryUser'.
+
+[7m558[0m   AuthenticatedMinistryUser,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/ministry-route-handler.ts[0m:[93m559[0m:[93m3[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'MinistryPaginatedRouteHandler'.
+
+[7m559[0m   MinistryPaginatedRouteHandler,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/ministry-route-handler.ts[0m:[93m560[0m:[93m3[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'MinistryRouteContext'.
+
+[7m560[0m   MinistryRouteContext,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/ministry-route-handler.ts[0m:[93m561[0m:[93m3[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'MinistryRouteHandler'.
+
+[7m561[0m   MinistryRouteHandler,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/route-handler.ts[0m:[93m1[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/supabase/server' or its corresponding type declarations.
+
+[7m1[0m import { createClient } from '@/lib/supabase/server';
+[7m [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/route-handler.ts[0m:[93m299[0m:[93m34[0m - [91merror[0m[90m TS4111: [0mProperty 'id' comes from an index signature, so it must be accessed with ['id'].
+
+[7m299[0m       const id = context.params?.id;
+[7m   [0m [91m                                 ~~[0m
+
+[96msrc/api/route-handler.ts[0m:[93m327[0m:[93m34[0m - [91merror[0m[90m TS4111: [0mProperty 'id' comes from an index signature, so it must be accessed with ['id'].
+
+[7m327[0m       const id = context.params?.id;
+[7m   [0m [91m                                 ~~[0m
+
+[96msrc/api/route-handler.ts[0m:[93m345[0m:[93m34[0m - [91merror[0m[90m TS4111: [0mProperty 'id' comes from an index signature, so it must be accessed with ['id'].
+
+[7m345[0m       const id = context.params?.id;
+[7m   [0m [91m                                 ~~[0m
+
+[96msrc/api/route-handler.ts[0m:[93m424[0m:[93m3[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'AuthenticatedUser'.
+
+[7m424[0m   AuthenticatedUser,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/route-handler.ts[0m:[93m425[0m:[93m3[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'PaginatedRouteHandler'.
+
+[7m425[0m   PaginatedRouteHandler,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/route-handler.ts[0m:[93m426[0m:[93m3[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'RouteContext'.
+
+[7m426[0m   RouteContext,
+[7m   [0m [91m  ~~~~~~~~~~~~[0m
+
+[96msrc/api/route-handler.ts[0m:[93m427[0m:[93m3[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'RouteHandler'.
+
+[7m427[0m   RouteHandler,
+[7m   [0m [91m  ~~~~~~~~~~~~[0m
+
+[96msrc/api/security.ts[0m:[93m216[0m:[93m17[0m - [91merror[0m[90m TS2742: [0mThe inferred type of 'withCORS' cannot be named without a reference to '.pnpm/undici-types@6.21.0/node_modules/undici-types'. This is likely not portable. A type annotation is necessary.
+
+[7m216[0m export function withCORS(
+[7m   [0m [91m                ~~~~~~~~[0m
+
+[96msrc/api/utils.ts[0m:[93m3[0m:[93m20[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/drizzle' or its corresponding type declarations.
+
+[7m3[0m import { db } from '@/lib/db/drizzle';
+[7m [0m [91m                   ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/utils.ts[0m:[93m4[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/supabase/server' or its corresponding type declarations.
+
+[7m4[0m import { createClient } from '@/lib/supabase/server';
+[7m [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/api/validation-middleware.ts[0m:[93m3[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/supabase/server' or its corresponding type declarations.
+
+[7m3[0m import { createClient } from '@/lib/supabase/server';
+[7m [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/assessments/scoring.ts[0m:[93m4[0m:[93m61[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/contracts' or its corresponding type declarations.
+
+[7m4[0m import type { AssessmentQuestion, AssessmentResponse } from '@/lib/contracts';
+[7m [0m [91m                                                            ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/auth/middleware.ts[0m:[93m1[0m:[93m29[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/contracts' or its corresponding type declarations.
+
+[7m1[0m import { UserProfile } from '@/lib/contracts';
+[7m [0m [91m                            ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/auth/middleware.ts[0m:[93m2[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/queries' or its corresponding type declarations.
+
+[7m2[0m import { getUser } from '@/lib/db/queries';
+[7m [0m [91m                        ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/auth/middleware.ts[0m:[93m3[0m:[93m34[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/mappers/user-profiles' or its corresponding type declarations.
+
+[7m3[0m import { toUserProfileDTO } from '@/lib/mappers/user-profiles';
+[7m [0m [91m                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/auth/session.ts[0m:[93m4[0m:[93m45[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/contracts' or its corresponding type declarations.
+
+[7m4[0m import { UserProfile, NewUserProfile } from '@/lib/contracts';
+[7m [0m [91m                                            ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/api-responses.ts[0m:[93m79[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations' or its corresponding type declarations.
+
+[7m79[0m } from '../../validations';
+[7m  [0m [91m       ~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m17[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/shared' or its corresponding type declarations.
+
+[7m17[0m } from '../../validations/shared';
+[7m  [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m27[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/auth' or its corresponding type declarations.
+
+[7m27[0m } from '../../validations/auth';
+[7m  [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m45[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/assessments' or its corresponding type declarations.
+
+[7m45[0m } from '../../validations/assessments';
+[7m  [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m90[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/content' or its corresponding type declarations.
+
+[7m90[0m } from '../../validations/content';
+[7m  [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m104[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/ai' or its corresponding type declarations.
+
+[7m104[0m } from '../../validations/ai';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m118[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/community' or its corresponding type declarations.
+
+[7m118[0m } from '../../validations/community';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m132[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/subscriptions' or its corresponding type declarations.
+
+[7m132[0m } from '../../validations/subscriptions';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m146[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/analytics' or its corresponding type declarations.
+
+[7m146[0m } from '../../validations/analytics';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m164[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/system' or its corresponding type declarations.
+
+[7m164[0m } from '../../validations/system';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m179[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/shared' or its corresponding type declarations.
+
+[7m179[0m } from '../../validations/shared';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m189[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/auth' or its corresponding type declarations.
+
+[7m189[0m } from '../../validations/auth';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m206[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/assessments' or its corresponding type declarations.
+
+[7m206[0m } from '../../validations/assessments';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m245[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/content' or its corresponding type declarations.
+
+[7m245[0m } from '../../validations/content';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m290[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/ai' or its corresponding type declarations.
+
+[7m290[0m } from '../../validations/ai';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m332[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/community' or its corresponding type declarations.
+
+[7m332[0m } from '../../validations/community';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m344[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/subscriptions' or its corresponding type declarations.
+
+[7m344[0m } from '../../validations/subscriptions';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m352[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/analytics' or its corresponding type declarations.
+
+[7m352[0m } from '../../validations/analytics';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m370[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/system' or its corresponding type declarations.
+
+[7m370[0m } from '../../validations/system';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m417[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../db/schema' or its corresponding type declarations.
+
+[7m417[0m } from '../db/schema';
+[7m   [0m [91m       ~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m579[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/ministry-platform' or its corresponding type declarations.
+
+[7m579[0m } from '../../validations/ministry-platform';
+[7m   [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m806[0m:[93m36[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/content' or its corresponding type declarations.
+
+[7m806[0m export type ContentRowDTO = import('../../validations/content').ContentItem & {
+[7m   [0m [91m                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m822[0m:[93m40[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/auth' or its corresponding type declarations.
+
+[7m822[0m export type UserProfileRowDTO = import('../../validations/auth').UserProfile;
+[7m   [0m [91m                                       ~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m826[0m:[93m10[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/assessments' or its corresponding type declarations.
+
+[7m826[0m   import('../../validations/assessments').Assessment;
+[7m   [0m [91m         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m830[0m:[93m10[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/assessments' or its corresponding type declarations.
+
+[7m830[0m   import('../../validations/assessments').UserAssessment & {
+[7m   [0m [91m         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m845[0m:[93m41[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/auth' or its corresponding type declarations.
+
+[7m845[0m export type OrganizationRowDTO = import('../../validations/auth').Organization;
+[7m   [0m [91m                                        ~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/index.ts[0m:[93m848[0m:[93m38[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/community' or its corresponding type declarations.
+
+[7m848[0m export type CommunityRowDTO = import('../../validations/community').Community;
+[7m   [0m [91m                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/ministry-platform.request.ts[0m:[93m7[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/shared' or its corresponding type declarations.
+
+[7m7[0m } from '../../validations/shared';
+[7m [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/ministry-platform.response.ts[0m:[93m9[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/ministry-platform' or its corresponding type declarations.
+
+[7m9[0m } from '../../validations/ministry-platform';
+[7m [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/contracts/ministry-platform.response.ts[0m:[93m14[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../validations/shared' or its corresponding type declarations.
+
+[7m14[0m } from '../../validations/shared';
+[7m  [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/forms/base-form.tsx[0m:[93m1[0m:[93m41[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/components/ui/alert' or its corresponding type declarations.
+
+[7m1[0m import { Alert, AlertDescription } from '@/components/ui/alert';
+[7m [0m [91m                                        ~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/forms/base-form.tsx[0m:[93m2[0m:[93m24[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/components/ui/button' or its corresponding type declarations.
+
+[7m2[0m import { Button } from '@/components/ui/button';
+[7m [0m [91m                       ~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/forms/base-form.tsx[0m:[93m3[0m:[93m20[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/utils' or its corresponding type declarations.
+
+[7m3[0m import { cn } from '@/lib/utils';
+[7m [0m [91m                   ~~~~~~~~~~~~~[0m
+
+[96msrc/forms/base-form.tsx[0m:[93m10[0m:[93m23[0m - [91merror[0m[90m TS2344: [0mType 'TFormData' does not satisfy the constraint 'FieldValues'.
+
+[7m10[0m   form: UseFormReturn<TFormData>;
+[7m  [0m [91m                      ~~~~~~~~~[0m
+
+  [96msrc/forms/base-form.tsx[0m:[93m8[0m:[93m32[0m
+    [7m8[0m export interface BaseFormProps<TFormData>
+    [7m [0m [96m                               ~~~~~~~~~[0m
+    This type parameter might need an `extends FieldValues` constraint.
+
+[96msrc/forms/form-field.tsx[0m:[93m1[0m:[93m41[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/components/ui/alert' or its corresponding type declarations.
+
+[7m1[0m import { Alert, AlertDescription } from '@/components/ui/alert';
+[7m [0m [91m                                        ~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/forms/form-field.tsx[0m:[93m2[0m:[93m23[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/components/ui/label' or its corresponding type declarations.
+
+[7m2[0m import { Label } from '@/components/ui/label';
+[7m [0m [91m                      ~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/forms/form-field.tsx[0m:[93m3[0m:[93m20[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/utils' or its corresponding type declarations.
+
+[7m3[0m import { cn } from '@/lib/utils';
+[7m [0m [91m                   ~~~~~~~~~~~~~[0m
+
+[96msrc/forms/form-field.tsx[0m:[93m256[0m:[93m16[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Button'.
+
+[7m256[0m               <Button
+[7m   [0m [91m               ~~~~~~[0m
+
+[96msrc/forms/form-field.tsx[0m:[93m264[0m:[93m17[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Button'.
+
+[7m264[0m               </Button>
+[7m   [0m [91m                ~~~~~~[0m
+
+[96msrc/forms/form-field.tsx[0m:[93m272[0m:[93m10[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Button'.
+
+[7m272[0m         <Button
+[7m   [0m [91m         ~~~~~~[0m
+
+[96msrc/forms/form-field.tsx[0m:[93m279[0m:[93m11[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Button'.
+
+[7m279[0m         </Button>
+[7m   [0m [91m          ~~~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m6[0m:[93m3[0m - [91merror[0m[90m TS2305: [0mModule '"react-hook-form"' has no exported member 'FormEventHandler'.
+
+[7m6[0m   FormEventHandler,
+[7m [0m [91m  ~~~~~~~~~~~~~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m10[0m:[93m38[0m - [91merror[0m[90m TS2307: [0mCannot find module 'use-debounce' or its corresponding type declarations.
+
+[7m10[0m import { useDebouncedCallback } from 'use-debounce';
+[7m  [0m [91m                                     ~~~~~~~~~~~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m15[0m:[93m23[0m - [91merror[0m[90m TS2344: [0mType 'TFormData' does not satisfy the constraint 'FieldValues'.
+
+[7m15[0m   form: UseFormReturn<TFormData>;
+[7m  [0m [91m                      ~~~~~~~~~[0m
+
+  [96msrc/forms/hooks.ts[0m:[93m14[0m:[93m32[0m
+    [7m14[0m export interface TypedFormHook<TFormData> {
+    [7m  [0m [96m                               ~~~~~~~~~[0m
+    This type parameter might need an `extends FieldValues` constraint.
+
+[96msrc/forms/hooks.ts[0m:[93m19[0m:[93m23[0m - [91merror[0m[90m TS2344: [0mType 'TFormData' does not satisfy the constraint 'FieldValues'.
+
+[7m19[0m   errors: FieldErrors<TFormData>;
+[7m  [0m [91m                      ~~~~~~~~~[0m
+
+  [96msrc/forms/hooks.ts[0m:[93m14[0m:[93m32[0m
+    [7m14[0m export interface TypedFormHook<TFormData> {
+    [7m  [0m [96m                               ~~~~~~~~~[0m
+    This type parameter might need an `extends FieldValues` constraint.
+
+[96msrc/forms/hooks.ts[0m:[93m61[0m:[93m27[0m - [91merror[0m[90m TS2769: [0mNo overload matches this call.
+  Overload 1 of 4, '(schema: Zod3Type<TFormData, TFormData>, schemaOptions?: ParseParams | undefined, resolverOptions?: NonRawResolverOptions | undefined): Resolver<...>', gave the following error.
+    Argument of type 'ZodType<TFormData, ZodTypeDef, TFormData>' is not assignable to parameter of type 'Zod3Type<TFormData, TFormData>'.
+      Types of property '_def' are incompatible.
+        Property 'typeName' is missing in type 'ZodTypeDef' but required in type '{ typeName: string; }'.
+  Overload 2 of 4, '(schema: $ZodType<unknown, FieldValues, $ZodTypeInternals<unknown, FieldValues>>, schemaOptions?: ParseContext<$ZodIssue> | undefined, resolverOptions?: NonRawResolverOptions | undefined): Resolver<...>', gave the following error.
+    Argument of type 'ZodType<TFormData, ZodTypeDef, TFormData>' is not assignable to parameter of type '$ZodType<unknown, FieldValues, $ZodTypeInternals<unknown, FieldValues>>'.
+      Property '_zod' is missing in type 'ZodType<TFormData, ZodTypeDef, TFormData>' but required in type '$ZodType<unknown, FieldValues, $ZodTypeInternals<unknown, FieldValues>>'.
+
+[7m61[0m     resolver: zodResolver(schema),
+[7m  [0m [91m                          ~~~~~~[0m
+
+  [96m../../node_modules/.pnpm/@hookform+resolvers@5.2.2_react-hook-form@7.63.0_react@19.1.0_/node_modules/@hookform/resolvers/zod/dist/zod.d.ts[0m:[93m16[0m:[93m9[0m
+    [7m16[0m         typeName: string;
+    [7m  [0m [96m        ~~~~~~~~[0m
+    'typeName' is declared here.
+  [96m../../node_modules/.pnpm/zod@3.25.76/node_modules/zod/v4/core/schemas.d.ts[0m:[93m84[0m:[93m5[0m
+    [7m84[0m     _zod: Internals;
+    [7m  [0m [96m    ~~~~[0m
+    '_zod' is declared here.
+
+[96msrc/forms/hooks.ts[0m:[93m62[0m:[93m5[0m - [91merror[0m[90m TS2322: [0mType 'Partial<TFormData> | undefined' is not assignable to type 'AsyncDefaultValues<TFormData> | DefaultValues<TFormData> | undefined'.
+  Type 'Partial<TFormData>' is not assignable to type 'AsyncDefaultValues<TFormData> | DefaultValues<TFormData> | undefined'.
+
+[7m62[0m     defaultValues,
+[7m  [0m [91m    ~~~~~~~~~~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m74[0m:[93m22[0m - [91merror[0m[90m TS2345: [0mArgument of type 'UseFormReturn<TFormData, any, TFieldValues>' is not assignable to parameter of type 'UseFormReturn<TFormData>'.
+  Types of property 'handleSubmit' are incompatible.
+    Type 'UseFormHandleSubmit<TFormData, TFieldValues>' is not assignable to type 'UseFormHandleSubmit<TFormData, TFormData>'.
+      Types of parameters 'onValid' and 'onValid' are incompatible.
+        Types of parameters 'data' and 'data' are incompatible.
+          Type 'TFieldValues' is not assignable to type 'TFormData'.
+            'TFieldValues' is assignable to the constraint of type 'TFormData', but 'TFormData' could be instantiated with a different subtype of constraint 'Record<string, any>'.
+
+[7m74[0m   useFormPersistence(form, persistKey);
+[7m  [0m [91m                     ~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m93[0m:[93m25[0m - [91merror[0m[90m TS2345: [0mArgument of type 'TFieldValues' is not assignable to parameter of type 'TFormData'.
+  'TFieldValues' is assignable to the constraint of type 'TFormData', but 'TFormData' could be instantiated with a different subtype of constraint 'Record<string, any>'.
+
+[7m93[0m           await onValid(data);
+[7m  [0m [91m                        ~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m107[0m:[93m18[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Partial<TFormData> | undefined' is not assignable to parameter of type 'TFormData | DefaultValues<TFormData> | ResetAction<TFormData> | undefined'.
+  Type 'Partial<TFormData>' is not assignable to type 'TFormData | DefaultValues<TFormData> | ResetAction<TFormData> | undefined'.
+    Type 'Partial<TFormData>' is not assignable to type 'TFormData'.
+      'Partial<TFormData>' is assignable to the constraint of type 'TFormData', but 'TFormData' could be instantiated with a different subtype of constraint 'Record<string, any>'.
+
+[7m107[0m       form.reset(values);
+[7m   [0m [91m                 ~~~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m109[0m:[93m9[0m - [91merror[0m[90m TS2304: [0mCannot find name 'localStorage'.
+
+[7m109[0m         localStorage.removeItem(`form-${persistKey}`);
+[7m   [0m [91m        ~~~~~~~~~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m117[0m:[93m21[0m - [91merror[0m[90m TS2345: [0mArgument of type 'K' is not assignable to parameter of type 'Path<TFormData>'.
+  Type 'keyof TFormData' is not assignable to type 'Path<TFormData>'.
+    Type 'string | number | symbol' is not assignable to type 'Path<TFormData>'.
+      Type 'string' is not assignable to type 'Path<TFormData>'.
+
+[7m117[0m       form.setValue(name, value, { shouldValidate: true, shouldDirty: true });
+[7m   [0m [91m                    ~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m123[0m:[93m5[0m - [91merror[0m[90m TS2322: [0mType 'UseFormReturn<TFormData, any, TFieldValues>' is not assignable to type 'UseFormReturn<TFormData>'.
+  Types of property 'handleSubmit' are incompatible.
+    Type 'UseFormHandleSubmit<TFormData, TFieldValues>' is not assignable to type 'UseFormHandleSubmit<TFormData, TFormData>'.
+      Types of parameters 'onValid' and 'onValid' are incompatible.
+        Types of parameters 'data' and 'data' are incompatible.
+          Type 'TFieldValues' is not assignable to type 'TFormData'.
+            'TFieldValues' is assignable to the constraint of type 'TFormData', but 'TFormData' could be instantiated with a different subtype of constraint 'Record<string, any>'.
+
+[7m123[0m     form,
+[7m   [0m [91m    ~~~~[0m
+
+  [96msrc/forms/hooks.ts[0m:[93m15[0m:[93m3[0m
+    [7m15[0m   form: UseFormReturn<TFormData>;
+    [7m  [0m [96m  ~~~~[0m
+    The expected type comes from property 'form' which is declared here on type 'TypedFormHook<TFormData>'
+
+[96msrc/forms/hooks.ts[0m:[93m198[0m:[93m23[0m - [91merror[0m[90m TS2344: [0mType 'TFormData' does not satisfy the constraint 'FieldValues'.
+
+[7m198[0m   form: UseFormReturn<TFormData>,
+[7m   [0m [91m                      ~~~~~~~~~[0m
+
+  [96msrc/forms/hooks.ts[0m:[93m197[0m:[93m36[0m
+    [7m197[0m export function useFormPersistence<TFormData>(
+    [7m   [0m [96m                                   ~~~~~~~~~[0m
+    This type parameter might need an `extends FieldValues` constraint.
+
+[96msrc/forms/hooks.ts[0m:[93m208[0m:[93m26[0m - [91merror[0m[90m TS2304: [0mCannot find name 'localStorage'.
+
+[7m208[0m       const savedState = localStorage.getItem(`form-${persistKey}`);
+[7m   [0m [91m                         ~~~~~~~~~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m226[0m:[93m9[0m - [91merror[0m[90m TS2304: [0mCannot find name 'localStorage'.
+
+[7m226[0m         localStorage.setItem(`form-${persistKey}`, JSON.stringify(data));
+[7m   [0m [91m        ~~~~~~~~~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m249[0m:[93m23[0m - [91merror[0m[90m TS2344: [0mType 'TFormData' does not satisfy the constraint 'FieldValues'.
+
+[7m249[0m   form: UseFormReturn<TFormData>
+[7m   [0m [91m                      ~~~~~~~~~[0m
+
+  [96msrc/forms/hooks.ts[0m:[93m247[0m:[93m34[0m
+    [7m247[0m export function useMultiStepForm<TFormData>(
+    [7m   [0m [96m                                 ~~~~~~~~~[0m
+    This type parameter might need an `extends FieldValues` constraint.
+
+[96msrc/forms/hooks.ts[0m:[93m311[0m:[93m23[0m - [91merror[0m[90m TS2344: [0mType 'TFormData' does not satisfy the constraint 'FieldValues'.
+
+[7m311[0m   form: UseFormReturn<TFormData>,
+[7m   [0m [91m                      ~~~~~~~~~[0m
+
+  [96msrc/forms/hooks.ts[0m:[93m310[0m:[93m35[0m
+    [7m310[0m export function useFormValidation<TFormData>(
+    [7m   [0m [96m                                  ~~~~~~~~~[0m
+    This type parameter might need an `extends FieldValues` constraint.
+
+[96msrc/forms/hooks.ts[0m:[93m315[0m:[93m17[0m - [91merror[0m[90m TS2344: [0mType 'TFormData' does not satisfy the constraint 'FieldValues'.
+
+[7m315[0m     FieldErrors<TFormData>
+[7m   [0m [91m                ~~~~~~~~~[0m
+
+  [96msrc/forms/hooks.ts[0m:[93m310[0m:[93m35[0m
+    [7m310[0m export function useFormValidation<TFormData>(
+    [7m   [0m [96m                                  ~~~~~~~~~[0m
+    This type parameter might need an `extends FieldValues` constraint.
+
+[96msrc/forms/hooks.ts[0m:[93m320[0m:[93m41[0m - [91merror[0m[90m TS2345: [0mArgument of type '(keyof TFormData)[] | undefined' is not assignable to parameter of type 'Path<TFormData> | readonly Path<TFormData>[] | Path<TFormData>[] | undefined'.
+  Type '(keyof TFormData)[]' is not assignable to type 'Path<TFormData> | readonly Path<TFormData>[] | Path<TFormData>[] | undefined'.
+    Type '(keyof TFormData)[]' is not assignable to type 'Path<TFormData>[]'.
+      Type 'keyof TFormData' is not assignable to type 'Path<TFormData>'.
+        Type 'string | number | symbol' is not assignable to type 'Path<TFormData>'.
+          Type 'string' is not assignable to type 'Path<TFormData>'.
+
+[7m320[0m       const result = await form.trigger(fields);
+[7m   [0m [91m                                        ~~~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m343[0m:[93m23[0m - [91merror[0m[90m TS2344: [0mType 'TFormData' does not satisfy the constraint 'FieldValues'.
+
+[7m343[0m   form: UseFormReturn<TFormData>,
+[7m   [0m [91m                      ~~~~~~~~~[0m
+
+  [96msrc/forms/hooks.ts[0m:[93m342[0m:[93m28[0m
+    [7m342[0m export function useURLSync<TFormData>(
+    [7m   [0m [96m                           ~~~~~~~~~[0m
+    This type parameter might need an `extends FieldValues` constraint.
+
+[96msrc/forms/hooks.ts[0m:[93m352[0m:[93m22[0m - [91merror[0m[90m TS2769: [0mNo overload matches this call.
+  Overload 1 of 2, '(o: { [s: string]: unknown; } | ArrayLike<unknown>): [string, unknown][]', gave the following error.
+    Argument of type 'TFormData' is not assignable to parameter of type '{ [s: string]: unknown; } | ArrayLike<unknown>'.
+      Type 'TFormData' is not assignable to type 'ArrayLike<unknown>'.
+  Overload 2 of 2, '(o: {}): [string, any][]', gave the following error.
+    Argument of type 'TFormData' is not assignable to parameter of type '{}'.
+
+[7m352[0m       Object.entries(data).forEach(([key, value]) => {
+[7m   [0m [91m                     ~~~~[0m
+
+  [96msrc/forms/hooks.ts[0m:[93m342[0m:[93m28[0m
+    [7m342[0m export function useURLSync<TFormData>(
+    [7m   [0m [96m                           ~~~~~~~~~[0m
+    This type parameter might need an `extends ArrayLike<unknown>` constraint.
+  [96msrc/forms/hooks.ts[0m:[93m342[0m:[93m28[0m
+    [7m342[0m export function useURLSync<TFormData>(
+    [7m   [0m [96m                           ~~~~~~~~~[0m
+    This type parameter might need an `extends { [s: string]: unknown; } | ArrayLike<unknown>` constraint.
+  [96msrc/forms/hooks.ts[0m:[93m342[0m:[93m28[0m
+    [7m342[0m export function useURLSync<TFormData>(
+    [7m   [0m [96m                           ~~~~~~~~~[0m
+    This type parameter might need an `extends {}` constraint.
+
+[96msrc/forms/hooks.ts[0m:[93m371[0m:[93m16[0m - [91merror[0m[90m TS2304: [0mCannot find name 'window'.
+
+[7m371[0m     if (typeof window === 'undefined') return;
+[7m   [0m [91m               ~~~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m373[0m:[93m40[0m - [91merror[0m[90m TS2304: [0mCannot find name 'window'.
+
+[7m373[0m     const params = new URLSearchParams(window.location.search);
+[7m   [0m [91m                                       ~~~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m378[0m:[93m43[0m - [91merror[0m[90m TS2769: [0mNo overload matches this call.
+  Overload 1 of 3, '(name?: undefined, config?: GetValuesConfig | undefined): TFormData', gave the following error.
+    Argument of type 'string | number | symbol' is not assignable to parameter of type 'undefined'.
+      Type 'string' is not assignable to type 'undefined'.
+  Overload 2 of 3, '(name: Path<TFormData>, config?: GetValuesConfig | undefined): PathValueImpl<TFormData, Path<TFormData>>', gave the following error.
+    Argument of type 'keyof TFormData' is not assignable to parameter of type 'Path<TFormData>'.
+      Type 'string | number | symbol' is not assignable to type 'Path<TFormData>'.
+        Type 'string' is not assignable to type 'Path<TFormData>'.
+  Overload 3 of 3, '(names: readonly Path<TFormData>[], config?: GetValuesConfig | undefined): PathValueImpl<TFormData, Path<TFormData>>[]', gave the following error.
+    Argument of type 'string | number | symbol' is not assignable to parameter of type 'readonly Path<TFormData>[]'.
+      Type 'string' is not assignable to type 'readonly Path<TFormData>[]'.
+
+[7m378[0m       const currentValue = form.getValues(fieldName);
+[7m   [0m [91m                                          ~~~~~~~~~[0m
+
+
+[96msrc/forms/hooks.ts[0m:[93m439[0m:[93m16[0m - [91merror[0m[90m TS2304: [0mCannot find name 'FileList'.
+
+[7m439[0m     (newFiles: FileList | null) => {
+[7m   [0m [91m               ~~~~~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m447[0m:[93m36[0m - [91merror[0m[90m TS2345: [0mArgument of type 'unknown' is not assignable to parameter of type 'File'.
+
+[7m447[0m         const error = validateFile(file);
+[7m   [0m [91m                                   ~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m449[0m:[93m36[0m - [91merror[0m[90m TS18046: [0m'file' is of type 'unknown'.
+
+[7m449[0m           validationErrors.push(`${file.name}: ${error}`);
+[7m   [0m [91m                                   ~~~~[0m
+
+[96msrc/forms/hooks.ts[0m:[93m451[0m:[93m27[0m - [91merror[0m[90m TS2345: [0mArgument of type 'unknown' is not assignable to parameter of type 'File'.
+
+[7m451[0m           validFiles.push(file);
+[7m   [0m [91m                          ~~~~[0m
+
+[96msrc/index.ts[0m:[93m14[0m:[93m1[0m - [91merror[0m[90m TS2308: [0mModule './api' has already exported a member named 'ApiError'. Consider explicitly re-exporting to resolve the ambiguity.
+
+[7m14[0m export * from './contracts';
+[7m  [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/index.ts[0m:[93m14[0m:[93m1[0m - [91merror[0m[90m TS2308: [0mModule './api' has already exported a member named 'ApiResponse'. Consider explicitly re-exporting to resolve the ambiguity.
+
+[7m14[0m export * from './contracts';
+[7m  [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/index.ts[0m:[93m14[0m:[93m1[0m - [91merror[0m[90m TS2308: [0mModule './api' has already exported a member named 'PaginatedResponse'. Consider explicitly re-exporting to resolve the ambiguity.
+
+[7m14[0m export * from './contracts';
+[7m  [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/index.ts[0m:[93m17[0m:[93m15[0m - [91merror[0m[90m TS2307: [0mCannot find module './utils' or its corresponding type declarations.
+
+[7m17[0m export * from './utils';
+[7m  [0m [91m              ~~~~~~~~~[0m
+
+[96msrc/index.ts[0m:[93m23[0m:[93m15[0m - [91merror[0m[90m TS2307: [0mCannot find module './payments' or its corresponding type declarations.
+
+[7m23[0m export * from './payments';
+[7m  [0m [91m              ~~~~~~~~~~~~[0m
+
+[96msrc/index.ts[0m:[93m26[0m:[93m15[0m - [91merror[0m[90m TS2307: [0mCannot find module './assessments' or its corresponding type declarations.
+
+[7m26[0m export * from './assessments';
+[7m  [0m [91m              ~~~~~~~~~~~~~~~[0m
+
+[96msrc/index.ts[0m:[93m29[0m:[93m15[0m - [91merror[0m[90m TS2307: [0mCannot find module './auth' or its corresponding type declarations.
+
+[7m29[0m export * from './auth';
+[7m  [0m [91m              ~~~~~~~~[0m
+
+[96msrc/index.ts[0m:[93m32[0m:[93m15[0m - [91merror[0m[90m TS2307: [0mCannot find module './types' or its corresponding type declarations.
+
+[7m32[0m export * from './types';
+[7m  [0m [91m              ~~~~~~~~~[0m
+
+[96msrc/mappers/ai.ts[0m:[93m8[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../db/schema' or its corresponding type declarations.
+
+[7m8[0m } from '../db/schema';
+[7m [0m [91m       ~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/assessments.ts[0m:[93m6[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../db/schema' or its corresponding type declarations.
+
+[7m6[0m } from '../db/schema';
+[7m [0m [91m       ~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/content.ts[0m:[93m5[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../db/schema' or its corresponding type declarations.
+
+[7m5[0m } from '../db/schema';
+[7m [0m [91m       ~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m26[0m:[93m13[0m - [91merror[0m[90m TS4111: [0mProperty 'id' comes from an index signature, so it must be accessed with ['id'].
+
+[7m26[0m     id: org.id,
+[7m  [0m [91m            ~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m27[0m:[93m15[0m - [91merror[0m[90m TS4111: [0mProperty 'name' comes from an index signature, so it must be accessed with ['name'].
+
+[7m27[0m     name: org.name,
+[7m  [0m [91m              ~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m28[0m:[93m15[0m - [91merror[0m[90m TS4111: [0mProperty 'slug' comes from an index signature, so it must be accessed with ['slug'].
+
+[7m28[0m     slug: org.slug,
+[7m  [0m [91m              ~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m29[0m:[93m22[0m - [91merror[0m[90m TS4111: [0mProperty 'description' comes from an index signature, so it must be accessed with ['description'].
+
+[7m29[0m     description: org.description || undefined,
+[7m  [0m [91m                     ~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m30[0m:[93m18[0m - [91merror[0m[90m TS4111: [0mProperty 'website' comes from an index signature, so it must be accessed with ['website'].
+
+[7m30[0m     website: org.website || undefined,
+[7m  [0m [91m                 ~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m31[0m:[93m18[0m - [91merror[0m[90m TS4111: [0mProperty 'logoUrl' comes from an index signature, so it must be accessed with ['logoUrl'].
+
+[7m31[0m     logoUrl: org.logoUrl || undefined,
+[7m  [0m [91m                 ~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m32[0m:[93m27[0m - [91merror[0m[90m TS4111: [0mProperty 'organizationType' comes from an index signature, so it must be accessed with ['organizationType'].
+
+[7m32[0m     organizationType: org.organizationType,
+[7m  [0m [91m                          ~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m33[0m:[93m23[0m - [91merror[0m[90m TS4111: [0mProperty 'sizeCategory' comes from an index signature, so it must be accessed with ['sizeCategory'].
+
+[7m33[0m     sizeCategory: org.sizeCategory || undefined,
+[7m  [0m [91m                      ~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m34[0m:[93m17[0m - [91merror[0m[90m TS4111: [0mProperty 'status' comes from an index signature, so it must be accessed with ['status'].
+
+[7m34[0m     status: org.status || 'trial',
+[7m  [0m [91m                ~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m35[0m:[93m23[0m - [91merror[0m[90m TS4111: [0mProperty 'contactEmail' comes from an index signature, so it must be accessed with ['contactEmail'].
+
+[7m35[0m     contactEmail: org.contactEmail || undefined,
+[7m  [0m [91m                      ~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m36[0m:[93m23[0m - [91merror[0m[90m TS4111: [0mProperty 'contactPhone' comes from an index signature, so it must be accessed with ['contactPhone'].
+
+[7m36[0m     contactPhone: org.contactPhone || undefined,
+[7m  [0m [91m                      ~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m37[0m:[93m18[0m - [91merror[0m[90m TS4111: [0mProperty 'address' comes from an index signature, so it must be accessed with ['address'].
+
+[7m37[0m     address: org.address
+[7m  [0m [91m                 ~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m38[0m:[93m20[0m - [91merror[0m[90m TS4111: [0mProperty 'address' comes from an index signature, so it must be accessed with ['address'].
+
+[7m38[0m       ? typeof org.address === 'string'
+[7m  [0m [91m                   ~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m39[0m:[93m26[0m - [91merror[0m[90m TS4111: [0mProperty 'address' comes from an index signature, so it must be accessed with ['address'].
+
+[7m39[0m         ? JSON.parse(org.address)
+[7m  [0m [91m                         ~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m40[0m:[93m15[0m - [91merror[0m[90m TS4111: [0mProperty 'address' comes from an index signature, so it must be accessed with ['address'].
+
+[7m40[0m         : org.address
+[7m  [0m [91m              ~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m42[0m:[93m25[0m - [91merror[0m[90m TS4111: [0mProperty 'accountOwnerId' comes from an index signature, so it must be accessed with ['accountOwnerId'].
+
+[7m42[0m     accountOwnerId: org.accountOwnerId || undefined,
+[7m  [0m [91m                        ~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m43[0m:[93m20[0m - [91merror[0m[90m TS4111: [0mProperty 'createdAt' comes from an index signature, so it must be accessed with ['createdAt'].
+
+[7m43[0m     createdAt: org.createdAt,
+[7m  [0m [91m                   ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m44[0m:[93m20[0m - [91merror[0m[90m TS4111: [0mProperty 'updatedAt' comes from an index signature, so it must be accessed with ['updatedAt'].
+
+[7m44[0m     updatedAt: org.updatedAt,
+[7m  [0m [91m                   ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m63[0m:[93m31[0m - [91merror[0m[90m TS4111: [0mProperty 'maxUsers' comes from an index signature, so it must be accessed with ['maxUsers'].
+
+[7m63[0m       maxContentCreators: org.maxUsers || 1,
+[7m  [0m [91m                              ~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m83[0m:[93m17[0m - [91merror[0m[90m TS4111: [0mProperty 'id' comes from an index signature, so it must be accessed with ['id'].
+
+[7m83[0m     id: profile.id,
+[7m  [0m [91m                ~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m84[0m:[93m20[0m - [91merror[0m[90m TS4111: [0mProperty 'email' comes from an index signature, so it must be accessed with ['email'].
+
+[7m84[0m     email: profile.email,
+[7m  [0m [91m                   ~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m85[0m:[93m24[0m - [91merror[0m[90m TS4111: [0mProperty 'firstName' comes from an index signature, so it must be accessed with ['firstName'].
+
+[7m85[0m     firstName: profile.firstName,
+[7m  [0m [91m                       ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m86[0m:[93m23[0m - [91merror[0m[90m TS4111: [0mProperty 'lastName' comes from an index signature, so it must be accessed with ['lastName'].
+
+[7m86[0m     lastName: profile.lastName,
+[7m  [0m [91m                      ~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m87[0m:[93m26[0m - [91merror[0m[90m TS4111: [0mProperty 'displayName' comes from an index signature, so it must be accessed with ['displayName'].
+
+[7m87[0m     displayName: profile.displayName || '',
+[7m  [0m [91m                         ~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m88[0m:[93m18[0m - [91merror[0m[90m TS4111: [0mProperty 'bio' comes from an index signature, so it must be accessed with ['bio'].
+
+[7m88[0m     bio: profile.bio || '',
+[7m  [0m [91m                 ~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m89[0m:[93m24[0m - [91merror[0m[90m TS4111: [0mProperty 'avatarUrl' comes from an index signature, so it must be accessed with ['avatarUrl'].
+
+[7m89[0m     avatarUrl: profile.avatarUrl || '',
+[7m  [0m [91m                       ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m90[0m:[93m27[0m - [91merror[0m[90m TS4111: [0mProperty 'ministryRole' comes from an index signature, so it must be accessed with ['ministryRole'].
+
+[7m90[0m     ministryRole: profile.ministryRole,
+[7m  [0m [91m                          ~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m91[0m:[93m27[0m - [91merror[0m[90m TS4111: [0mProperty 'denomination' comes from an index signature, so it must be accessed with ['denomination'].
+
+[7m91[0m     denomination: profile.denomination || undefined,
+[7m  [0m [91m                          ~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m92[0m:[93m31[0m - [91merror[0m[90m TS4111: [0mProperty 'organizationName' comes from an index signature, so it must be accessed with ['organizationName'].
+
+[7m92[0m     organizationName: profile.organizationName || undefined,
+[7m  [0m [91m                              ~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m93[0m:[93m30[0m - [91merror[0m[90m TS4111: [0mProperty 'yearsInMinistry' comes from an index signature, so it must be accessed with ['yearsInMinistry'].
+
+[7m93[0m     yearsInMinistry: profile.yearsInMinistry || undefined,
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m94[0m:[93m26[0m - [91merror[0m[90m TS4111: [0mProperty 'countryCode' comes from an index signature, so it must be accessed with ['countryCode'].
+
+[7m94[0m     countryCode: profile.countryCode || '',
+[7m  [0m [91m                         ~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m95[0m:[93m23[0m - [91merror[0m[90m TS4111: [0mProperty 'timezone' comes from an index signature, so it must be accessed with ['timezone'].
+
+[7m95[0m     timezone: profile.timezone || '',
+[7m  [0m [91m                      ~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m96[0m:[93m30[0m - [91merror[0m[90m TS4111: [0mProperty 'languagePrimary' comes from an index signature, so it must be accessed with ['languagePrimary'].
+
+[7m96[0m     languagePrimary: profile.languagePrimary || 'en',
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m97[0m:[93m30[0m - [91merror[0m[90m TS4111: [0mProperty 'culturalContext' comes from an index signature, so it must be accessed with ['culturalContext'].
+
+[7m97[0m     culturalContext: profile.culturalContext || undefined,
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m98[0m:[93m25[0m - [91merror[0m[90m TS4111: [0mProperty 'leaderTier' comes from an index signature, so it must be accessed with ['leaderTier'].
+
+[7m98[0m     leaderTier: profile.leaderTier || undefined,
+[7m  [0m [91m                        ~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m99[0m:[93m31[0m - [91merror[0m[90m TS4111: [0mProperty 'subscriptionTier' comes from an index signature, so it must be accessed with ['subscriptionTier'].
+
+[7m99[0m     subscriptionTier: profile.subscriptionTier,
+[7m  [0m [91m                              ~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m100[0m:[93m31[0m - [91merror[0m[90m TS4111: [0mProperty 'theologicalFocus' comes from an index signature, so it must be accessed with ['theologicalFocus'].
+
+[7m100[0m     theologicalFocus: profile.theologicalFocus || [],
+[7m   [0m [91m                              ~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m101[0m:[93m26[0m - [91merror[0m[90m TS4111: [0mProperty 'brandColors' comes from an index signature, so it must be accessed with ['brandColors'].
+
+[7m101[0m     brandColors: profile.brandColors || {
+[7m   [0m [91m                         ~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m106[0m:[93m24[0m - [91merror[0m[90m TS4111: [0mProperty 'createdAt' comes from an index signature, so it must be accessed with ['createdAt'].
+
+[7m106[0m     createdAt: profile.createdAt,
+[7m   [0m [91m                       ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m107[0m:[93m24[0m - [91merror[0m[90m TS4111: [0mProperty 'updatedAt' comes from an index signature, so it must be accessed with ['updatedAt'].
+
+[7m107[0m     updatedAt: profile.updatedAt,
+[7m   [0m [91m                       ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m115[0m:[93m28[0m - [91merror[0m[90m TS4111: [0mProperty 'assessmentMovementAlignment' comes from an index signature, so it must be accessed with ['assessmentMovementAlignment'].
+
+[7m115[0m         apostolic: profile.assessmentMovementAlignment || 0,
+[7m   [0m [91m                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m116[0m:[93m28[0m - [91merror[0m[90m TS4111: [0mProperty 'assessmentAudienceEngagement' comes from an index signature, so it must be accessed with ['assessmentAudienceEngagement'].
+
+[7m116[0m         prophetic: profile.assessmentAudienceEngagement || 0,
+[7m   [0m [91m                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m117[0m:[93m31[0m - [91merror[0m[90m TS4111: [0mProperty 'assessmentContentReadiness' comes from an index signature, so it must be accessed with ['assessmentContentReadiness'].
+
+[7m117[0m         evangelistic: profile.assessmentContentReadiness || 0,
+[7m   [0m [91m                              ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m118[0m:[93m30[0m - [91merror[0m[90m TS4111: [0mProperty 'assessmentRevenuePotential' comes from an index signature, so it must be accessed with ['assessmentRevenuePotential'].
+
+[7m118[0m         shepherding: profile.assessmentRevenuePotential || 0,
+[7m   [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m119[0m:[93m27[0m - [91merror[0m[90m TS4111: [0mProperty 'assessmentStrategicFit' comes from an index signature, so it must be accessed with ['assessmentStrategicFit'].
+
+[7m119[0m         teaching: profile.assessmentStrategicFit || 0,
+[7m   [0m [91m                          ~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m156[0m:[93m29[0m - [91merror[0m[90m TS4111: [0mProperty 'updatedAt' comes from an index signature, so it must be accessed with ['updatedAt'].
+
+[7m156[0m       lastActiveAt: profile.updatedAt,
+[7m   [0m [91m                            ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m174[0m:[93m17[0m - [91merror[0m[90m TS4111: [0mProperty 'id' comes from an index signature, so it must be accessed with ['id'].
+
+[7m174[0m     id: content.id,
+[7m   [0m [91m                ~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m175[0m:[93m20[0m - [91merror[0m[90m TS4111: [0mProperty 'title' comes from an index signature, so it must be accessed with ['title'].
+
+[7m175[0m     title: content.title,
+[7m   [0m [91m                   ~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m176[0m:[93m19[0m - [91merror[0m[90m TS4111: [0mProperty 'slug' comes from an index signature, so it must be accessed with ['slug'].
+
+[7m176[0m     slug: content.slug,
+[7m   [0m [91m                  ~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m177[0m:[93m22[0m - [91merror[0m[90m TS4111: [0mProperty 'excerpt' comes from an index signature, so it must be accessed with ['excerpt'].
+
+[7m177[0m     excerpt: content.excerpt || '',
+[7m   [0m [91m                     ~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m178[0m:[93m22[0m - [91merror[0m[90m TS4111: [0mProperty 'content' comes from an index signature, so it must be accessed with ['content'].
+
+[7m178[0m     content: content.content || '',
+[7m   [0m [91m                     ~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m179[0m:[93m26[0m - [91merror[0m[90m TS4111: [0mProperty 'contentType' comes from an index signature, so it must be accessed with ['contentType'].
+
+[7m179[0m     contentType: content.contentType,
+[7m   [0m [91m                         ~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m180[0m:[93m21[0m - [91merror[0m[90m TS4111: [0mProperty 'format' comes from an index signature, so it must be accessed with ['format'].
+
+[7m180[0m     format: content.format || 'text',
+[7m   [0m [91m                    ~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m181[0m:[93m21[0m - [91merror[0m[90m TS4111: [0mProperty 'status' comes from an index signature, so it must be accessed with ['status'].
+
+[7m181[0m     status: content.status || 'draft',
+[7m   [0m [91m                    ~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m182[0m:[93m25[0m - [91merror[0m[90m TS4111: [0mProperty 'visibility' comes from an index signature, so it must be accessed with ['visibility'].
+
+[7m182[0m     visibility: content.visibility || 'public',
+[7m   [0m [91m                        ~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m183[0m:[93m31[0m - [91merror[0m[90m TS4111: [0mProperty 'featuredImageUrl' comes from an index signature, so it must be accessed with ['featuredImageUrl'].
+
+[7m183[0m     featuredImageUrl: content.featuredImageUrl || undefined,
+[7m   [0m [91m                              ~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m184[0m:[93m23[0m - [91merror[0m[90m TS4111: [0mProperty 'videoUrl' comes from an index signature, so it must be accessed with ['videoUrl'].
+
+[7m184[0m     videoUrl: content.videoUrl || undefined,
+[7m   [0m [91m                      ~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m185[0m:[93m23[0m - [91merror[0m[90m TS4111: [0mProperty 'audioUrl' comes from an index signature, so it must be accessed with ['audioUrl'].
+
+[7m185[0m     audioUrl: content.audioUrl || undefined,
+[7m   [0m [91m                      ~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m186[0m:[93m24[0m - [91merror[0m[90m TS4111: [0mProperty 'metaTitle' comes from an index signature, so it must be accessed with ['metaTitle'].
+
+[7m186[0m     metaTitle: content.metaTitle || undefined,
+[7m   [0m [91m                       ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m187[0m:[93m30[0m - [91merror[0m[90m TS4111: [0mProperty 'metaDescription' comes from an index signature, so it must be accessed with ['metaDescription'].
+
+[7m187[0m     metaDescription: content.metaDescription || undefined,
+[7m   [0m [91m                             ~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m188[0m:[93m29[0m - [91merror[0m[90m TS4111: [0mProperty 'originalSource' comes from an index signature, so it must be accessed with ['originalSource'].
+
+[7m188[0m     originalSource: content.originalSource || undefined,
+[7m   [0m [91m                            ~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m189[0m:[93m26[0m - [91merror[0m[90m TS4111: [0mProperty 'licenseType' comes from an index signature, so it must be accessed with ['licenseType'].
+
+[7m189[0m     licenseType: content.licenseType || 'all_rights_reserved',
+[7m   [0m [91m                         ~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m190[0m:[93m32[0m - [91merror[0m[90m TS4111: [0mProperty 'primaryCategoryId' comes from an index signature, so it must be accessed with ['primaryCategoryId'].
+
+[7m190[0m     primaryCategoryId: content.primaryCategoryId || undefined,
+[7m   [0m [91m                               ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m191[0m:[93m34[0m - [91merror[0m[90m TS4111: [0mProperty 'secondaryCategories' comes from an index signature, so it must be accessed with ['secondaryCategories'].
+
+[7m191[0m     secondaryCategories: content.secondaryCategories || [],
+[7m   [0m [91m                                 ~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m192[0m:[93m19[0m - [91merror[0m[90m TS4111: [0mProperty 'tags' comes from an index signature, so it must be accessed with ['tags'].
+
+[7m192[0m     tags: content.tags || [],
+[7m   [0m [91m                  ~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m193[0m:[93m32[0m - [91merror[0m[90m TS4111: [0mProperty 'theologicalThemes' comes from an index signature, so it must be accessed with ['theologicalThemes'].
+
+[7m193[0m     theologicalThemes: content.theologicalThemes || [],
+[7m   [0m [91m                               ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m194[0m:[93m23[0m - [91merror[0m[90m TS4111: [0mProperty 'authorId' comes from an index signature, so it must be accessed with ['authorId'].
+
+[7m194[0m     authorId: content.authorId,
+[7m   [0m [91m                      ~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m195[0m:[93m26[0m - [91merror[0m[90m TS4111: [0mProperty 'publishedAt' comes from an index signature, so it must be accessed with ['publishedAt'].
+
+[7m195[0m     publishedAt: content.publishedAt || undefined,
+[7m   [0m [91m                         ~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m196[0m:[93m24[0m - [91merror[0m[90m TS4111: [0mProperty 'createdAt' comes from an index signature, so it must be accessed with ['createdAt'].
+
+[7m196[0m     createdAt: content.createdAt,
+[7m   [0m [91m                       ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m197[0m:[93m24[0m - [91merror[0m[90m TS4111: [0mProperty 'updatedAt' comes from an index signature, so it must be accessed with ['updatedAt'].
+
+[7m197[0m     updatedAt: content.updatedAt,
+[7m   [0m [91m                       ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m235[0m:[93m20[0m - [91merror[0m[90m TS4111: [0mProperty 'id' comes from an index signature, so it must be accessed with ['id'].
+
+[7m235[0m     id: assessment.id,
+[7m   [0m [91m                   ~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m236[0m:[93m22[0m - [91merror[0m[90m TS4111: [0mProperty 'name' comes from an index signature, so it must be accessed with ['name'].
+
+[7m236[0m     name: assessment.name,
+[7m   [0m [91m                     ~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m237[0m:[93m22[0m - [91merror[0m[90m TS4111: [0mProperty 'slug' comes from an index signature, so it must be accessed with ['slug'].
+
+[7m237[0m     slug: assessment.slug,
+[7m   [0m [91m                     ~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m238[0m:[93m29[0m - [91merror[0m[90m TS4111: [0mProperty 'description' comes from an index signature, so it must be accessed with ['description'].
+
+[7m238[0m     description: assessment.description || '',
+[7m   [0m [91m                            ~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m239[0m:[93m32[0m - [91merror[0m[90m TS4111: [0mProperty 'assessmentType' comes from an index signature, so it must be accessed with ['assessmentType'].
+
+[7m239[0m     assessmentType: assessment.assessmentType,
+[7m   [0m [91m                               ~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m240[0m:[93m32[0m - [91merror[0m[90m TS4111: [0mProperty 'questionsCount' comes from an index signature, so it must be accessed with ['questionsCount'].
+
+[7m240[0m     questionsCount: assessment.questionsCount,
+[7m   [0m [91m                               ~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m241[0m:[93m35[0m - [91merror[0m[90m TS4111: [0mProperty 'estimatedDuration' comes from an index signature, so it must be accessed with ['estimatedDuration'].
+
+[7m241[0m     estimatedDuration: assessment.estimatedDuration || undefined,
+[7m   [0m [91m                                  ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m242[0m:[93m30[0m - [91merror[0m[90m TS4111: [0mProperty 'passingScore' comes from an index signature, so it must be accessed with ['passingScore'].
+
+[7m242[0m     passingScore: assessment.passingScore || undefined,
+[7m   [0m [91m                             ~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m243[0m:[93m25[0m - [91merror[0m[90m TS4111: [0mProperty 'version' comes from an index signature, so it must be accessed with ['version'].
+
+[7m243[0m     version: assessment.version || '1.0',
+[7m   [0m [91m                        ~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m244[0m:[93m26[0m - [91merror[0m[90m TS4111: [0mProperty 'language' comes from an index signature, so it must be accessed with ['language'].
+
+[7m244[0m     language: assessment.language || 'en',
+[7m   [0m [91m                         ~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m245[0m:[93m36[0m - [91merror[0m[90m TS4111: [0mProperty 'culturalAdaptation' comes from an index signature, so it must be accessed with ['culturalAdaptation'].
+
+[7m245[0m     culturalAdaptation: assessment.culturalAdaptation || 'universal',
+[7m   [0m [91m                                   ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m246[0m:[93m32[0m - [91merror[0m[90m TS4111: [0mProperty 'researchBacked' comes from an index signature, so it must be accessed with ['researchBacked'].
+
+[7m246[0m     researchBacked: assessment.researchBacked || false,
+[7m   [0m [91m                               ~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m247[0m:[93m31[0m - [91merror[0m[90m TS4111: [0mProperty 'validityScore' comes from an index signature, so it must be accessed with ['validityScore'].
+
+[7m247[0m     validityScore: assessment.validityScore
+[7m   [0m [91m                              ~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m248[0m:[93m27[0m - [91merror[0m[90m TS4111: [0mProperty 'validityScore' comes from an index signature, so it must be accessed with ['validityScore'].
+
+[7m248[0m       ? Number(assessment.validityScore)
+[7m   [0m [91m                          ~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m250[0m:[93m34[0m - [91merror[0m[90m TS4111: [0mProperty 'reliabilityScore' comes from an index signature, so it must be accessed with ['reliabilityScore'].
+
+[7m250[0m     reliabilityScore: assessment.reliabilityScore
+[7m   [0m [91m                                 ~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m251[0m:[93m27[0m - [91merror[0m[90m TS4111: [0mProperty 'reliabilityScore' comes from an index signature, so it must be accessed with ['reliabilityScore'].
+
+[7m251[0m       ? Number(assessment.reliabilityScore)
+[7m   [0m [91m                          ~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m253[0m:[93m30[0m - [91merror[0m[90m TS4111: [0mProperty 'instructions' comes from an index signature, so it must be accessed with ['instructions'].
+
+[7m253[0m     instructions: assessment.instructions || '',
+[7m   [0m [91m                             ~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m254[0m:[93m31[0m - [91merror[0m[90m TS4111: [0mProperty 'scoringMethod' comes from an index signature, so it must be accessed with ['scoringMethod'].
+
+[7m254[0m     scoringMethod: assessment.scoringMethod || 'likert_5',
+[7m   [0m [91m                              ~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m255[0m:[93m24[0m - [91merror[0m[90m TS4111: [0mProperty 'status' comes from an index signature, so it must be accessed with ['status'].
+
+[7m255[0m     status: assessment.status || 'draft',
+[7m   [0m [91m                       ~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m256[0m:[93m29[0m - [91merror[0m[90m TS4111: [0mProperty 'publishedAt' comes from an index signature, so it must be accessed with ['publishedAt'].
+
+[7m256[0m     publishedAt: assessment.publishedAt || undefined,
+[7m   [0m [91m                            ~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m257[0m:[93m27[0m - [91merror[0m[90m TS4111: [0mProperty 'createdAt' comes from an index signature, so it must be accessed with ['createdAt'].
+
+[7m257[0m     createdAt: assessment.createdAt,
+[7m   [0m [91m                          ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m258[0m:[93m27[0m - [91merror[0m[90m TS4111: [0mProperty 'updatedAt' comes from an index signature, so it must be accessed with ['updatedAt'].
+
+[7m258[0m     updatedAt: assessment.updatedAt,
+[7m   [0m [91m                          ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m264[0m:[93m20[0m - [91merror[0m[90m TS4111: [0mProperty 'culturalAdaptation' comes from an index signature, so it must be accessed with ['culturalAdaptation'].
+
+[7m264[0m         assessment.culturalAdaptation === 'universal'
+[7m   [0m [91m                   ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m266[0m:[93m24[0m - [91merror[0m[90m TS4111: [0mProperty 'culturalAdaptation' comes from an index signature, so it must be accessed with ['culturalAdaptation'].
+
+[7m266[0m           : assessment.culturalAdaptation || 'global',
+[7m   [0m [91m                       ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m307[0m:[93m19[0m - [91merror[0m[90m TS4111: [0mProperty 'id' comes from an index signature, so it must be accessed with ['id'].
+
+[7m307[0m     id: community.id,
+[7m   [0m [91m                  ~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m308[0m:[93m21[0m - [91merror[0m[90m TS4111: [0mProperty 'name' comes from an index signature, so it must be accessed with ['name'].
+
+[7m308[0m     name: community.name,
+[7m   [0m [91m                    ~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m309[0m:[93m21[0m - [91merror[0m[90m TS4111: [0mProperty 'slug' comes from an index signature, so it must be accessed with ['slug'].
+
+[7m309[0m     slug: community.slug,
+[7m   [0m [91m                    ~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m310[0m:[93m28[0m - [91merror[0m[90m TS4111: [0mProperty 'description' comes from an index signature, so it must be accessed with ['description'].
+
+[7m310[0m     description: community.description || '',
+[7m   [0m [91m                           ~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m311[0m:[93m30[0m - [91merror[0m[90m TS4111: [0mProperty 'communityType' comes from an index signature, so it must be accessed with ['communityType'].
+
+[7m311[0m     communityType: community.communityType,
+[7m   [0m [91m                             ~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m312[0m:[93m32[0m - [91merror[0m[90m TS4111: [0mProperty 'geographicFocus' comes from an index signature, so it must be accessed with ['geographicFocus'].
+
+[7m312[0m     geographicFocus: community.geographicFocus || [],
+[7m   [0m [91m                               ~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m313[0m:[93m32[0m - [91merror[0m[90m TS4111: [0mProperty 'culturalContext' comes from an index signature, so it must be accessed with ['culturalContext'].
+
+[7m313[0m     culturalContext: community.culturalContext || 'global',
+[7m   [0m [91m                               ~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m314[0m:[93m32[0m - [91merror[0m[90m TS4111: [0mProperty 'languagePrimary' comes from an index signature, so it must be accessed with ['languagePrimary'].
+
+[7m314[0m     languagePrimary: community.languagePrimary || 'en',
+[7m   [0m [91m                               ~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m315[0m:[93m35[0m - [91merror[0m[90m TS4111: [0mProperty 'languagesSupported' comes from an index signature, so it must be accessed with ['languagesSupported'].
+
+[7m315[0m     languagesSupported: community.languagesSupported || ['en'],
+[7m   [0m [91m                                  ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m316[0m:[93m27[0m - [91merror[0m[90m TS4111: [0mProperty 'visibility' comes from an index signature, so it must be accessed with ['visibility'].
+
+[7m316[0m     visibility: community.visibility || 'public',
+[7m   [0m [91m                          ~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m317[0m:[93m37[0m - [91merror[0m[90m TS4111: [0mProperty 'joinApprovalRequired' comes from an index signature, so it must be accessed with ['joinApprovalRequired'].
+
+[7m317[0m     joinApprovalRequired: community.joinApprovalRequired || false,
+[7m   [0m [91m                                    ~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m318[0m:[93m27[0m - [91merror[0m[90m TS4111: [0mProperty 'maxMembers' comes from an index signature, so it must be accessed with ['maxMembers'].
+
+[7m318[0m     maxMembers: community.maxMembers || undefined,
+[7m   [0m [91m                          ~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m319[0m:[93m32[0m - [91merror[0m[90m TS4111: [0mProperty 'allowGuestPosts' comes from an index signature, so it must be accessed with ['allowGuestPosts'].
+
+[7m319[0m     allowGuestPosts: community.allowGuestPosts || false,
+[7m   [0m [91m                               ~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m320[0m:[93m32[0m - [91merror[0m[90m TS4111: [0mProperty 'moderationLevel' comes from an index signature, so it must be accessed with ['moderationLevel'].
+
+[7m320[0m     moderationLevel: community.moderationLevel || 'moderated',
+[7m   [0m [91m                               ~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m321[0m:[93m35[0m - [91merror[0m[90m TS4111: [0mProperty 'currentMemberCount' comes from an index signature, so it must be accessed with ['currentMemberCount'].
+
+[7m321[0m     currentMemberCount: community.currentMemberCount || 0,
+[7m   [0m [91m                                  ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m322[0m:[93m32[0m - [91merror[0m[90m TS4111: [0mProperty 'totalPostsCount' comes from an index signature, so it must be accessed with ['totalPostsCount'].
+
+[7m322[0m     totalPostsCount: community.totalPostsCount || 0,
+[7m   [0m [91m                               ~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m323[0m:[93m27[0m - [91merror[0m[90m TS4111: [0mProperty 'guidelines' comes from an index signature, so it must be accessed with ['guidelines'].
+
+[7m323[0m     guidelines: community.guidelines || undefined,
+[7m   [0m [91m                          ~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m324[0m:[93m22[0m - [91merror[0m[90m TS4111: [0mProperty 'rules' comes from an index signature, so it must be accessed with ['rules'].
+
+[7m324[0m     rules: community.rules
+[7m   [0m [91m                     ~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m325[0m:[93m26[0m - [91merror[0m[90m TS4111: [0mProperty 'rules' comes from an index signature, so it must be accessed with ['rules'].
+
+[7m325[0m       ? typeof community.rules === 'string'
+[7m   [0m [91m                         ~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m326[0m:[93m32[0m - [91merror[0m[90m TS4111: [0mProperty 'rules' comes from an index signature, so it must be accessed with ['rules'].
+
+[7m326[0m         ? JSON.parse(community.rules)
+[7m   [0m [91m                               ~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m327[0m:[93m21[0m - [91merror[0m[90m TS4111: [0mProperty 'rules' comes from an index signature, so it must be accessed with ['rules'].
+
+[7m327[0m         : community.rules
+[7m   [0m [91m                    ~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m329[0m:[93m26[0m - [91merror[0m[90m TS4111: [0mProperty 'createdBy' comes from an index signature, so it must be accessed with ['createdBy'].
+
+[7m329[0m     createdBy: community.createdBy,
+[7m   [0m [91m                         ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m330[0m:[93m26[0m - [91merror[0m[90m TS4111: [0mProperty 'createdAt' comes from an index signature, so it must be accessed with ['createdAt'].
+
+[7m330[0m     createdAt: community.createdAt,
+[7m   [0m [91m                         ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m331[0m:[93m26[0m - [91merror[0m[90m TS4111: [0mProperty 'updatedAt' comes from an index signature, so it must be accessed with ['updatedAt'].
+
+[7m331[0m     updatedAt: community.updatedAt,
+[7m   [0m [91m                         ~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m360[0m:[93m16[0m - [91merror[0m[90m TS4111: [0mProperty 'permissions' comes from an index signature, so it must be accessed with ['permissions'].
+
+[7m360[0m     membership.permissions && membership.permissions.length > 0
+[7m   [0m [91m               ~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m360[0m:[93m42[0m - [91merror[0m[90m TS4111: [0mProperty 'permissions' comes from an index signature, so it must be accessed with ['permissions'].
+
+[7m360[0m     membership.permissions && membership.permissions.length > 0
+[7m   [0m [91m                                         ~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m361[0m:[93m20[0m - [91merror[0m[90m TS4111: [0mProperty 'permissions' comes from an index signature, so it must be accessed with ['permissions'].
+
+[7m361[0m       ? membership.permissions
+[7m   [0m [91m                   ~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m362[0m:[93m39[0m - [91merror[0m[90m TS4111: [0mProperty 'role' comes from an index signature, so it must be accessed with ['role'].
+
+[7m362[0m       : getUserPermissions(membership.role);
+[7m   [0m [91m                                      ~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m365[0m:[93m32[0m - [91merror[0m[90m TS4111: [0mProperty 'organizationId' comes from an index signature, so it must be accessed with ['organizationId'].
+
+[7m365[0m     organizationId: membership.organizationId,
+[7m   [0m [91m                               ~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m366[0m:[93m26[0m - [91merror[0m[90m TS4111: [0mProperty 'role' comes from an index signature, so it must be accessed with ['role'].
+
+[7m366[0m     userRole: membership.role,
+[7m   [0m [91m                         ~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m368[0m:[93m25[0m - [91merror[0m[90m TS4111: [0mProperty 'role' comes from an index signature, so it must be accessed with ['role'].
+
+[7m368[0m     isOwner: membership.role === 'owner',
+[7m   [0m [91m                        ~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m369[0m:[93m53[0m - [91merror[0m[90m TS4111: [0mProperty 'role' comes from an index signature, so it must be accessed with ['role'].
+
+[7m369[0m     isAdmin: ['owner', 'admin'].includes(membership.role),
+[7m   [0m [91m                                                    ~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m505[0m:[93m30[0m - [91merror[0m[90m TS4111: [0mProperty 'assessmentMovementAlignment' comes from an index signature, so it must be accessed with ['assessmentMovementAlignment'].
+
+[7m505[0m       apostolic: userProfile.assessmentMovementAlignment || 0,
+[7m   [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m506[0m:[93m30[0m - [91merror[0m[90m TS4111: [0mProperty 'assessmentAudienceEngagement' comes from an index signature, so it must be accessed with ['assessmentAudienceEngagement'].
+
+[7m506[0m       prophetic: userProfile.assessmentAudienceEngagement || 0,
+[7m   [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m507[0m:[93m33[0m - [91merror[0m[90m TS4111: [0mProperty 'assessmentContentReadiness' comes from an index signature, so it must be accessed with ['assessmentContentReadiness'].
+
+[7m507[0m       evangelistic: userProfile.assessmentContentReadiness || 0,
+[7m   [0m [91m                                ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m508[0m:[93m32[0m - [91merror[0m[90m TS4111: [0mProperty 'assessmentRevenuePotential' comes from an index signature, so it must be accessed with ['assessmentRevenuePotential'].
+
+[7m508[0m       shepherding: userProfile.assessmentRevenuePotential || 0,
+[7m   [0m [91m                               ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/ministry-platform.ts[0m:[93m509[0m:[93m29[0m - [91merror[0m[90m TS4111: [0mProperty 'assessmentStrategicFit' comes from an index signature, so it must be accessed with ['assessmentStrategicFit'].
+
+[7m509[0m       teaching: userProfile.assessmentStrategicFit || 0,
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/organizations.ts[0m:[93m1[0m:[93m61[0m - [91merror[0m[90m TS2307: [0mCannot find module '../db/schema' or its corresponding type declarations.
+
+[7m1[0m import type { organizations, organizationMemberships } from '../db/schema';
+[7m [0m [91m                                                            ~~~~~~~~~~~~~~[0m
+
+[96msrc/mappers/user-profiles.ts[0m:[93m1[0m:[93m35[0m - [91merror[0m[90m TS2307: [0mCannot find module '../db/schema' or its corresponding type declarations.
+
+[7m1[0m import type { userProfiles } from '../db/schema';
+[7m [0m [91m                                  ~~~~~~~~~~~~~~[0m
+
+[96msrc/payments/actions.ts[0m:[93m5[0m:[93m26[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/auth/middleware' or its corresponding type declarations.
+
+[7m5[0m import { withTeam } from '@/lib/auth/middleware';
+[7m [0m [91m                         ~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/payments/actions.ts[0m:[93m7[0m:[93m47[0m - [91merror[0m[90m TS7006: [0mParameter 'formData' implicitly has an 'any' type.
+
+[7m7[0m export const checkoutAction = withTeam(async (formData, team) => {
+[7m [0m [91m                                              ~~~~~~~~[0m
+
+[96msrc/payments/actions.ts[0m:[93m7[0m:[93m57[0m - [91merror[0m[90m TS7006: [0mParameter 'team' implicitly has an 'any' type.
+
+[7m7[0m export const checkoutAction = withTeam(async (formData, team) => {
+[7m [0m [91m                                                        ~~~~[0m
+
+[96msrc/payments/actions.ts[0m:[93m12[0m:[93m53[0m - [91merror[0m[90m TS7006: [0mParameter '_' implicitly has an 'any' type.
+
+[7m12[0m export const customerPortalAction = withTeam(async (_, team) => {
+[7m  [0m [91m                                                    ~[0m
+
+[96msrc/payments/actions.ts[0m:[93m12[0m:[93m56[0m - [91merror[0m[90m TS7006: [0mParameter 'team' implicitly has an 'any' type.
+
+[7m12[0m export const customerPortalAction = withTeam(async (_, team) => {
+[7m  [0m [91m                                                       ~~~~[0m
+
+[96msrc/payments/stripe.ts[0m:[93m3[0m:[93m31[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/schema' or its corresponding type declarations.
+
+[7m3[0m import { organizations } from '@/lib/db/schema';
+[7m [0m [91m                              ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/payments/stripe.ts[0m:[93m8[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/queries' or its corresponding type declarations.
+
+[7m8[0m } from '@/lib/db/queries';
+[7m [0m [91m       ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m1[0m:[93m20[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/drizzle' or its corresponding type declarations.
+
+[7m1[0m import { db } from '@/lib/db/drizzle';
+[7m [0m [91m                   ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m7[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/schema' or its corresponding type declarations.
+
+[7m7[0m } from '@/lib/db/schema';
+[7m [0m [91m       ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m21[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/src/lib/schemas/crud.schemas' or its corresponding type declarations.
+
+[7m21[0m } from '@/src/lib/schemas/crud.schemas';
+[7m  [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m27[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/src/lib/schemas/database.schemas' or its corresponding type declarations.
+
+[7m27[0m } from '@/src/lib/schemas/database.schemas';
+[7m  [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m82[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m82[0m       return results.map(result => this.outputSchema.parse(result));
+[7m  [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m106[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m106[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m130[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m130[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m154[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m154[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m178[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m178[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m207[0m:[93m46[0m - [91merror[0m[90m TS7006: [0mParameter 'q' implicitly has an 'any' type.
+
+[7m207[0m       const questions = questionsResults.map(q =>
+[7m   [0m [91m                                             ~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m284[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m284[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m303[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m303[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m327[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m327[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m477[0m:[93m29[0m - [91merror[0m[90m TS7031: [0mBinding element 'userAssessment' implicitly has an 'any' type.
+
+[7m477[0m       return results.map(({ userAssessment, assessment }) => ({
+[7m   [0m [91m                            ~~~~~~~~~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m477[0m:[93m45[0m - [91merror[0m[90m TS7031: [0mBinding element 'assessment' implicitly has an 'any' type.
+
+[7m477[0m       return results.map(({ userAssessment, assessment }) => ({
+[7m   [0m [91m                                            ~~~~~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m515[0m:[93m29[0m - [91merror[0m[90m TS7031: [0mBinding element 'userAssessment' implicitly has an 'any' type.
+
+[7m515[0m       return results.map(({ userAssessment, assessment }) => ({
+[7m   [0m [91m                            ~~~~~~~~~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m515[0m:[93m45[0m - [91merror[0m[90m TS7031: [0mBinding element 'assessment' implicitly has an 'any' type.
+
+[7m515[0m       return results.map(({ userAssessment, assessment }) => ({
+[7m   [0m [91m                                            ~~~~~~~~~~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m701[0m:[93m41[0m - [91merror[0m[90m TS7006: [0mParameter 'r' implicitly has an 'any' type.
+
+[7m701[0m         responses: responsesResults.map(r =>
+[7m   [0m [91m                                        ~[0m
+
+[96msrc/services/assessment.service.ts[0m:[93m780[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m780[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/base.service.ts[0m:[93m1[0m:[93m20[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/drizzle' or its corresponding type declarations.
+
+[7m1[0m import { db } from '@/lib/db/drizzle';
+[7m [0m [91m                   ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/base.service.ts[0m:[93m2[0m:[93m63[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/types' or its corresponding type declarations.
+
+[7m2[0m import { NotFoundError, ValidationError, type AppError } from '@/types';
+[7m [0m [91m                                                              ~~~~~~~~~[0m
+
+[96msrc/services/base.service.ts[0m:[93m118[0m:[93m9[0m - [91merror[0m[90m TS2322: [0mType 'TQueryInput' is not assignable to type 'QueryFilters'.
+
+[7m118[0m         validatedFilters = this.querySchema.parse(filters);
+[7m   [0m [91m        ~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/services/base.service.ts[0m:[93m45[0m:[93m3[0m
+    [7m45[0m   TQueryInput = any,
+    [7m  [0m [96m  ~~~~~~~~~~~~~~~~~[0m
+    This type parameter might need an `extends QueryFilters` constraint.
+
+[96msrc/services/base.service.ts[0m:[93m156[0m:[93m44[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m156[0m       const validatedResults = results.map(result =>
+[7m   [0m [91m                                           ~~~~~~[0m
+
+[96msrc/services/base.service.ts[0m:[93m461[0m:[93m33[0m - [91merror[0m[90m TS7006: [0mParameter 'tx' implicitly has an 'any' type.
+
+[7m461[0m     return db.transaction(async tx => {
+[7m   [0m [91m                                ~~[0m
+
+[96msrc/services/base.service.ts[0m:[93m463[0m:[93m14[0m - [91merror[0m[90m TS2352: [0mConversion of type 'unknown[]' to type 'T' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  'unknown[]' is assignable to the constraint of type 'T', but 'T' could be instantiated with a different subtype of constraint 'readonly unknown[]'.
+
+[7m463[0m       return results as T;
+[7m   [0m [91m             ~~~~~~~~~~~~[0m
+
+[96msrc/services/base.service.ts[0m:[93m493[0m:[93m15[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'PaginatedResult'.
+
+[7m493[0m export type { PaginatedResult, QueryFilters, ServiceError, TransactionContext };
+[7m   [0m [91m              ~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/base.service.ts[0m:[93m493[0m:[93m32[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'QueryFilters'.
+
+[7m493[0m export type { PaginatedResult, QueryFilters, ServiceError, TransactionContext };
+[7m   [0m [91m                               ~~~~~~~~~~~~[0m
+
+[96msrc/services/base.service.ts[0m:[93m493[0m:[93m46[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'ServiceError'.
+
+[7m493[0m export type { PaginatedResult, QueryFilters, ServiceError, TransactionContext };
+[7m   [0m [91m                                             ~~~~~~~~~~~~[0m
+
+[96msrc/services/base.service.ts[0m:[93m493[0m:[93m60[0m - [91merror[0m[90m TS2484: [0mExport declaration conflicts with exported declaration of 'TransactionContext'.
+
+[7m493[0m export type { PaginatedResult, QueryFilters, ServiceError, TransactionContext };
+[7m   [0m [91m                                                           ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m1[0m:[93m20[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/drizzle' or its corresponding type declarations.
+
+[7m1[0m import { db } from '@/lib/db/drizzle';
+[7m [0m [91m                   ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m2[0m:[93m29[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/schema' or its corresponding type declarations.
+
+[7m2[0m import { communities } from '@/lib/db/schema';
+[7m [0m [91m                            ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m7[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/src/lib/schemas/crud.schemas' or its corresponding type declarations.
+
+[7m7[0m } from '@/src/lib/schemas/crud.schemas';
+[7m [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m8[0m:[93m41[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/src/lib/schemas/database.schemas' or its corresponding type declarations.
+
+[7m8[0m import { databaseCommunitySchema } from '@/src/lib/schemas/database.schemas';
+[7m [0m [91m                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m63[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m63[0m       return results.map(result => this.outputSchema.parse(result));
+[7m  [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m85[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m85[0m       return results.map(result => this.outputSchema.parse(result));
+[7m  [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m109[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m109[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m130[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m130[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m160[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m160[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m268[0m:[93m10[0m - [91merror[0m[90m TS7006: [0mParameter 'acc' implicitly has an 'any' type.
+
+[7m268[0m         (acc, stat) => {
+[7m   [0m [91m         ~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m268[0m:[93m15[0m - [91merror[0m[90m TS7006: [0mParameter 'stat' implicitly has an 'any' type.
+
+[7m268[0m         (acc, stat) => {
+[7m   [0m [91m              ~~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m286[0m:[93m10[0m - [91merror[0m[90m TS7006: [0mParameter 'acc' implicitly has an 'any' type.
+
+[7m286[0m         (acc, stat) => {
+[7m   [0m [91m         ~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m286[0m:[93m15[0m - [91merror[0m[90m TS7006: [0mParameter 'stat' implicitly has an 'any' type.
+
+[7m286[0m         (acc, stat) => {
+[7m   [0m [91m              ~~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m304[0m:[93m10[0m - [91merror[0m[90m TS7006: [0mParameter 'acc' implicitly has an 'any' type.
+
+[7m304[0m         (acc, stat) => {
+[7m   [0m [91m         ~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m304[0m:[93m15[0m - [91merror[0m[90m TS7006: [0mParameter 'stat' implicitly has an 'any' type.
+
+[7m304[0m         (acc, stat) => {
+[7m   [0m [91m              ~~~~[0m
+
+[96msrc/services/community.service.ts[0m:[93m346[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m346[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m1[0m:[93m20[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/drizzle' or its corresponding type declarations.
+
+[7m1[0m import { db } from '@/lib/db/drizzle';
+[7m [0m [91m                   ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m2[0m:[93m63[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/schema' or its corresponding type declarations.
+
+[7m2[0m import { contentCategories, contentItems, userProfiles } from '@/lib/db/schema';
+[7m [0m [91m                                                              ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m10[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/src/lib/schemas/crud.schemas' or its corresponding type declarations.
+
+[7m10[0m } from '@/src/lib/schemas/crud.schemas';
+[7m  [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m14[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/src/lib/schemas/database.schemas' or its corresponding type declarations.
+
+[7m14[0m } from '@/src/lib/schemas/database.schemas';
+[7m  [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m130[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m130[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m172[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m172[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m215[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m215[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m264[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m264[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m495[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m495[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m559[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m559[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m583[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m583[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m607[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m607[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m627[0m:[93m44[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m627[0m       const categories = allCategories.map(result =>
+[7m   [0m [91m                                           ~~~~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m633[0m:[93m24[0m - [91merror[0m[90m TS7006: [0mParameter 'cat' implicitly has an 'any' type.
+
+[7m633[0m         categories.map(cat => [cat.id, { ...cat, children: [] }])
+[7m   [0m [91m                       ~~~[0m
+
+[96msrc/services/content.service.ts[0m:[93m643[0m:[93m20[0m - [91merror[0m[90m TS2339: [0mProperty 'children' does not exist on type '{}'.
+
+[7m643[0m             parent.children.push(categoryWithChildren);
+[7m   [0m [91m                   ~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m24[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'UserService'.
+
+[7m24[0m export { UserService } from './user.service';
+[7m  [0m [91m         ~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m27[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'ContentCategoryService'.
+
+[7m27[0m export { ContentCategoryService, ContentItemService } from './content.service';
+[7m  [0m [91m         ~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m27[0m:[93m34[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'ContentItemService'.
+
+[7m27[0m export { ContentCategoryService, ContentItemService } from './content.service';
+[7m  [0m [91m                                 ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m31[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'AssessmentQuestionService'.
+
+[7m31[0m   AssessmentQuestionService,
+[7m  [0m [91m  ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m32[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'AssessmentResponseService'.
+
+[7m32[0m   AssessmentResponseService,
+[7m  [0m [91m  ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m33[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'AssessmentService'.
+
+[7m33[0m   AssessmentService,
+[7m  [0m [91m  ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m34[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'UserAssessmentService'.
+
+[7m34[0m   UserAssessmentService,
+[7m  [0m [91m  ~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m39[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'OrganizationMembershipService'.
+
+[7m39[0m   OrganizationMembershipService,
+[7m  [0m [91m  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m40[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'OrganizationService'.
+
+[7m40[0m   OrganizationService,
+[7m  [0m [91m  ~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m44[0m:[93m10[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'CommunityService'.
+
+[7m44[0m export { CommunityService } from './community.service';
+[7m  [0m [91m         ~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m131[0m:[93m16[0m - [91merror[0m[90m TS2552: [0mCannot find name 'TransactionService'. Did you mean 'organizationService'?
+
+[7m131[0m     return new TransactionService();
+[7m   [0m [91m               ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m147[0m:[93m18[0m - [91merror[0m[90m TS2502: [0m'services' is referenced directly or indirectly in its own type annotation.
+
+[7m147[0m     operations: (services: typeof services) => Promise<T>
+[7m   [0m [91m                 ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m150[0m:[93m58[0m - [91merror[0m[90m TS7006: [0mParameter 'tx' implicitly has an 'any' type.
+
+[7m150[0m     return transactionService.executeInTransaction(async tx => {
+[7m   [0m [91m                                                         ~~[0m
+
+[96msrc/services/index.ts[0m:[93m213[0m:[93m15[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'UserService'.
+
+[7m213[0m export type { UserService } from './user.service';
+[7m   [0m [91m              ~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m216[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'ContentCategoryService'.
+
+[7m216[0m   ContentCategoryService,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m217[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'ContentItemService'.
+
+[7m217[0m   ContentItemService,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m221[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'AssessmentQuestionService'.
+
+[7m221[0m   AssessmentQuestionService,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m222[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'AssessmentResponseService'.
+
+[7m222[0m   AssessmentResponseService,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m223[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'AssessmentService'.
+
+[7m223[0m   AssessmentService,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m224[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'UserAssessmentService'.
+
+[7m224[0m   UserAssessmentService,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m228[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'OrganizationMembershipService'.
+
+[7m228[0m   OrganizationMembershipService,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m229[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'OrganizationService'.
+
+[7m229[0m   OrganizationService,
+[7m   [0m [91m  ~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m232[0m:[93m15[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'CommunityService'.
+
+[7m232[0m export type { CommunityService } from './community.service';
+[7m   [0m [91m              ~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/index.ts[0m:[93m313[0m:[93m26[0m - [91merror[0m[90m TS2552: [0mCannot find name 'TransactionService'. Did you mean 'organizationService'?
+
+[7m313[0m   transaction: () => new TransactionService(),
+[7m   [0m [91m                         ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m8[0m:[93m48[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/types' or its corresponding type declarations.
+
+[7m8[0m import { NotFoundError, ValidationError } from '@/types';
+[7m [0m [91m                                               ~~~~~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m42[0m:[93m18[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m42[0m         { error: error.message, details: error.details },
+[7m  [0m [91m                 ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m42[0m:[93m42[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m42[0m         { error: error.message, details: error.details },
+[7m  [0m [91m                                         ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m74[0m:[93m18[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m74[0m         { error: error.message, details: error.details },
+[7m  [0m [91m                 ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m74[0m:[93m42[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m74[0m         { error: error.message, details: error.details },
+[7m  [0m [91m                                         ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m108[0m:[93m41[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m108[0m       return NextResponse.json({ error: error.message }, { status: 404 });
+[7m   [0m [91m                                        ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m113[0m:[93m18[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m113[0m         { error: error.message, details: error.details },
+[7m   [0m [91m                 ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m113[0m:[93m42[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m113[0m         { error: error.message, details: error.details },
+[7m   [0m [91m                                         ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m139[0m:[93m13[0m - [91merror[0m[90m TS2339: [0mProperty 'responses' does not exist on type 'unknown'.
+
+[7m139[0m     const { responses, userId } = body;
+[7m   [0m [91m            ~~~~~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m139[0m:[93m24[0m - [91merror[0m[90m TS2339: [0mProperty 'userId' does not exist on type 'unknown'.
+
+[7m139[0m     const { responses, userId } = body;
+[7m   [0m [91m                       ~~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m179[0m:[93m41[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m179[0m       return NextResponse.json({ error: error.message }, { status: 404 });
+[7m   [0m [91m                                        ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m184[0m:[93m18[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m184[0m         { error: error.message, details: error.details },
+[7m   [0m [91m                 ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m184[0m:[93m42[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m184[0m         { error: error.message, details: error.details },
+[7m   [0m [91m                                         ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m226[0m:[93m18[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m226[0m         { error: error.message, details: error.details },
+[7m   [0m [91m                 ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m226[0m:[93m42[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m226[0m         { error: error.message, details: error.details },
+[7m   [0m [91m                                         ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m259[0m:[93m41[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m259[0m       return NextResponse.json({ error: error.message }, { status: 404 });
+[7m   [0m [91m                                        ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m322[0m:[93m18[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m322[0m         { error: error.message, details: error.details },
+[7m   [0m [91m                 ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m322[0m:[93m42[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m322[0m         { error: error.message, details: error.details },
+[7m   [0m [91m                                         ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m348[0m:[93m13[0m - [91merror[0m[90m TS2339: [0mProperty 'userId' does not exist on type 'unknown'.
+
+[7m348[0m     const { userId, role = 'member' } = body;
+[7m   [0m [91m            ~~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m348[0m:[93m21[0m - [91merror[0m[90m TS2339: [0mProperty 'role' does not exist on type 'unknown'.
+
+[7m348[0m     const { userId, role = 'member' } = body;
+[7m   [0m [91m                    ~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m367[0m:[93m18[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m367[0m         { error: error.message, details: error.details },
+[7m   [0m [91m                 ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m367[0m:[93m42[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m367[0m         { error: error.message, details: error.details },
+[7m   [0m [91m                                         ~~~~~[0m
+
+[96msrc/services/integration.example.ts[0m:[93m404[0m:[93m41[0m - [91merror[0m[90m TS18046: [0m'error' is of type 'unknown'.
+
+[7m404[0m       return NextResponse.json({ error: error.message }, { status: 404 });
+[7m   [0m [91m                                        ~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m1[0m:[93m20[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/drizzle' or its corresponding type declarations.
+
+[7m1[0m import { db } from '@/lib/db/drizzle';
+[7m [0m [91m                   ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m6[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/schema' or its corresponding type declarations.
+
+[7m6[0m } from '@/lib/db/schema';
+[7m [0m [91m       ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m12[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@platform/contracts' or its corresponding type declarations.
+
+[7m12[0m } from '@platform/contracts';
+[7m  [0m [91m       ~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m69[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m69[0m       return results.map(result => this.outputSchema.parse(result));
+[7m  [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m93[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m93[0m       return results.map(result => this.outputSchema.parse(result));
+[7m  [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m117[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m117[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m136[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m136[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m148[0m:[93m34[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m148[0m       membership: z.infer<typeof databaseOrganizationMembershipSchema>;
+[7m   [0m [91m                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m181[0m:[93m40[0m - [91merror[0m[90m TS7031: [0mBinding element 'membership' implicitly has an 'any' type.
+
+[7m181[0m         members: membersResults.map(({ membership, user }) => ({
+[7m   [0m [91m                                       ~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m181[0m:[93m52[0m - [91merror[0m[90m TS7031: [0mBinding element 'user' implicitly has an 'any' type.
+
+[7m181[0m         members: membersResults.map(({ membership, user }) => ({
+[7m   [0m [91m                                                   ~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m182[0m:[93m23[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m182[0m           membership: databaseOrganizationMembershipSchema.parse(membership),
+[7m   [0m [91m                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m195[0m:[93m5[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'memberCount'.
+
+[7m195[0m     memberCount: number;
+[7m   [0m [91m    ~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m200[0m:[93m5[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'memberCount'.
+
+[7m200[0m     memberCount: number;
+[7m   [0m [91m    ~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m221[0m:[93m9[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'regularMemberCount' does not exist in type '{ memberCount: number; activeMembers: number; pendingMembers: number; ownerCount: number; adminCount: number; }'.
+
+[7m221[0m         regularMemberCount: stats?.regularMemberCount || 0,
+[7m   [0m [91m        ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m346[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m346[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m358[0m:[93m18[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m358[0m   z.infer<typeof databaseOrganizationMembershipSchema>,
+[7m   [0m [91m                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m359[0m:[93m18[0m - [91merror[0m[90m TS2552: [0mCannot find name 'newOrganizationMembershipSchema'. Did you mean 'organizationMemberships'?
+
+[7m359[0m   z.infer<typeof newOrganizationMembershipSchema>,
+[7m   [0m [91m                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m360[0m:[93m18[0m - [91merror[0m[90m TS2552: [0mCannot find name 'updateOrganizationMembershipSchema'. Did you mean 'UpdateOrganizationSchema'?
+
+[7m360[0m   z.infer<typeof updateOrganizationMembershipSchema>,
+[7m   [0m [91m                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m361[0m:[93m18[0m - [91merror[0m[90m TS2552: [0mCannot find name 'queryOrganizationMembershipSchema'. Did you mean 'organizationMemberships'?
+
+[7m361[0m   z.infer<typeof queryOrganizationMembershipSchema>,
+[7m   [0m [91m                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m366[0m:[93m28[0m - [91merror[0m[90m TS2552: [0mCannot find name 'newOrganizationMembershipSchema'. Did you mean 'organizationMemberships'?
+
+[7m366[0m   protected createSchema = newOrganizationMembershipSchema;
+[7m   [0m [91m                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m367[0m:[93m28[0m - [91merror[0m[90m TS2552: [0mCannot find name 'updateOrganizationMembershipSchema'. Did you mean 'UpdateOrganizationSchema'?
+
+[7m367[0m   protected updateSchema = updateOrganizationMembershipSchema;
+[7m   [0m [91m                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m368[0m:[93m27[0m - [91merror[0m[90m TS2552: [0mCannot find name 'queryOrganizationMembershipSchema'. Did you mean 'organizationMemberships'?
+
+[7m368[0m   protected querySchema = queryOrganizationMembershipSchema;
+[7m   [0m [91m                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m369[0m:[93m28[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m369[0m   protected outputSchema = databaseOrganizationMembershipSchema;
+[7m   [0m [91m                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m377[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m377[0m   ): Promise<z.infer<typeof databaseOrganizationMembershipSchema> | null> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m403[0m:[93m22[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m403[0m       z.infer<typeof databaseOrganizationMembershipSchema> & {
+[7m   [0m [91m                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m422[0m:[93m29[0m - [91merror[0m[90m TS7031: [0mBinding element 'membership' implicitly has an 'any' type.
+
+[7m422[0m       return results.map(({ membership, organization }) => ({
+[7m   [0m [91m                            ~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m422[0m:[93m41[0m - [91merror[0m[90m TS7031: [0mBinding element 'organization' implicitly has an 'any' type.
+
+[7m422[0m       return results.map(({ membership, organization }) => ({
+[7m   [0m [91m                                        ~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m436[0m:[93m22[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m436[0m       z.infer<typeof databaseOrganizationMembershipSchema> & {
+[7m   [0m [91m                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m455[0m:[93m29[0m - [91merror[0m[90m TS7031: [0mBinding element 'membership' implicitly has an 'any' type.
+
+[7m455[0m       return results.map(({ membership, user }) => ({
+[7m   [0m [91m                            ~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m455[0m:[93m41[0m - [91merror[0m[90m TS7031: [0mBinding element 'user' implicitly has an 'any' type.
+
+[7m455[0m       return results.map(({ membership, user }) => ({
+[7m   [0m [91m                                        ~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m469[0m:[93m22[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m469[0m       z.infer<typeof databaseOrganizationMembershipSchema> & {
+[7m   [0m [91m                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m493[0m:[93m29[0m - [91merror[0m[90m TS7031: [0mBinding element 'membership' implicitly has an 'any' type.
+
+[7m493[0m       return results.map(({ membership, organization }) => ({
+[7m   [0m [91m                            ~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m493[0m:[93m41[0m - [91merror[0m[90m TS7031: [0mBinding element 'organization' implicitly has an 'any' type.
+
+[7m493[0m       return results.map(({ membership, organization }) => ({
+[7m   [0m [91m                                        ~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m508[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m508[0m   ): Promise<z.infer<typeof databaseOrganizationMembershipSchema>[]> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m522[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m522[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m536[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m536[0m   ): Promise<z.infer<typeof databaseOrganizationMembershipSchema>> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m599[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m599[0m   ): Promise<z.infer<typeof databaseOrganizationMembershipSchema>> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m628[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m628[0m   ): Promise<z.infer<typeof databaseOrganizationMembershipSchema>> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m712[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m712[0m   ): Promise<z.infer<typeof databaseOrganizationMembershipSchema>[]> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m725[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m725[0m   ): Promise<z.infer<typeof databaseOrganizationMembershipSchema>[]> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m738[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseOrganizationMembershipSchema'.
+
+[7m738[0m   ): Promise<z.infer<typeof databaseOrganizationMembershipSchema>[]> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/organization.service.ts[0m:[93m751[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m751[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m1[0m:[93m20[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/drizzle' or its corresponding type declarations.
+
+[7m1[0m import { db } from '@/lib/db/drizzle';
+[7m [0m [91m                   ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m6[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/lib/db/schema' or its corresponding type declarations.
+
+[7m6[0m } from '@/lib/db/schema';
+[7m [0m [91m       ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m12[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@platform/contracts/entities' or its corresponding type declarations.
+
+[7m12[0m } from '@platform/contracts/entities';
+[7m  [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m61[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseUserProfileSchema'.
+
+[7m61[0m   ): Promise<z.infer<typeof databaseUserProfileSchema> | null> {
+[7m  [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m81[0m:[93m26[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseUserProfileSchema'.
+
+[7m81[0m     user: z.infer<typeof databaseUserProfileSchema>;
+[7m  [0m [91m                         ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m129[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseUserProfileSchema'.
+
+[7m129[0m   ): Promise<z.infer<typeof databaseUserProfileSchema>> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m176[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseUserProfileSchema'.
+
+[7m176[0m   ): Promise<z.infer<typeof databaseUserProfileSchema>> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m198[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseUserProfileSchema'.
+
+[7m198[0m   ): Promise<z.infer<typeof databaseUserProfileSchema>> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m273[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseUserProfileSchema'.
+
+[7m273[0m   ): Promise<z.infer<typeof databaseUserProfileSchema>[]> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m293[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m293[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m305[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseUserProfileSchema'.
+
+[7m305[0m   ): Promise<z.infer<typeof databaseUserProfileSchema>[]> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m319[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m319[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m331[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseUserProfileSchema'.
+
+[7m331[0m   ): Promise<z.infer<typeof databaseUserProfileSchema>[]> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m345[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m345[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m357[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseUserProfileSchema'.
+
+[7m357[0m   ): Promise<z.infer<typeof databaseUserProfileSchema>[]> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m370[0m:[93m26[0m - [91merror[0m[90m TS7006: [0mParameter 'result' implicitly has an 'any' type.
+
+[7m370[0m       return results.map(result => this.outputSchema.parse(result));
+[7m   [0m [91m                         ~~~~~~[0m
+
+[96msrc/services/user.service.ts[0m:[93m390[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'databaseUserProfileSchema'.
+
+[7m390[0m   ): Promise<z.infer<typeof databaseUserProfileSchema>> {
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/types/component-props.ts[0m:[93m17[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '@/validations' or its corresponding type declarations.
+
+[7m17[0m } from '@/validations';
+[7m  [0m [91m       ~~~~~~~~~~~~~~~[0m
+
+[96msrc/types/component-props.ts[0m:[93m114[0m:[93m18[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'UserCardProps'.
+
+[7m114[0m export interface UserCardProps
+[7m   [0m [91m                 ~~~~~~~~~~~~~[0m
+
+[96msrc/types/component-props.ts[0m:[93m184[0m:[93m18[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'AssessmentCardProps'.
+
+[7m184[0m export interface AssessmentCardProps
+[7m   [0m [91m                 ~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/types/component-props.ts[0m:[93m236[0m:[93m18[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'ContentItemCardProps'.
+
+[7m236[0m export interface ContentItemCardProps
+[7m   [0m [91m                 ~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/types/component-props.ts[0m:[93m318[0m:[93m18[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'CommunityCardProps'.
+
+[7m318[0m export interface CommunityCardProps
+[7m   [0m [91m                 ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/types/component-props.ts[0m:[93m372[0m:[93m18[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'SubscriptionPlanCardProps'.
+
+[7m372[0m export interface SubscriptionPlanCardProps
+[7m   [0m [91m                 ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/types/component-props.ts[0m:[93m600[0m:[93m13[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'UserCardProps'.
+
+[7m600[0m export type UserCardProps = z.infer<typeof userCardPropsSchema>;
+[7m   [0m [91m            ~~~~~~~~~~~~~[0m
+
+[96msrc/types/component-props.ts[0m:[93m601[0m:[93m13[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'AssessmentCardProps'.
+
+[7m601[0m export type AssessmentCardProps = z.infer<typeof assessmentCardPropsSchema>;
+[7m   [0m [91m            ~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/types/component-props.ts[0m:[93m602[0m:[93m13[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'ContentItemCardProps'.
+
+[7m602[0m export type ContentItemCardProps = z.infer<typeof contentItemCardPropsSchema>;
+[7m   [0m [91m            ~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/types/component-props.ts[0m:[93m603[0m:[93m13[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'CommunityCardProps'.
+
+[7m603[0m export type CommunityCardProps = z.infer<typeof communityCardPropsSchema>;
+[7m   [0m [91m            ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/types/component-props.ts[0m:[93m604[0m:[93m13[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'SubscriptionPlanCardProps'.
+
+[7m604[0m export type SubscriptionPlanCardProps = z.infer<
+[7m   [0m [91m            ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/utils/conditional-render.tsx[0m:[93m4[0m:[93m20[0m - [91merror[0m[90m TS2307: [0mCannot find module './utils' or its corresponding type declarations.
+
+[7m4[0m import { cn } from './utils';
+[7m [0m [91m                   ~~~~~~~~~[0m
+
+[96msrc/utils/conditional-render.tsx[0m:[93m165[0m:[93m34[0m - [91merror[0m[90m TS4111: [0mProperty 'NODE_ENV' comes from an index signature, so it must be accessed with ['NODE_ENV'].
+
+[7m165[0m   const currentEnv = process.env.NODE_ENV;
+[7m   [0m [91m                                 ~~~~~~~~[0m
+
+[96msrc/utils/conditional-render.tsx[0m:[93m168[0m:[93m29[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m168[0m   if (!allowedEnvs.includes(currentEnv)) {
+[7m   [0m [91m                            ~~~~~~~~~~[0m
+
+[96msrc/utils/conditional-render.tsx[0m:[93m327[0m:[93m25[0m - [91merror[0m[90m TS2339: [0mProperty 'fallback' does not exist on type 'JSX.IntrinsicElements'.
+
+[7m327[0m       return fallback ? <fallback {...props} /> : null;
+[7m   [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/utils/conditional-render.tsx[0m:[93m347[0m:[93m25[0m - [91merror[0m[90m TS2339: [0mProperty 'fallback' does not exist on type 'JSX.IntrinsicElements'.
+
+[7m347[0m       return fallback ? <fallback {...props} /> : null;
+[7m   [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/utils/conditional-render.tsx[0m:[93m367[0m:[93m25[0m - [91merror[0m[90m TS2339: [0mProperty 'fallback' does not exist on type 'JSX.IntrinsicElements'.
+
+[7m367[0m       return fallback ? <fallback {...props} /> : null;
+[7m   [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/utils/validate-props.tsx[0m:[93m29[0m:[93m23[0m - [91merror[0m[90m TS4111: [0mProperty 'NODE_ENV' comes from an index signature, so it must be accessed with ['NODE_ENV'].
+
+[7m29[0m       if (process.env.NODE_ENV === 'development') {
+[7m  [0m [91m                      ~~~~~~~~[0m
+
+[96msrc/utils/validate-props.tsx[0m:[93m58[0m:[93m24[0m - [91merror[0m[90m TS4111: [0mProperty 'NODE_ENV' comes from an index signature, so it must be accessed with ['NODE_ENV'].
+
+[7m58[0m           {process.env.NODE_ENV === 'development' && (
+[7m  [0m [91m                       ~~~~~~~~[0m
+
+[96msrc/utils/validate-props.tsx[0m:[93m124[0m:[93m20[0m - [91merror[0m[90m TS4111: [0mProperty 'NODE_ENV' comes from an index signature, so it must be accessed with ['NODE_ENV'].
+
+[7m124[0m       {process.env.NODE_ENV === 'development' && (
+[7m   [0m [91m                   ~~~~~~~~[0m
+
+[96msrc/utils/validate-props.tsx[0m:[93m182[0m:[93m21[0m - [91merror[0m[90m TS4111: [0mProperty 'NODE_ENV' comes from an index signature, so it must be accessed with ['NODE_ENV'].
+
+[7m182[0m     if (process.env.NODE_ENV === 'development') {
+[7m   [0m [91m                    ~~~~~~~~[0m
+
+[96msrc/utils/validate-props.tsx[0m:[93m208[0m:[93m21[0m - [91merror[0m[90m TS4111: [0mProperty 'NODE_ENV' comes from an index signature, so it must be accessed with ['NODE_ENV'].
+
+[7m208[0m     if (process.env.NODE_ENV === 'development') {
+[7m   [0m [91m                    ~~~~~~~~[0m
+
+[96msrc/utils/validate-props.tsx[0m:[93m229[0m:[93m25[0m - [91merror[0m[90m TS2339: [0mProperty 'partial' does not exist on type 'ZodType<T, ZodTypeDef, T>'.
+
+[7m229[0m   const result = schema.partial().safeParse(props);
+[7m   [0m [91m                        ~~~~~~~[0m
+
+[96msrc/utils/validate-props.tsx[0m:[93m232[0m:[93m21[0m - [91merror[0m[90m TS4111: [0mProperty 'NODE_ENV' comes from an index signature, so it must be accessed with ['NODE_ENV'].
+
+[7m232[0m     if (process.env.NODE_ENV === 'development') {
+[7m   [0m [91m                    ~~~~~~~~[0m
+
+[96msrc/utils/validate-props.tsx[0m:[93m260[0m:[93m32[0m - [91merror[0m[90m TS2345: [0mArgument of type 'ComponentType<P>' is not assignable to parameter of type 'ComponentType<T>'.
+  Type 'ComponentClass<P, any>' is not assignable to type 'ComponentType<T>'.
+    Type 'ComponentClass<P, any>' is not assignable to type 'ComponentClass<T, any>'.
+      Types of property 'getDerivedStateFromProps' are incompatible.
+        Type 'GetDerivedStateFromProps<P, any> | undefined' is not assignable to type 'GetDerivedStateFromProps<T, any> | undefined'.
+          Type 'GetDerivedStateFromProps<P, any>' is not assignable to type 'GetDerivedStateFromProps<T, any>'.
+            Types of parameters 'nextProps' and 'nextProps' are incompatible.
+              Type 'Readonly<T>' is not assignable to type 'Readonly<P>'.
+                Type 'keyof P' is not assignable to type 'keyof T'.
+                  Type 'string | number | symbol' is not assignable to type 'keyof T'.
+                    Type 'number' is not assignable to type 'keyof T'.
+                      Type 'number' is not assignable to type 'string'.
+                        Type 'keyof P' is not assignable to type 'string'.
+                          Type 'string | number | symbol' is not assignable to type 'string'.
+                            Type 'number' is not assignable to type 'string'.
+
+[7m260[0m     return withPropsValidation(Component, schema, options);
+[7m   [0m [91m                               ~~~~~~~~~[0m
+
+[96msrc/utils/validate-props.tsx[0m:[93m271[0m:[93m32[0m - [91merror[0m[90m TS2345: [0mArgument of type 'ComponentType<P>' is not assignable to parameter of type 'ComponentType<T>'.
+  Type 'ComponentClass<P, any>' is not assignable to type 'ComponentType<T>'.
+    Type 'ComponentClass<P, any>' is not assignable to type 'ComponentClass<T, any>'.
+      Types of property 'getDerivedStateFromProps' are incompatible.
+        Type 'GetDerivedStateFromProps<P, any> | undefined' is not assignable to type 'GetDerivedStateFromProps<T, any> | undefined'.
+          Type 'GetDerivedStateFromProps<P, any>' is not assignable to type 'GetDerivedStateFromProps<T, any>'.
+            Types of parameters 'nextProps' and 'nextProps' are incompatible.
+              Type 'Readonly<T>' is not assignable to type 'Readonly<P>'.
+                Type 'keyof P' is not assignable to type 'keyof T'.
+                  Type 'string | number | symbol' is not assignable to type 'keyof T'.
+                    Type 'number' is not assignable to type 'keyof T'.
+                      Type 'number' is not assignable to type 'string'.
+                        Type 'keyof P' is not assignable to type 'string'.
+                          Type 'string | number | symbol' is not assignable to type 'string'.
+                            Type 'number' is not assignable to type 'string'.
+
+[7m271[0m     return withPropsValidation(Component, schema, {
+[7m   [0m [91m                               ~~~~~~~~~[0m
+
+[96msrc/utils/validate-props.tsx[0m:[93m272[0m:[93m27[0m - [91merror[0m[90m TS4111: [0mProperty 'NODE_ENV' comes from an index signature, so it must be accessed with ['NODE_ENV'].
+
+[7m272[0m       strict: process.env.NODE_ENV === 'development',
+[7m   [0m [91m                          ~~~~~~~~[0m
+
+[96msrc/utils/validate-props.tsx[0m:[93m304[0m:[93m40[0m - [91merror[0m[90m TS2339: [0mProperty 'extend' does not exist on type 'ZodType<T, ZodTypeDef, T>'.
+
+[7m304[0m       return createPropsBuilder(schema.extend(extension.shape));
+[7m   [0m [91m                                       ~~~~~~[0m
+
+[96msrc/utils/validate-props.tsx[0m:[93m304[0m:[93m57[0m - [91merror[0m[90m TS2339: [0mProperty 'shape' does not exist on type 'ZodType<U, ZodTypeDef, U>'.
+
+[7m304[0m       return createPropsBuilder(schema.extend(extension.shape));
+[7m   [0m [91m                                                        ~~~~~[0m
+
+
+Found 450 errors in 38 files.
+
+Errors  Files
+     4  src/api/bulk-operations.ts[90m:216[0m
+     2  src/api/ministry-platform-middleware.ts[90m:6[0m
+     2  src/api/ministry-platform-validation.ts[90m:6[0m
+    10  src/api/ministry-route-handler.ts[90m:4[0m
+     8  src/api/route-handler.ts[90m:1[0m
+     1  src/api/security.ts[90m:216[0m
+     2  src/api/utils.ts[90m:3[0m
+     1  src/api/validation-middleware.ts[90m:3[0m
+     1  src/assessments/scoring.ts[90m:4[0m
+     3  src/auth/middleware.ts[90m:1[0m
+     1  src/auth/session.ts[90m:4[0m
+     1  src/contracts/api-responses.ts[90m:79[0m
+    26  src/contracts/index.ts[90m:17[0m
+     1  src/contracts/ministry-platform.request.ts[90m:7[0m
+     2  src/contracts/ministry-platform.response.ts[90m:9[0m
+     4  src/forms/base-form.tsx[90m:1[0m
+     7  src/forms/form-field.tsx[90m:1[0m
+    28  src/forms/hooks.ts[90m:6[0m
+     8  src/index.ts[90m:14[0m
+     1  src/mappers/ai.ts[90m:8[0m
+     1  src/mappers/assessments.ts[90m:6[0m
+     1  src/mappers/content.ts[90m:5[0m
+   131  src/mappers/ministry-platform.ts[90m:26[0m
+     1  src/mappers/organizations.ts[90m:1[0m
+     1  src/mappers/user-profiles.ts[90m:1[0m
+     5  src/payments/actions.ts[90m:5[0m
+     2  src/payments/stripe.ts[90m:3[0m
+    19  src/services/assessment.service.ts[90m:1[0m
+    10  src/services/base.service.ts[90m:1[0m
+    16  src/services/community.service.ts[90m:1[0m
+    15  src/services/content.service.ts[90m:1[0m
+    24  src/services/index.ts[90m:24[0m
+    23  src/services/integration.example.ts[90m:8[0m
+    42  src/services/organization.service.ts[90m:1[0m
+    17  src/services/user.service.ts[90m:1[0m
+    11  src/types/component-props.ts[90m:17[0m
+     6  src/utils/conditional-render.tsx[90m:4[0m
+    12  src/utils/validate-props.tsx[90m:29[0m
+[41m[30m ELIFECYCLE [39m[49m [31mCommand failed with exit code 1.[39m
