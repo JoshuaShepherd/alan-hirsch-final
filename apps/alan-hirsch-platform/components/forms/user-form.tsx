@@ -1,3 +1,10 @@
+import type { UserProfile } from '@platform/shared/contracts';
+import {
+  newUserProfileSchema,
+  userProfileSchema,
+} from '@platform/shared/contracts';
+import { useTypedForm } from '@platform/shared/forms/hooks';
+import type { UserFormProps } from '@platform/shared/types';
 import {
   Button,
   Input,
@@ -7,11 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
   Textarea,
-} from '@/components/ui';
-import type { UserProfile } from '@platform/shared/contracts';
-import { newUserProfileSchema, userProfileSchema } from '@platform/shared/contracts';
-import { useTypedForm } from '@/lib/forms/hooks';
-import type { UserFormProps } from '@/lib/types/component-props';
+} from '@platform/ui';
 import { BaseForm, FormField, FormGrid, FormSection } from './base-form';
 
 // ============================================================================

@@ -1,7 +1,7 @@
+import { NewUserProfile, UserProfile } from '@platform/contracts';
 import { compare, hash } from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
-import { UserProfile, NewUserProfile } from '@/lib/contracts';
 
 const key = new TextEncoder().encode(process.env['AUTH_SECRET']);
 const SALT_ROUNDS = 10;
@@ -45,8 +45,15 @@ export async function getSession() {
 
 export async function setSession(user: UserProfile | NewUserProfile) {
   const expiresInOneDay = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+  // Handle the case where user might not have an ID yet (NewUserProfile)
+  const userId = 'id' in user ? user.id : null;
+  if (!userId) {
+    throw new Error('User ID is required to set session');
+  }
+
   const session: SessionData = {
-    user: { id: user.id! },
+    user: { id: userId },
     expires: expiresInOneDay.toISOString(),
   };
   const encryptedSession = await signToken(session);

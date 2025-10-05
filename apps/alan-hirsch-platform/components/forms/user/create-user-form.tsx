@@ -1,3 +1,6 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { BaseForm } from '@platform/shared/forms/base-form';
+import { FormFieldGroup, FormSection } from '@platform/shared/forms/form-field';
 import {
   Card,
   CardContent,
@@ -15,10 +18,7 @@ import {
 } from '@platform/ui/select';
 import { Switch } from '@platform/ui/switch';
 import { Textarea } from '@platform/ui/textarea';
-import { NewUserProfile, newUserProfileSchema } from '@/validations/auth';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { BaseForm, FormFieldGroup, FormSection } from '../base-form';
 import { FormField } from '../form-field';
 
 export interface CreateUserFormProps {

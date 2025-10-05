@@ -1,10 +1,10 @@
-import { z } from 'zod';
 import {
   culturalContextSchema,
   membershipRoleSchema,
   ministryRoleSchema,
   organizationTypeSchema,
-} from '../../validations/shared';
+} from '@platform/contracts';
+import { z } from 'zod';
 
 // ============================================================================
 // MINISTRY PLATFORM REQUEST SCHEMAS

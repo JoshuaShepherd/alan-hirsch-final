@@ -3,18 +3,13 @@
 
 import {
   assessmentSchema,
-  collaborationSchema,
-  communityPostSchema,
-  communitySchema,
   contentCategorySchema,
   contentItemSchema,
   contentSeriesSchema,
   organizationSchema,
-  subscriptionPlanSchema,
   userAssessmentSchema,
   userProfileSchema,
-  userSubscriptionSchema,
-} from '@/validations';
+} from '@platform/contracts';
 import { z } from 'zod';
 
 // ============================================================================
@@ -315,134 +310,19 @@ export interface ContentCategoryListProps
 // Community Component Props
 // ============================================================================
 
-export interface CommunityCardProps
-  extends EntityCardProps<z.infer<typeof communitySchema>> {
-  showMemberCount?: boolean;
-  showPostCount?: boolean;
-  showModerationLevel?: boolean;
-  showJoinStatus?: boolean;
-}
-
-export interface CommunityListProps
-  extends EntityListProps<z.infer<typeof communitySchema>> {
-  view?: 'grid' | 'list' | 'table';
-  showFilters?: boolean;
-  filters?: {
-    communityType?: string;
-    visibility?: string;
-    joinApprovalRequired?: boolean;
-  };
-  onFilterChange?: (filters: Record<string, unknown>) => void;
-}
-
-export interface CommunityDetailsProps
-  extends EntityDisplayProps<z.infer<typeof communitySchema>> {
-  showPosts?: boolean;
-  showMembers?: boolean;
-  showGuidelines?: boolean;
-  allowJoin?: boolean;
-  onJoin?: (communityId: string) => void;
-}
-
-export interface CommunityPostCardProps
-  extends EntityCardProps<z.infer<typeof communityPostSchema>> {
-  showAuthor?: boolean;
-  showEngagement?: boolean;
-  showTags?: boolean;
-  showReplyCount?: boolean;
-  allowVote?: boolean;
-  onVote?: (postId: string, voteType: 'upvote' | 'downvote') => void;
-}
-
-export interface CommunityPostListProps
-  extends EntityListProps<z.infer<typeof communityPostSchema>> {
-  showFilters?: boolean;
-  filters?: {
-    postType?: string;
-    status?: string;
-    author?: string;
-  };
-  onFilterChange?: (filters: Record<string, unknown>) => void;
-}
+// Community interfaces removed - schemas not available in contracts package
 
 // ============================================================================
 // Subscription Component Props
 // ============================================================================
 
-export interface SubscriptionPlanCardProps
-  extends EntityCardProps<z.infer<typeof subscriptionPlanSchema>> {
-  showPricing?: boolean;
-  showFeatures?: boolean;
-  showPopular?: boolean;
-  showTrialInfo?: boolean;
-  currentPlan?: boolean;
-}
-
-export interface SubscriptionPlanListProps
-  extends EntityListProps<z.infer<typeof subscriptionPlanSchema>> {
-  view?: 'grid' | 'list' | 'table';
-  showFilters?: boolean;
-  filters?: {
-    planType?: string;
-    isActive?: boolean;
-    isPopular?: boolean;
-  };
-  onFilterChange?: (filters: Record<string, unknown>) => void;
-  onSelectPlan?: (planId: string) => void;
-}
-
-export interface UserSubscriptionCardProps
-  extends EntityCardProps<z.infer<typeof userSubscriptionSchema>> {
-  showUsage?: boolean;
-  showBillingInfo?: boolean;
-  showNextBilling?: boolean;
-  allowManage?: boolean;
-  onManage?: (subscriptionId: string) => void;
-}
-
-export interface UserSubscriptionListProps
-  extends EntityListProps<z.infer<typeof userSubscriptionSchema>> {
-  showFilters?: boolean;
-  filters?: {
-    status?: string;
-    billingCycle?: string;
-  };
-  onFilterChange?: (filters: Record<string, unknown>) => void;
-}
+// Subscription interfaces removed - schemas not available in contracts package
 
 // ============================================================================
 // Collaboration Component Props
 // ============================================================================
 
-export interface CollaborationCardProps
-  extends EntityCardProps<z.infer<typeof collaborationSchema>> {
-  showCollaborators?: boolean;
-  showProgress?: boolean;
-  showRevenue?: boolean;
-  showDeliverables?: boolean;
-}
-
-export interface CollaborationListProps
-  extends EntityListProps<z.infer<typeof collaborationSchema>> {
-  view?: 'grid' | 'list' | 'table';
-  showFilters?: boolean;
-  filters?: {
-    collaborationType?: string;
-    status?: string;
-    leadAuthor?: string;
-  };
-  onFilterChange?: (filters: Record<string, unknown>) => void;
-}
-
-export interface CollaborationDetailsProps
-  extends EntityDisplayProps<z.infer<typeof collaborationSchema>> {
-  showCollaborators?: boolean;
-  showDeliverables?: boolean;
-  showCommunication?: boolean;
-  showRevenue?: boolean;
-  allowJoin?: boolean;
-  onJoin?: (collaborationId: string) => void;
-}
+// Collaboration interfaces removed - schemas not available in contracts package
 
 // ============================================================================
 // Search & Filter Props
@@ -566,44 +446,15 @@ export const contentItemCardPropsSchema = z.object({
   className: z.string().optional(),
 });
 
-// Community Display Schema
-export const communityCardPropsSchema = z.object({
-  item: communitySchema,
-  variant: z.enum(['default', 'compact', 'detailed', 'minimal']).optional(),
-  showActions: z.boolean().optional(),
-  showStats: z.boolean().optional(),
-  showMemberCount: z.boolean().optional(),
-  showPostCount: z.boolean().optional(),
-  showModerationLevel: z.boolean().optional(),
-  showJoinStatus: z.boolean().optional(),
-  className: z.string().optional(),
-});
-
-// Subscription Plan Display Schema
-export const subscriptionPlanCardPropsSchema = z.object({
-  item: subscriptionPlanSchema,
-  variant: z.enum(['default', 'compact', 'detailed', 'minimal']).optional(),
-  showActions: z.boolean().optional(),
-  showStats: z.boolean().optional(),
-  showPricing: z.boolean().optional(),
-  showFeatures: z.boolean().optional(),
-  showPopular: z.boolean().optional(),
-  showTrialInfo: z.boolean().optional(),
-  currentPlan: z.boolean().optional(),
-  className: z.string().optional(),
-});
+// Community and Subscription schemas removed - schemas not available in contracts package
 
 // ============================================================================
 // Type Exports
 // ============================================================================
 
-export type UserCardProps = z.infer<typeof userCardPropsSchema>;
-export type AssessmentCardProps = z.infer<typeof assessmentCardPropsSchema>;
-export type ContentItemCardProps = z.infer<typeof contentItemCardPropsSchema>;
-export type CommunityCardProps = z.infer<typeof communityCardPropsSchema>;
-export type SubscriptionPlanCardProps = z.infer<
-  typeof subscriptionPlanCardPropsSchema
->;
+// Note: Interface declarations above are used instead of type exports
+// to maintain compatibility with existing code
+// Community and Subscription types removed - schemas not available in contracts package
 
 // Generic types for reuse
 export type EntityType =
@@ -613,15 +464,10 @@ export type EntityType =
   | z.infer<typeof contentItemSchema>
   | z.infer<typeof contentSeriesSchema>
   | z.infer<typeof contentCategorySchema>
-  | z.infer<typeof communitySchema>
-  | z.infer<typeof subscriptionPlanSchema>
-  | z.infer<typeof userSubscriptionSchema>
-  | z.infer<typeof userAssessmentSchema>
-  | z.infer<typeof communityPostSchema>
-  | z.infer<typeof collaborationSchema>;
+  | z.infer<typeof userAssessmentSchema>;
 
 // Component prop validation helper
-export function validateComponentProps<T>(
+export function validateComponentPropsSchema<T>(
   props: unknown,
   schema: z.ZodSchema<T>
 ): T {

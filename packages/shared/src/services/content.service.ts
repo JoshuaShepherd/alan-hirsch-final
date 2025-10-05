@@ -1,17 +1,19 @@
-import { db } from '@platform/database/db/drizzle';
-import { contentCategories, contentItems, userProfiles } from '@platform/database/db/schema';
 import {
-  newContentCategorySchema,
-  newContentItemSchema,
-  queryContentCategorySchema,
-  queryContentItemSchema,
-  updateContentCategorySchema,
-  updateContentItemSchema,
-} from '@/src/lib/schemas/crud.schemas';
+  contentCategoryEntitySchema as databaseContentCategorySchema,
+  contentItemEntitySchema as databaseContentItemSchema,
+} from '@platform/contracts/entities/content.schema';
 import {
-  databaseContentCategorySchema,
-  databaseContentItemSchema,
-} from '@/src/lib/schemas/database.schemas';
+  CreateContentCategoryOperationSchema as newContentCategorySchema,
+  CreateContentItemOperationSchema as newContentItemSchema,
+  UpdateContentCategoryOperationSchema as updateContentCategorySchema,
+  UpdateContentItemOperationSchema as updateContentItemSchema,
+} from '@platform/contracts/operations/content.operations';
+import {
+  contentCategories,
+  contentItems,
+  db,
+  userProfiles,
+} from '@platform/database';
 import { and, desc, eq, sql, type SQL } from 'drizzle-orm';
 import { z } from 'zod';
 import { BaseService } from './base.service';
@@ -20,18 +22,34 @@ import { BaseService } from './base.service';
 // CONTENT ITEM SERVICE
 // ============================================================================
 
+// Create proper query schema that matches QueryFilters interface
+const contentItemQuerySchema = z.object({
+  where: z.record(z.any()).optional(),
+  orderBy: z
+    .array(
+      z.object({
+        field: z.string(),
+        direction: z.enum(['asc', 'desc']),
+      })
+    )
+    .optional(),
+  limit: z.number().optional(),
+  offset: z.number().optional(),
+  include: z.array(z.string()).optional(),
+});
+
 export class ContentItemService extends BaseService<
   z.infer<typeof databaseContentItemSchema>,
   z.infer<typeof newContentItemSchema>,
   z.infer<typeof updateContentItemSchema>,
-  z.infer<typeof queryContentItemSchema>,
+  z.infer<typeof contentItemQuerySchema>,
   typeof contentItems
 > {
   protected table = contentItems;
   protected entityName = 'ContentItem';
   protected createSchema = newContentItemSchema;
   protected updateSchema = updateContentItemSchema;
-  protected querySchema = queryContentItemSchema;
+  protected querySchema = contentItemQuerySchema;
   protected outputSchema = databaseContentItemSchema;
 
   /**
@@ -127,7 +145,7 @@ export class ContentItemService extends BaseService<
         .limit(limit)
         .offset(offset);
 
-      return results.map(result => this.outputSchema.parse(result));
+      return results.map((result: any) => this.outputSchema.parse(result));
     } catch (error) {
       throw this.handleDatabaseError(error, 'findByAuthor');
     }
@@ -169,7 +187,7 @@ export class ContentItemService extends BaseService<
         .limit(limit)
         .offset(offset);
 
-      return results.map(result => this.outputSchema.parse(result));
+      return results.map((result: any) => this.outputSchema.parse(result));
     } catch (error) {
       throw this.handleDatabaseError(error, 'findByCategory');
     }
@@ -212,7 +230,7 @@ export class ContentItemService extends BaseService<
         .limit(limit)
         .offset(offset);
 
-      return results.map(result => this.outputSchema.parse(result));
+      return results.map((result: any) => this.outputSchema.parse(result));
     } catch (error) {
       throw this.handleDatabaseError(error, 'findPublished');
     }
@@ -261,7 +279,7 @@ export class ContentItemService extends BaseService<
         .limit(limit)
         .offset(offset);
 
-      return results.map(result => this.outputSchema.parse(result));
+      return results.map((result: any) => this.outputSchema.parse(result));
     } catch (error) {
       throw this.handleDatabaseError(error, 'searchContent');
     }
@@ -492,7 +510,7 @@ export class ContentItemService extends BaseService<
         )
         .limit(limit);
 
-      return results.map(result => this.outputSchema.parse(result));
+      return results.map((result: any) => this.outputSchema.parse(result));
     } catch (error) {
       throw this.handleDatabaseError(error, 'getTrendingContent');
     }
@@ -503,18 +521,34 @@ export class ContentItemService extends BaseService<
 // CONTENT CATEGORY SERVICE
 // ============================================================================
 
+// Create proper query schema for content categories
+const contentCategoryQuerySchema = z.object({
+  where: z.record(z.any()).optional(),
+  orderBy: z
+    .array(
+      z.object({
+        field: z.string(),
+        direction: z.enum(['asc', 'desc']),
+      })
+    )
+    .optional(),
+  limit: z.number().optional(),
+  offset: z.number().optional(),
+  include: z.array(z.string()).optional(),
+});
+
 export class ContentCategoryService extends BaseService<
   z.infer<typeof databaseContentCategorySchema>,
   z.infer<typeof newContentCategorySchema>,
   z.infer<typeof updateContentCategorySchema>,
-  z.infer<typeof queryContentCategorySchema>,
+  z.infer<typeof contentCategoryQuerySchema>,
   typeof contentCategories
 > {
   protected table = contentCategories;
   protected entityName = 'ContentCategory';
   protected createSchema = newContentCategorySchema;
   protected updateSchema = updateContentCategorySchema;
-  protected querySchema = queryContentCategorySchema;
+  protected querySchema = contentCategoryQuerySchema;
   protected outputSchema = databaseContentCategorySchema;
 
   /**
@@ -556,7 +590,7 @@ export class ContentCategoryService extends BaseService<
         )
         .orderBy(contentCategories.orderIndex);
 
-      return results.map(result => this.outputSchema.parse(result));
+      return results.map((result: any) => this.outputSchema.parse(result));
     } catch (error) {
       throw this.handleDatabaseError(error, 'findByParent');
     }
@@ -580,7 +614,7 @@ export class ContentCategoryService extends BaseService<
         )
         .orderBy(contentCategories.orderIndex);
 
-      return results.map(result => this.outputSchema.parse(result));
+      return results.map((result: any) => this.outputSchema.parse(result));
     } catch (error) {
       throw this.handleDatabaseError(error, 'findRootCategories');
     }
@@ -604,7 +638,7 @@ export class ContentCategoryService extends BaseService<
         )
         .orderBy(contentCategories.orderIndex);
 
-      return results.map(result => this.outputSchema.parse(result));
+      return results.map((result: any) => this.outputSchema.parse(result));
     } catch (error) {
       throw this.handleDatabaseError(error, 'findByTheologicalDiscipline');
     }
@@ -624,13 +658,13 @@ export class ContentCategoryService extends BaseService<
         .where(eq(contentCategories.isActive, true))
         .orderBy(contentCategories.orderIndex);
 
-      const categories = allCategories.map(result =>
+      const categories = allCategories.map((result: any) =>
         this.outputSchema.parse(result)
       );
 
       // Build tree structure
       const categoryMap = new Map(
-        categories.map(cat => [cat.id, { ...cat, children: [] }])
+        categories.map(cat => [cat.id, { ...cat, children: [] as any[] }])
       );
       const rootCategories: any[] = [];
 

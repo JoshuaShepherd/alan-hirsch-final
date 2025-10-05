@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import {
-  AssessmentEntitySchema,
-  AssessmentQuestionEntitySchema,
-  AssessmentResponseEntitySchema,
-  UserAssessmentEntitySchema,
+  assessmentEntitySchema as AssessmentEntitySchema,
+  assessmentQuestionEntitySchema as AssessmentQuestionEntitySchema,
+  assessmentResponseEntitySchema as AssessmentResponseEntitySchema,
+  userAssessmentEntitySchema as UserAssessmentEntitySchema,
 } from '../entities/assessment.schema';
 import {
   BulkUpdateAssessmentResponsesOperationSchema,

@@ -1,15 +1,19 @@
-import { db } from '@platform/database/db/drizzle';
 import {
+  organizationEntitySchema as databaseOrganizationSchema,
+  organizationMembershipEntitySchema,
+} from '@platform/contracts/entities/organization.schema';
+import {
+  CreateOrganizationMembershipOperationSchema as createOrganizationMembershipSchema,
+  CreateOrganizationOperationSchema as newOrganizationSchema,
+  UpdateOrganizationMembershipOperationSchema as updateOrganizationMembershipSchema,
+  UpdateOrganizationOperationSchema as updateOrganizationSchema,
+} from '@platform/contracts/operations/organization.operations';
+import {
+  db,
   organizationMemberships,
   organizations,
   userProfiles,
-} from '@platform/database/db/schema';
-import {
-  CreateOrganizationSchema,
-  OrganizationEntitySchema,
-  OrganizationQuerySchema,
-  UpdateOrganizationSchema,
-} from '@platform/contracts';
+} from '@platform/database';
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { BaseService } from './base.service';
@@ -18,26 +22,57 @@ import { BaseService } from './base.service';
 // ORGANIZATION SERVICE
 // ============================================================================
 
+// Create proper query schemas that match QueryFilters interface
+const organizationQuerySchema = z.object({
+  where: z.record(z.any()).optional(),
+  orderBy: z
+    .array(
+      z.object({
+        field: z.string(),
+        direction: z.enum(['asc', 'desc']),
+      })
+    )
+    .optional(),
+  limit: z.number().optional(),
+  offset: z.number().optional(),
+  include: z.array(z.string()).optional(),
+});
+
+const organizationMembershipQuerySchema = z.object({
+  where: z.record(z.any()).optional(),
+  orderBy: z
+    .array(
+      z.object({
+        field: z.string(),
+        direction: z.enum(['asc', 'desc']),
+      })
+    )
+    .optional(),
+  limit: z.number().optional(),
+  offset: z.number().optional(),
+  include: z.array(z.string()).optional(),
+});
+
 export class OrganizationService extends BaseService<
-  z.infer<typeof OrganizationEntitySchema>,
-  z.infer<typeof CreateOrganizationSchema>,
-  z.infer<typeof UpdateOrganizationSchema>,
-  z.infer<typeof OrganizationQuerySchema>,
+  z.infer<typeof databaseOrganizationSchema>,
+  z.infer<typeof newOrganizationSchema>,
+  z.infer<typeof updateOrganizationSchema>,
+  z.infer<typeof organizationQuerySchema>,
   typeof organizations
 > {
   protected table = organizations;
   protected entityName = 'Organization';
-  protected createSchema = CreateOrganizationSchema;
-  protected updateSchema = UpdateOrganizationSchema;
-  protected querySchema = OrganizationQuerySchema;
-  protected outputSchema = OrganizationEntitySchema;
+  protected createSchema = newOrganizationSchema;
+  protected updateSchema = updateOrganizationSchema;
+  protected querySchema = organizationQuerySchema;
+  protected outputSchema = databaseOrganizationSchema;
 
   /**
    * Find organization by slug
    */
   async findBySlug(
     slug: string
-  ): Promise<z.infer<typeof OrganizationEntitySchema> | null> {
+  ): Promise<z.infer<typeof databaseOrganizationSchema> | null> {
     try {
       const [result] = await db
         .select()
@@ -58,7 +93,7 @@ export class OrganizationService extends BaseService<
    */
   async findByAccountOwner(
     accountOwnerId: string
-  ): Promise<z.infer<typeof OrganizationEntitySchema>[]> {
+  ): Promise<z.infer<typeof databaseOrganizationSchema>[]> {
     try {
       const results = await db
         .select()
@@ -77,14 +112,14 @@ export class OrganizationService extends BaseService<
    */
   async findByType(
     organizationType: string
-  ): Promise<z.infer<typeof OrganizationEntitySchema>[]> {
+  ): Promise<z.infer<typeof databaseOrganizationSchema>[]> {
     try {
       const results = await db
         .select()
         .from(organizations)
         .where(
           and(
-            eq(organizations.organizationType, organizationType),
+            eq(organizations.organizationType, organizationType as any),
             eq(organizations.status, 'active')
           )
         )
@@ -101,14 +136,14 @@ export class OrganizationService extends BaseService<
    */
   async findBySizeCategory(
     sizeCategory: string
-  ): Promise<z.infer<typeof OrganizationEntitySchema>[]> {
+  ): Promise<z.infer<typeof databaseOrganizationSchema>[]> {
     try {
       const results = await db
         .select()
         .from(organizations)
         .where(
           and(
-            eq(organizations.sizeCategory, sizeCategory),
+            eq(organizations.sizeCategory, sizeCategory as any),
             eq(organizations.status, 'active')
           )
         )
@@ -125,12 +160,12 @@ export class OrganizationService extends BaseService<
    */
   async findByStatus(
     status: string
-  ): Promise<z.infer<typeof OrganizationEntitySchema>[]> {
+  ): Promise<z.infer<typeof databaseOrganizationSchema>[]> {
     try {
       const results = await db
         .select()
         .from(organizations)
-        .where(eq(organizations.status, status))
+        .where(eq(organizations.status, status as any))
         .orderBy(organizations.name);
 
       return results.map(result => this.outputSchema.parse(result));
@@ -143,9 +178,9 @@ export class OrganizationService extends BaseService<
    * Get organization with members
    */
   async findWithMembers(organizationId: string): Promise<{
-    organization: z.infer<typeof OrganizationEntitySchema>;
+    organization: z.infer<typeof databaseOrganizationSchema>;
     members: Array<{
-      membership: z.infer<typeof databaseOrganizationMembershipSchema>;
+      membership: z.infer<typeof organizationMembershipEntitySchema>;
       user: any;
     }>;
   } | null> {
@@ -179,7 +214,7 @@ export class OrganizationService extends BaseService<
       return {
         organization: this.outputSchema.parse(organizationResult),
         members: membersResults.map(({ membership, user }) => ({
-          membership: databaseOrganizationMembershipSchema.parse(membership),
+          membership: organizationMembershipEntitySchema.parse(membership),
           user,
         })),
       };
@@ -197,7 +232,6 @@ export class OrganizationService extends BaseService<
     pendingMembers: number;
     ownerCount: number;
     adminCount: number;
-    memberCount: number;
   }> {
     try {
       const [stats] = await db
@@ -218,7 +252,6 @@ export class OrganizationService extends BaseService<
         pendingMembers: stats?.pendingMembers || 0,
         ownerCount: stats?.ownerCount || 0,
         adminCount: stats?.adminCount || 0,
-        regularMemberCount: stats?.regularMemberCount || 0,
       };
     } catch (error) {
       throw this.handleDatabaseError(error, 'getOrganizationStats');
@@ -230,7 +263,7 @@ export class OrganizationService extends BaseService<
    */
   async activate(
     organizationId: string
-  ): Promise<z.infer<typeof OrganizationEntitySchema>> {
+  ): Promise<z.infer<typeof databaseOrganizationSchema>> {
     try {
       const [result] = await db
         .update(organizations)
@@ -252,12 +285,12 @@ export class OrganizationService extends BaseService<
    */
   async deactivate(
     organizationId: string
-  ): Promise<z.infer<typeof OrganizationEntitySchema>> {
+  ): Promise<z.infer<typeof databaseOrganizationSchema>> {
     try {
       const [result] = await db
         .update(organizations)
         .set({
-          status: 'inactive',
+          status: 'suspended',
           updatedAt: new Date(),
         })
         .where(eq(organizations.id, organizationId))
@@ -274,7 +307,7 @@ export class OrganizationService extends BaseService<
    */
   async suspend(
     organizationId: string
-  ): Promise<z.infer<typeof OrganizationEntitySchema>> {
+  ): Promise<z.infer<typeof databaseOrganizationSchema>> {
     try {
       const [result] = await db
         .update(organizations)
@@ -325,7 +358,7 @@ export class OrganizationService extends BaseService<
   async searchOrganizations(
     query: string,
     limit: number = 20
-  ): Promise<z.infer<typeof OrganizationEntitySchema>[]> {
+  ): Promise<z.infer<typeof databaseOrganizationSchema>[]> {
     try {
       const results = await db
         .select()
@@ -355,18 +388,18 @@ export class OrganizationService extends BaseService<
 // ============================================================================
 
 export class OrganizationMembershipService extends BaseService<
-  z.infer<typeof databaseOrganizationMembershipSchema>,
-  z.infer<typeof newOrganizationMembershipSchema>,
+  z.infer<typeof organizationMembershipEntitySchema>,
+  z.infer<typeof createOrganizationMembershipSchema>,
   z.infer<typeof updateOrganizationMembershipSchema>,
-  z.infer<typeof queryOrganizationMembershipSchema>,
+  z.infer<typeof organizationMembershipQuerySchema>,
   typeof organizationMemberships
 > {
   protected table = organizationMemberships;
   protected entityName = 'OrganizationMembership';
-  protected createSchema = newOrganizationMembershipSchema;
+  protected createSchema = createOrganizationMembershipSchema;
   protected updateSchema = updateOrganizationMembershipSchema;
-  protected querySchema = queryOrganizationMembershipSchema;
-  protected outputSchema = databaseOrganizationMembershipSchema;
+  protected querySchema = organizationMembershipQuerySchema;
+  protected outputSchema = organizationMembershipEntitySchema;
 
   /**
    * Find membership by user and organization
@@ -374,7 +407,7 @@ export class OrganizationMembershipService extends BaseService<
   async findByUserAndOrganization(
     userId: string,
     organizationId: string
-  ): Promise<z.infer<typeof databaseOrganizationMembershipSchema> | null> {
+  ): Promise<z.infer<typeof organizationMembershipEntitySchema> | null> {
     try {
       const [result] = await db
         .select()
@@ -400,8 +433,8 @@ export class OrganizationMembershipService extends BaseService<
    */
   async findByUser(userId: string): Promise<
     Array<
-      z.infer<typeof databaseOrganizationMembershipSchema> & {
-        organization: z.infer<typeof OrganizationEntitySchema>;
+      z.infer<typeof organizationMembershipEntitySchema> & {
+        organization: z.infer<typeof databaseOrganizationSchema>;
       }
     >
   > {
@@ -421,7 +454,7 @@ export class OrganizationMembershipService extends BaseService<
 
       return results.map(({ membership, organization }) => ({
         ...this.outputSchema.parse(membership),
-        organization: OrganizationEntitySchema.parse(organization),
+        organization: databaseOrganizationSchema.parse(organization),
       }));
     } catch (error) {
       throw this.handleDatabaseError(error, 'findByUser');
@@ -433,7 +466,7 @@ export class OrganizationMembershipService extends BaseService<
    */
   async findByOrganization(organizationId: string): Promise<
     Array<
-      z.infer<typeof databaseOrganizationMembershipSchema> & {
+      z.infer<typeof organizationMembershipEntitySchema> & {
         user: any;
       }
     >
@@ -466,8 +499,8 @@ export class OrganizationMembershipService extends BaseService<
    */
   async findActiveByUser(userId: string): Promise<
     Array<
-      z.infer<typeof databaseOrganizationMembershipSchema> & {
-        organization: z.infer<typeof OrganizationEntitySchema>;
+      z.infer<typeof organizationMembershipEntitySchema> & {
+        organization: z.infer<typeof databaseOrganizationSchema>;
       }
     >
   > {
@@ -492,7 +525,7 @@ export class OrganizationMembershipService extends BaseService<
 
       return results.map(({ membership, organization }) => ({
         ...this.outputSchema.parse(membership),
-        organization: OrganizationEntitySchema.parse(organization),
+        organization: databaseOrganizationSchema.parse(organization),
       }));
     } catch (error) {
       throw this.handleDatabaseError(error, 'findActiveByUser');
@@ -505,7 +538,7 @@ export class OrganizationMembershipService extends BaseService<
   async findByRole(
     organizationId: string,
     role: string
-  ): Promise<z.infer<typeof databaseOrganizationMembershipSchema>[]> {
+  ): Promise<z.infer<typeof organizationMembershipEntitySchema>[]> {
     try {
       const results = await db
         .select()
@@ -513,7 +546,7 @@ export class OrganizationMembershipService extends BaseService<
         .where(
           and(
             eq(organizationMemberships.organizationId, organizationId),
-            eq(organizationMemberships.role, role),
+            eq(organizationMemberships.role, role as any),
             eq(organizationMemberships.status, 'active')
           )
         )
@@ -533,7 +566,7 @@ export class OrganizationMembershipService extends BaseService<
     organizationId: string,
     role: string = 'member',
     invitedBy?: string
-  ): Promise<z.infer<typeof databaseOrganizationMembershipSchema>> {
+  ): Promise<z.infer<typeof organizationMembershipEntitySchema>> {
     try {
       // Check if membership already exists
       const existing = await this.findByUserAndOrganization(
@@ -549,7 +582,7 @@ export class OrganizationMembershipService extends BaseService<
         .values({
           userId,
           organizationId,
-          role,
+          role: role as any,
           status: 'active',
           joinedAt: new Date(),
           invitedBy,
@@ -595,13 +628,13 @@ export class OrganizationMembershipService extends BaseService<
   async updateMemberRole(
     userId: string,
     organizationId: string,
-    newRole: string
-  ): Promise<z.infer<typeof databaseOrganizationMembershipSchema>> {
+    newRole: 'owner' | 'admin' | 'member' | 'viewer'
+  ): Promise<z.infer<typeof organizationMembershipEntitySchema>> {
     try {
       const [result] = await db
         .update(organizationMemberships)
         .set({
-          role: newRole,
+          role: newRole as any,
           updatedAt: new Date(),
         })
         .where(
@@ -624,13 +657,13 @@ export class OrganizationMembershipService extends BaseService<
   async updateMembershipStatus(
     userId: string,
     organizationId: string,
-    status: string
-  ): Promise<z.infer<typeof databaseOrganizationMembershipSchema>> {
+    status: 'pending' | 'active' | 'inactive' | 'cancelled'
+  ): Promise<z.infer<typeof organizationMembershipEntitySchema>> {
     try {
       const [result] = await db
         .update(organizationMemberships)
         .set({
-          status,
+          status: status as any,
           updatedAt: new Date(),
         })
         .where(
@@ -709,7 +742,7 @@ export class OrganizationMembershipService extends BaseService<
    */
   async getOwners(
     organizationId: string
-  ): Promise<z.infer<typeof databaseOrganizationMembershipSchema>[]> {
+  ): Promise<z.infer<typeof organizationMembershipEntitySchema>[]> {
     try {
       return this.findByRole(organizationId, 'owner');
     } catch (error) {
@@ -722,7 +755,7 @@ export class OrganizationMembershipService extends BaseService<
    */
   async getAdmins(
     organizationId: string
-  ): Promise<z.infer<typeof databaseOrganizationMembershipSchema>[]> {
+  ): Promise<z.infer<typeof organizationMembershipEntitySchema>[]> {
     try {
       return this.findByRole(organizationId, 'admin');
     } catch (error) {
@@ -735,7 +768,7 @@ export class OrganizationMembershipService extends BaseService<
    */
   async getPendingMemberships(
     organizationId: string
-  ): Promise<z.infer<typeof databaseOrganizationMembershipSchema>[]> {
+  ): Promise<z.infer<typeof organizationMembershipEntitySchema>[]> {
     try {
       const results = await db
         .select()

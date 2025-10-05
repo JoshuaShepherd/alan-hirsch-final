@@ -1,11 +1,6 @@
 // Content Query Module
 // Pure functions for content operations with context-aware access control
 
-import type {
-  NewContentCategory,
-  NewContentItem,
-  NewContentSeries,
-} from '@/lib/contracts';
 import { and, asc, count, desc, eq, isNull, like, or, sql } from 'drizzle-orm';
 import { db } from '../drizzle';
 import {
@@ -14,6 +9,11 @@ import {
   contentSeries,
   userProfiles,
 } from '../schema';
+import type {
+  NewContentCategory,
+  NewContentItem,
+  NewContentSeries,
+} from '../schema/content';
 import { hasResults } from '../type-guards';
 
 // ============================================================================
@@ -41,15 +41,15 @@ export async function getContentItemById(
 
   // Add context-based filtering for draft content
   if (context.userId && context.role !== 'admin') {
-    conditions.push(
-      or(
-        eq(contentItems.status, 'published'),
-        and(
-          eq(contentItems.status, 'draft'),
-          eq(contentItems.authorId, context.userId)
-        )
-      )
+    const publishedCondition = eq(contentItems.status, 'published');
+    const draftCondition = and(
+      eq(contentItems.status, 'draft'),
+      eq(contentItems.authorId, context.userId)
     );
+    const combinedCondition = or(publishedCondition, draftCondition);
+    if (combinedCondition) {
+      conditions.push(combinedCondition);
+    }
   } else {
     conditions.push(eq(contentItems.status, 'published'));
   }
@@ -74,15 +74,15 @@ export async function getContentItemBySlug(
 
   // Add context-based filtering for draft content
   if (context.userId && context.role !== 'admin') {
-    conditions.push(
-      or(
-        eq(contentItems.status, 'published'),
-        and(
-          eq(contentItems.status, 'draft'),
-          eq(contentItems.authorId, context.userId)
-        )
-      )
+    const publishedCondition = eq(contentItems.status, 'published');
+    const draftCondition = and(
+      eq(contentItems.status, 'draft'),
+      eq(contentItems.authorId, context.userId)
     );
+    const combinedCondition = or(publishedCondition, draftCondition);
+    if (combinedCondition) {
+      conditions.push(combinedCondition);
+    }
   } else {
     conditions.push(eq(contentItems.status, 'published'));
   }
@@ -151,7 +151,7 @@ export async function getContentItemsWithDetails(
     conditions.push(eq(contentItems.visibility, visibility));
   }
   if (contentType) {
-    conditions.push(eq(contentItems.contentType, contentType));
+    conditions.push(eq(contentItems.contentType, contentType as any));
   }
 
   // Add context-based filtering for draft content
@@ -236,7 +236,7 @@ export async function searchContentItems(
     conditions.push(eq(contentItems.authorId, authorId));
   }
   if (contentType) {
-    conditions.push(eq(contentItems.contentType, contentType));
+    conditions.push(eq(contentItems.contentType, contentType as any));
   }
 
   const results = await db

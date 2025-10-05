@@ -24,3 +24,6 @@ export * from './advanced/multi-step-form';
 // Shared forms
 export * from './shared/contact-form';
 export * from './shared/search-form';
+
+// Form examples
+export * from './examples/comprehensive-form-example';

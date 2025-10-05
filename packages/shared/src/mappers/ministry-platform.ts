@@ -1,5 +1,4 @@
 import type {
-  AssessmentRow,
   CommunityRow,
   ContentItemRow,
   MinistryAssessment,
@@ -9,6 +8,7 @@ import type {
   MinistryUserProfile,
   OrganizationMembershipRow,
   OrganizationRow,
+  UserAssessmentRow,
   UserProfileRow,
 } from '../contracts';
 
@@ -40,32 +40,17 @@ export function toMinistryOrganizationDTO(
         : org.address
       : undefined,
     accountOwnerId: org.accountOwnerId || undefined,
-    createdAt: org.createdAt,
-    updatedAt: org.updatedAt,
+    licenseType: org.licenseType || 'individual',
+    maxUsers: org.maxUsers || 1,
+    billingEmail: org.billingEmail || undefined,
+    createdAt: org.createdAt.toISOString(),
+    updatedAt: org.updatedAt.toISOString(),
 
-    // Ministry-specific fields (extended from base)
-    ministryFocus: [],
-    theologicalTradition: undefined,
-    denominationalAffiliation: undefined,
+    // Note: Ministry-specific fields removed as they're not part of base organization schema
 
-    // Organization metrics
-    organizationMetrics: {
-      totalMembers: totalMembers || 0,
-      activeMembers: activeMembers || 0,
-      totalContent: 0,
-      totalAssessments: 0,
-      averageEngagement: 0.75,
-      growthRate: 0.1,
-    },
+    // Note: organizationMetrics removed as it's not part of base organization schema
 
-    // Ministry capacity
-    ministryCapacity: {
-      maxContentCreators: org.maxUsers || 1,
-      maxAssessments: undefined,
-      maxCommunities: undefined,
-      customBranding: false,
-      apiAccess: false,
-    },
+    // Note: ministryCapacity removed as it's not part of base organization schema
   };
 }
 
@@ -96,68 +81,37 @@ export function toMinistryUserProfileDTO(
     languagePrimary: profile.languagePrimary || 'en',
     culturalContext: profile.culturalContext || undefined,
     leaderTier: profile.leaderTier || undefined,
-    subscriptionTier: profile.subscriptionTier,
+    subscriptionTier: profile.subscriptionTier || 'free',
     theologicalFocus: profile.theologicalFocus || [],
     brandColors: profile.brandColors || {
       primary: '#2563eb',
       secondary: '#64748b',
       accent: '#059669',
     },
-    createdAt: profile.createdAt,
-    updatedAt: profile.updatedAt,
-
-    // Organization context
-    organizationContext,
-
-    // Ministry-specific metrics
-    ministryMetrics: {
-      apestScores: {
-        apostolic: profile.assessmentMovementAlignment || 0,
-        prophetic: profile.assessmentAudienceEngagement || 0,
-        evangelistic: profile.assessmentContentReadiness || 0,
-        shepherding: profile.assessmentRevenuePotential || 0,
-        teaching: profile.assessmentStrategicFit || 0,
-      },
-      contentMetrics: {
-        totalContentCreated: 0,
-        totalViews: 0,
-        totalLikes: 0,
-        totalShares: 0,
-        engagementRate: 0.75,
-        averageContentRating: 4.2,
-      },
-      communityMetrics: {
-        communitiesJoined: 0,
-        postsCreated: 0,
-        commentsMade: 0,
-        collaborationsParticipated: 0,
-        networkConnections: 0,
-      },
-      learningMetrics: {
-        assessmentsCompleted: 0,
-        contentItemsCompleted: 0,
-        learningStreak: 0,
-        totalLearningTime: 0,
-        certificatesEarned: 0,
-      },
+    emailNotifications: profile.emailNotifications || {
+      dailyDigest: true,
+      collaborationRequests: true,
+      revenueReports: true,
+      communityUpdates: true,
     },
-
-    // Enhanced ministry context
-    ministrySpecialization: [],
-    targetAudience: [],
-    ministryGoals: [],
-
-    // Network effects
-    networkAmplificationScore: 75, // TODO: Calculate from network metrics
-    influenceRadius: 0,
-
-    // Platform engagement
-    platformEngagement: {
-      lastActiveAt: profile.updatedAt,
-      totalSessions: 0,
-      averageSessionDuration: 0,
-      favoriteContentTypes: [],
+    privacySettings: profile.privacySettings || {
+      publicProfile: true,
+      showAssessmentResults: false,
+      allowNetworking: true,
+      shareAnalytics: false,
     },
+    onboardingCompleted: profile.onboardingCompleted || false,
+    onboardingStep: profile.onboardingStep || 1,
+    accountStatus: profile.accountStatus || 'pending_verification',
+    createdAt: profile.createdAt.toISOString(),
+    updatedAt: profile.updatedAt.toISOString(),
+    lastActiveAt: profile.lastActiveAt.toISOString(),
+
+    // Note: organizationContext removed as it's not part of user profile schema
+
+    // Note: ministryMetrics removed as it's not part of base user profile schema
+
+    // Note: Enhanced ministry context removed as it's not part of base user profile schema
   };
 }
 
@@ -192,33 +146,39 @@ export function toMinistryContentItemDTO(
     tags: content.tags || [],
     theologicalThemes: content.theologicalThemes || [],
     authorId: content.authorId,
-    publishedAt: content.publishedAt || undefined,
-    createdAt: content.createdAt,
-    updatedAt: content.updatedAt,
+    coAuthors: content.coAuthors || [],
+    wordCount: content.wordCount || undefined,
+    estimatedReadingTime: content.estimatedReadingTime || undefined,
+    viewCount: content.viewCount || 0,
+    likeCount: content.likeCount || 0,
+    shareCount: content.shareCount || 0,
+    commentCount: content.commentCount || 0,
+    bookmarkCount: content.bookmarkCount || 0,
+    seriesId: content.seriesId || undefined,
+    seriesOrder: content.seriesOrder ? Number(content.seriesOrder) : undefined,
+    networkAmplificationScore: content.networkAmplificationScore
+      ? Number(content.networkAmplificationScore)
+      : 0,
+    crossReferenceCount: content.crossReferenceCount
+      ? Number(content.crossReferenceCount)
+      : 0,
+    aiEnhanced: content.aiEnhanced || false,
+    aiSummary: content.aiSummary || undefined,
+    aiKeyPoints: content.aiKeyPoints || [],
+    attachments: content.attachments || [],
+    canonicalUrl: content.canonicalUrl || undefined,
+    scheduledAt: content.scheduledAt?.toISOString() || undefined,
+    attributionRequired: content.attributionRequired || true,
+    publishedAt: content.publishedAt?.toISOString() || undefined,
+    createdAt: content.createdAt.toISOString(),
+    updatedAt: content.updatedAt.toISOString(),
 
-    // Ministry-specific content context
-    ministryContext: {
-      targetMinistryRoles: [],
-      theologicalDepth: 'intermediate',
-      practicalApplication: 'practical',
-      culturalRelevance: ['global'],
-    },
+    // Note: ministryContext removed as it's not part of content schema
 
     // Ministry impact metrics
-    ministryImpact: {
-      ministryEffectivenessScore: 0,
-      leadershipDevelopmentValue: 0,
-      theologicalAccuracy: 0,
-      practicalApplicability: 0,
-    },
+    // Note: ministryImpact removed as it's not part of base content schema
 
-    // Enhanced engagement tracking
-    ministryEngagement: {
-      ministryRoleEngagement: {},
-      culturalContextEngagement: {},
-      theologicalThemeEngagement: {},
-      practicalApplicationEngagement: {},
-    },
+    // Note: ministryEngagement removed as it's not part of base content schema
   };
 }
 
@@ -227,70 +187,47 @@ export function toMinistryContentItemDTO(
 // ============================================================================
 
 export function toMinistryAssessmentDTO(
-  assessment: AssessmentRow,
+  userAssessment: UserAssessmentRow,
   includeMetrics: boolean = false
 ): MinistryAssessment {
   return {
-    // Base assessment fields
-    id: assessment.id,
-    name: assessment.name,
-    slug: assessment.slug,
-    description: assessment.description || '',
-    assessmentType: assessment.assessmentType,
-    questionsCount: assessment.questionsCount,
-    estimatedDuration: assessment.estimatedDuration || undefined,
-    passingScore: assessment.passingScore || undefined,
-    version: assessment.version || '1.0',
-    language: assessment.language || 'en',
-    culturalAdaptation: assessment.culturalAdaptation || 'universal',
-    researchBacked: assessment.researchBacked || false,
-    validityScore: assessment.validityScore
-      ? Number(assessment.validityScore)
+    // Base user assessment fields
+    id: userAssessment.id,
+    userId: userAssessment.userId,
+    assessmentId: userAssessment.assessmentId,
+    startedAt: userAssessment.startedAt.toISOString(),
+    completedAt: userAssessment.completedAt?.toISOString() || undefined,
+    completionPercentage: userAssessment.completionPercentage || 0,
+    rawScores: userAssessment.rawScores || undefined,
+    totalScore: userAssessment.totalScore || undefined,
+    maxPossibleScore: userAssessment.maxPossibleScore || undefined,
+    apostolicScore: userAssessment.apostolicScore || undefined,
+    propheticScore: userAssessment.propheticScore || undefined,
+    evangelisticScore: userAssessment.evangelisticScore || undefined,
+    shepherdingScore: userAssessment.shepherdingScore || undefined,
+    teachingScore: userAssessment.teachingScore || undefined,
+    normalizedScores: userAssessment.normalizedScores || undefined,
+    primaryGift: userAssessment.primaryGift || undefined,
+    secondaryGift: userAssessment.secondaryGift || undefined,
+    responseConsistency: userAssessment.responseConsistency
+      ? Number(userAssessment.responseConsistency)
       : undefined,
-    reliabilityScore: assessment.reliabilityScore
-      ? Number(assessment.reliabilityScore)
+    completionTime: userAssessment.completionTime || undefined,
+    confidenceLevel: userAssessment.confidenceLevel || undefined,
+    culturalAdjustmentApplied:
+      userAssessment.culturalAdjustmentApplied || false,
+    culturalAdjustmentFactor: userAssessment.culturalAdjustmentFactor
+      ? Number(userAssessment.culturalAdjustmentFactor)
       : undefined,
-    instructions: assessment.instructions || '',
-    scoringMethod: assessment.scoringMethod || 'likert_5',
-    status: assessment.status || 'draft',
-    publishedAt: assessment.publishedAt || undefined,
-    createdAt: assessment.createdAt,
-    updatedAt: assessment.updatedAt,
+    aiInsights: userAssessment.aiInsights || undefined,
+    personalizedRecommendations:
+      userAssessment.personalizedRecommendations || undefined,
+    suggestedPeers: userAssessment.suggestedPeers || [],
+    complementaryGifts: userAssessment.complementaryGifts || [],
+    createdAt: userAssessment.createdAt.toISOString(),
+    updatedAt: userAssessment.updatedAt.toISOString(),
 
-    // Ministry-specific assessment context
-    ministryRelevance: {
-      targetMinistryRoles: [],
-      culturalAdaptations: [
-        assessment.culturalAdaptation === 'universal'
-          ? 'global'
-          : assessment.culturalAdaptation || 'global',
-      ],
-      theologicalAlignment: [],
-      practicalApplication: [],
-    },
-
-    // Enhanced scoring for ministry context
-    ministryScoring: includeMetrics
-      ? {
-          leadershipPotential: 85,
-          ministryEffectiveness: 80,
-          culturalCompetency: 75,
-          theologicalDepth: 90,
-        }
-      : {
-          leadershipPotential: 0,
-          ministryEffectiveness: 0,
-          culturalCompetency: 0,
-          theologicalDepth: 0,
-        },
-
-    // Usage analytics
-    usageAnalytics: {
-      totalCompletions: 0,
-      averageCompletionTime: 0,
-      completionRate: 0,
-      userSatisfaction: 0,
-    },
+    // Note: Ministry-specific assessment context removed as it's not part of base user assessment schema
   };
 }
 
@@ -308,44 +245,13 @@ export function toMinistryCommunityDTO(
     name: community.name,
     slug: community.slug,
     description: community.description || '',
-    communityType: community.communityType,
-    geographicFocus: community.geographicFocus || [],
-    culturalContext: community.culturalContext || 'global',
-    languagePrimary: community.languagePrimary || 'en',
-    languagesSupported: community.languagesSupported || ['en'],
-    visibility: community.visibility || 'public',
-    joinApprovalRequired: community.joinApprovalRequired || false,
-    maxMembers: community.maxMembers || undefined,
-    allowGuestPosts: community.allowGuestPosts || false,
-    moderationLevel: community.moderationLevel || 'moderated',
-    currentMemberCount: community.currentMemberCount || 0,
-    totalPostsCount: community.totalPostsCount || 0,
-    guidelines: community.guidelines || undefined,
-    rules: community.rules
-      ? typeof community.rules === 'string'
-        ? JSON.parse(community.rules)
-        : community.rules
-      : [],
-    createdBy: community.createdBy,
-    createdAt: community.createdAt,
-    updatedAt: community.updatedAt,
+    type: 'public' as const,
+    status: community.status || 'active',
+    memberCount: community.memberCount || 0,
+    createdAt: community.createdAt.toISOString(),
+    updatedAt: community.updatedAt.toISOString(),
 
-    // Ministry-specific community context
-    ministryContext: {
-      targetMinistryRoles: [],
-      theologicalFocus: [],
-      ministryStage: 'developing',
-      geographicScope: 'local',
-    },
-
-    // Ministry community metrics
-    ministryMetrics: {
-      activeMinistryLeaders: 0,
-      ministryStageDistribution: {},
-      theologicalDiversity: 0,
-      geographicDiversity: 0,
-      collaborationSuccess: 0,
-    },
+    // Note: Ministry-specific community context removed as it's not part of base community schema
   };
 }
 
@@ -392,7 +298,7 @@ export function toAuthMinistryCombinedDTO(
     profile: ministryProfile,
     organizationContext,
     permissions: organizationContext?.permissions || [],
-    ministryTier: ministryProfile.ministryMetrics?.apestScores
+    ministryTier: ministryProfile.assessmentMovementAlignment
       ? 'core'
       : 'basic',
   };
@@ -414,7 +320,7 @@ export function toOrganizationScopedDTO<T>(
       id: userProfile.id,
       role: organizationContext.userRole,
       permissions: organizationContext.permissions,
-      ministryTier: userProfile.ministryMetrics?.apestScores ? 'core' : 'basic',
+      ministryTier: userProfile.assessmentMovementAlignment ? 'core' : 'basic',
     },
     accessLevel: organizationContext.userRole,
   };

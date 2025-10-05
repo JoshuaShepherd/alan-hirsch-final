@@ -49,34 +49,29 @@ export const paginatedResponseSchema = <T extends z.ZodTypeAny>(
 
 // Import DTO schemas
 import {
-  // Auth & User
-  userProfileSchema,
-  organizationSchema,
-  organizationMembershipSchema,
-
+  assessmentQuestionSchema,
   // Assessments
   assessmentSchema,
-  assessmentQuestionSchema,
-  userAssessmentSchema,
-
-  // Content
-  contentCategorySchema,
-  contentSeriesSchema,
-  contentItemSchema,
-
-  // Community
-  communitySchema,
   communityMembershipSchema,
   communityPostSchema,
-
+  // Community
+  communitySchema,
+  // Content
+  contentCategorySchema,
+  contentItemSchema,
+  contentSeriesSchema,
+  organizationMembershipSchema,
+  organizationSchema,
   // Subscriptions
   subscriptionPlanSchema,
-  userSubscriptionSchema,
-
   // Analytics
   userAnalyticsEventSchema,
+  userAssessmentSchema,
   userContentInteractionSchema,
-} from '../../validations';
+  // Auth & User
+  userProfileSchema,
+  userSubscriptionSchema,
+} from '@platform/contracts';
 
 // Auth & User Responses
 export const userProfileResponseSchema = apiResponseSchema(userProfileSchema);

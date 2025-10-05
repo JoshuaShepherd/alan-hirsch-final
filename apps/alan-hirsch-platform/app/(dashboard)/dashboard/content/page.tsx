@@ -1,6 +1,6 @@
 import { ContentLibrary } from '@/components/content/content-library';
+import { createSupabaseServerClient } from '@platform/database';
 import { Button } from '@platform/ui/button';
-import { createClient } from '@platform/database/supabase/server';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 
@@ -8,7 +8,7 @@ import Link from 'next/link';
 import type { ContentRowDTO } from '@platform/shared/contracts';
 
 export default async function ContentListPage() {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
 
   // Get the current user
   const {
@@ -18,9 +18,9 @@ export default async function ContentListPage() {
 
   if (authError || !user) {
     return (
-      <div className='max-w-6xl mx-auto p-6'>
-        <div className='text-center'>
-          <p className='text-gray-600'>Please sign in to view content.</p>
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="text-center">
+          <p className="text-gray-600">Please sign in to view content.</p>
         </div>
       </div>
     );
@@ -44,21 +44,21 @@ export default async function ContentListPage() {
   }
 
   return (
-    <div className='max-w-6xl mx-auto p-6'>
-      <div className='mb-8'>
-        <div className='flex items-center justify-between'>
+    <div className="max-w-6xl mx-auto p-6">
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className='text-3xl font-bold text-gray-900 mb-4'>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
               Content Library
             </h1>
-            <p className='text-lg text-gray-600'>
+            <p className="text-lg text-gray-600">
               Explore articles, videos, and resources from Alan Hirsch and the
               movement.
             </p>
           </div>
-          <Link href='/dashboard/content/new'>
+          <Link href="/dashboard/content/new">
             <Button>
-              <Plus className='w-4 h-4 mr-2' />
+              <Plus className="w-4 h-4 mr-2" />
               Create Content
             </Button>
           </Link>
@@ -67,7 +67,7 @@ export default async function ContentListPage() {
 
       {/* Content Library */}
       <ContentLibrary
-        initialView='grid'
+        initialView="grid"
         showFilters={true}
         showCategories={true}
         limit={20}

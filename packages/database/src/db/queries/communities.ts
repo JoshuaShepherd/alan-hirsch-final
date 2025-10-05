@@ -1,11 +1,6 @@
 // Community Query Module
 // Pure functions for community operations with context-aware access control
 
-import type {
-  NewCommunity,
-  NewCommunityMembership,
-  NewCommunityPost,
-} from '@/lib/contracts';
 import { and, asc, count, desc, eq, like, or, sql } from 'drizzle-orm';
 import { db } from '../drizzle';
 import {
@@ -14,6 +9,11 @@ import {
   communityPosts,
   userProfiles,
 } from '../schema';
+import type {
+  NewCommunity,
+  NewCommunityMembership,
+  NewCommunityPost,
+} from '../schema/community';
 import { hasResults } from '../type-guards';
 
 // ============================================================================
@@ -41,17 +41,17 @@ export async function getCommunityById(
 
   // Add context-based filtering for private communities
   if (context.userId && context.role !== 'admin') {
-    conditions.push(
-      or(
-        eq(communities.visibility, 'public'),
-        sql`EXISTS (
-          SELECT 1 FROM community_memberships
-          WHERE community_id = ${communityId}
-          AND user_id = ${context.userId}
-          AND status = 'active'
-        )`
-      )
-    );
+    const publicCondition = eq(communities.visibility, 'public');
+    const memberCondition = sql`EXISTS (
+      SELECT 1 FROM community_memberships
+      WHERE community_id = ${communityId}
+      AND user_id = ${context.userId}
+      AND status = 'active'
+    )`;
+    const combinedCondition = or(publicCondition, memberCondition);
+    if (combinedCondition) {
+      conditions.push(combinedCondition);
+    }
   }
 
   const result = await db
@@ -74,17 +74,17 @@ export async function getCommunityBySlug(
 
   // Add context-based filtering for private communities
   if (context.userId && context.role !== 'admin') {
-    conditions.push(
-      or(
-        eq(communities.visibility, 'public'),
-        sql`EXISTS (
-          SELECT 1 FROM community_memberships
-          WHERE community_id = communities.id
-          AND user_id = ${context.userId}
-          AND status = 'active'
-        )`
-      )
-    );
+    const publicCondition = eq(communities.visibility, 'public');
+    const memberCondition = sql`EXISTS (
+      SELECT 1 FROM community_memberships
+      WHERE community_id = communities.id
+      AND user_id = ${context.userId}
+      AND status = 'active'
+    )`;
+    const combinedCondition = or(publicCondition, memberCondition);
+    if (combinedCondition) {
+      conditions.push(combinedCondition);
+    }
   }
 
   const result = await db
@@ -132,10 +132,10 @@ export async function getPublicCommunities(
   ];
 
   if (communityType) {
-    conditions.push(eq(communities.communityType, communityType));
+    conditions.push(eq(communities.communityType, communityType as any));
   }
   if (culturalContext) {
-    conditions.push(eq(communities.culturalContext, culturalContext));
+    conditions.push(eq(communities.culturalContext, culturalContext as any));
   }
   if (languagePrimary) {
     conditions.push(eq(communities.languagePrimary, languagePrimary));
@@ -161,7 +161,7 @@ export async function getPublicCommunities(
     .limit(limit)
     .offset(offset);
 
-  return results;
+  return results as any;
 }
 
 /**
@@ -201,10 +201,10 @@ export async function searchCommunities(
   ];
 
   if (communityType) {
-    conditions.push(eq(communities.communityType, communityType));
+    conditions.push(eq(communities.communityType, communityType as any));
   }
   if (culturalContext) {
-    conditions.push(eq(communities.culturalContext, culturalContext));
+    conditions.push(eq(communities.culturalContext, culturalContext as any));
   }
   if (languagePrimary) {
     conditions.push(eq(communities.languagePrimary, languagePrimary));
@@ -222,7 +222,7 @@ export async function searchCommunities(
     .limit(limit)
     .offset(offset);
 
-  return results;
+  return results as any;
 }
 
 /**
@@ -251,7 +251,7 @@ export async function getCommunitiesByUser(
   ];
 
   if (role) {
-    conditions.push(eq(communityMemberships.role, role));
+    conditions.push(eq(communityMemberships.role, role as any));
   }
 
   const results = await db
@@ -269,7 +269,7 @@ export async function getCommunitiesByUser(
     .limit(limit)
     .offset(offset);
 
-  return results;
+  return results as any;
 }
 
 /**
@@ -489,14 +489,11 @@ export async function getCommunityMembers(
   ];
 
   if (role) {
-    conditions.push(eq(communityMemberships.role, role));
+    conditions.push(eq(communityMemberships.role, role as any));
   }
 
   const results = await db
-    .select({
-      ...userProfiles,
-      membership: communityMemberships,
-    })
+    .select()
     .from(userProfiles)
     .innerJoin(
       communityMemberships,
@@ -507,7 +504,7 @@ export async function getCommunityMembers(
     .limit(limit)
     .offset(offset);
 
-  return results;
+  return results as any;
 }
 
 /**
@@ -765,7 +762,7 @@ export async function getCommunityPosts(
     .limit(limit)
     .offset(offset);
 
-  return results;
+  return results as any;
 }
 
 /**
@@ -858,14 +855,17 @@ export async function updateCommunityPost(
   }
 
   // Check if user is the author or has admin permissions
-  if (existingPost[0].authorId !== context.userId && context.role !== 'admin') {
+  if (
+    existingPost[0]['authorId'] !== context.userId &&
+    context.role !== 'admin'
+  ) {
     const community = await getCommunityById(
-      existingPost[0].communityId,
+      existingPost[0]['communityId'],
       context
     );
     if (community?.createdBy !== context.userId) {
       const membership = await getCommunityMembership(
-        existingPost[0].communityId,
+        existingPost[0]['communityId'],
         context.userId!,
         context
       );
@@ -905,14 +905,17 @@ export async function deleteCommunityPost(
   }
 
   // Check if user is the author or has admin permissions
-  if (existingPost[0].authorId !== context.userId && context.role !== 'admin') {
+  if (
+    existingPost[0]['authorId'] !== context.userId &&
+    context.role !== 'admin'
+  ) {
     const community = await getCommunityById(
-      existingPost[0].communityId,
+      existingPost[0]['communityId'],
       context
     );
     if (community?.createdBy !== context.userId) {
       const membership = await getCommunityMembership(
-        existingPost[0].communityId,
+        existingPost[0]['communityId'],
         context.userId!,
         context
       );

@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "composite": true,
     "types": ["vitest/globals"],
     "plugins": [
       {

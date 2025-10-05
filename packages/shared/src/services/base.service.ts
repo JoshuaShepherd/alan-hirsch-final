@@ -1,7 +1,7 @@
-import { db } from '@platform/database/db/drizzle';
-import { NotFoundError, ValidationError, type AppError } from '@/types';
+import { db } from '@platform/database';
 import { and, count, desc, eq, sql, type SQL } from 'drizzle-orm';
 import { z } from 'zod';
+import { ApiError, ErrorCode } from '../api/error-handler';
 
 // ============================================================================
 // TYPES AND INTERFACES
@@ -26,7 +26,9 @@ export interface PaginatedResult<T> {
   };
 }
 
-export interface ServiceError extends AppError {
+export interface ServiceError {
+  message: string;
+  code: string;
   type: 'VALIDATION' | 'NOT_FOUND' | 'DATABASE' | 'BUSINESS_RULE';
 }
 
@@ -40,17 +42,17 @@ export interface TransactionContext {
 
 export abstract class BaseService<
   TEntity,
-  TCreateInput,
-  TUpdateInput,
-  TQueryInput = any,
+  TCreateInput extends Record<string, any>,
+  TUpdateInput extends Record<string, any>,
+  TQueryInput extends QueryFilters = QueryFilters,
   TTable = any,
 > {
   protected abstract table: TTable;
   protected abstract entityName: string;
-  protected abstract createSchema: z.ZodSchema<TCreateInput>;
-  protected abstract updateSchema: z.ZodSchema<TUpdateInput>;
-  protected abstract querySchema?: z.ZodSchema<TQueryInput>;
-  protected abstract outputSchema: z.ZodSchema<TEntity>;
+  protected abstract createSchema: z.ZodSchema<any>;
+  protected abstract updateSchema: z.ZodSchema<any>;
+  protected abstract querySchema?: z.ZodSchema<any>;
+  protected abstract outputSchema: z.ZodSchema<any>;
 
   /**
    * Create a new entity with validation
@@ -63,7 +65,7 @@ export abstract class BaseService<
       // Insert into database
       const [result] = await db
         .insert(this.table as any)
-        .values(validatedData)
+        .values(validatedData as any)
         .returning();
 
       // Validate output
@@ -72,9 +74,10 @@ export abstract class BaseService<
       return validatedResult;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        throw new ValidationError(
+        throw new ApiError(
           `Invalid ${this.entityName} data`,
-          error.issues
+          ErrorCode.VALIDATION_ERROR,
+          400
         );
       }
       throw this.handleDatabaseError(error, 'create');
@@ -98,9 +101,10 @@ export abstract class BaseService<
       return this.outputSchema.parse(result);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        throw new ValidationError(
+        throw new ApiError(
           `Invalid ${this.entityName} data from database`,
-          error.issues
+          ErrorCode.VALIDATION_ERROR,
+          400
         );
       }
       throw this.handleDatabaseError(error, 'findById');
@@ -115,7 +119,7 @@ export abstract class BaseService<
       // Validate query filters if schema provided
       let validatedFilters: QueryFilters = {};
       if (this.querySchema && filters) {
-        validatedFilters = this.querySchema.parse(filters);
+        validatedFilters = this.querySchema.parse(filters) as QueryFilters;
       } else if (filters) {
         validatedFilters = filters;
       }
@@ -169,9 +173,10 @@ export abstract class BaseService<
       };
     } catch (error) {
       if (error instanceof z.ZodError) {
-        throw new ValidationError(
+        throw new ApiError(
           `Invalid ${this.entityName} query or data`,
-          error.issues
+          ErrorCode.VALIDATION_ERROR,
+          400
         );
       }
       throw this.handleDatabaseError(error, 'findMany');
@@ -189,7 +194,11 @@ export abstract class BaseService<
       // Check if entity exists
       const existing = await this.findById(id);
       if (!existing) {
-        throw new NotFoundError(this.entityName, id);
+        throw new ApiError(
+          `${this.entityName} not found`,
+          ErrorCode.NOT_FOUND,
+          404
+        );
       }
 
       // Update in database
@@ -202,13 +211,14 @@ export abstract class BaseService<
       // Validate output
       return this.outputSchema.parse(result);
     } catch (error) {
-      if (error instanceof NotFoundError) {
+      if (error instanceof ApiError) {
         throw error;
       }
       if (error instanceof z.ZodError) {
-        throw new ValidationError(
+        throw new ApiError(
           `Invalid ${this.entityName} update data`,
-          error.issues
+          ErrorCode.VALIDATION_ERROR,
+          400
         );
       }
       throw this.handleDatabaseError(error, 'update');
@@ -223,7 +233,11 @@ export abstract class BaseService<
       // Check if entity exists
       const existing = await this.findById(id);
       if (!existing) {
-        throw new NotFoundError(this.entityName, id);
+        throw new ApiError(
+          `${this.entityName} not found`,
+          ErrorCode.NOT_FOUND,
+          404
+        );
       }
 
       // Delete from database
@@ -233,7 +247,7 @@ export abstract class BaseService<
 
       return true;
     } catch (error) {
-      if (error instanceof NotFoundError) {
+      if (error instanceof ApiError) {
         throw error;
       }
       throw this.handleDatabaseError(error, 'delete');
@@ -248,7 +262,11 @@ export abstract class BaseService<
       // Check if entity exists
       const existing = await this.findById(id);
       if (!existing) {
-        throw new NotFoundError(this.entityName, id);
+        throw new ApiError(
+          `${this.entityName} not found`,
+          ErrorCode.NOT_FOUND,
+          404
+        );
       }
 
       // Check if table supports soft delete
@@ -279,7 +297,7 @@ export abstract class BaseService<
 
       return this.outputSchema.parse(result);
     } catch (error) {
-      if (error instanceof NotFoundError) {
+      if (error instanceof ApiError) {
         throw error;
       }
       throw this.handleDatabaseError(error, 'softDelete');
@@ -400,32 +418,35 @@ export abstract class BaseService<
   /**
    * Handle database errors consistently
    */
-  protected handleDatabaseError(
-    error: unknown,
-    operation: string
-  ): ServiceError {
+  protected handleDatabaseError(error: unknown, operation: string): ApiError {
     const message = `${this.entityName} ${operation} failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
 
     if (error instanceof Error) {
       // Check for common database errors
       if (error.message.includes('duplicate key')) {
-        return new ValidationError(
-          `${this.entityName} already exists`
-        ) as ServiceError;
+        return new ApiError(
+          `${this.entityName} already exists`,
+          ErrorCode.CONFLICT,
+          409
+        );
       }
       if (error.message.includes('foreign key')) {
-        return new ValidationError(
-          `Invalid reference in ${this.entityName}`
-        ) as ServiceError;
+        return new ApiError(
+          `Invalid reference in ${this.entityName}`,
+          ErrorCode.VALIDATION_ERROR,
+          400
+        );
       }
       if (error.message.includes('not null')) {
-        return new ValidationError(
-          `Required field missing in ${this.entityName}`
-        ) as ServiceError;
+        return new ApiError(
+          `Required field missing in ${this.entityName}`,
+          ErrorCode.VALIDATION_ERROR,
+          400
+        );
       }
     }
 
-    return new ValidationError(message) as ServiceError;
+    return new ApiError(message, ErrorCode.INTERNAL_SERVER_ERROR, 500);
   }
 
   /**
@@ -460,7 +481,7 @@ export class TransactionService {
   ): Promise<T> {
     return db.transaction(async tx => {
       const results = await Promise.all(operations.map(op => op(tx)));
-      return results as T;
+      return results as unknown as T;
     });
   }
 }
@@ -490,4 +511,4 @@ export type QueryFiltersType = z.infer<typeof QueryFiltersSchema>;
 // EXPORTS
 // ============================================================================
 
-export type { PaginatedResult, QueryFilters, ServiceError, TransactionContext };
+// Export types - these are already defined above, no need to re-export

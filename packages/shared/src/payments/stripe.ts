@@ -1,11 +1,10 @@
-import Stripe from 'stripe';
-import { redirect } from 'next/navigation';
-import { organizations } from '@platform/database/db/schema';
 import {
   getTeamByStripeCustomerId,
-  getUser,
   updateTeamSubscription,
 } from '@platform/database/db/queries';
+import { organizations } from '@platform/database/db/schema';
+import { redirect } from 'next/navigation';
+import Stripe from 'stripe';
 
 const stripeSecretKey = process.env['STRIPE_SECRET_KEY'];
 if (!stripeSecretKey) {
@@ -19,13 +18,13 @@ export const stripe = new Stripe(stripeSecretKey, {
 export async function createCheckoutSession({
   team,
   priceId,
+  userId,
 }: {
   team: typeof organizations.$inferSelect | null;
   priceId: string;
+  userId: string;
 }) {
-  const user = await getUser();
-
-  if (!team || !user) {
+  if (!team || !userId) {
     redirect(`/sign-up?redirect=checkout&priceId=${priceId}`);
   }
 
@@ -41,7 +40,7 @@ export async function createCheckoutSession({
     success_url: `${process.env['BASE_URL']}/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env['BASE_URL']}/pricing`,
     customer: team.stripeCustomerId || undefined,
-    client_reference_id: user.id.toString(),
+    client_reference_id: userId,
     allow_promotion_codes: true,
     subscription_data: {
       trial_period_days: 14,
@@ -133,7 +132,7 @@ export async function handleSubscriptionChange(
 ) {
   const customerId = subscription.customer as string;
   const subscriptionId = subscription.id;
-  const {status} = subscription;
+  const { status } = subscription;
 
   const team = await getTeamByStripeCustomerId(customerId);
 

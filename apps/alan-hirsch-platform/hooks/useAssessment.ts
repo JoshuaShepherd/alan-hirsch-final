@@ -1,22 +1,40 @@
 // Assessment Data Hooks
 // Specialized hooks for assessment data management with standard return shapes
+// Aligned with @platform/contracts for type safety
 
 import type {
+  AssessmentEntity,
   AssessmentResponseResponse,
   AssessmentSearchRequest,
-  AssessmentWithQuestionsResponse,
   CompleteAssessmentRequest,
   CreateAssessmentRequest,
-  PaginatedAssessmentListResponse,
-  PaginatedUserAssessmentListResponse,
   SaveAssessmentResponsesRequest,
   StartAssessmentRequest,
   UpdateAssessmentRequest,
   UserAssessmentFiltersRequest,
   UserAssessmentResponse,
-} from '@platform/shared/contracts';
-import { useCallback, useState } from 'react';
-import { useSWRDataState } from './useDataState';
+} from '@platform/contracts';
+import {
+  assessmentEntitySchema,
+  assessmentResponseResponseSchema,
+  createAssessmentSchema,
+  createUserAssessmentSchema,
+  updateAssessmentSchema,
+  userAssessmentEntitySchema,
+} from '@platform/contracts';
+import { z } from 'zod';
+import { apiClient } from '../lib/api-client';
+import {
+  API_ENDPOINTS,
+  buildQueryString,
+  createApiResponseFetcher,
+  createPaginatedFetcher,
+} from '../lib/utils/api';
+import {
+  useMutation,
+  useSWRApiResponse,
+  useSWRPaginatedResponse,
+} from './useDataState';
 
 // ============================================================================
 // ASSESSMENT HOOKS
@@ -27,28 +45,24 @@ import { useSWRDataState } from './useDataState';
  * Returns DataState<AssessmentWithQuestionsResponse> format
  */
 export function useAssessment(assessmentId: string) {
-  return useSWRDataState<AssessmentWithQuestionsResponse>(
-    assessmentId ? `/api/assessments/${assessmentId}` : null
+  const fetcher = createApiResponseFetcher(assessmentEntitySchema);
+
+  return useSWRApiResponse<AssessmentEntity>(
+    assessmentId ? API_ENDPOINTS.assessments.byId(assessmentId) : null,
+    fetcher
   );
 }
 
 /**
  * Hook for fetching user's assessment results
- * Returns DataState<PaginatedUserAssessmentListResponse> format
+ * Returns PaginatedDataState<UserAssessmentResponse> format
  */
 export function useUserAssessments(filters?: UserAssessmentFiltersRequest) {
-  const params = new URLSearchParams();
-  if (filters?.page) params.set('page', filters.page.toString());
-  if (filters?.limit) params.set('limit', filters.limit.toString());
-  if (filters?.assessmentType)
-    params.set('assessmentType', filters.assessmentType);
-  if (filters?.completed !== undefined)
-    params.set('completed', filters.completed.toString());
+  const queryString = filters ? buildQueryString(filters) : '';
+  const url = `${API_ENDPOINTS.assessments.userAssessments}${queryString ? `?${queryString}` : ''}`;
 
-  const queryString = params.toString();
-  return useSWRDataState<PaginatedUserAssessmentListResponse>(
-    `/api/user/assessments${queryString ? `?${queryString}` : ''}`
-  );
+  const fetcher = createPaginatedFetcher(userAssessmentEntitySchema);
+  return useSWRPaginatedResponse<UserAssessmentResponse>(url, fetcher);
 }
 
 /**
@@ -56,8 +70,48 @@ export function useUserAssessments(filters?: UserAssessmentFiltersRequest) {
  * Returns DataState<UserAssessmentResponse> format
  */
 export function useUserAssessment(userAssessmentId: string) {
-  return useSWRDataState<UserAssessmentResponse>(
-    userAssessmentId ? `/api/user/assessments/${userAssessmentId}` : null
+  const fetcher = createApiResponseFetcher(userAssessmentEntitySchema);
+  return useSWRApiResponse<UserAssessmentResponse>(
+    userAssessmentId ? `/api/user/assessments/${userAssessmentId}` : null,
+    fetcher
+  );
+}
+
+/**
+ * Hook for fetching assessment questions
+ * Returns DataState<AssessmentQuestionEntity[]> format
+ */
+export function useAssessmentQuestions(assessmentId: string) {
+  const fetcher = createApiResponseFetcher(
+    z.array(
+      z.object({
+        id: z.string().uuid(),
+        assessmentId: z.string().uuid(),
+        questionText: z.string(),
+        questionType: z.string(),
+        orderIndex: z.number(),
+        category: z.string().optional(),
+        apestDimension: z.string().optional(),
+        answerOptions: z
+          .array(
+            z.object({
+              value: z.number(),
+              label: z.string(),
+              description: z.string().optional(),
+            })
+          )
+          .optional(),
+        isRequired: z.boolean(),
+        weight: z.number(),
+        reverseScored: z.boolean(),
+        createdAt: z.string().datetime(),
+        updatedAt: z.string().datetime(),
+      })
+    )
+  );
+  return useSWRApiResponse<any[]>(
+    assessmentId ? `/api/assessments/${assessmentId}/questions` : null,
+    fetcher
   );
 }
 
@@ -66,10 +120,14 @@ export function useUserAssessment(userAssessmentId: string) {
  * Returns DataState<AssessmentResponseResponse[]> format
  */
 export function useAssessmentResponses(userAssessmentId: string) {
-  return useSWRDataState<AssessmentResponseResponse[]>(
+  const fetcher = createApiResponseFetcher(
+    z.array(assessmentResponseResponseSchema)
+  );
+  return useSWRApiResponse<AssessmentResponseResponse[]>(
     userAssessmentId
       ? `/api/user/assessments/${userAssessmentId}/responses`
-      : null
+      : null,
+    fetcher
   );
 }
 
@@ -78,43 +136,19 @@ export function useAssessmentResponses(userAssessmentId: string) {
  * Returns mutation functions and state
  */
 export function useStartAssessment() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  return useMutation<UserAssessmentResponse, StartAssessmentRequest>(
+    async input => {
+      // Validate request data
+      const validatedData = createUserAssessmentSchema.parse(input);
 
-  const startAssessment = useCallback(async (input: StartAssessmentRequest) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/user/assessments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(input),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to start assessment');
-      }
-
-      const result = await response.json();
-      return result.data; // Return the created user assessment
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setIsLoading(false);
+      // Make API call with validation
+      return apiClient.postWithValidation(
+        API_ENDPOINTS.assessments.userAssessments,
+        validatedData,
+        userAssessmentEntitySchema
+      );
     }
-  }, []);
-
-  return {
-    startAssessment,
-    isLoading,
-    error,
-  };
+  );
 }
 
 /**
@@ -122,50 +156,17 @@ export function useStartAssessment() {
  * Returns mutation functions and state
  */
 export function useSaveAssessmentResponses() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const saveResponses = useCallback(
-    async (input: SaveAssessmentResponsesRequest) => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch(
-          `/api/user/assessments/${input.userAssessmentId}/responses`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(input),
-          }
-        );
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to save responses');
-        }
-
-        const result = await response.json();
-        return result.data; // Return the saved responses
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Unknown error';
-        setError(errorMessage);
-        throw err;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    []
-  );
-
-  return {
-    saveResponses,
-    isLoading,
-    error,
-  };
+  return useMutation<
+    AssessmentResponseResponse[],
+    SaveAssessmentResponsesRequest
+  >(async input => {
+    // Make API call with validation
+    return apiClient.postWithValidation(
+      API_ENDPOINTS.assessments.userAssessmentResponses(input.userAssessmentId),
+      input,
+      z.array(assessmentResponseResponseSchema)
+    );
+  });
 }
 
 /**
@@ -173,50 +174,18 @@ export function useSaveAssessmentResponses() {
  * Returns mutation functions and state
  */
 export function useCompleteAssessment() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const completeAssessment = useCallback(
-    async (input: CompleteAssessmentRequest) => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch(
-          `/api/user/assessments/${input.userAssessmentId}/complete`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(input),
-          }
-        );
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to complete assessment');
-        }
-
-        const result = await response.json();
-        return result.data; // Return the completed assessment
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Unknown error';
-        setError(errorMessage);
-        throw err;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    []
+  return useMutation<UserAssessmentResponse, CompleteAssessmentRequest>(
+    async input => {
+      // Make API call with validation
+      return apiClient.postWithValidation(
+        API_ENDPOINTS.assessments.userAssessmentComplete(
+          input.userAssessmentId
+        ),
+        input,
+        userAssessmentEntitySchema
+      );
+    }
   );
-
-  return {
-    completeAssessment,
-    isLoading,
-    error,
-  };
 }
 
 // ============================================================================
@@ -242,8 +211,10 @@ export function useAssessments(filters?: AssessmentSearchRequest) {
     params.set('researchBacked', filters.researchBacked.toString());
 
   const queryString = params.toString();
-  return useSWRDataState<PaginatedAssessmentListResponse>(
-    `/api/assessments${queryString ? `?${queryString}` : ''}`
+  const fetcher = createPaginatedFetcher(assessmentEntitySchema);
+  return useSWRPaginatedResponse<AssessmentEntity>(
+    `/api/assessments${queryString ? `?${queryString}` : ''}`,
+    fetcher
   );
 }
 
@@ -252,47 +223,17 @@ export function useAssessments(filters?: AssessmentSearchRequest) {
  * Returns mutation functions and state
  */
 export function useCreateAssessment() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  return useMutation<AssessmentEntity, CreateAssessmentRequest>(async input => {
+    // Validate request data
+    const validatedData = createAssessmentSchema.parse(input);
 
-  const createAssessment = useCallback(
-    async (input: CreateAssessmentRequest) => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch('/api/assessments', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(input),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to create assessment');
-        }
-
-        const result = await response.json();
-        return result.data; // Return the created assessment
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Unknown error';
-        setError(errorMessage);
-        throw err;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    []
-  );
-
-  return {
-    createAssessment,
-    isLoading,
-    error,
-  };
+    // Make API call with validation
+    return apiClient.postWithValidation(
+      API_ENDPOINTS.assessments.list,
+      validatedData,
+      assessmentEntitySchema
+    );
+  });
 }
 
 /**
@@ -300,47 +241,17 @@ export function useCreateAssessment() {
  * Returns mutation functions and state
  */
 export function useUpdateAssessment() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  return useMutation<AssessmentEntity, UpdateAssessmentRequest>(async input => {
+    // Validate request data
+    const validatedData = updateAssessmentSchema.parse(input);
 
-  const updateAssessment = useCallback(
-    async (input: UpdateAssessmentRequest) => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch(`/api/assessments/${input.id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(input),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to update assessment');
-        }
-
-        const result = await response.json();
-        return result.data; // Return the updated assessment
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Unknown error';
-        setError(errorMessage);
-        throw err;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    []
-  );
-
-  return {
-    updateAssessment,
-    isLoading,
-    error,
-  };
+    // Make API call with validation
+    return apiClient.patchWithValidation(
+      API_ENDPOINTS.assessments.byId(input.id),
+      validatedData,
+      assessmentEntitySchema
+    );
+  });
 }
 
 /**
@@ -348,39 +259,13 @@ export function useUpdateAssessment() {
  * Returns mutation functions and state
  */
 export function useDeleteAssessment() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const deleteAssessment = useCallback(async (assessmentId: string) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(`/api/assessments/${assessmentId}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to delete assessment');
-      }
-
-      const result = await response.json();
-      return result.data; // Return the deletion result
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  return {
-    deleteAssessment,
-    isLoading,
-    error,
-  };
+  return useMutation<{ success: boolean }, string>(async assessmentId => {
+    // Make API call with validation
+    return apiClient.deleteWithValidation(
+      API_ENDPOINTS.assessments.byId(assessmentId),
+      z.object({ success: z.boolean() })
+    );
+  });
 }
 
 /**

@@ -1,3 +1,7 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { BaseForm } from '@platform/shared/forms/base-form';
+import { FormFieldGroup, FormSection } from '@platform/shared/forms/form-field';
+import { useFormPersistence, useURLSync } from '@platform/shared/forms/hooks';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import {
@@ -17,13 +21,10 @@ import {
 } from '@platform/ui/select';
 import { Switch } from '@platform/ui/switch';
 import { Textarea } from '@platform/ui/textarea';
-import { useFormPersistence, useURLSync } from '@/lib/forms/hooks';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { FileUploadField, ImageUploadField } from '../advanced/file-upload';
-import { BaseForm, FormFieldGroup, FormSection } from '../base-form';
 import { ConditionalField, FormField } from '../form-field';
 
 // Comprehensive form schema demonstrating various field types

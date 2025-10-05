@@ -213,7 +213,7 @@ export function withSecurity(
 }
 
 // CORS security
-export function withCORS(
+export function withCORS<T>(
   options: {
     origin?: string | string[] | boolean;
     methods?: string[];
@@ -221,7 +221,9 @@ export function withCORS(
     credentials?: boolean;
     maxAge?: number;
   } = {}
-) {
+): (
+  handler: (data: T, request: NextRequest) => Promise<Response>
+) => (request: NextRequest) => Promise<Response> {
   const {
     origin = '*',
     methods = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

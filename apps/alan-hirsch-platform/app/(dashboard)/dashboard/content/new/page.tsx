@@ -1,5 +1,10 @@
 'use client';
 
+import { useContentCategories } from '@/hooks/useContent';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { createSupabaseClient } from '@platform/database';
+import type { CreateContentItemRequest } from '@platform/shared/contracts/content.request';
+import { createContentItemRequestSchema } from '@platform/shared/contracts/content.request';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@platform/ui/card';
@@ -14,11 +19,6 @@ import {
   SelectValue,
 } from '@platform/ui/select';
 import { Textarea } from '@platform/ui/textarea';
-import { useContentCategories } from '@/hooks/useContent';
-import type { CreateContentItemRequest } from '@/lib/contracts/content.request';
-import { createContentItemRequestSchema } from '@/lib/contracts/content.request';
-import { createClient } from '@platform/database/supabase/client';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Save, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -62,7 +62,7 @@ const statusOptions = [
 
 export default function CreateContentPage() {
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = createSupabaseClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState('');
@@ -169,34 +169,34 @@ export default function CreateContentPage() {
   };
 
   return (
-    <div className='max-w-4xl mx-auto p-6 space-y-6'>
-      <div className='flex items-center justify-between'>
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className='text-3xl font-bold text-gray-900'>
+          <h1 className="text-3xl font-bold text-gray-900">
             Create New Content
           </h1>
-          <p className='text-lg text-gray-600 mt-2'>
+          <p className="text-lg text-gray-600 mt-2">
             Create articles, videos, and resources for the Alan Hirsch Digital
             Platform.
           </p>
         </div>
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <Button
-            variant='outline'
+            variant="outline"
             onClick={() => router.back()}
             disabled={isSubmitting}
           >
             Cancel
           </Button>
-          <Button type='submit' form='content-form' disabled={isSubmitting}>
+          <Button type="submit" form="content-form" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
-                <Loader2 className='w-4 h-4 mr-2 animate-spin' />
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Creating...
               </>
             ) : (
               <>
-                <Save className='w-4 h-4 mr-2' />
+                <Save className="w-4 h-4 mr-2" />
                 Create Content
               </>
             )}
@@ -205,57 +205,57 @@ export default function CreateContentPage() {
       </div>
 
       <form
-        id='content-form'
+        id="content-form"
         onSubmit={handleSubmit(onSubmit)}
-        className='space-y-6'
+        className="space-y-6"
       >
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
-          <div className='lg:col-span-2 space-y-6'>
+          <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>Content Details</CardTitle>
               </CardHeader>
-              <CardContent className='space-y-4'>
+              <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor='title'>Title *</Label>
+                  <Label htmlFor="title">Title *</Label>
                   <Input
-                    id='title'
+                    id="title"
                     {...register('title')}
-                    placeholder='Enter content title'
+                    placeholder="Enter content title"
                     className={errors.title ? 'border-red-500' : ''}
                   />
                   {errors.title && (
-                    <p className='text-sm text-red-500 mt-1'>
+                    <p className="text-sm text-red-500 mt-1">
                       {errors.title.message}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <Label htmlFor='slug'>Slug *</Label>
+                  <Label htmlFor="slug">Slug *</Label>
                   <Input
-                    id='slug'
+                    id="slug"
                     {...register('slug')}
-                    placeholder='content-slug'
+                    placeholder="content-slug"
                     className={errors.slug ? 'border-red-500' : ''}
                   />
                   {errors.slug && (
-                    <p className='text-sm text-red-500 mt-1'>
+                    <p className="text-sm text-red-500 mt-1">
                       {errors.slug.message}
                     </p>
                   )}
-                  <p className='text-sm text-gray-500 mt-1'>
+                  <p className="text-sm text-gray-500 mt-1">
                     URL-friendly version of the title (lowercase, hyphens only)
                   </p>
                 </div>
 
                 <div>
-                  <Label htmlFor='excerpt'>Excerpt</Label>
+                  <Label htmlFor="excerpt">Excerpt</Label>
                   <Textarea
-                    id='excerpt'
+                    id="excerpt"
                     {...register('excerpt')}
-                    placeholder='Brief description of the content'
+                    placeholder="Brief description of the content"
                     rows={3}
                   />
                 </div>
@@ -265,10 +265,10 @@ export default function CreateContentPage() {
                   <RichTextEditor
                     content={watchedContent}
                     onChange={content => setValue('content', content)}
-                    placeholder='Write your content here...'
+                    placeholder="Write your content here..."
                   />
                   {errors.content && (
-                    <p className='text-sm text-red-500 mt-1'>
+                    <p className="text-sm text-red-500 mt-1">
                       {errors.content.message}
                     </p>
                   )}
@@ -280,15 +280,15 @@ export default function CreateContentPage() {
               <CardHeader>
                 <CardTitle>Tags & Themes</CardTitle>
               </CardHeader>
-              <CardContent className='space-y-4'>
+              <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor='new-tag'>Tags</Label>
-                  <div className='flex gap-2 mt-1'>
+                  <Label htmlFor="new-tag">Tags</Label>
+                  <div className="flex gap-2 mt-1">
                     <Input
-                      id='new-tag'
+                      id="new-tag"
                       value={newTag}
                       onChange={e => setNewTag(e.target.value)}
-                      placeholder='Add a tag'
+                      placeholder="Add a tag"
                       onKeyDown={e => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
@@ -296,24 +296,24 @@ export default function CreateContentPage() {
                         }
                       }}
                     />
-                    <Button type='button' variant='outline' onClick={addTag}>
+                    <Button type="button" variant="outline" onClick={addTag}>
                       Add
                     </Button>
                   </div>
-                  <div className='flex flex-wrap gap-2 mt-2'>
+                  <div className="flex flex-wrap gap-2 mt-2">
                     {tags.map(tag => (
                       <Badge
                         key={tag}
-                        variant='secondary'
-                        className='flex items-center gap-1'
+                        variant="secondary"
+                        className="flex items-center gap-1"
                       >
                         {tag}
                         <button
-                          type='button'
+                          type="button"
                           onClick={() => removeTag(tag)}
-                          className='ml-1 hover:text-red-500'
+                          className="ml-1 hover:text-red-500"
                         >
-                          <X className='w-3 h-3' />
+                          <X className="w-3 h-3" />
                         </button>
                       </Badge>
                     ))}
@@ -321,13 +321,13 @@ export default function CreateContentPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor='new-theme'>Theological Themes</Label>
-                  <div className='flex gap-2 mt-1'>
+                  <Label htmlFor="new-theme">Theological Themes</Label>
+                  <div className="flex gap-2 mt-1">
                     <Input
-                      id='new-theme'
+                      id="new-theme"
                       value={newTheme}
                       onChange={e => setNewTheme(e.target.value)}
-                      placeholder='Add a theological theme'
+                      placeholder="Add a theological theme"
                       onKeyDown={e => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
@@ -335,24 +335,24 @@ export default function CreateContentPage() {
                         }
                       }}
                     />
-                    <Button type='button' variant='outline' onClick={addTheme}>
+                    <Button type="button" variant="outline" onClick={addTheme}>
                       Add
                     </Button>
                   </div>
-                  <div className='flex flex-wrap gap-2 mt-2'>
+                  <div className="flex flex-wrap gap-2 mt-2">
                     {theologicalThemes.map(theme => (
                       <Badge
                         key={theme}
-                        variant='outline'
-                        className='flex items-center gap-1'
+                        variant="outline"
+                        className="flex items-center gap-1"
                       >
                         {theme}
                         <button
-                          type='button'
+                          type="button"
                           onClick={() => removeTheme(theme)}
-                          className='ml-1 hover:text-red-500'
+                          className="ml-1 hover:text-red-500"
                         >
-                          <X className='w-3 h-3' />
+                          <X className="w-3 h-3" />
                         </button>
                       </Badge>
                     ))}
@@ -363,14 +363,14 @@ export default function CreateContentPage() {
           </div>
 
           {/* Sidebar */}
-          <div className='space-y-6'>
+          <div className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>Settings</CardTitle>
               </CardHeader>
-              <CardContent className='space-y-4'>
+              <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor='contentType'>Content Type *</Label>
+                  <Label htmlFor="contentType">Content Type *</Label>
                   <Select
                     value={watch('contentType')}
                     onValueChange={value =>
@@ -378,7 +378,7 @@ export default function CreateContentPage() {
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Select content type' />
+                      <SelectValue placeholder="Select content type" />
                     </SelectTrigger>
                     <SelectContent>
                       {contentTypeOptions.map(option => (
@@ -391,13 +391,13 @@ export default function CreateContentPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor='format'>Format</Label>
+                  <Label htmlFor="format">Format</Label>
                   <Select
                     value={watch('format')}
                     onValueChange={value => setValue('format', value as any)}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Select format' />
+                      <SelectValue placeholder="Select format" />
                     </SelectTrigger>
                     <SelectContent>
                       {formatOptions.map(option => (
@@ -410,13 +410,13 @@ export default function CreateContentPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor='status'>Status</Label>
+                  <Label htmlFor="status">Status</Label>
                   <Select
                     value={watch('status')}
                     onValueChange={value => setValue('status', value as any)}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Select status' />
+                      <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
                       {statusOptions.map(option => (
@@ -429,7 +429,7 @@ export default function CreateContentPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor='visibility'>Visibility</Label>
+                  <Label htmlFor="visibility">Visibility</Label>
                   <Select
                     value={watch('visibility')}
                     onValueChange={value =>
@@ -437,7 +437,7 @@ export default function CreateContentPage() {
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Select visibility' />
+                      <SelectValue placeholder="Select visibility" />
                     </SelectTrigger>
                     <SelectContent>
                       {visibilityOptions.map(option => (
@@ -450,7 +450,7 @@ export default function CreateContentPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor='primaryCategoryId'>Primary Category</Label>
+                  <Label htmlFor="primaryCategoryId">Primary Category</Label>
                   <Select
                     value={watch('primaryCategoryId')}
                     onValueChange={value =>
@@ -459,7 +459,7 @@ export default function CreateContentPage() {
                     disabled={categoriesLoading}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Select category' />
+                      <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
                       {categories?.map((category: any) => (
@@ -472,29 +472,29 @@ export default function CreateContentPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor='featuredImageUrl'>Featured Image URL</Label>
+                  <Label htmlFor="featuredImageUrl">Featured Image URL</Label>
                   <Input
-                    id='featuredImageUrl'
+                    id="featuredImageUrl"
                     {...register('featuredImageUrl')}
-                    placeholder='https://example.com/image.jpg'
+                    placeholder="https://example.com/image.jpg"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor='videoUrl'>Video URL</Label>
+                  <Label htmlFor="videoUrl">Video URL</Label>
                   <Input
-                    id='videoUrl'
+                    id="videoUrl"
                     {...register('videoUrl')}
-                    placeholder='https://example.com/video.mp4'
+                    placeholder="https://example.com/video.mp4"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor='audioUrl'>Audio URL</Label>
+                  <Label htmlFor="audioUrl">Audio URL</Label>
                   <Input
-                    id='audioUrl'
+                    id="audioUrl"
                     {...register('audioUrl')}
-                    placeholder='https://example.com/audio.mp3'
+                    placeholder="https://example.com/audio.mp3"
                   />
                 </div>
               </CardContent>
@@ -504,32 +504,32 @@ export default function CreateContentPage() {
               <CardHeader>
                 <CardTitle>SEO & Metadata</CardTitle>
               </CardHeader>
-              <CardContent className='space-y-4'>
+              <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor='metaTitle'>Meta Title</Label>
+                  <Label htmlFor="metaTitle">Meta Title</Label>
                   <Input
-                    id='metaTitle'
+                    id="metaTitle"
                     {...register('metaTitle')}
-                    placeholder='SEO title'
+                    placeholder="SEO title"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor='metaDescription'>Meta Description</Label>
+                  <Label htmlFor="metaDescription">Meta Description</Label>
                   <Textarea
-                    id='metaDescription'
+                    id="metaDescription"
                     {...register('metaDescription')}
-                    placeholder='SEO description'
+                    placeholder="SEO description"
                     rows={3}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor='canonicalUrl'>Canonical URL</Label>
+                  <Label htmlFor="canonicalUrl">Canonical URL</Label>
                   <Input
-                    id='canonicalUrl'
+                    id="canonicalUrl"
                     {...register('canonicalUrl')}
-                    placeholder='https://example.com/original'
+                    placeholder="https://example.com/original"
                   />
                 </div>
               </CardContent>

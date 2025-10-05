@@ -1,19 +1,15 @@
 'use client';
 
+import { createSupabaseClient } from '@platform/database';
+import type { ContentItemResponse } from '@platform/shared/contracts';
+import { cn } from '@platform/shared/utils';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import { Calendar } from '@platform/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@platform/ui/card';
 import { Label } from '@platform/ui/label';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@platform/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@platform/ui/popover';
 import { Textarea } from '@platform/ui/textarea';
-import type { ContentItemResponse } from '@platform/shared/contracts';
-import { createClient } from '@platform/database/supabase/client';
-import { cn } from '@platform/shared/utils';
 import { format } from 'date-fns';
 import {
   AlertCircle,
@@ -83,7 +79,7 @@ export function PublishingWorkflow({
   onStatusChange,
   onScheduleChange,
 }: PublishingWorkflowProps) {
-  const supabase = createClient();
+  const supabase = createSupabaseClient();
   const [isUpdating, setIsUpdating] = useState(false);
   const [reviewComment, setReviewComment] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -204,34 +200,34 @@ export function PublishingWorkflow({
   const canPublish = ['draft', 'under_review'].includes(content.status);
 
   return (
-    <div className='space-y-6'>
+    <div className="space-y-6">
       {/* Current Status */}
       <Card>
         <CardHeader>
-          <CardTitle className='flex items-center gap-2'>
-            <Clock className='w-5 h-5' />
+          <CardTitle className="flex items-center gap-2">
+            <Clock className="w-5 h-5" />
             Publishing Status
           </CardTitle>
         </CardHeader>
-        <CardContent className='space-y-4'>
-          <div className='flex items-center justify-between'>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
             <div>
-              <div className='flex items-center gap-2 mb-1'>
+              <div className="flex items-center gap-2 mb-1">
                 <Badge variant={currentStatus?.color as any}>
                   {currentStatus?.label}
                 </Badge>
                 {content.scheduledAt && (
-                  <Badge variant='outline' className='flex items-center gap-1'>
-                    <CalendarIcon className='w-3 h-3' />
+                  <Badge variant="outline" className="flex items-center gap-1">
+                    <CalendarIcon className="w-3 h-3" />
                     {format(new Date(content.scheduledAt), 'MMM dd, yyyy')}
                   </Badge>
                 )}
               </div>
-              <p className='text-sm text-gray-600'>
+              <p className="text-sm text-gray-600">
                 {currentStatus?.description}
               </p>
             </div>
-            <div className='text-right text-sm text-gray-500'>
+            <div className="text-right text-sm text-gray-500">
               <div>
                 Created: {format(new Date(content.createdAt), 'MMM dd, yyyy')}
               </div>
@@ -245,14 +241,14 @@ export function PublishingWorkflow({
           </div>
 
           {/* Quick Actions */}
-          <div className='flex gap-2 pt-4 border-t'>
+          <div className="flex gap-2 pt-4 border-t">
             {canPublish && (
               <Button
                 onClick={() => handleStatusUpdate('published')}
                 disabled={isUpdating}
-                size='sm'
+                size="sm"
               >
-                <CheckCircle className='w-4 h-4 mr-1' />
+                <CheckCircle className="w-4 h-4 mr-1" />
                 Publish Now
               </Button>
             )}
@@ -263,7 +259,7 @@ export function PublishingWorkflow({
                   <Button
                     key={action.value}
                     variant={action.color as any}
-                    size='sm'
+                    size="sm"
                     onClick={() =>
                       handleStatusUpdate(
                         action.value === 'approve' ? 'published' : action.value
@@ -271,7 +267,7 @@ export function PublishingWorkflow({
                     }
                     disabled={isUpdating}
                   >
-                    <action.icon className='w-4 h-4 mr-1' />
+                    <action.icon className="w-4 h-4 mr-1" />
                     {action.label}
                   </Button>
                 ))}
@@ -280,12 +276,12 @@ export function PublishingWorkflow({
 
             {content.status === 'published' && (
               <Button
-                variant='outline'
-                size='sm'
+                variant="outline"
+                size="sm"
                 onClick={() => handleStatusUpdate('archived')}
                 disabled={isUpdating}
               >
-                <XCircle className='w-4 h-4 mr-1' />
+                <XCircle className="w-4 h-4 mr-1" />
                 Archive
               </Button>
             )}
@@ -297,29 +293,29 @@ export function PublishingWorkflow({
       {canSchedule && (
         <Card>
           <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <CalendarIcon className='w-5 h-5' />
+            <CardTitle className="flex items-center gap-2">
+              <CalendarIcon className="w-5 h-5" />
               Schedule Publishing
             </CardTitle>
           </CardHeader>
-          <CardContent className='space-y-4'>
-            <div className='flex items-center gap-4'>
+          <CardContent className="space-y-4">
+            <div className="flex items-center gap-4">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
-                    variant='outline'
+                    variant="outline"
                     className={cn(
                       'w-64 justify-start text-left font-normal',
                       !selectedDate && 'text-muted-foreground'
                     )}
                   >
-                    <CalendarIcon className='mr-2 h-4 w-4' />
+                    <CalendarIcon className="mr-2 h-4 w-4" />
                     {selectedDate ? format(selectedDate, 'PPP') : 'Pick a date'}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className='w-auto p-0'>
+                <PopoverContent className="w-auto p-0">
                   <Calendar
-                    mode='single'
+                    mode="single"
                     selected={selectedDate}
                     onSelect={handleScheduleUpdate}
                     disabled={date => date < new Date()}
@@ -332,15 +328,15 @@ export function PublishingWorkflow({
                 <Button
                   onClick={() => handleStatusUpdate('scheduled')}
                   disabled={isUpdating}
-                  size='sm'
+                  size="sm"
                 >
-                  <Send className='w-4 h-4 mr-1' />
+                  <Send className="w-4 h-4 mr-1" />
                   Schedule
                 </Button>
               )}
             </div>
 
-            <p className='text-sm text-gray-600'>
+            <p className="text-sm text-gray-600">
               Select a future date to schedule automatic publishing.
             </p>
           </CardContent>
@@ -351,51 +347,51 @@ export function PublishingWorkflow({
       {canApprove && (
         <Card>
           <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <AlertCircle className='w-5 h-5' />
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5" />
               Review & Feedback
             </CardTitle>
           </CardHeader>
-          <CardContent className='space-y-4'>
+          <CardContent className="space-y-4">
             <div>
-              <Label htmlFor='review-comment'>Add Review Comment</Label>
+              <Label htmlFor="review-comment">Add Review Comment</Label>
               <Textarea
-                id='review-comment'
+                id="review-comment"
                 value={reviewComment}
                 onChange={e => setReviewComment(e.target.value)}
-                placeholder='Provide feedback for the author...'
+                placeholder="Provide feedback for the author..."
                 rows={3}
               />
             </div>
 
-            <div className='flex gap-2'>
+            <div className="flex gap-2">
               <Button
-                variant='default'
-                size='sm'
+                variant="default"
+                size="sm"
                 onClick={() => handleStatusUpdate('published', reviewComment)}
                 disabled={isUpdating || !reviewComment.trim()}
               >
-                <CheckCircle className='w-4 h-4 mr-1' />
+                <CheckCircle className="w-4 h-4 mr-1" />
                 Approve & Publish
               </Button>
               <Button
-                variant='outline'
-                size='sm'
+                variant="outline"
+                size="sm"
                 onClick={() =>
                   handleStatusUpdate('request_changes', reviewComment)
                 }
                 disabled={isUpdating || !reviewComment.trim()}
               >
-                <Edit className='w-4 h-4 mr-1' />
+                <Edit className="w-4 h-4 mr-1" />
                 Request Changes
               </Button>
               <Button
-                variant='destructive'
-                size='sm'
+                variant="destructive"
+                size="sm"
                 onClick={() => handleStatusUpdate('reject', reviewComment)}
                 disabled={isUpdating || !reviewComment.trim()}
               >
-                <XCircle className='w-4 h-4 mr-1' />
+                <XCircle className="w-4 h-4 mr-1" />
                 Reject
               </Button>
             </div>
@@ -406,23 +402,23 @@ export function PublishingWorkflow({
       {/* Publishing History */}
       <Card>
         <CardHeader>
-          <CardTitle className='flex items-center gap-2'>
-            <Eye className='w-5 h-5' />
+          <CardTitle className="flex items-center gap-2">
+            <Eye className="w-5 h-5" />
             Publishing History
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='space-y-3'>
-            <div className='flex items-center justify-between text-sm'>
-              <span className='text-gray-600'>Created</span>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-600">Created</span>
               <span>
                 {format(new Date(content.createdAt), 'MMM dd, yyyy HH:mm')}
               </span>
             </div>
 
             {content.updatedAt !== content.createdAt && (
-              <div className='flex items-center justify-between text-sm'>
-                <span className='text-gray-600'>Last Updated</span>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-600">Last Updated</span>
                 <span>
                   {format(new Date(content.updatedAt), 'MMM dd, yyyy HH:mm')}
                 </span>
@@ -430,8 +426,8 @@ export function PublishingWorkflow({
             )}
 
             {content.publishedAt && (
-              <div className='flex items-center justify-between text-sm'>
-                <span className='text-gray-600'>Published</span>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-600">Published</span>
                 <span>
                   {format(new Date(content.publishedAt), 'MMM dd, yyyy HH:mm')}
                 </span>
@@ -439,8 +435,8 @@ export function PublishingWorkflow({
             )}
 
             {content.scheduledAt && (
-              <div className='flex items-center justify-between text-sm'>
-                <span className='text-gray-600'>Scheduled</span>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-600">Scheduled</span>
                 <span>
                   {format(new Date(content.scheduledAt), 'MMM dd, yyyy HH:mm')}
                 </span>
@@ -452,4 +448,3 @@ export function PublishingWorkflow({
     </div>
   );
 }
-

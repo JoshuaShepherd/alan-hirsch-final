@@ -1,3 +1,6 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { FormFieldGroup, FormSection } from '@platform/shared/forms/form-field';
+import { useMultiStepForm } from '@platform/shared/forms/hooks';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import {
@@ -17,12 +20,9 @@ import {
   SelectValue,
 } from '@platform/ui/select';
 import { Textarea } from '@platform/ui/textarea';
-import { useMultiStepForm } from '@/lib/forms/hooks';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { FormFieldGroup, FormSection } from '../base-form';
 import { FormField } from '../form-field';
 
 // Example multi-step form schema for user onboarding

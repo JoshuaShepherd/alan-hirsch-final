@@ -1,3 +1,13 @@
+'use client';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  organizationFormSchema,
+  type OrganizationForm,
+  type OrganizationResponse,
+} from '@platform/shared/contracts';
+import { BaseForm } from '@platform/shared/forms/base-form';
+import { FormFieldGroup, FormSection } from '@platform/shared/forms/form-field';
 import {
   Card,
   CardContent,
@@ -14,23 +24,21 @@ import {
   SelectValue,
 } from '@platform/ui/select';
 import { Textarea } from '@platform/ui/textarea';
-import { NewOrganization, newOrganizationSchema } from '@/validations/auth';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { BaseForm, FormFieldGroup, FormSection } from '../base-form';
 import { FormField } from '../form-field';
 
 export interface OrganizationFormProps {
-  onSuccess?: (organization: NewOrganization) => void;
+  onSuccess?: (organization: OrganizationResponse) => void;
   onError?: (error: Error) => void;
-  defaultValues?: Partial<NewOrganization>;
+  defaultValues?: Partial<OrganizationForm>;
   className?: string;
   isLoading?: boolean;
   mode?: 'create' | 'update';
 }
 
 /**
- * Form for creating and updating organizations
+ * Organization form for creating and updating organizations
+ * Uses contract schemas for validation and type safety
  */
 export function OrganizationForm({
   onSuccess,
@@ -40,26 +48,22 @@ export function OrganizationForm({
   isLoading = false,
   mode = 'create',
 }: OrganizationFormProps) {
-  const form = useForm<NewOrganization>({
-    resolver: zodResolver(
-      mode === 'update'
-        ? newOrganizationSchema.partial()
-        : newOrganizationSchema
-    ),
+  const form = useForm<OrganizationForm>({
+    resolver: zodResolver(organizationFormSchema),
     defaultValues: {
+      organizationType: 'church',
       licenseType: 'individual',
       maxUsers: 1,
-      status: 'trial',
       ...defaultValues,
     },
   });
 
-  const onSubmit = async (data: NewOrganization) => {
+  const onSubmit = async (data: OrganizationForm) => {
     try {
       const endpoint =
         mode === 'create'
           ? '/api/organizations'
-          : `/api/organizations/${defaultValues?.id}`;
+          : `/api/organizations/${data.id}`;
       const method = mode === 'create' ? 'POST' : 'PATCH';
 
       const response = await fetch(endpoint, {
@@ -87,17 +91,21 @@ export function OrganizationForm({
     }
   };
 
+  const getTitle = () => {
+    return mode === 'create' ? 'Create Organization' : 'Update Organization';
+  };
+
+  const getDescription = () => {
+    return mode === 'create'
+      ? 'Create a new organization'
+      : 'Update your organization';
+  };
+
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle>
-          {mode === 'create' ? 'Create Organization' : 'Update Organization'}
-        </CardTitle>
-        <CardDescription>
-          {mode === 'create'
-            ? 'Create a new organization for your ministry or church'
-            : 'Update organization details and settings'}
-        </CardDescription>
+        <CardTitle>{getTitle()}</CardTitle>
+        <CardDescription>{getDescription()}</CardDescription>
       </CardHeader>
       <CardContent>
         <BaseForm
@@ -127,26 +135,14 @@ export function OrganizationForm({
             </FormField>
 
             <FormField
-              name="slug"
-              label="URL Slug"
-              required
-              description="URL-friendly identifier (lowercase, hyphens only)"
-            >
-              <Input
-                {...form.register('slug')}
-                placeholder="organization-slug"
-              />
-            </FormField>
-
-            <FormField
               name="description"
               label="Description"
-              description="Brief description of your organization"
+              description="Brief description of the organization"
             >
               <Textarea
                 {...form.register('description')}
-                placeholder="Tell us about your organization..."
-                rows={3}
+                placeholder="Describe your organization's mission and purpose..."
+                rows={4}
               />
             </FormField>
 
@@ -162,10 +158,10 @@ export function OrganizationForm({
             </FormField>
           </FormSection>
 
-          {/* Organization Classification */}
+          {/* Organization Details */}
           <FormSection
-            title="Organization Classification"
-            description="Classify your organization type and size"
+            title="Organization Details"
+            description="Organization classification and type"
           >
             <FormFieldGroup columns={2}>
               <FormField
@@ -185,11 +181,12 @@ export function OrganizationForm({
                   <SelectContent>
                     <SelectItem value="church">Church</SelectItem>
                     <SelectItem value="denomination">Denomination</SelectItem>
-                    <SelectItem value="ministry">Ministry</SelectItem>
+                    <SelectItem value="seminary">Seminary</SelectItem>
+                    <SelectItem value="ministry_network">
+                      Ministry Network
+                    </SelectItem>
                     <SelectItem value="nonprofit">Nonprofit</SelectItem>
-                    <SelectItem value="school">School</SelectItem>
-                    <SelectItem value="conference">Conference</SelectItem>
-                    <SelectItem value="network">Network</SelectItem>
+                    <SelectItem value="business">Business</SelectItem>
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>
@@ -198,7 +195,7 @@ export function OrganizationForm({
               <FormField
                 name="sizeCategory"
                 label="Size Category"
-                description="Organization size category"
+                description="Organization size"
               >
                 <Select
                   onValueChange={value =>
@@ -206,19 +203,14 @@ export function OrganizationForm({
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select size category" />
+                    <SelectValue placeholder="Select size" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="small">Small (1-50 people)</SelectItem>
-                    <SelectItem value="medium">
-                      Medium (51-200 people)
-                    </SelectItem>
-                    <SelectItem value="large">
-                      Large (201-1000 people)
-                    </SelectItem>
-                    <SelectItem value="enterprise">
-                      Enterprise (1000+ people)
-                    </SelectItem>
+                    <SelectItem value="startup">Startup</SelectItem>
+                    <SelectItem value="small">Small</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="large">Large</SelectItem>
+                    <SelectItem value="enterprise">Enterprise</SelectItem>
                   </SelectContent>
                 </Select>
               </FormField>
@@ -228,7 +220,7 @@ export function OrganizationForm({
           {/* Contact Information */}
           <FormSection
             title="Contact Information"
-            description="Primary contact details"
+            description="Organization contact details"
           >
             <FormFieldGroup columns={2}>
               <FormField
@@ -246,7 +238,7 @@ export function OrganizationForm({
               <FormField
                 name="contactPhone"
                 label="Contact Phone"
-                description="Primary contact phone number"
+                description="Primary contact phone"
               >
                 <Input
                   {...form.register('contactPhone')}
@@ -269,26 +261,25 @@ export function OrganizationForm({
           </FormSection>
 
           {/* Address */}
-          <FormSection
-            title="Address"
-            description="Physical address information"
-          >
-            <FormField
-              name="address.street"
-              label="Street Address"
-              description="Street address"
-            >
-              <Input
-                {...form.register('address.street')}
-                placeholder="123 Main Street"
-              />
-            </FormField>
+          <FormSection title="Address" description="Organization address">
+            <FormFieldGroup columns={2}>
+              <FormField
+                name="address.street"
+                label="Street Address"
+                description="Street address"
+              >
+                <Input
+                  {...form.register('address.street')}
+                  placeholder="123 Main St"
+                />
+              </FormField>
 
-            <FormFieldGroup columns={3}>
               <FormField name="address.city" label="City" description="City">
                 <Input {...form.register('address.city')} placeholder="City" />
               </FormField>
+            </FormFieldGroup>
 
+            <FormFieldGroup columns={3}>
               <FormField
                 name="address.state"
                 label="State/Province"
@@ -303,37 +294,37 @@ export function OrganizationForm({
               <FormField
                 name="address.postalCode"
                 label="Postal Code"
-                description="ZIP or postal code"
+                description="Postal or ZIP code"
               >
                 <Input
                   {...form.register('address.postalCode')}
                   placeholder="12345"
                 />
               </FormField>
-            </FormFieldGroup>
 
-            <FormField
-              name="address.country"
-              label="Country"
-              description="Country"
-            >
-              <Input
-                {...form.register('address.country')}
-                placeholder="United States"
-              />
-            </FormField>
+              <FormField
+                name="address.country"
+                label="Country"
+                description="Country"
+              >
+                <Input
+                  {...form.register('address.country')}
+                  placeholder="Country"
+                />
+              </FormField>
+            </FormFieldGroup>
           </FormSection>
 
-          {/* Licensing & Billing */}
+          {/* Settings */}
           <FormSection
-            title="Licensing & Billing"
-            description="License type and user limits"
+            title="Settings"
+            description="Organization settings and licensing"
           >
             <FormFieldGroup columns={2}>
               <FormField
                 name="licenseType"
                 label="License Type"
-                description="Type of license"
+                description="Organization license type"
               >
                 <Select
                   onValueChange={value =>
@@ -345,7 +336,7 @@ export function OrganizationForm({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="individual">Individual</SelectItem>
-                    <SelectItem value="institutional">Institutional</SelectItem>
+                    <SelectItem value="team">Team</SelectItem>
                     <SelectItem value="enterprise">Enterprise</SelectItem>
                   </SelectContent>
                 </Select>
@@ -354,7 +345,7 @@ export function OrganizationForm({
               <FormField
                 name="maxUsers"
                 label="Maximum Users"
-                description="Maximum number of users allowed"
+                description="Maximum number of users"
               >
                 <Input
                   type="number"
@@ -364,32 +355,6 @@ export function OrganizationForm({
                 />
               </FormField>
             </FormFieldGroup>
-          </FormSection>
-
-          {/* Status */}
-          <FormSection
-            title="Status"
-            description="Organization status and visibility"
-          >
-            <FormField
-              name="status"
-              label="Status"
-              description="Current organization status"
-            >
-              <Select
-                onValueChange={value => form.setValue('status', value as any)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                  <SelectItem value="trial">Trial</SelectItem>
-                  <SelectItem value="suspended">Suspended</SelectItem>
-                </SelectContent>
-              </Select>
-            </FormField>
           </FormSection>
         </BaseForm>
       </CardContent>

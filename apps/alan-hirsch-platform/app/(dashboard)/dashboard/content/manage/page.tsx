@@ -1,5 +1,7 @@
 'use client';
 
+import { useContentItems } from '@/hooks/useContent';
+import { createSupabaseClient } from '@platform/database';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@platform/ui/card';
@@ -20,8 +22,6 @@ import {
   TableHeader,
   TableRow,
 } from '@platform/ui/table';
-import { useContentItems } from '@/hooks/useContent';
-import { createClient } from '@platform/database/supabase/client';
 import {
   BarChart3,
   Calendar,
@@ -40,7 +40,7 @@ import { toast } from 'sonner';
 
 export default function ContentManagementPage() {
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = createSupabaseClient();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -147,10 +147,10 @@ export default function ContentManagementPage() {
 
   if (isLoading) {
     return (
-      <div className='max-w-7xl mx-auto p-6'>
-        <div className='flex items-center justify-center min-h-[400px]'>
-          <div className='text-center'>
-            <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4'></div>
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
             <p>Loading content...</p>
           </div>
         </div>
@@ -160,35 +160,35 @@ export default function ContentManagementPage() {
 
   if (error) {
     return (
-      <div className='max-w-7xl mx-auto p-6'>
-        <div className='text-center'>
-          <h1 className='text-2xl font-bold text-red-600 mb-4'>
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">
             Error Loading Content
           </h1>
-          <p className='text-gray-600'>{error}</p>
+          <p className="text-gray-600">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className='max-w-7xl mx-auto p-6 space-y-6'>
-      <div className='flex items-center justify-between'>
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className='text-3xl font-bold text-gray-900'>
+          <h1 className="text-3xl font-bold text-gray-900">
             Content Management
           </h1>
-          <p className='text-lg text-gray-600 mt-2'>
+          <p className="text-lg text-gray-600 mt-2">
             Manage and organize all content in the platform.
           </p>
         </div>
-        <div className='flex gap-2'>
-          <Button variant='outline' onClick={handleExport}>
-            <Download className='w-4 h-4 mr-2' />
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleExport}>
+            <Download className="w-4 h-4 mr-2" />
             Export
           </Button>
-          <Button variant='outline'>
-            <Upload className='w-4 h-4 mr-2' />
+          <Button variant="outline">
+            <Upload className="w-4 h-4 mr-2" />
             Import
           </Button>
           <Button onClick={() => router.push('/dashboard/content/new')}>
@@ -199,57 +199,57 @@ export default function ContentManagementPage() {
 
       {/* Filters and Search */}
       <Card>
-        <CardContent className='pt-6'>
-          <div className='flex flex-col lg:flex-row gap-4'>
-            <div className='flex-1'>
-              <div className='relative'>
-                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4' />
+        <CardContent className="pt-6">
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
-                  placeholder='Search content...'
+                  placeholder="Search content..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  className='pl-10'
+                  className="pl-10"
                 />
               </div>
             </div>
-            <div className='flex gap-2'>
+            <div className="flex gap-2">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className='w-40'>
-                  <Filter className='w-4 h-4 mr-2' />
-                  <SelectValue placeholder='Status' />
+                <SelectTrigger className="w-40">
+                  <Filter className="w-4 h-4 mr-2" />
+                  <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='all'>All Status</SelectItem>
-                  <SelectItem value='published'>Published</SelectItem>
-                  <SelectItem value='draft'>Draft</SelectItem>
-                  <SelectItem value='under_review'>Under Review</SelectItem>
-                  <SelectItem value='scheduled'>Scheduled</SelectItem>
-                  <SelectItem value='archived'>Archived</SelectItem>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="published">Published</SelectItem>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="under_review">Under Review</SelectItem>
+                  <SelectItem value="scheduled">Scheduled</SelectItem>
+                  <SelectItem value="archived">Archived</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className='w-40'>
-                  <SelectValue placeholder='Type' />
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='all'>All Types</SelectItem>
-                  <SelectItem value='article'>Article</SelectItem>
-                  <SelectItem value='video'>Video</SelectItem>
-                  <SelectItem value='podcast'>Podcast</SelectItem>
-                  <SelectItem value='framework'>Framework</SelectItem>
-                  <SelectItem value='tool'>Tool</SelectItem>
-                  <SelectItem value='case_study'>Case Study</SelectItem>
-                  <SelectItem value='interview'>Interview</SelectItem>
-                  <SelectItem value='course_lesson'>Course Lesson</SelectItem>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="article">Article</SelectItem>
+                  <SelectItem value="video">Video</SelectItem>
+                  <SelectItem value="podcast">Podcast</SelectItem>
+                  <SelectItem value="framework">Framework</SelectItem>
+                  <SelectItem value="tool">Tool</SelectItem>
+                  <SelectItem value="case_study">Case Study</SelectItem>
+                  <SelectItem value="interview">Interview</SelectItem>
+                  <SelectItem value="course_lesson">Course Lesson</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={authorFilter} onValueChange={setAuthorFilter}>
-                <SelectTrigger className='w-40'>
-                  <User className='w-4 h-4 mr-2' />
-                  <SelectValue placeholder='Author' />
+                <SelectTrigger className="w-40">
+                  <User className="w-4 h-4 mr-2" />
+                  <SelectValue placeholder="Author" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='all'>All Authors</SelectItem>
+                  <SelectItem value="all">All Authors</SelectItem>
                   {/* Add author options dynamically */}
                 </SelectContent>
               </Select>
@@ -261,41 +261,41 @@ export default function ContentManagementPage() {
       {/* Bulk Actions */}
       {selectedItems.length > 0 && (
         <Card>
-          <CardContent className='pt-6'>
-            <div className='flex items-center justify-between'>
-              <div className='flex items-center gap-4'>
-                <span className='text-sm font-medium'>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium">
                   {selectedItems.length} item
                   {selectedItems.length !== 1 ? 's' : ''} selected
                 </span>
-                <div className='flex gap-2'>
+                <div className="flex gap-2">
                   <Button
-                    size='sm'
-                    variant='outline'
+                    size="sm"
+                    variant="outline"
                     onClick={() => handleBulkAction('publish')}
                   >
                     Publish
                   </Button>
                   <Button
-                    size='sm'
-                    variant='outline'
+                    size="sm"
+                    variant="outline"
                     onClick={() => handleBulkAction('archive')}
                   >
                     Archive
                   </Button>
                   <Button
-                    size='sm'
-                    variant='destructive'
+                    size="sm"
+                    variant="destructive"
                     onClick={() => handleBulkAction('delete')}
                   >
-                    <Trash2 className='w-4 h-4 mr-1' />
+                    <Trash2 className="w-4 h-4 mr-1" />
                     Delete
                   </Button>
                 </div>
               </div>
               <Button
-                size='sm'
-                variant='ghost'
+                size="sm"
+                variant="ghost"
                 onClick={() => setSelectedItems([])}
               >
                 Clear Selection
@@ -308,18 +308,18 @@ export default function ContentManagementPage() {
       {/* Content Table */}
       <Card>
         <CardHeader>
-          <CardTitle className='flex items-center gap-2'>
-            <BarChart3 className='w-5 h-5' />
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3 className="w-5 h-5" />
             Content Overview
-            <Badge variant='secondary'>{filteredContent.length} items</Badge>
+            <Badge variant="secondary">{filteredContent.length} items</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='overflow-x-auto'>
+          <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className='w-12'>
+                  <TableHead className="w-12">
                     <Checkbox
                       checked={
                         selectedItems.length === filteredContent.length &&
@@ -349,15 +349,15 @@ export default function ContentManagementPage() {
                       />
                     </TableCell>
                     <TableCell>
-                      <div className='max-w-xs'>
-                        <div className='font-medium truncate'>{item.title}</div>
-                        <div className='text-sm text-gray-500 truncate'>
+                      <div className="max-w-xs">
+                        <div className="font-medium truncate">{item.title}</div>
+                        <div className="text-sm text-gray-500 truncate">
                           {item.excerpt || 'No excerpt'}
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant='secondary'>{item.contentType}</Badge>
+                      <Badge variant="secondary">{item.contentType}</Badge>
                     </TableCell>
                     <TableCell>
                       <Badge
@@ -377,59 +377,59 @@ export default function ContentManagementPage() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <div className='flex items-center gap-2'>
+                      <div className="flex items-center gap-2">
                         {item.authorId ? (
-                          <div className='w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center'>
-                            <User className='w-3 h-3' />
+                          <div className="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                            <User className="w-3 h-3" />
                           </div>
                         ) : (
-                          <div className='w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center'>
-                            <User className='w-3 h-3' />
+                          <div className="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                            <User className="w-3 h-3" />
                           </div>
                         )}
-                        <span className='text-sm'>
+                        <span className="text-sm">
                           {item.authorId || 'Unknown'}
                         </span>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className='flex items-center gap-1 text-sm text-gray-500'>
-                        <Calendar className='w-3 h-3' />
+                      <div className="flex items-center gap-1 text-sm text-gray-500">
+                        <Calendar className="w-3 h-3" />
                         {new Date(item.createdAt).toLocaleDateString()}
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className='flex items-center gap-1 text-sm'>
-                        <Eye className='w-3 h-3' />
+                      <div className="flex items-center gap-1 text-sm">
+                        <Eye className="w-3 h-3" />
                         {item.viewCount}
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className='flex items-center gap-1'>
+                      <div className="flex items-center gap-1">
                         <Button
-                          variant='ghost'
-                          size='sm'
+                          variant="ghost"
+                          size="sm"
                           onClick={() =>
                             router.push(`/dashboard/content/edit/${item.id}`)
                           }
                         >
-                          <Edit className='w-3 h-3' />
+                          <Edit className="w-3 h-3" />
                         </Button>
                         <Button
-                          variant='ghost'
-                          size='sm'
+                          variant="ghost"
+                          size="sm"
                           onClick={() =>
                             router.push(`/dashboard/content/${item.slug}`)
                           }
                         >
-                          <Eye className='w-3 h-3' />
+                          <Eye className="w-3 h-3" />
                         </Button>
                         <Button
-                          variant='ghost'
-                          size='sm'
+                          variant="ghost"
+                          size="sm"
                           onClick={() => handleBulkAction('delete')}
                         >
-                          <Trash2 className='w-3 h-3' />
+                          <Trash2 className="w-3 h-3" />
                         </Button>
                       </div>
                     </TableCell>
@@ -440,8 +440,8 @@ export default function ContentManagementPage() {
           </div>
 
           {filteredContent.length === 0 && (
-            <div className='text-center py-8'>
-              <p className='text-gray-500'>
+            <div className="text-center py-8">
+              <p className="text-gray-500">
                 No content found matching your criteria.
               </p>
             </div>

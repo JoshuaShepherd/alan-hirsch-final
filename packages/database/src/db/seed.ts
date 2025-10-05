@@ -10,13 +10,13 @@ import {
 } from './schema';
 
 async function seed() {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env['NODE_ENV'] === 'development') {
     console.log('🌱 Seeding Alan Hirsch Digital Platform database...');
   }
 
   try {
     // 1. Create subscription plans
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('📋 Creating subscription plans...');
     }
     const plans = await db
@@ -66,7 +66,7 @@ async function seed() {
       .returning();
 
     // 2. Create content categories
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('📚 Creating content categories...');
     }
     const categories = await db
@@ -106,7 +106,7 @@ async function seed() {
       .returning();
 
     // 3. Create Alan Hirsch profile
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('👤 Creating Alan Hirsch profile...');
     }
     const alanProfile = await db
@@ -145,7 +145,7 @@ async function seed() {
       .returning();
 
     // 4. Create APEST assessment
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('📝 Creating APEST assessment...');
     }
     const apestAssessment = await db
@@ -173,7 +173,7 @@ async function seed() {
       .returning();
 
     // 5. Create assessment questions
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('❓ Creating assessment questions...');
     }
     const questions = await db.insert(assessmentQuestions).values([
@@ -603,7 +603,7 @@ async function seed() {
     ]);
 
     // 6. Create sample content
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('📄 Creating sample content...');
     }
     const contentItemsResult = await db
@@ -655,7 +655,7 @@ The incarnational model challenges us to step out of our comfort zones and into 
       ])
       .returning();
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('✅ Database seeded successfully!');
       console.log(`📊 Created subscription plans`);
       console.log(`📚 Created content categories`);
@@ -666,7 +666,7 @@ The incarnational model challenges us to step out of our comfort zones and into 
       console.log('\n🎉 Alan Hirsch Digital Platform is ready to go!');
     }
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.error('❌ Error seeding database:', error);
     }
     throw error;
@@ -674,7 +674,7 @@ The incarnational model challenges us to step out of our comfort zones and into 
 }
 
 seed().catch(error => {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env['NODE_ENV'] === 'development') {
     console.error('Seeding failed:', error);
   }
   process.exit(1);

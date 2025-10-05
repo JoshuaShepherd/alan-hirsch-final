@@ -1,17 +1,15 @@
-import { z } from 'zod';
 import {
+  culturalContextSchema,
+  membershipRoleSchema,
   ministryAssessmentSchema,
   ministryCommunitySchema,
   ministryContentItemSchema,
   ministryMetricsSchema,
   ministryOrganizationSchema,
-  ministryUserProfileSchema,
-} from '../../validations/ministry-platform';
-import {
-  culturalContextSchema,
-  membershipRoleSchema,
   ministryRoleSchema,
-} from '../../validations/shared';
+  ministryUserProfileSchema,
+} from '@platform/contracts';
+import { z } from 'zod';
 
 // ============================================================================
 // MINISTRY PLATFORM RESPONSE SCHEMAS
@@ -179,12 +177,12 @@ export const ministryUserAssessmentResponseSchema =
       completedAt: z.string().datetime().optional(),
       score: z.number().optional(),
       results: z.record(z.string(), z.any()).optional(),
-      assessment: ministryAssessmentSchema.pick({
-        id: true,
-        name: true,
-        description: true,
-        assessmentType: true,
-        ministryRelevance: true,
+      assessment: z.object({
+        id: z.string().uuid(),
+        name: z.string(),
+        description: z.string().optional(),
+        assessmentType: z.string(),
+        ministryRelevance: z.string().optional(),
       }),
       user: ministryUserProfileSchema.pick({
         id: true,

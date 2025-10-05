@@ -1,9 +1,9 @@
 import {
   ministryPaginatedResponseSchema,
   ministryPlatformResponseSchema,
-} from '@/lib/contracts';
-import { createClient } from '@platform/database/supabase/server';
-import { NextRequest } from 'next/server';
+} from '@platform/contracts';
+import { createSupabaseServerClient } from '@platform/database';
+import { NextRequest, NextResponse } from 'next/server';
 import { ZodSchema, z } from 'zod';
 import { ApiError, ErrorCode, handleApiError } from './error-handler';
 import {
@@ -72,7 +72,10 @@ export function createMinistryRouteHandler<TInput, TOutput>(config: {
     id: string;
   };
   handler: MinistryRouteHandler<TInput, TOutput>;
-}) {
+}): (
+  request: NextRequest,
+  context?: { params?: Record<string, string> }
+) => Promise<NextResponse> {
   return async (
     request: NextRequest,
     { params }: { params?: Record<string, string> } = {}
@@ -90,7 +93,7 @@ export function createMinistryRouteHandler<TInput, TOutput>(config: {
       // Authentication check
       let user: AuthenticatedMinistryUser | null = null;
       if (config.requireAuth !== false) {
-        const supabase = await createClient();
+        const supabase = await createSupabaseServerClient();
         const {
           data: { user: authUser },
           error: authError,
@@ -106,13 +109,13 @@ export function createMinistryRouteHandler<TInput, TOutput>(config: {
 
         // TODO: Fetch user profile and organization context from database
         user = {
+          ...authUser,
           id: authUser.id,
           email: authUser.email || '',
           ministryRole: 'emerging_leader', // This should come from user profile
           organizationId: undefined, // This should come from user profile
           culturalContext: 'western', // This should come from user profile
           permissions: ['read'], // This should come from user profile
-          ...authUser,
         };
       }
 
@@ -234,7 +237,10 @@ export function createMinistryPaginatedRouteHandler<TInput, TOutput>(config: {
     id: string;
   };
   handler: MinistryPaginatedRouteHandler<TInput, TOutput>;
-}) {
+}): (
+  request: NextRequest,
+  context?: { params?: Record<string, string> }
+) => Promise<NextResponse> {
   return async (
     request: NextRequest,
     { params }: { params?: Record<string, string> } = {}
@@ -252,7 +258,7 @@ export function createMinistryPaginatedRouteHandler<TInput, TOutput>(config: {
       // Authentication check
       let user: AuthenticatedMinistryUser | null = null;
       if (config.requireAuth !== false) {
-        const supabase = await createClient();
+        const supabase = await createSupabaseServerClient();
         const {
           data: { user: authUser },
           error: authError,
@@ -268,13 +274,13 @@ export function createMinistryPaginatedRouteHandler<TInput, TOutput>(config: {
 
         // TODO: Fetch user profile and organization context from database
         user = {
+          ...authUser,
           id: authUser.id,
           email: authUser.email || '',
           ministryRole: 'emerging_leader',
           organizationId: undefined,
           culturalContext: 'western',
           permissions: ['read'],
-          ...authUser,
         };
       }
 
@@ -406,7 +412,7 @@ export function createMinistrySuccessResponse<T>(
   data: T,
   context: MinistryPlatformContext,
   message?: string
-) {
+): NextResponse {
   const response = {
     data,
     success: true,
@@ -432,22 +438,14 @@ export function createMinistrySuccessResponse<T>(
 
   // Validate response with ministry platform schema
   try {
-    const validatedResponse = ministryPlatformResponseSchema(z.any()).parse(
-      response
-    );
-    return new Response(JSON.stringify(validatedResponse), {
+    const validatedResponse = ministryPlatformResponseSchema.parse(response);
+    return NextResponse.json(validatedResponse, {
       status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
   } catch (error) {
     console.error('Ministry platform response validation failed:', error);
-    return new Response(JSON.stringify(response), {
+    return NextResponse.json(response, {
       status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
   }
 }
@@ -465,7 +463,7 @@ export function createMinistryPaginatedResponse<T>(
   },
   context: MinistryPlatformContext,
   message?: string
-) {
+): NextResponse {
   const response = {
     data: {
       items,
@@ -505,25 +503,17 @@ export function createMinistryPaginatedResponse<T>(
 
   // Validate response with ministry platform paginated schema
   try {
-    const validatedResponse = ministryPaginatedResponseSchema(z.any()).parse(
-      response
-    );
-    return new Response(JSON.stringify(validatedResponse), {
+    const validatedResponse = ministryPaginatedResponseSchema.parse(response);
+    return NextResponse.json(validatedResponse, {
       status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
   } catch (error) {
     console.error(
       'Ministry platform paginated response validation failed:',
       error
     );
-    return new Response(JSON.stringify(response), {
+    return NextResponse.json(response, {
       status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
   }
 }
@@ -554,9 +544,5 @@ export function createMinistryQuerySchema<T extends z.ZodRawShape>(
 // EXPORT TYPES
 // ============================================================================
 
-export type {
-  AuthenticatedMinistryUser,
-  MinistryPaginatedRouteHandler,
-  MinistryRouteContext,
-  MinistryRouteHandler,
-};
+// Note: Types are already exported as interfaces above
+// No need for separate type exports to avoid conflicts

@@ -14,7 +14,7 @@ export type {
   MinistryRole as SharedMinistryRole,
   SubscriptionStatus as SharedSubscriptionStatus,
   Visibility,
-} from '../../validations/shared';
+} from '@platform/contracts';
 
 // Auth & User Management DTOs
 export type {
@@ -24,7 +24,7 @@ export type {
   Organization,
   OrganizationMembership,
   UserProfile,
-} from '../../validations/auth';
+} from '@platform/contracts';
 
 // Assessment System DTOs
 export type {
@@ -42,7 +42,7 @@ export type {
   StartAssessmentInput,
   UserAssessment,
   UserAssessmentFilters,
-} from '../../validations/assessments';
+} from '@platform/contracts';
 
 // Assessment Request DTOs
 export type {
@@ -87,7 +87,7 @@ export type {
   NewContentSeries,
   NewSeriesContentItem,
   SeriesContentItem,
-} from '../../validations/content';
+} from '@platform/contracts';
 
 // AI System DTOs
 export type {
@@ -101,7 +101,7 @@ export type {
   NewAiMessage,
   NewTheologicalConcept,
   TheologicalConcept,
-} from '../../validations/ai';
+} from '@platform/contracts';
 
 // Community & Networking DTOs
 export type {
@@ -115,7 +115,7 @@ export type {
   NewCommunityMembership,
   NewCommunityPost,
   NewCommunityPostVote,
-} from '../../validations/community';
+} from '@platform/contracts';
 
 // Subscriptions & Financial DTOs
 export type {
@@ -129,7 +129,7 @@ export type {
   SubscriptionPlan,
   Transaction,
   UserSubscription,
-} from '../../validations/subscriptions';
+} from '@platform/contracts';
 
 // Analytics & Tracking DTOs
 export type {
@@ -143,7 +143,7 @@ export type {
   PerformanceReport,
   UserAnalyticsEvent,
   UserContentInteraction,
-} from '../../validations/analytics';
+} from '@platform/contracts';
 
 // System & Administration DTOs
 export type {
@@ -161,7 +161,7 @@ export type {
   UserConsent,
   UserFeatureFlag,
   UserNotificationStatus,
-} from '../../validations/system';
+} from '@platform/contracts';
 
 // ============================================================================
 // SCHEMA EXPORTS (Zod Schemas)
@@ -176,7 +176,7 @@ export {
   organizationTypeSchema,
   subscriptionStatusSchema,
   visibilitySchema,
-} from '../../validations/shared';
+} from '@platform/contracts';
 
 // Auth & User Management Schemas
 export {
@@ -186,7 +186,7 @@ export {
   organizationMembershipSchema,
   organizationSchema,
   userProfileSchema,
-} from '../../validations/auth';
+} from '@platform/contracts';
 
 // Assessment System Schemas
 export {
@@ -203,7 +203,7 @@ export {
   startAssessmentInputSchema,
   userAssessmentFiltersSchema,
   userAssessmentSchema,
-} from '../../validations/assessments';
+} from '@platform/contracts';
 
 // Assessment Request Schemas
 export {
@@ -242,7 +242,7 @@ export {
   newContentSeriesSchema,
   newSeriesContentItemSchema,
   seriesContentItemSchema,
-} from '../../validations/content';
+} from '@platform/contracts';
 
 // Content Request Schemas
 export {
@@ -287,7 +287,7 @@ export {
   newAiMessageSchema,
   newTheologicalConceptSchema,
   theologicalConceptSchema,
-} from '../../validations/ai';
+} from '@platform/contracts';
 
 // AI Response Schemas
 export {
@@ -329,7 +329,7 @@ export {
   newCommunityPostSchema,
   newCommunityPostVoteSchema,
   newCommunitySchema,
-} from '../../validations/community';
+} from '@platform/contracts';
 
 // Subscription & Payment Schemas
 export {
@@ -341,7 +341,7 @@ export {
   subscriptionPlanSchema,
   transactionSchema,
   userSubscriptionSchema,
-} from '../../validations/subscriptions';
+} from '@platform/contracts';
 
 // Analytics Schemas
 export {
@@ -349,7 +349,7 @@ export {
   newUserContentInteractionSchema,
   userAnalyticsEventSchema,
   userContentInteractionSchema,
-} from '../../validations/analytics';
+} from '@platform/contracts';
 
 // System & Administration Schemas
 export {
@@ -367,13 +367,12 @@ export {
   userConsentSchema,
   userFeatureFlagSchema,
   userNotificationStatusSchema,
-} from '../../validations/system';
+} from '@platform/contracts';
 
 // ============================================================================
 // DRIZZLE ROW/INSERT TYPES
 // ============================================================================
 
-import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import {
   aiContentJobs,
   aiConversations,
@@ -414,7 +413,8 @@ import {
   userNotificationStatus,
   userProfiles,
   userSubscriptions,
-} from '../db/schema';
+} from '@platform/database';
+import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
 
 // Auth & User Management Row/Insert Types
 export type UserProfileRow = InferSelectModel<typeof userProfiles>;
@@ -576,7 +576,7 @@ export type {
   MinistryOrganization,
   MinistryUserProfile,
   OrganizationContext,
-} from '../../validations/ministry-platform';
+} from '@platform/contracts';
 
 // Ministry Platform Request DTOs
 export type {
@@ -803,7 +803,7 @@ export type ApiError = {
 // ============================================================================
 
 // Content table/grid row DTO
-export type ContentRowDTO = import('../../validations/content').ContentItem & {
+export type ContentRowDTO = import('@platform/contracts').ContentItemEntity & {
   author: {
     id: string;
     firstName: string;
@@ -819,15 +819,14 @@ export type ContentRowDTO = import('../../validations/content').ContentItem & {
 };
 
 // User profile table/grid row DTO
-export type UserProfileRowDTO = import('../../validations/auth').UserProfile;
+export type UserProfileRowDTO = import('@platform/contracts').UserProfileEntity;
 
 // Assessment table/grid row DTO
-export type AssessmentRowDTO =
-  import('../../validations/assessments').Assessment;
+export type AssessmentRowDTO = import('@platform/contracts').AssessmentEntity;
 
 // User assessment table/grid row DTO
 export type UserAssessmentRowDTO =
-  import('../../validations/assessments').UserAssessment & {
+  import('@platform/contracts').UserAssessmentEntity & {
     assessment: {
       id: string;
       name: string;
@@ -842,7 +841,8 @@ export type UserAssessmentRowDTO =
   };
 
 // Organization table/grid row DTO
-export type OrganizationRowDTO = import('../../validations/auth').Organization;
+export type OrganizationRowDTO =
+  import('@platform/contracts').OrganizationEntity;
 
 // Community table/grid row DTO
-export type CommunityRowDTO = import('../../validations/community').Community;
+export type CommunityRowDTO = import('@platform/contracts').CommunityEntity;

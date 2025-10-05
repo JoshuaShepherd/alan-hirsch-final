@@ -4,14 +4,14 @@
 import { z } from 'zod';
 
 // ============================================================================
-// API Response Types
+// API Response Types (Aligned with ALIGNMENT_REFERENCE)
 // ============================================================================
 
 export interface ApiResponse<T = unknown> {
+  success: boolean;
   data?: T;
   error?: string;
   message?: string;
-  success?: boolean;
   timestamp?: string;
 }
 
@@ -20,6 +20,7 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
     page: number;
     limit: number;
     total: number;
+    totalPages: number;
     hasMore: boolean;
   };
 }
@@ -41,8 +42,8 @@ export interface AuthUser {
 }
 
 export interface SessionUser extends AuthUser {
-  profile?: import('@/lib/contracts').UserProfile;
-  organizations?: import('@/lib/contracts').Organization[];
+  profile?: import('@platform/shared/contracts').UserProfile;
+  organizations?: import('@platform/shared/contracts').Organization[];
 }
 
 // ============================================================================
@@ -61,18 +62,11 @@ export interface FormFieldError {
 }
 
 // ============================================================================
-// Component Props Types
+// Component Props Types (Re-exported from component-props.ts)
 // ============================================================================
 
-export interface BaseComponentProps {
-  className?: string;
-  children?: React.ReactNode;
-}
-
-export interface LoadingState {
-  isLoading: boolean;
-  error?: string;
-}
+// Re-export all component prop types to avoid duplication
+export * from '@/lib/types/component-props';
 
 // ============================================================================
 // Database Query Types
@@ -101,7 +95,7 @@ export type {
   PaginatedContentCategoryListResponse,
   PaginatedContentItemListResponse,
   PaginatedContentSeriesListResponse,
-} from '@platform/shared/contracts';
+} from '@platform/contracts';
 
 // ============================================================================
 // Assessment Types (Re-exported from contracts)
@@ -117,7 +111,7 @@ export type {
   PaginatedUserAssessmentListResponse,
   UserAssessmentResponse,
   UserAssessmentWithDetailsResponse,
-} from '@platform/shared/contracts';
+} from '@platform/contracts';
 
 // ============================================================================
 // Subscription & Payment Types (Re-exported from contracts)
@@ -297,115 +291,145 @@ export class ForbiddenError extends AppError {
 }
 
 // ============================================================================
-// Component Props Types
+// Component Props Types (Re-exported from component-props.ts)
 // ============================================================================
 
+// Re-export all component prop types to avoid duplication
 export * from '@/lib/types/component-props';
 
 // ============================================================================
-// Export all types from contracts
+// Export all types from contracts (Aligned with ALIGNMENT_REFERENCE)
 // ============================================================================
 
 // Re-export all contract types to maintain backward compatibility
 export type {
   AiContentJob,
-  // AI System
+  AiContentJobEntity,
+  AiContentJobResponse,
+  AiContentJobWithDetailsResponse,
   AiConversation,
+  AiConversationEntity,
+  AiConversationResponse,
+  AiConversationWithMessagesResponse,
   AiCrossReferenceSuggestion,
+  AiCrossReferenceSuggestionEntity,
+  AiCrossReferenceSuggestionResponse,
+  AiCrossReferenceSuggestionWithDetailsResponse,
   AiMessage,
-  ApiKey,
-  // Assessment System
+  AiMessageEntity,
+  AiMessageResponse,
+  AiMessageWithConversationResponse,
+  // API Response Types
+  ApiResponse,
   Assessment,
+  AssessmentEntity,
+  AssessmentForm,
+  AssessmentQuery,
   AssessmentQuestion,
+  AssessmentQuestionEntity,
+  AssessmentQuestionQuery,
+  AssessmentQuestionResponse,
   AssessmentResponse,
-  AssessmentSearch,
-  AssessmentWithQuestions,
-  Attachment,
-  // System & Administration
-  AuditLog,
-  Collaboration,
-  // Community & Networking
-  Community,
-  CommunityMembership,
-  CommunityPost,
-  CommunityPostVote,
+  AssessmentResponseEntity,
+  AssessmentResponse as AssessmentResponseLegacy,
+  AssessmentResponseQuery,
+  AssessmentResponseResponse,
+  // Special Response Types
+  AssessmentWithQuestionsResponse,
+  // Input Types
   CompleteAssessmentInput,
-  // Content Management
   ContentCategory,
+  ContentCategoryEntity,
+  ContentCategoryQuery,
+  ContentCategoryResponse,
+  ContentCategoryWithChildrenResponse,
+  ContentCategoryWithParentResponse,
   ContentCrossReference,
+  ContentCrossReferenceEntity,
+  ContentCrossReferenceResponse,
+  ContentCrossReferenceWithDetailsResponse,
   ContentItem,
+  ContentItemEntity,
+  ContentItemForm,
+  ContentItemQuery,
+  ContentItemResponse,
+  ContentItemWithAuthorResponse,
+  ContentItemWithCategoryResponse,
+  ContentItemWithSeriesResponse,
   ContentSeries,
-  Coupon,
-  // Shared Types
-  CulturalContext,
-  FeatureFlag,
-  LearningOutcome,
-  MembershipRole,
-  MinistryRole,
-  MovementMetric,
-  NewAiContentJob,
-  NewAiConversation,
-  NewAiCrossReferenceSuggestion,
-  NewAiMessage,
-  NewApiKey,
-  NewAssessment,
-  NewAssessmentQuestion,
-  NewAssessmentResponse,
-  NewAuditLog,
-  NewCollaboration,
-  NewCommunity,
-  NewCommunityMembership,
-  NewCommunityPost,
-  NewCommunityPostVote,
-  NewContentCategory,
-  NewContentCrossReference,
-  NewContentItem,
-  NewContentSeries,
-  NewCoupon,
-  NewFeatureFlag,
-  NewLearningOutcome,
-  NewMovementMetric,
-  NewOrganization,
-  NewOrganizationMembership,
-  NewPaymentMethod,
-  NewPerformanceReport,
-  NewSeriesContentItem,
-  NewSubscriptionPlan,
-  NewSystemNotification,
-  NewTheologicalConcept,
-  NewTransaction,
-  NewUserAnalyticsEvent,
-  NewUserAssessment,
-  NewUserConsent,
-  NewUserContentInteraction,
-  NewUserFeatureFlag,
-  NewUserNotificationStatus,
-  NewUserProfile,
-  NewUserSubscription,
+  ContentSeriesEntity,
+  ContentSeriesQuery,
+  ContentSeriesResponse,
+  ContentSeriesWithContentResponse,
+  CreateAssessment,
+  CreateAssessmentQuestion,
+  CreateAssessmentResponse,
+  CreateContentCategory,
+  CreateContentItem,
+  CreateContentSeries,
+  CreateOrganization,
+  CreateOrganizationMembership,
+  CreateUserAssessment,
+  // Create/Update Types
+  CreateUserProfile,
   Organization,
+  OrganizationEntity,
+  OrganizationForm,
   OrganizationMembership,
-  OrganizationType,
-  PaymentMethod,
-  PerformanceReport,
+  OrganizationMembershipEntity,
+  OrganizationMembershipQuery,
+  OrganizationMembershipResponse,
+  OrganizationQuery,
+  OrganizationResponse,
+  OrganizationWithMembersResponse,
+  PaginatedAiContentJobListResponse,
+  PaginatedAiConversationListResponse,
+  PaginatedAiCrossReferenceSuggestionListResponse,
+  PaginatedAiMessageListResponse,
+  PaginatedAssessmentListResponse,
+  PaginatedAssessmentQuestionListResponse,
+  PaginatedAssessmentResponseListResponse,
+  PaginatedContentCategoryListResponse,
+  PaginatedContentItemListResponse,
+  PaginatedContentSeriesListResponse,
+  PaginatedOrganizationListResponse,
+  PaginatedOrganizationMembershipListResponse,
+  PaginatedResponse,
+  PaginatedTheologicalConceptListResponse,
+  PaginatedUserAssessmentListResponse,
+  // Paginated Response Types
+  PaginatedUserProfileListResponse,
   SaveResponsesInput,
-  SeriesContentItem,
   StartAssessmentInput,
-  // Subscriptions & Financial
-  SubscriptionPlan,
-  SubscriptionStatus,
-  SystemNotification,
   TheologicalConcept,
-  Transaction,
-  // Analytics & Tracking
-  UserAnalyticsEvent,
+  TheologicalConceptEntity,
+  TheologicalConceptResponse,
+  TheologicalConceptWithRelatedResponse,
+  UpdateAssessment,
+  UpdateAssessmentQuestion,
+  UpdateAssessmentResponse,
+  UpdateContentCategory,
+  UpdateContentItem,
+  UpdateContentSeries,
+  UpdateOrganization,
+  UpdateOrganizationMembership,
+  UpdateUserAssessment,
+  UpdateUserProfile,
   UserAssessment,
+  UserAssessmentEntity,
   UserAssessmentFilters,
-  UserConsent,
-  UserContentInteraction,
-  UserFeatureFlag,
-  UserNotificationStatus,
-  // Auth & User Management
+  UserAssessmentQuery,
+  UserAssessmentResponse,
+  UserAssessmentWithDetailsResponse,
+  // Entity Types
+  UserEntity,
+  // Legacy types for backward compatibility
   UserProfile,
-  UserSubscription,
-  Visibility,
-} from '@platform/shared/contracts';
+  UserProfileEntity,
+  // Form Types
+  UserProfileForm,
+  // Query Types
+  UserProfileQuery,
+  // Response Types
+  UserProfileResponse,
+} from '@platform/contracts';

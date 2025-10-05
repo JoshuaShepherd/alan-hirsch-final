@@ -1,16 +1,16 @@
-import { notFound } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@platform/ui/card';
+import { createSupabaseServerClient } from '@platform/database';
+import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
+import { Card, CardContent } from '@platform/ui/card';
 import {
-  Heart,
-  Share2,
   Bookmark,
-  MessageCircle,
   Clock,
   Eye,
+  Heart,
+  MessageCircle,
+  Share2,
 } from 'lucide-react';
-import { Badge } from '@platform/ui/badge';
-import { createClient } from '@platform/database/supabase/server';
+import { notFound } from 'next/navigation';
 
 // Use DTO types from contracts instead of custom interface
 import type { ContentRowDTO } from '@platform/shared/contracts';
@@ -21,7 +21,7 @@ export default async function ContentViewPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
 
   // Get the current user
   const {
@@ -70,28 +70,28 @@ export default async function ContentViewPage({
   }
 
   return (
-    <div className='max-w-4xl mx-auto p-6'>
-      <article className='space-y-6'>
+    <div className="max-w-4xl mx-auto p-6">
+      <article className="space-y-6">
         {/* Header */}
-        <header className='space-y-4'>
-          <div className='flex items-center space-x-2 text-sm text-gray-600'>
-            <Badge variant='secondary'>{content.contentType}</Badge>
+        <header className="space-y-4">
+          <div className="flex items-center space-x-2 text-sm text-gray-600">
+            <Badge variant="secondary">{content.contentType}</Badge>
             <span>•</span>
-            <div className='flex items-center'>
-              <Clock className='w-4 h-4 mr-1' />
+            <div className="flex items-center">
+              <Clock className="w-4 h-4 mr-1" />
               {content.estimatedReadingTime ?? 0} min read
             </div>
             <span>•</span>
             <span>{content.wordCount ?? 0} words</span>
           </div>
 
-          <h1 className='text-3xl font-bold text-gray-900'>{content.title}</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{content.title}</h1>
 
-          <p className='text-lg text-gray-600'>{content.excerpt ?? ''}</p>
+          <p className="text-lg text-gray-600">{content.excerpt ?? ''}</p>
 
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center space-x-4'>
-              <div className='flex items-center space-x-2'>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
                 {content.author?.avatarUrl ? (
                   <img
                     src={content.author.avatarUrl}
@@ -99,22 +99,22 @@ export default async function ContentViewPage({
                       content.author.displayName ??
                       `${content.author.firstName ?? '(unknown)'} ${content.author.lastName ?? '(unknown)'}`
                     }
-                    className='w-8 h-8 rounded-full'
+                    className="w-8 h-8 rounded-full"
                   />
                 ) : (
-                  <div className='w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center'>
-                    <span className='text-sm font-medium'>
+                  <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                    <span className="text-sm font-medium">
                       {(content.author?.firstName ?? 'U')[0]}
                       {(content.author?.lastName ?? 'U')[0]}
                     </span>
                   </div>
                 )}
                 <div>
-                  <div className='font-medium'>
+                  <div className="font-medium">
                     {content.author?.displayName ??
                       `${content.author?.firstName ?? '(unknown)'} ${content.author?.lastName ?? '(unknown)'}`}
                   </div>
-                  <div className='text-sm text-gray-500'>
+                  <div className="text-sm text-gray-500">
                     {content.publishedAt
                       ? new Date(content.publishedAt).toLocaleDateString()
                       : 'Not published'}
@@ -123,25 +123,25 @@ export default async function ContentViewPage({
               </div>
             </div>
 
-            <div className='flex items-center space-x-2'>
-              <Button variant='outline' size='sm'>
-                <Eye className='w-4 h-4 mr-1' />
+            <div className="flex items-center space-x-2">
+              <Button variant="outline" size="sm">
+                <Eye className="w-4 h-4 mr-1" />
                 {content.viewCount}
               </Button>
-              <Button variant='outline' size='sm'>
-                <Heart className='w-4 h-4 mr-1' />
+              <Button variant="outline" size="sm">
+                <Heart className="w-4 h-4 mr-1" />
                 {content.likeCount}
               </Button>
-              <Button variant='outline' size='sm'>
-                <Share2 className='w-4 h-4 mr-1' />
+              <Button variant="outline" size="sm">
+                <Share2 className="w-4 h-4 mr-1" />
                 {content.shareCount}
               </Button>
-              <Button variant='outline' size='sm'>
-                <Bookmark className='w-4 h-4 mr-1' />
+              <Button variant="outline" size="sm">
+                <Bookmark className="w-4 h-4 mr-1" />
                 {content.bookmarkCount}
               </Button>
-              <Button variant='outline' size='sm'>
-                <MessageCircle className='w-4 h-4 mr-1' />
+              <Button variant="outline" size="sm">
+                <MessageCircle className="w-4 h-4 mr-1" />
                 {content.commentCount}
               </Button>
             </div>
@@ -149,9 +149,9 @@ export default async function ContentViewPage({
         </header>
 
         {/* Tags */}
-        <div className='flex flex-wrap gap-2'>
+        <div className="flex flex-wrap gap-2">
           {(content.tags ?? []).map((tag: string) => (
-            <Badge key={tag} variant='outline'>
+            <Badge key={tag} variant="outline">
               {tag}
             </Badge>
           ))}
@@ -159,25 +159,25 @@ export default async function ContentViewPage({
 
         {/* Content */}
         <Card>
-          <CardContent className='pt-6'>
-            <div className='prose prose-lg max-w-none'>
+          <CardContent className="pt-6">
+            <div className="prose prose-lg max-w-none">
               {renderMarkdown(content.content ?? '')}
             </div>
           </CardContent>
         </Card>
 
         {/* Engagement Actions */}
-        <div className='flex justify-center space-x-4 pt-6 border-t'>
+        <div className="flex justify-center space-x-4 pt-6 border-t">
           <Button>
-            <Heart className='w-4 h-4 mr-2' />
+            <Heart className="w-4 h-4 mr-2" />
             Like this article
           </Button>
-          <Button variant='outline'>
-            <Bookmark className='w-4 h-4 mr-2' />
+          <Button variant="outline">
+            <Bookmark className="w-4 h-4 mr-2" />
             Save for later
           </Button>
-          <Button variant='outline'>
-            <Share2 className='w-4 h-4 mr-2' />
+          <Button variant="outline">
+            <Share2 className="w-4 h-4 mr-2" />
             Share
           </Button>
         </div>

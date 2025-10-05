@@ -1,7 +1,7 @@
 // User Profile Query Module
 // Pure functions for user profile operations with context-aware access control
 
-import type { NewUserProfile } from '@/lib/contracts';
+// Note: Using database types directly to avoid circular dependencies
 import { and, asc, desc, eq, like, or, sql } from 'drizzle-orm';
 import { db } from '../drizzle';
 import {
@@ -9,6 +9,7 @@ import {
   organizations,
   userProfiles,
 } from '../schema';
+import type { NewUserProfile } from '../schema/auth';
 import { hasResults } from '../type-guards';
 
 // ============================================================================
@@ -191,14 +192,11 @@ export async function getUsersByOrganization(
   ];
 
   if (role) {
-    conditions.push(eq(organizationMemberships.role, role));
+    conditions.push(eq(organizationMemberships.role, role as any));
   }
 
   const results = await db
-    .select({
-      ...userProfiles,
-      membership: organizationMemberships,
-    })
+    .select()
     .from(userProfiles)
     .innerJoin(
       organizationMemberships,
@@ -209,7 +207,7 @@ export async function getUsersByOrganization(
     .limit(limit)
     .offset(offset);
 
-  return results;
+  return results as any;
 }
 
 /**
@@ -480,10 +478,7 @@ export async function getUserOrganizationMemberships(
   >
 > {
   const results = await db
-    .select({
-      ...organizationMemberships,
-      organization: organizations,
-    })
+    .select()
     .from(organizationMemberships)
     .innerJoin(
       organizations,
@@ -497,5 +492,5 @@ export async function getUserOrganizationMemberships(
     )
     .orderBy(desc(organizationMemberships.joinedAt));
 
-  return results;
+  return results as any;
 }

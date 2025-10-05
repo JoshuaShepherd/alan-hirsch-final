@@ -1,5 +1,7 @@
 'use client';
 
+import { useContentItems } from '@/hooks/useContent';
+import { createSupabaseClient } from '@platform/database';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@platform/ui/card';
@@ -22,8 +24,6 @@ import {
 } from '@platform/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@platform/ui/tabs';
 import { Textarea } from '@platform/ui/textarea';
-import { useContentItems } from '@/hooks/useContent';
-import { createClient } from '@platform/database/supabase/client';
 import { format } from 'date-fns';
 import {
   AlertCircle,
@@ -52,7 +52,7 @@ interface ReviewComment {
 }
 
 export default function ContentApprovalPage() {
-  const supabase = createClient();
+  const supabase = createSupabaseClient();
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedContentId, setSelectedContentId] = useState<string | null>(
     null
@@ -155,10 +155,10 @@ export default function ContentApprovalPage() {
 
   if (isLoading) {
     return (
-      <div className='max-w-7xl mx-auto p-6'>
-        <div className='flex items-center justify-center min-h-[400px]'>
-          <div className='text-center'>
-            <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4'></div>
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
             <p>Loading content for review...</p>
           </div>
         </div>
@@ -168,90 +168,90 @@ export default function ContentApprovalPage() {
 
   if (error) {
     return (
-      <div className='max-w-7xl mx-auto p-6'>
-        <div className='text-center'>
-          <h1 className='text-2xl font-bold text-red-600 mb-4'>
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">
             Error Loading Content
           </h1>
-          <p className='text-gray-600'>{error}</p>
+          <p className="text-gray-600">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className='max-w-7xl mx-auto p-6 space-y-6'>
-      <div className='flex items-center justify-between'>
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className='text-3xl font-bold text-gray-900'>Content Approval</h1>
-          <p className='text-lg text-gray-600 mt-2'>
+          <h1 className="text-3xl font-bold text-gray-900">Content Approval</h1>
+          <p className="text-lg text-gray-600 mt-2">
             Review and approve content for publication.
           </p>
         </div>
-        <div className='flex items-center gap-4'>
-          <div className='text-right'>
-            <div className='text-2xl font-bold text-blue-600'>
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <div className="text-2xl font-bold text-blue-600">
               {pendingReview.length}
             </div>
-            <div className='text-sm text-gray-500'>Pending Review</div>
+            <div className="text-sm text-gray-500">Pending Review</div>
           </div>
-          <div className='text-right'>
-            <div className='text-2xl font-bold text-green-600'>
+          <div className="text-right">
+            <div className="text-2xl font-bold text-green-600">
               {scheduledContent.length}
             </div>
-            <div className='text-sm text-gray-500'>Scheduled</div>
+            <div className="text-sm text-gray-500">Scheduled</div>
           </div>
         </div>
       </div>
 
       {/* Quick Stats */}
-      <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
-          <CardContent className='pt-6'>
-            <div className='flex items-center'>
-              <AlertCircle className='h-4 w-4 text-orange-600' />
-              <div className='ml-2'>
-                <p className='text-sm font-medium text-gray-600'>
+          <CardContent className="pt-6">
+            <div className="flex items-center">
+              <AlertCircle className="h-4 w-4 text-orange-600" />
+              <div className="ml-2">
+                <p className="text-sm font-medium text-gray-600">
                   Pending Review
                 </p>
-                <p className='text-2xl font-bold'>{pendingReview.length}</p>
+                <p className="text-2xl font-bold">{pendingReview.length}</p>
               </div>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className='pt-6'>
-            <div className='flex items-center'>
-              <Clock className='h-4 w-4 text-blue-600' />
-              <div className='ml-2'>
-                <p className='text-sm font-medium text-gray-600'>Scheduled</p>
-                <p className='text-2xl font-bold'>{scheduledContent.length}</p>
+          <CardContent className="pt-6">
+            <div className="flex items-center">
+              <Clock className="h-4 w-4 text-blue-600" />
+              <div className="ml-2">
+                <p className="text-sm font-medium text-gray-600">Scheduled</p>
+                <p className="text-2xl font-bold">{scheduledContent.length}</p>
               </div>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className='pt-6'>
-            <div className='flex items-center'>
-              <CheckCircle className='h-4 w-4 text-green-600' />
-              <div className='ml-2'>
-                <p className='text-sm font-medium text-gray-600'>
+          <CardContent className="pt-6">
+            <div className="flex items-center">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <div className="ml-2">
+                <p className="text-sm font-medium text-gray-600">
                   Published Today
                 </p>
-                <p className='text-2xl font-bold'>0</p>
+                <p className="text-2xl font-bold">0</p>
               </div>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className='pt-6'>
-            <div className='flex items-center'>
-              <TrendingUp className='h-4 w-4 text-purple-600' />
-              <div className='ml-2'>
-                <p className='text-sm font-medium text-gray-600'>
+          <CardContent className="pt-6">
+            <div className="flex items-center">
+              <TrendingUp className="h-4 w-4 text-purple-600" />
+              <div className="ml-2">
+                <p className="text-sm font-medium text-gray-600">
                   Total Content
                 </p>
-                <p className='text-2xl font-bold'>{contentItems.length}</p>
+                <p className="text-2xl font-bold">{contentItems.length}</p>
               </div>
             </div>
           </CardContent>
@@ -260,30 +260,30 @@ export default function ContentApprovalPage() {
 
       {/* Search and Filters */}
       <Card>
-        <CardContent className='pt-6'>
-          <div className='flex flex-col md:flex-row gap-4'>
-            <div className='flex-1'>
-              <div className='relative'>
-                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4' />
+        <CardContent className="pt-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
-                  placeholder='Search content...'
+                  placeholder="Search content..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  className='pl-10'
+                  className="pl-10"
                 />
               </div>
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className='w-48'>
-                <Filter className='w-4 h-4 mr-2' />
-                <SelectValue placeholder='Filter by status' />
+              <SelectTrigger className="w-48">
+                <Filter className="w-4 h-4 mr-2" />
+                <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='under_review'>Under Review</SelectItem>
-                <SelectItem value='scheduled'>Scheduled</SelectItem>
-                <SelectItem value='draft'>Draft</SelectItem>
-                <SelectItem value='published'>Published</SelectItem>
-                <SelectItem value='all'>All Status</SelectItem>
+                <SelectItem value="under_review">Under Review</SelectItem>
+                <SelectItem value="scheduled">Scheduled</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="published">Published</SelectItem>
+                <SelectItem value="all">All Status</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -291,79 +291,79 @@ export default function ContentApprovalPage() {
       </Card>
 
       {/* Content Review Tabs */}
-      <Tabs defaultValue='pending' className='space-y-4'>
+      <Tabs defaultValue="pending" className="space-y-4">
         <TabsList>
-          <TabsTrigger value='pending' className='flex items-center gap-2'>
-            <AlertCircle className='w-4 h-4' />
+          <TabsTrigger value="pending" className="flex items-center gap-2">
+            <AlertCircle className="w-4 h-4" />
             Pending Review ({pendingReview.length})
           </TabsTrigger>
-          <TabsTrigger value='scheduled' className='flex items-center gap-2'>
-            <Clock className='w-4 h-4' />
+          <TabsTrigger value="scheduled" className="flex items-center gap-2">
+            <Clock className="w-4 h-4" />
             Scheduled ({scheduledContent.length})
           </TabsTrigger>
-          <TabsTrigger value='activity' className='flex items-center gap-2'>
-            <TrendingUp className='w-4 h-4' />
+          <TabsTrigger value="activity" className="flex items-center gap-2">
+            <TrendingUp className="w-4 h-4" />
             Recent Activity
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value='pending' className='space-y-4'>
+        <TabsContent value="pending" className="space-y-4">
           {pendingReview.length === 0 ? (
             <Card>
-              <CardContent className='pt-6'>
-                <div className='text-center py-8'>
-                  <CheckCircle className='w-12 h-12 text-green-500 mx-auto mb-4' />
-                  <h3 className='text-lg font-medium text-gray-900 mb-2'>
+              <CardContent className="pt-6">
+                <div className="text-center py-8">
+                  <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
                     All caught up!
                   </h3>
-                  <p className='text-gray-600'>
+                  <p className="text-gray-600">
                     No content pending review at the moment.
                   </p>
                 </div>
               </CardContent>
             </Card>
           ) : (
-            <div className='space-y-4'>
+            <div className="space-y-4">
               {pendingReview.map(item => (
                 <Card
                   key={item.id}
-                  className='hover:shadow-md transition-shadow'
+                  className="hover:shadow-md transition-shadow"
                 >
-                  <CardContent className='pt-6'>
-                    <div className='flex items-start justify-between'>
-                      <div className='flex-1'>
-                        <div className='flex items-center gap-2 mb-2'>
-                          <h3 className='text-lg font-semibold'>
+                  <CardContent className="pt-6">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="text-lg font-semibold">
                             {item.title}
                           </h3>
-                          <Badge variant='secondary'>{item.contentType}</Badge>
-                          <Badge variant='outline'>Under Review</Badge>
+                          <Badge variant="secondary">{item.contentType}</Badge>
+                          <Badge variant="outline">Under Review</Badge>
                         </div>
 
-                        <p className='text-gray-600 mb-3 line-clamp-2'>
+                        <p className="text-gray-600 mb-3 line-clamp-2">
                           {item.excerpt || 'No excerpt available'}
                         </p>
 
-                        <div className='flex items-center gap-4 text-sm text-gray-500'>
-                          <div className='flex items-center gap-1'>
-                            <User className='w-4 h-4' />
+                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                          <div className="flex items-center gap-1">
+                            <User className="w-4 h-4" />
                             {item.authorId || 'Unknown'}
                           </div>
-                          <div className='flex items-center gap-1'>
-                            <Calendar className='w-4 h-4' />
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
                             {format(new Date(item.createdAt), 'MMM dd, yyyy')}
                           </div>
-                          <div className='flex items-center gap-1'>
-                            <Eye className='w-4 h-4' />
+                          <div className="flex items-center gap-1">
+                            <Eye className="w-4 h-4" />
                             {item.viewCount} views
                           </div>
                         </div>
                       </div>
 
-                      <div className='flex items-center gap-2 ml-4'>
+                      <div className="flex items-center gap-2 ml-4">
                         <Button
-                          variant='outline'
-                          size='sm'
+                          variant="outline"
+                          size="sm"
                           onClick={() =>
                             window.open(
                               `/dashboard/content/${item.slug}`,
@@ -371,39 +371,39 @@ export default function ContentApprovalPage() {
                             )
                           }
                         >
-                          <Eye className='w-4 h-4' />
+                          <Eye className="w-4 h-4" />
                         </Button>
                         <Button
-                          variant='default'
-                          size='sm'
+                          variant="default"
+                          size="sm"
                           onClick={() =>
                             handleApprovalAction(item.id, 'approve')
                           }
                           disabled={isProcessing}
                         >
-                          <CheckCircle className='w-4 h-4 mr-1' />
+                          <CheckCircle className="w-4 h-4 mr-1" />
                           Approve
                         </Button>
                         <Button
-                          variant='outline'
-                          size='sm'
+                          variant="outline"
+                          size="sm"
                           onClick={() =>
                             handleApprovalAction(item.id, 'request_changes')
                           }
                           disabled={isProcessing}
                         >
-                          <AlertCircle className='w-4 h-4 mr-1' />
+                          <AlertCircle className="w-4 h-4 mr-1" />
                           Request Changes
                         </Button>
                         <Button
-                          variant='destructive'
-                          size='sm'
+                          variant="destructive"
+                          size="sm"
                           onClick={() =>
                             void handleApprovalAction(item.id, 'reject')
                           }
                           disabled={isProcessing}
                         >
-                          <XCircle className='w-4 h-4 mr-1' />
+                          <XCircle className="w-4 h-4 mr-1" />
                           Reject
                         </Button>
                       </div>
@@ -411,7 +411,7 @@ export default function ContentApprovalPage() {
 
                     {/* Review Comment Section */}
                     {selectedContentId === item.id && (
-                      <div className='mt-4 pt-4 border-t'>
+                      <div className="mt-4 pt-4 border-t">
                         <Label htmlFor={`comment-${item.id}`}>
                           Review Comment
                         </Label>
@@ -419,13 +419,13 @@ export default function ContentApprovalPage() {
                           id={`comment-${item.id}`}
                           value={reviewComment}
                           onChange={e => setReviewComment(e.target.value)}
-                          placeholder='Provide feedback for the author...'
+                          placeholder="Provide feedback for the author..."
                           rows={3}
-                          className='mt-1'
+                          className="mt-1"
                         />
-                        <div className='flex gap-2 mt-2'>
+                        <div className="flex gap-2 mt-2">
                           <Button
-                            size='sm'
+                            size="sm"
                             onClick={() => {
                               void handleApprovalAction(item.id, 'approve');
                               setSelectedContentId(null);
@@ -435,8 +435,8 @@ export default function ContentApprovalPage() {
                             Approve & Publish
                           </Button>
                           <Button
-                            variant='outline'
-                            size='sm'
+                            variant="outline"
+                            size="sm"
                             onClick={() => {
                               void handleApprovalAction(
                                 item.id,
@@ -449,8 +449,8 @@ export default function ContentApprovalPage() {
                             Request Changes
                           </Button>
                           <Button
-                            variant='ghost'
-                            size='sm'
+                            variant="ghost"
+                            size="sm"
                             onClick={() => setSelectedContentId(null)}
                           >
                             Cancel
@@ -460,13 +460,13 @@ export default function ContentApprovalPage() {
                     )}
 
                     {selectedContentId !== item.id && (
-                      <div className='mt-3 pt-3 border-t'>
+                      <div className="mt-3 pt-3 border-t">
                         <Button
-                          variant='ghost'
-                          size='sm'
+                          variant="ghost"
+                          size="sm"
                           onClick={() => setSelectedContentId(item.id)}
                         >
-                          <MessageSquare className='w-4 h-4 mr-1' />
+                          <MessageSquare className="w-4 h-4 mr-1" />
                           Add Review Comment
                         </Button>
                       </div>
@@ -478,41 +478,41 @@ export default function ContentApprovalPage() {
           )}
         </TabsContent>
 
-        <TabsContent value='scheduled' className='space-y-4'>
+        <TabsContent value="scheduled" className="space-y-4">
           {scheduledContent.length === 0 ? (
             <Card>
-              <CardContent className='pt-6'>
-                <div className='text-center py-8'>
-                  <Clock className='w-12 h-12 text-blue-500 mx-auto mb-4' />
-                  <h3 className='text-lg font-medium text-gray-900 mb-2'>
+              <CardContent className="pt-6">
+                <div className="text-center py-8">
+                  <Clock className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
                     No scheduled content
                   </h3>
-                  <p className='text-gray-600'>
+                  <p className="text-gray-600">
                     No content is currently scheduled for future publication.
                   </p>
                 </div>
               </CardContent>
             </Card>
           ) : (
-            <div className='space-y-4'>
+            <div className="space-y-4">
               {scheduledContent.map(item => (
                 <Card
                   key={item.id}
-                  className='hover:shadow-md transition-shadow'
+                  className="hover:shadow-md transition-shadow"
                 >
-                  <CardContent className='pt-6'>
-                    <div className='flex items-start justify-between'>
-                      <div className='flex-1'>
-                        <div className='flex items-center gap-2 mb-2'>
-                          <h3 className='text-lg font-semibold'>
+                  <CardContent className="pt-6">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="text-lg font-semibold">
                             {item.title}
                           </h3>
-                          <Badge variant='secondary'>{item.contentType}</Badge>
+                          <Badge variant="secondary">{item.contentType}</Badge>
                           <Badge
-                            variant='outline'
-                            className='flex items-center gap-1'
+                            variant="outline"
+                            className="flex items-center gap-1"
                           >
-                            <Clock className='w-3 h-3' />
+                            <Clock className="w-3 h-3" />
                             {item.scheduledAt
                               ? format(
                                   new Date(item.scheduledAt),
@@ -522,17 +522,17 @@ export default function ContentApprovalPage() {
                           </Badge>
                         </div>
 
-                        <p className='text-gray-600 mb-3 line-clamp-2'>
+                        <p className="text-gray-600 mb-3 line-clamp-2">
                           {item.excerpt || 'No excerpt available'}
                         </p>
 
-                        <div className='flex items-center gap-4 text-sm text-gray-500'>
-                          <div className='flex items-center gap-1'>
-                            <User className='w-4 h-4' />
+                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                          <div className="flex items-center gap-1">
+                            <User className="w-4 h-4" />
                             {item.authorId || 'Unknown'}
                           </div>
-                          <div className='flex items-center gap-1'>
-                            <Calendar className='w-4 h-4' />
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
                             Scheduled:{' '}
                             {item.scheduledAt
                               ? format(
@@ -544,10 +544,10 @@ export default function ContentApprovalPage() {
                         </div>
                       </div>
 
-                      <div className='flex items-center gap-2 ml-4'>
+                      <div className="flex items-center gap-2 ml-4">
                         <Button
-                          variant='outline'
-                          size='sm'
+                          variant="outline"
+                          size="sm"
                           onClick={() =>
                             window.open(
                               `/dashboard/content/${item.slug}`,
@@ -555,17 +555,17 @@ export default function ContentApprovalPage() {
                             )
                           }
                         >
-                          <Eye className='w-4 h-4' />
+                          <Eye className="w-4 h-4" />
                         </Button>
                         <Button
-                          variant='default'
-                          size='sm'
+                          variant="default"
+                          size="sm"
                           onClick={() =>
                             handleApprovalAction(item.id, 'approve')
                           }
                           disabled={isProcessing}
                         >
-                          <CheckCircle className='w-4 h-4 mr-1' />
+                          <CheckCircle className="w-4 h-4 mr-1" />
                           Publish Now
                         </Button>
                       </div>
@@ -577,7 +577,7 @@ export default function ContentApprovalPage() {
           )}
         </TabsContent>
 
-        <TabsContent value='activity' className='space-y-4'>
+        <TabsContent value="activity" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Recent Activity</CardTitle>
@@ -598,8 +598,8 @@ export default function ContentApprovalPage() {
                     <TableRow key={item.id}>
                       <TableCell>
                         <div>
-                          <div className='font-medium'>{item.title}</div>
-                          <div className='text-sm text-gray-500'>
+                          <div className="font-medium">{item.title}</div>
+                          <div className="text-sm text-gray-500">
                             {item.contentType}
                           </div>
                         </div>
@@ -631,8 +631,8 @@ export default function ContentApprovalPage() {
                       </TableCell>
                       <TableCell>
                         <Button
-                          variant='ghost'
-                          size='sm'
+                          variant="ghost"
+                          size="sm"
                           onClick={() =>
                             window.open(
                               `/dashboard/content/${item.slug}`,
@@ -640,7 +640,7 @@ export default function ContentApprovalPage() {
                             )
                           }
                         >
-                          <Eye className='w-4 h-4' />
+                          <Eye className="w-4 h-4" />
                         </Button>
                       </TableCell>
                     </TableRow>

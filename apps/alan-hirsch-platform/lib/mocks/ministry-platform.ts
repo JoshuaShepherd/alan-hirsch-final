@@ -7,7 +7,7 @@ import {
   ministryUserProfileSchema,
   organizationContextSchema,
   organizationScopedRequestSchema,
-} from '../../validations/ministry-platform';
+} from '@platform/shared/contracts';
 import {
   ministryAssessmentResponseSchema,
   ministryDashboardResponseSchema,

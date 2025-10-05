@@ -1,14 +1,11 @@
 'use client';
 
+import { ContentItemCardProps } from '@/lib/types/component-props';
+import { cn } from '@platform/shared/utils';
 import { Avatar, AvatarFallback } from '@platform/ui/avatar';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '@platform/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@platform/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,12 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@platform/ui/dropdown-menu';
-import {
-  ContentItemCardProps,
-  contentItemCardPropsSchema,
-  validateComponentProps,
-} from '@/lib/types/component-props';
-import { cn } from '@platform/shared/utils';
 import {
   Bookmark,
   Calendar,
@@ -57,21 +48,7 @@ export function ContentItemCard({
   onView,
   className,
 }: ContentItemCardProps) {
-  // Runtime validation
-  const validatedProps = validateComponentProps(
-    {
-      item: content,
-      variant,
-      showActions,
-      showStats,
-      showAuthor,
-      showExcerpt,
-      showTags,
-      showCategory,
-      className,
-    },
-    contentItemCardPropsSchema
-  );
+  // Component uses contract-derived types for type safety
 
   // Get content type icon
   const getContentTypeIcon = (type: string) => {

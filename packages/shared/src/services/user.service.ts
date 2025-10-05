@@ -1,15 +1,15 @@
-import { db } from '@platform/database/db/drizzle';
+import { databaseUserProfileSchema } from '@platform/contracts/entities/user.schema';
 import {
+  CreateUserOperationSchema as newUserProfileSchema,
+  ListUsersOperationSchema as queryUserProfileSchema,
+  UpdateUserOperationSchema as updateUserProfileSchema,
+} from '@platform/contracts/operations/user.operations';
+import {
+  db,
   organizationMemberships,
   organizations,
   userProfiles,
-} from '@platform/database/db/schema';
-import {
-  CreateUserSchema,
-  UpdateUserSchema,
-  UserEntitySchema,
-  UserQuerySchema,
-} from '@platform/contracts/entities';
+} from '@platform/database';
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { BaseService } from './base.service';
@@ -19,25 +19,25 @@ import { BaseService } from './base.service';
 // ============================================================================
 
 export class UserService extends BaseService<
-  z.infer<typeof UserEntitySchema>,
-  z.infer<typeof CreateUserSchema>,
-  z.infer<typeof UpdateUserSchema>,
-  z.infer<typeof UserQuerySchema>,
+  z.infer<typeof databaseUserProfileSchema>,
+  z.infer<typeof newUserProfileSchema>,
+  z.infer<typeof updateUserProfileSchema>,
+  z.infer<typeof queryUserProfileSchema>,
   typeof userProfiles
 > {
   protected table = userProfiles;
   protected entityName = 'User';
-  protected createSchema = CreateUserSchema;
-  protected updateSchema = UpdateUserSchema;
-  protected querySchema = UserQuerySchema;
-  protected outputSchema = UserEntitySchema;
+  protected createSchema = newUserProfileSchema as any;
+  protected updateSchema = updateUserProfileSchema as any;
+  protected querySchema = queryUserProfileSchema as any;
+  protected outputSchema = databaseUserProfileSchema as any;
 
   /**
    * Find user by email address
    */
   async findByEmail(
     email: string
-  ): Promise<z.infer<typeof UserEntitySchema> | null> {
+  ): Promise<z.infer<typeof databaseUserProfileSchema> | null> {
     try {
       const [result] = await db
         .select()
@@ -157,7 +157,7 @@ export class UserService extends BaseService<
       await db
         .update(userProfiles)
         .set({
-          password: hashedPassword,
+          // Password hash is managed by Supabase Auth, not in user_profiles table
           updatedAt: new Date(),
         })
         .where(eq(userProfiles.id, userId));
@@ -335,7 +335,7 @@ export class UserService extends BaseService<
         .from(userProfiles)
         .where(
           and(
-            eq(userProfiles.ministryRole, ministryRole),
+            eq(userProfiles.ministryRole, ministryRole as any),
             eq(userProfiles.accountStatus, 'active')
           )
         )

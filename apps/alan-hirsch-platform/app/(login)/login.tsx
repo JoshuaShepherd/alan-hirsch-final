@@ -1,10 +1,10 @@
 'use client';
 
-import { AuthDebug } from '@/components/auth-debug';
+import { ActionState } from '@platform/shared/auth/middleware';
 import { Button } from '@platform/ui/button';
+import { AuthDebug } from '@platform/ui/components/auth/auth-debug';
 import { Input } from '@platform/ui/input';
 import { Label } from '@platform/ui/label';
-import { ActionState } from '@/lib/auth/middleware';
 import { CircleIcon, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';

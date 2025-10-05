@@ -1,3 +1,13 @@
+'use client';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  createAssessmentSchema,
+  type AssessmentResponse,
+  type CreateAssessmentRequest,
+} from '@platform/shared/contracts';
+import { BaseForm } from '@platform/shared/forms/base-form';
+import { FormFieldGroup, FormSection } from '@platform/shared/forms/form-field';
 import {
   Card,
   CardContent,
@@ -13,25 +23,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@platform/ui/select';
-import { Switch } from '@platform/ui/switch';
 import { Textarea } from '@platform/ui/textarea';
-import { NewAssessment, newAssessmentSchema } from '@/validations/assessments';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { BaseForm, FormFieldGroup, FormSection } from '../base-form';
 import { FormField } from '../form-field';
 
 export interface AssessmentFormProps {
-  onSuccess?: (assessment: NewAssessment) => void;
+  onSuccess?: (assessment: AssessmentResponse) => void;
   onError?: (error: Error) => void;
-  defaultValues?: Partial<NewAssessment>;
+  defaultValues?: Partial<CreateAssessmentRequest>;
   className?: string;
   isLoading?: boolean;
   mode?: 'create' | 'update';
 }
 
 /**
- * Form for creating and updating assessments with complete validation
+ * Assessment form for creating and updating assessments
+ * Uses contract schemas for validation and type safety
  */
 export function AssessmentForm({
   onSuccess,
@@ -41,11 +48,10 @@ export function AssessmentForm({
   isLoading = false,
   mode = 'create',
 }: AssessmentFormProps) {
-  const form = useForm<NewAssessment>({
-    resolver: zodResolver(
-      mode === 'update' ? newAssessmentSchema.partial() : newAssessmentSchema
-    ),
+  const form = useForm<CreateAssessmentRequest>({
+    resolver: zodResolver(createAssessmentSchema),
     defaultValues: {
+      assessmentType: 'apest',
       version: '1.0',
       language: 'en',
       culturalAdaptation: 'universal',
@@ -56,12 +62,10 @@ export function AssessmentForm({
     },
   });
 
-  const onSubmit = async (data: NewAssessment) => {
+  const onSubmit = async (data: CreateAssessmentRequest) => {
     try {
       const endpoint =
-        mode === 'create'
-          ? '/api/assessments'
-          : `/api/assessments/${defaultValues?.id}`;
+        mode === 'create' ? '/api/assessments' : `/api/assessments/${data.id}`;
       const method = mode === 'create' ? 'POST' : 'PATCH';
 
       const response = await fetch(endpoint, {
@@ -87,17 +91,21 @@ export function AssessmentForm({
     }
   };
 
+  const getTitle = () => {
+    return mode === 'create' ? 'Create Assessment' : 'Update Assessment';
+  };
+
+  const getDescription = () => {
+    return mode === 'create'
+      ? 'Create a new assessment'
+      : 'Update your assessment';
+  };
+
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle>
-          {mode === 'create' ? 'Create Assessment' : 'Update Assessment'}
-        </CardTitle>
-        <CardDescription>
-          {mode === 'create'
-            ? 'Create a new assessment with questions and scoring'
-            : 'Update assessment details and configuration'}
-        </CardDescription>
+        <CardTitle>{getTitle()}</CardTitle>
+        <CardDescription>{getDescription()}</CardDescription>
       </CardHeader>
       <CardContent>
         <BaseForm
@@ -118,35 +126,44 @@ export function AssessmentForm({
               name="name"
               label="Assessment Name"
               required
-              description="The name of the assessment"
+              description="The name of your assessment"
             >
               <Input
                 {...form.register('name')}
-                placeholder="e.g., APEST Leadership Assessment"
+                placeholder="Enter assessment name"
               />
             </FormField>
 
             <FormField
               name="slug"
-              label="URL Slug"
+              label="Slug"
               required
-              description="URL-friendly identifier (lowercase, hyphens only)"
+              description="URL-friendly identifier"
             >
-              <Input
-                {...form.register('slug')}
-                placeholder="apest-leadership-assessment"
-              />
+              <Input {...form.register('slug')} placeholder="assessment-slug" />
             </FormField>
 
             <FormField
               name="description"
               label="Description"
-              description="Brief description of what this assessment measures"
+              description="Brief description of the assessment"
             >
               <Textarea
                 {...form.register('description')}
-                placeholder="This assessment helps identify your primary ministry gifts..."
-                rows={3}
+                placeholder="Describe what this assessment measures..."
+                rows={4}
+              />
+            </FormField>
+
+            <FormField
+              name="instructions"
+              label="Instructions"
+              description="Instructions for taking the assessment"
+            >
+              <Textarea
+                {...form.register('instructions')}
+                placeholder="Provide clear instructions for participants..."
+                rows={6}
               />
             </FormField>
           </FormSection>
@@ -154,14 +171,14 @@ export function AssessmentForm({
           {/* Assessment Configuration */}
           <FormSection
             title="Assessment Configuration"
-            description="Configure how the assessment works"
+            description="Configure assessment parameters"
           >
             <FormFieldGroup columns={2}>
               <FormField
                 name="assessmentType"
                 label="Assessment Type"
                 required
-                description="The type of assessment"
+                description="Type of assessment"
               >
                 <Select
                   onValueChange={value =>
@@ -189,52 +206,25 @@ export function AssessmentForm({
               </FormField>
 
               <FormField
-                name="scoringMethod"
-                label="Scoring Method"
-                description="How responses are scored"
+                name="questionsCount"
+                label="Questions Count"
+                required
+                description="Number of questions"
               >
-                <Select
-                  onValueChange={value =>
-                    form.setValue('scoringMethod', value as any)
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select scoring method" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="likert_5">
-                      Likert 5-Point Scale
-                    </SelectItem>
-                    <SelectItem value="likert_7">
-                      Likert 7-Point Scale
-                    </SelectItem>
-                    <SelectItem value="binary">Binary (Yes/No)</SelectItem>
-                    <SelectItem value="ranking">Ranking</SelectItem>
-                    <SelectItem value="weighted">Weighted Scoring</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Input
+                  type="number"
+                  {...form.register('questionsCount', { valueAsNumber: true })}
+                  placeholder="10"
+                  min="1"
+                />
               </FormField>
             </FormFieldGroup>
 
             <FormFieldGroup columns={2}>
               <FormField
-                name="questionsCount"
-                label="Number of Questions"
-                required
-                description="Total number of questions in the assessment"
-              >
-                <Input
-                  type="number"
-                  {...form.register('questionsCount', { valueAsNumber: true })}
-                  placeholder="25"
-                  min="1"
-                />
-              </FormField>
-
-              <FormField
                 name="estimatedDuration"
                 label="Estimated Duration (minutes)"
-                description="How long the assessment typically takes"
+                description="How long to complete"
               >
                 <Input
                   type="number"
@@ -245,26 +235,66 @@ export function AssessmentForm({
                   min="1"
                 />
               </FormField>
-            </FormFieldGroup>
 
-            <FormField
-              name="passingScore"
-              label="Passing Score"
-              description="Minimum score to pass (optional)"
-            >
-              <Input
-                type="number"
-                {...form.register('passingScore', { valueAsNumber: true })}
-                placeholder="70"
-                min="0"
-              />
-            </FormField>
+              <FormField
+                name="passingScore"
+                label="Passing Score"
+                description="Minimum score to pass"
+              >
+                <Input
+                  type="number"
+                  {...form.register('passingScore', { valueAsNumber: true })}
+                  placeholder="70"
+                  min="0"
+                />
+              </FormField>
+            </FormFieldGroup>
           </FormSection>
 
-          {/* Versioning & Localization */}
+          {/* Validation and Reliability */}
           <FormSection
-            title="Versioning & Localization"
-            description="Version control and language settings"
+            title="Validation and Reliability"
+            description="Assessment quality metrics"
+          >
+            <FormFieldGroup columns={2}>
+              <FormField
+                name="validityScore"
+                label="Validity Score"
+                description="Assessment validity (0-1)"
+              >
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="1"
+                  {...form.register('validityScore', { valueAsNumber: true })}
+                  placeholder="0.85"
+                />
+              </FormField>
+
+              <FormField
+                name="reliabilityScore"
+                label="Reliability Score"
+                description="Assessment reliability (0-1)"
+              >
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="1"
+                  {...form.register('reliabilityScore', {
+                    valueAsNumber: true,
+                  })}
+                  placeholder="0.90"
+                />
+              </FormField>
+            </FormFieldGroup>
+          </FormSection>
+
+          {/* Localization and Adaptation */}
+          <FormSection
+            title="Localization and Adaptation"
+            description="Cultural and language settings"
           >
             <FormFieldGroup columns={3}>
               <FormField
@@ -302,7 +332,7 @@ export function AssessmentForm({
               <FormField
                 name="culturalAdaptation"
                 label="Cultural Adaptation"
-                description="Cultural context for the assessment"
+                description="Cultural context"
               >
                 <Select
                   onValueChange={value =>
@@ -310,10 +340,9 @@ export function AssessmentForm({
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select cultural context" />
+                    <SelectValue placeholder="Select culture" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="universal">Universal</SelectItem>
                     <SelectItem value="western">Western</SelectItem>
                     <SelectItem value="eastern">Eastern</SelectItem>
                     <SelectItem value="african">African</SelectItem>
@@ -324,97 +353,46 @@ export function AssessmentForm({
                       Middle Eastern
                     </SelectItem>
                     <SelectItem value="oceanic">Oceanic</SelectItem>
+                    <SelectItem value="universal">Universal</SelectItem>
                     <SelectItem value="global">Global</SelectItem>
                   </SelectContent>
                 </Select>
               </FormField>
             </FormFieldGroup>
-          </FormSection>
 
-          {/* Research & Validity */}
-          <FormSection
-            title="Research & Validity"
-            description="Research backing and validity metrics"
-          >
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <label className="text-sm font-medium">Research Backed</label>
-                  <p className="text-sm text-gray-600">
-                    Is this assessment backed by research?
-                  </p>
-                </div>
-                <Switch
-                  checked={form.watch('researchBacked')}
-                  onCheckedChange={checked =>
-                    form.setValue('researchBacked', checked)
-                  }
-                />
-              </div>
-            </div>
-
-            <FormFieldGroup columns={2}>
-              <FormField
-                name="validityScore"
-                label="Validity Score"
-                description="Validity score (0-1 scale)"
-              >
-                <Input
-                  type="number"
-                  step="0.01"
-                  {...form.register('validityScore', { valueAsNumber: true })}
-                  placeholder="0.85"
-                  min="0"
-                  max="1"
-                />
-              </FormField>
-
-              <FormField
-                name="reliabilityScore"
-                label="Reliability Score"
-                description="Reliability score (0-1 scale)"
-              >
-                <Input
-                  type="number"
-                  step="0.01"
-                  {...form.register('reliabilityScore', {
-                    valueAsNumber: true,
-                  })}
-                  placeholder="0.90"
-                  min="0"
-                  max="1"
-                />
-              </FormField>
-            </FormFieldGroup>
-          </FormSection>
-
-          {/* Instructions */}
-          <FormSection
-            title="Instructions"
-            description="Instructions for taking the assessment"
-          >
             <FormField
-              name="instructions"
-              label="Assessment Instructions"
-              description="Clear instructions for users taking the assessment"
+              name="scoringMethod"
+              label="Scoring Method"
+              description="How responses are scored"
             >
-              <Textarea
-                {...form.register('instructions')}
-                placeholder="Please read each statement carefully and select the response that best describes you..."
-                rows={4}
-              />
+              <Select
+                onValueChange={value =>
+                  form.setValue('scoringMethod', value as any)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select scoring method" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="likert_5">Likert 5-Point</SelectItem>
+                  <SelectItem value="likert_7">Likert 7-Point</SelectItem>
+                  <SelectItem value="binary">Binary (Yes/No)</SelectItem>
+                  <SelectItem value="ranking">Ranking</SelectItem>
+                  <SelectItem value="weighted">Weighted</SelectItem>
+                </SelectContent>
+              </Select>
             </FormField>
           </FormSection>
 
           {/* Status */}
           <FormSection
             title="Status"
-            description="Assessment status and visibility"
+            description="Assessment status and publication"
           >
             <FormField
               name="status"
               label="Status"
-              description="Current status of the assessment"
+              description="Current status"
             >
               <Select
                 onValueChange={value => form.setValue('status', value as any)}
@@ -429,6 +407,14 @@ export function AssessmentForm({
                   <SelectItem value="under_review">Under Review</SelectItem>
                 </SelectContent>
               </Select>
+            </FormField>
+
+            <FormField
+              name="publishedAt"
+              label="Published At"
+              description="Publication date"
+            >
+              <Input type="datetime-local" {...form.register('publishedAt')} />
             </FormField>
           </FormSection>
         </BaseForm>

@@ -6,6 +6,7 @@ import {
   assessmentQuestions,
   assessmentResponses,
   assessments,
+  collaborations,
   communities,
   communityMemberships,
   communityPostVotes,

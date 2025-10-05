@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import {
-  CreateUserSchema,
-  UpdateUserSchema,
-  UserFormSchema,
-  UserQuerySchema,
+  createUserProfileSchema as CreateUserSchema,
+  updateUserProfileSchema as UpdateUserSchema,
+  userProfileFormSchema as UserFormSchema,
+  userProfileQuerySchema as UserQuerySchema,
 } from '../entities/user.schema';
 
 // ============================================================================
@@ -198,23 +198,23 @@ export const UpdateUserOperationSchema = UpdateUserSchema.extend({
  * Specific to profile updates with additional validation
  */
 export const UpdateUserProfileOperationSchema = UpdateUserSchema.pick({
-  first_name: true,
-  last_name: true,
-  display_name: true,
+  firstName: true,
+  lastName: true,
+  displayName: true,
   bio: true,
-  avatar_url: true,
-  ministry_role: true,
+  avatarUrl: true,
+  ministryRole: true,
   denomination: true,
-  organization_name: true,
-  years_in_ministry: true,
-  country_code: true,
+  organizationName: true,
+  yearsInMinistry: true,
+  countryCode: true,
   timezone: true,
-  language_primary: true,
-  cultural_context: true,
-  platform_title: true,
-  theological_focus: true,
-  brand_colors: true,
-  privacy_settings: true,
+  languagePrimary: true,
+  culturalContext: true,
+  platformTitle: true,
+  theologicalFocus: true,
+  brandColors: true,
+  privacySettings: true,
 }).partial();
 
 /**
@@ -222,9 +222,9 @@ export const UpdateUserProfileOperationSchema = UpdateUserSchema.pick({
  * Specific to settings updates
  */
 export const UpdateUserSettingsOperationSchema = UpdateUserSchema.pick({
-  email_notifications: true,
-  privacy_settings: true,
-  brand_colors: true,
+  emailNotifications: true,
+  privacySettings: true,
+  brandColors: true,
 }).partial();
 
 /**
@@ -232,14 +232,13 @@ export const UpdateUserSettingsOperationSchema = UpdateUserSchema.pick({
  * Specific to assessment score updates
  */
 export const UpdateUserAssessmentScoresOperationSchema = UpdateUserSchema.pick({
-  assessment_movement_alignment: true,
-  assessment_audience_engagement: true,
-  assessment_content_readiness: true,
-  assessment_revenue_potential: true,
-  assessment_network_effects: true,
-  assessment_strategic_fit: true,
-  assessment_total: true,
-  leader_tier: true,
+  assessmentMovementAlignment: true,
+  assessmentAudienceEngagement: true,
+  assessmentContentReadiness: true,
+  assessmentRevenuePotential: true,
+  assessmentNetworkEffects: true,
+  assessmentStrategicFit: true,
+  leaderTier: true,
 }).partial();
 
 // ============================================================================
@@ -252,11 +251,9 @@ export const UpdateUserAssessmentScoresOperationSchema = UpdateUserSchema.pick({
  */
 export const DeleteUserOperationSchema = z.object({
   id: z.string().uuid(),
-  confirmation: z
-    .string()
-    .refine(val => val === 'DELETE', {
-      message: "Confirmation must be 'DELETE'",
-    }),
+  confirmation: z.string().refine(val => val === 'DELETE', {
+    message: "Confirmation must be 'DELETE'",
+  }),
   transfer_ownership: z
     .object({
       organization_id: z.string().uuid(),

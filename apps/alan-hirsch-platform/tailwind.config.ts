@@ -9,7 +9,6 @@ const config: Config = {
     './src/**/*.{ts,tsx}',
     './lib/**/*.{ts,tsx}',
     './hooks/**/*.{ts,tsx}',
-    './validations/**/*.{ts,tsx}',
     './types/**/*.{ts,tsx}',
   ],
   prefix: '',

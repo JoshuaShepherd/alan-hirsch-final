@@ -1,21 +1,21 @@
+import type {
+  AssessmentEntity,
+  AssessmentQuestionEntity,
+  AssessmentResponseEntity,
+  ContentItemEntity,
+  CreateAssessment,
+  CreateAssessmentQuestion,
+  CreateAssessmentResponse,
+  CreateContentItem,
+  CreateOrganization,
+  CreateUserAssessment,
+  CreateUserProfile,
+  OrganizationEntity,
+  UserAssessmentEntity,
+  UserProfileEntity,
+} from '@platform/contracts';
 import { createClient } from '@supabase/supabase-js';
 import { vi } from 'vitest';
-import type {
-  UserProfile,
-  NewUserProfile,
-  Organization,
-  NewOrganization,
-  Assessment,
-  NewAssessment,
-  AssessmentQuestion,
-  NewAssessmentQuestion,
-  ContentItem,
-  NewContentItem,
-  UserAssessment,
-  NewUserAssessment,
-  AssessmentResponse,
-  NewAssessmentResponse,
-} from './contracts';
 
 const supabaseUrl = process.env['NEXT_PUBLIC_SUPABASE_URL'];
 const serviceRoleKey = process.env['SUPABASE_SERVICE_ROLE_KEY'];
@@ -137,7 +137,9 @@ export function mockDatabaseResponse<T>(data: T, error: Error | null = null) {
 
 export const testDataFactories = {
   // User Profile Factories
-  userProfile: (overrides: Partial<NewUserProfile> = {}): NewUserProfile => ({
+  userProfile: (
+    overrides: Partial<CreateUserProfile> = {}
+  ): CreateUserProfile => ({
     email: 'test@example.com',
     firstName: 'John',
     lastName: 'Doe',
@@ -172,7 +174,9 @@ export const testDataFactories = {
     ...overrides,
   }),
 
-  userProfileResponse: (overrides: Partial<UserProfile> = {}): UserProfile => ({
+  userProfileResponse: (
+    overrides: Partial<UserProfileEntity> = {}
+  ): UserProfileEntity => ({
     id: 'test-user-id',
     email: 'test@example.com',
     firstName: 'John',
@@ -205,16 +209,16 @@ export const testDataFactories = {
     onboardingCompleted: false,
     onboardingStep: 1,
     accountStatus: 'pending_verification',
-    createdAt: new Date('2024-01-01T00:00:00Z'),
-    updatedAt: new Date('2024-01-01T00:00:00Z'),
-    lastActiveAt: new Date('2024-01-01T00:00:00Z'),
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+    lastActiveAt: '2024-01-01T00:00:00Z',
     ...overrides,
   }),
 
-  // Organization Factories
+  // OrganizationEntity Factories
   organization: (
-    overrides: Partial<NewOrganization> = {}
-  ): NewOrganization => ({
+    overrides: Partial<CreateOrganization> = {}
+  ): CreateOrganization => ({
     name: 'Test Church',
     slug: 'test-church',
     description: 'A test church organization',
@@ -236,8 +240,8 @@ export const testDataFactories = {
   }),
 
   organizationResponse: (
-    overrides: Partial<Organization> = {}
-  ): Organization => ({
+    overrides: Partial<OrganizationEntity> = {}
+  ): OrganizationEntity => ({
     id: 'test-org-id',
     name: 'Test Church',
     slug: 'test-church',
@@ -256,14 +260,16 @@ export const testDataFactories = {
     },
     contactEmail: 'contact@testchurch.com',
     contactPhone: '+1-555-0123',
-    createdAt: new Date('2024-01-01T00:00:00Z'),
-    updatedAt: new Date('2024-01-01T00:00:00Z'),
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
     ...overrides,
   }),
 
-  // Assessment Factories
-  newAssessment: (overrides: Partial<NewAssessment> = {}): NewAssessment => ({
-    name: 'Test Assessment',
+  // AssessmentEntity Factories
+  newAssessmentEntity: (
+    overrides: Partial<CreateAssessment> = {}
+  ): CreateAssessment => ({
+    name: 'Test AssessmentEntity',
     slug: 'test-assessment',
     description: 'A test assessment for ministry evaluation',
     assessmentType: 'leadership_style',
@@ -278,9 +284,11 @@ export const testDataFactories = {
     ...overrides,
   }),
 
-  assessment: (overrides: Partial<Assessment> = {}): Assessment => ({
+  assessment: (
+    overrides: Partial<AssessmentEntity> = {}
+  ): AssessmentEntity => ({
     id: 'test-assessment-id',
-    name: 'Test Assessment',
+    name: 'Test AssessmentEntity',
     slug: 'test-assessment',
     description: 'A test assessment for ministry evaluation',
     assessmentType: 'leadership_style',
@@ -292,15 +300,15 @@ export const testDataFactories = {
     researchBacked: true,
     scoringMethod: 'likert_5',
     questionsCount: 10,
-    createdAt: new Date('2024-01-01T00:00:00Z'),
-    updatedAt: new Date('2024-01-01T00:00:00Z'),
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
     ...overrides,
   }),
 
-  // Assessment Question Factories
+  // AssessmentEntity Question Factories
   assessmentQuestion: (
-    overrides: Partial<NewAssessmentQuestion> = {}
-  ): NewAssessmentQuestion => ({
+    overrides: Partial<CreateAssessmentQuestion> = {}
+  ): CreateAssessmentQuestion => ({
     assessmentId: 'test-assessment-id',
     questionText: 'Test question text',
     questionType: 'multiple_choice',
@@ -308,17 +316,13 @@ export const testDataFactories = {
     isRequired: true,
     weight: 1.0,
     reverseScored: false,
-    answerOptions: [
-      { value: 1, label: 'Option 1' },
-      { value: 2, label: 'Option 2' },
-      { value: 3, label: 'Option 3' },
-    ],
+    answerOptions: ['Option 1', 'Option 2', 'Option 3'],
     ...overrides,
   }),
 
   assessmentQuestionResponse: (
-    overrides: Partial<AssessmentQuestion> = {}
-  ): AssessmentQuestion => ({
+    overrides: Partial<AssessmentQuestionEntity> = {}
+  ): AssessmentQuestionEntity => ({
     id: 'test-question-id',
     assessmentId: 'test-assessment-id',
     questionText: 'Test question text',
@@ -327,18 +331,16 @@ export const testDataFactories = {
     isRequired: true,
     weight: 1.0,
     reverseScored: false,
-    answerOptions: [
-      { value: 1, label: 'Option 1' },
-      { value: 2, label: 'Option 2' },
-      { value: 3, label: 'Option 3' },
-    ],
-    createdAt: new Date('2024-01-01T00:00:00Z'),
-    updatedAt: new Date('2024-01-01T00:00:00Z'),
+    answerOptions: ['Option 1', 'Option 2', 'Option 3'],
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
     ...overrides,
   }),
 
   // Content Item Factories
-  contentItem: (overrides: Partial<NewContentItem> = {}): NewContentItem => ({
+  contentItem: (
+    overrides: Partial<CreateContentItem> = {}
+  ): CreateContentItem => ({
     title: 'Test Content',
     slug: 'test-content',
     excerpt: 'Test content excerpt',
@@ -351,11 +353,11 @@ export const testDataFactories = {
     visibility: 'public',
     wordCount: 100,
     estimatedReadingTime: 1,
-    viewCount: 0, // Explicitly provide analytics fields to match expected type
-    likeCount: 0,
-    shareCount: 0,
-    commentCount: 0,
-    bookmarkCount: 0,
+    // viewCount: 0, // Removed - not part of CreateContentItem schema
+    // likeCount: 0, // Removed - not part of CreateContentItem schema
+    // shareCount: 0, // Removed - not part of CreateContentItem schema
+    // commentCount: 0, // Removed - not part of CreateContentItem schema
+    // bookmarkCount: 0, // Removed - not part of CreateContentItem schema
     secondaryCategories: [], // Explicitly provide array fields to match expected type
     tags: [],
     theologicalThemes: [],
@@ -369,7 +371,9 @@ export const testDataFactories = {
     ...overrides,
   }),
 
-  contentItemResponse: (overrides: Partial<ContentItem> = {}): ContentItem => ({
+  contentItemResponse: (
+    overrides: Partial<ContentItemEntity> = {}
+  ): ContentItemEntity => ({
     id: 'test-content-id',
     title: 'Test Content',
     slug: 'test-content',
@@ -406,49 +410,51 @@ export const testDataFactories = {
     canonicalUrl: undefined,
     originalSource: undefined,
     attributionRequired: false,
-    createdAt: new Date('2024-01-01T00:00:00Z'),
-    updatedAt: new Date('2024-01-01T00:00:00Z'),
-    publishedAt: new Date('2024-01-01T00:00:00Z'),
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+    publishedAt: '2024-01-01T00:00:00Z',
     scheduledAt: undefined,
     ...overrides,
   }),
 
-  // User Assessment Factories
-  userAssessment: (
-    overrides: Partial<NewUserAssessment> = {}
-  ): NewUserAssessment => ({
+  // User AssessmentEntity Factories
+  userAssessmentEntity: (
+    overrides: Partial<CreateUserAssessment> = {}
+  ): CreateUserAssessment => ({
     userId: 'test-user-id',
     assessmentId: 'test-assessment-id',
-    startedAt: new Date('2024-01-01T00:00:00Z'),
-    completionPercentage: 0,
+    startedAt: '2024-01-01T00:00:00Z',
+    // completionPercentage: 0, // Removed - not part of CreateUserAssessment schema
     culturalAdjustmentApplied: false,
+    personalizedRecommendations: [],
     suggestedPeers: [],
     complementaryGifts: [],
     ...overrides,
   }),
 
-  userAssessmentResponse: (
-    overrides: Partial<UserAssessment> = {}
-  ): UserAssessment => ({
+  userAssessmentResponseEntity: (
+    overrides: Partial<UserAssessmentEntity> = {}
+  ): UserAssessmentEntity => ({
     id: 'test-user-assessment-id',
     userId: 'test-user-id',
     assessmentId: 'test-assessment-id',
-    startedAt: new Date('2024-01-01T00:00:00Z'),
+    startedAt: '2024-01-01T00:00:00Z',
     completedAt: undefined,
     completionPercentage: 0,
     totalScore: undefined,
     culturalAdjustmentApplied: false,
+    personalizedRecommendations: [],
     suggestedPeers: [],
     complementaryGifts: [],
-    createdAt: new Date('2024-01-01T00:00:00Z'),
-    updatedAt: new Date('2024-01-01T00:00:00Z'),
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
     ...overrides,
   }),
 
-  // Assessment Response Factories
-  newAssessmentResponse: (
-    overrides: Partial<NewAssessmentResponse> = {}
-  ): NewAssessmentResponse => ({
+  // AssessmentEntity Response Factories
+  newAssessmentResponseEntity: (
+    overrides: Partial<CreateAssessmentResponse> = {}
+  ): CreateAssessmentResponse => ({
     userAssessmentId: 'test-user-assessment-id',
     questionId: 'test-question-id',
     responseValue: 1,
@@ -458,16 +464,16 @@ export const testDataFactories = {
   }),
 
   assessmentResponse: (
-    overrides: Partial<AssessmentResponse> = {}
-  ): AssessmentResponse => ({
+    overrides: Partial<AssessmentResponseEntity> = {}
+  ): AssessmentResponseEntity => ({
     id: 'test-response-id',
     userAssessmentId: 'test-user-assessment-id',
     questionId: 'test-question-id',
     responseValue: 1,
     responseText: 'Option 1',
     skipped: false,
-    createdAt: new Date('2024-01-01T00:00:00Z'),
-    updatedAt: new Date('2024-01-01T00:00:00Z'),
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
     ...overrides,
   }),
 };
@@ -493,7 +499,7 @@ export const testData = {
   },
 
   assessment: {
-    title: 'Test Assessment',
+    title: 'Test AssessmentEntity',
     description: 'A test assessment for ministry evaluation',
     assessmentType: 'leadership_style' as const,
     isActive: true,
@@ -519,7 +525,7 @@ export const testData = {
 
 export async function seedTestUser(
   userId: string = 'test-user-id'
-): Promise<UserProfile> {
+): Promise<UserProfileEntity> {
   const userData = testDataFactories.userProfileResponse({ id: userId });
 
   // Note: Database seeding would need to be handled separately

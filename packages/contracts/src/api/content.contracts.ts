@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import {
-  ContentCategoryEntitySchema,
-  ContentCrossReferenceEntitySchema,
-  ContentItemEntitySchema,
-  ContentSeriesEntitySchema,
+  contentCategoryEntitySchema as ContentCategoryEntitySchema,
+  contentCrossReferenceEntitySchema as ContentCrossReferenceEntitySchema,
+  contentItemEntitySchema as ContentItemEntitySchema,
+  contentSeriesEntitySchema as ContentSeriesEntitySchema,
 } from '../entities/content.schema';
 import {
   AddContentToSeriesOperationSchema,

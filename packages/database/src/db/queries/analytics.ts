@@ -149,7 +149,7 @@ export async function getContentPerformanceAnalytics(
   ];
 
   if (contentType) {
-    conditions.push(eq(contentItems.contentType, contentType));
+    conditions.push(eq(contentItems.contentType, contentType as any));
   }
 
   const [totalStats, topContent] = await Promise.all([
@@ -173,9 +173,9 @@ export async function getContentPerformanceAnalytics(
       .select({
         id: contentItems.id,
         title: contentItems.title,
-        views: contentItems.viewCount,
-        likes: contentItems.likeCount,
-        shares: contentItems.shareCount,
+        views: sql<number>`COALESCE(${contentItems.viewCount}, 0)`,
+        likes: sql<number>`COALESCE(${contentItems.likeCount}, 0)`,
+        shares: sql<number>`COALESCE(${contentItems.shareCount}, 0)`,
       })
       .from(contentItems)
       .where(and(...conditions))
@@ -273,7 +273,7 @@ export async function getCommunityEngagementAnalytics(
     db
       .select({
         userId: userContentInteractions.userId,
-        displayName: userProfiles.displayName,
+        displayName: sql<string>`COALESCE(${userProfiles.displayName}, ${userProfiles.firstName} || ' ' || ${userProfiles.lastName})`,
         postCount: count(
           sql`CASE WHEN ${userContentInteractions.interactionType} = 'post' THEN 1 END`
         ),
@@ -376,7 +376,7 @@ export async function getOrganizationAnalytics(
     db
       .select({
         userId: userProfiles.id,
-        displayName: userProfiles.displayName,
+        displayName: sql<string>`COALESCE(${userProfiles.displayName}, ${userProfiles.firstName} || ' ' || ${userProfiles.lastName})`,
         contentCount: count(contentItems.id),
         engagementScore: sql<number>`COALESCE(SUM(${userAnalyticsEvents.id}), 0)`,
       })
@@ -537,7 +537,7 @@ export async function getPlatformAnalytics(
       .select({
         communityId: communities.id,
         communityName: communities.name,
-        memberCount: communities.currentMemberCount,
+        memberCount: sql<number>`COALESCE(${communities.currentMemberCount}, 0)`,
       })
       .from(communities)
       .where(eq(communities.isActive, true))

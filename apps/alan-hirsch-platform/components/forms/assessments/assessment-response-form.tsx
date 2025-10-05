@@ -1,3 +1,8 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  SaveResponsesInput,
+  saveResponsesInputSchema,
+} from '@platform/shared/contracts';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import {
@@ -12,11 +17,6 @@ import { Progress } from '@platform/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@platform/ui/radio-group';
 import { Slider } from '@platform/ui/slider';
 import { Textarea } from '@platform/ui/textarea';
-import {
-  SaveResponsesInput,
-  saveResponsesInputSchema,
-} from '@/validations/assessments';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, ArrowRight, Clock, Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';

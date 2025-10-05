@@ -57,7 +57,18 @@ export * from './analytics';
 // SEARCH QUERIES
 // ============================================================================
 
-export * from './search';
+// Export specific functions to avoid conflicts
+export {
+  globalSearch,
+  searchAssessments,
+  searchCommunities,
+  searchContent,
+  searchContentByTheologicalThemes,
+  searchOrganizations,
+  searchUsers,
+  type SearchFilters,
+  type SearchResult,
+} from './search';
 
 // ============================================================================
 // MONITORING QUERIES

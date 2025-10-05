@@ -1,6 +1,12 @@
 'use client';
 
 import {
+  useAssessments,
+  useCreateAssessment,
+  useDeleteAssessment,
+  useUpdateAssessment,
+} from '@/hooks/useAssessment';
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -27,12 +33,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@platform/ui/select';
-import {
-  useAssessments,
-  useCreateAssessment,
-  useDeleteAssessment,
-  useUpdateAssessment,
-} from '@/hooks/useAssessment';
 import {
   AlertCircle,
   BookOpen,
@@ -84,11 +84,11 @@ export default function AssessmentManagePage() {
     isLoading,
     error,
   } = useAssessments(filters);
-  const { createAssessment, isLoading: creating } = useCreateAssessment();
-  const { updateAssessment, isLoading: updating } = useUpdateAssessment();
-  const { deleteAssessment, isLoading: deleting } = useDeleteAssessment();
+  const createAssessmentMutation = useCreateAssessment();
+  const updateAssessmentMutation = useUpdateAssessment();
+  const deleteAssessmentMutation = useDeleteAssessment();
 
-  const assessments = assessmentsResponse?.items?.data || [];
+  const assessments = assessmentsResponse || [];
 
   const getAssessmentTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
@@ -114,7 +114,7 @@ export default function AssessmentManagePage() {
 
   const handleDeleteAssessment = async (assessmentId: string) => {
     try {
-      await deleteAssessment(assessmentId);
+      await deleteAssessmentMutation.mutate(assessmentId);
       toast.success('Assessment deleted successfully');
       // Note: SWR will automatically refresh the list
       setDeleteDialogOpen(false);
@@ -130,7 +130,7 @@ export default function AssessmentManagePage() {
     newStatus: string
   ) => {
     try {
-      await updateAssessment({
+      await updateAssessmentMutation.mutate({
         id: assessmentId,
         status: newStatus as 'draft' | 'active' | 'archived' | 'under_review',
       });
@@ -144,10 +144,10 @@ export default function AssessmentManagePage() {
 
   if (isLoading) {
     return (
-      <div className='max-w-6xl mx-auto p-6'>
-        <div className='flex items-center justify-center h-64'>
-          <Loader2 className='h-8 w-8 animate-spin' />
-          <span className='ml-2'>Loading assessments...</span>
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="ml-2">Loading assessments...</span>
         </div>
       </div>
     );
@@ -155,96 +155,96 @@ export default function AssessmentManagePage() {
 
   if (error) {
     return (
-      <div className='max-w-6xl mx-auto p-6'>
-        <div className='flex items-center justify-center h-64'>
-          <AlertCircle className='h-8 w-8 text-red-500' />
-          <span className='ml-2 text-red-500'>Failed to load assessments</span>
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="flex items-center justify-center h-64">
+          <AlertCircle className="h-8 w-8 text-red-500" />
+          <span className="ml-2 text-red-500">Failed to load assessments</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className='max-w-6xl mx-auto p-6'>
+    <div className="max-w-6xl mx-auto p-6">
       {/* Header */}
-      <div className='mb-8'>
-        <div className='flex items-center justify-between'>
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className='text-3xl font-bold text-gray-900 mb-2'>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Assessment Management
             </h1>
-            <p className='text-gray-600'>
+            <p className="text-gray-600">
               Manage assessments, view analytics, and configure settings.
             </p>
           </div>
           <Button onClick={() => router.push('/dashboard/assessment/new')}>
-            <Plus className='h-4 w-4 mr-2' />
+            <Plus className="h-4 w-4 mr-2" />
             Create Assessment
           </Button>
         </div>
       </div>
 
       {/* Filters */}
-      <Card className='mb-6'>
+      <Card className="mb-6">
         <CardHeader>
-          <CardTitle className='flex items-center'>
-            <Filter className='mr-2 h-5 w-5' />
+          <CardTitle className="flex items-center">
+            <Filter className="mr-2 h-5 w-5" />
             Filter Assessments
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Search */}
-            <div className='space-y-2'>
-              <label className='text-sm font-medium'>Search</label>
-              <div className='relative'>
-                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Search</label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
-                  placeholder='Search assessments...'
+                  placeholder="Search assessments..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  className='pl-10'
+                  className="pl-10"
                 />
               </div>
             </div>
 
             {/* Assessment Type */}
-            <div className='space-y-2'>
-              <label className='text-sm font-medium'>Type</label>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Type</label>
               <Select value={selectedType} onValueChange={setSelectedType}>
                 <SelectTrigger>
-                  <SelectValue placeholder='All types' />
+                  <SelectValue placeholder="All types" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value=''>All types</SelectItem>
-                  <SelectItem value='apest'>APEST</SelectItem>
-                  <SelectItem value='mdna'>MDNA</SelectItem>
-                  <SelectItem value='cultural_intelligence'>
+                  <SelectItem value="">All types</SelectItem>
+                  <SelectItem value="apest">APEST</SelectItem>
+                  <SelectItem value="mdna">MDNA</SelectItem>
+                  <SelectItem value="cultural_intelligence">
                     Cultural Intelligence
                   </SelectItem>
-                  <SelectItem value='leadership_style'>
+                  <SelectItem value="leadership_style">
                     Leadership Style
                   </SelectItem>
-                  <SelectItem value='spiritual_gifts'>
+                  <SelectItem value="spiritual_gifts">
                     Spiritual Gifts
                   </SelectItem>
-                  <SelectItem value='other'>Other</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {/* Status */}
-            <div className='space-y-2'>
-              <label className='text-sm font-medium'>Status</label>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Status</label>
               <Select value={selectedStatus} onValueChange={setSelectedStatus}>
                 <SelectTrigger>
-                  <SelectValue placeholder='All statuses' />
+                  <SelectValue placeholder="All statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='active'>Active</SelectItem>
-                  <SelectItem value='draft'>Draft</SelectItem>
-                  <SelectItem value='archived'>Archived</SelectItem>
-                  <SelectItem value='under_review'>Under Review</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="archived">Archived</SelectItem>
+                  <SelectItem value="under_review">Under Review</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -253,50 +253,50 @@ export default function AssessmentManagePage() {
       </Card>
 
       {/* Statistics */}
-      <div className='grid grid-cols-1 md:grid-cols-4 gap-4 mb-8'>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <Card>
-          <CardContent className='p-4'>
-            <div className='flex items-center'>
-              <BookOpen className='h-8 w-8 text-blue-500 mr-3' />
+          <CardContent className="p-4">
+            <div className="flex items-center">
+              <BookOpen className="h-8 w-8 text-blue-500 mr-3" />
               <div>
-                <div className='text-2xl font-bold'>{assessments.length}</div>
-                <div className='text-sm text-gray-500'>Total Assessments</div>
+                <div className="text-2xl font-bold">{assessments.length}</div>
+                <div className="text-sm text-gray-500">Total Assessments</div>
               </div>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className='p-4'>
-            <div className='flex items-center'>
-              <Star className='h-8 w-8 text-green-500 mr-3' />
+          <CardContent className="p-4">
+            <div className="flex items-center">
+              <Star className="h-8 w-8 text-green-500 mr-3" />
               <div>
-                <div className='text-2xl font-bold'>
+                <div className="text-2xl font-bold">
                   {assessments.filter(a => a.status === 'active').length}
                 </div>
-                <div className='text-sm text-gray-500'>Active</div>
+                <div className="text-sm text-gray-500">Active</div>
               </div>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className='p-4'>
-            <div className='flex items-center'>
-              <Clock className='h-8 w-8 text-orange-500 mr-3' />
+          <CardContent className="p-4">
+            <div className="flex items-center">
+              <Clock className="h-8 w-8 text-orange-500 mr-3" />
               <div>
-                <div className='text-2xl font-bold'>
+                <div className="text-2xl font-bold">
                   {assessments.filter(a => a.status === 'draft').length}
                 </div>
-                <div className='text-sm text-gray-500'>Drafts</div>
+                <div className="text-sm text-gray-500">Drafts</div>
               </div>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className='p-4'>
-            <div className='flex items-center'>
-              <Users className='h-8 w-8 text-purple-500 mr-3' />
+          <CardContent className="p-4">
+            <div className="flex items-center">
+              <Users className="h-8 w-8 text-purple-500 mr-3" />
               <div>
-                <div className='text-2xl font-bold'>
+                <div className="text-2xl font-bold">
                   {assessments.reduce(
                     (sum, a) =>
                       sum +
@@ -306,7 +306,7 @@ export default function AssessmentManagePage() {
                     0
                   )}
                 </div>
-                <div className='text-sm text-gray-500'>Total Questions</div>
+                <div className="text-sm text-gray-500">Total Questions</div>
               </div>
             </div>
           </CardContent>
@@ -320,55 +320,55 @@ export default function AssessmentManagePage() {
         </CardHeader>
         <CardContent>
           {assessments.length === 0 ? (
-            <div className='text-center py-8'>
-              <BookOpen className='h-12 w-12 text-gray-400 mx-auto mb-4' />
-              <h3 className='text-lg font-medium text-gray-900 mb-2'>
+            <div className="text-center py-8">
+              <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
                 No assessments found
               </h3>
-              <p className='text-gray-600 mb-4'>
+              <p className="text-gray-600 mb-4">
                 {searchTerm || selectedType || selectedStatus !== 'active'
                   ? 'Try adjusting your filters to find assessments.'
                   : 'Create your first assessment to get started.'}
               </p>
               <Button onClick={() => router.push('/dashboard/assessment/new')}>
-                <Plus className='h-4 w-4 mr-2' />
+                <Plus className="h-4 w-4 mr-2" />
                 Create Assessment
               </Button>
             </div>
           ) : (
-            <div className='space-y-4'>
+            <div className="space-y-4">
               {assessments.map(assessment => (
                 <div
                   key={assessment.id}
-                  className='flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50'
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
                 >
-                  <div className='flex-1'>
-                    <div className='flex items-center space-x-3 mb-2'>
-                      <h3 className='text-lg font-medium'>{assessment.name}</h3>
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <h3 className="text-lg font-medium">{assessment.name}</h3>
                       <Badge className={getStatusColor(assessment.status)}>
                         {assessment.status}
                       </Badge>
                       {assessment.researchBacked && (
                         <Badge
-                          variant='outline'
-                          className='text-green-600 border-green-600'
+                          variant="outline"
+                          className="text-green-600 border-green-600"
                         >
-                          <Star className='h-3 w-3 mr-1' />
+                          <Star className="h-3 w-3 mr-1" />
                           Research-backed
                         </Badge>
                       )}
                     </div>
-                    <div className='flex items-center space-x-4 text-sm text-gray-500'>
-                      <span className='flex items-center'>
-                        <BookOpen className='h-4 w-4 mr-1' />
+                    <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <span className="flex items-center">
+                        <BookOpen className="h-4 w-4 mr-1" />
                         {getAssessmentTypeLabel(assessment.assessmentType)}
                       </span>
-                      <span className='flex items-center'>
-                        <Clock className='h-4 w-4 mr-1' />
+                      <span className="flex items-center">
+                        <Clock className="h-4 w-4 mr-1" />
                         {assessment.estimatedDuration || 15} min
                       </span>
-                      <span className='flex items-center'>
-                        <Users className='h-4 w-4 mr-1' />
+                      <span className="flex items-center">
+                        <Users className="h-4 w-4 mr-1" />
                         {assessment.questionsCount} questions
                       </span>
                       <span>
@@ -377,47 +377,50 @@ export default function AssessmentManagePage() {
                       </span>
                     </div>
                     {assessment.description && (
-                      <p className='text-sm text-gray-600 mt-2 line-clamp-2'>
+                      <p className="text-sm text-gray-600 mt-2 line-clamp-2">
                         {assessment.description}
                       </p>
                     )}
                   </div>
 
-                  <div className='flex items-center space-x-2'>
+                  <div className="flex items-center space-x-2">
                     <Button
-                      variant='outline'
-                      size='sm'
+                      variant="outline"
+                      size="sm"
                       onClick={() =>
                         router.push(`/dashboard/assessment/${assessment.id}`)
                       }
                     >
-                      <Eye className='h-4 w-4 mr-1' />
+                      <Eye className="h-4 w-4 mr-1" />
                       View
                     </Button>
                     <Button
-                      variant='outline'
-                      size='sm'
+                      variant="outline"
+                      size="sm"
                       onClick={() =>
                         router.push(
                           `/dashboard/assessment/edit/${assessment.id}`
                         )
                       }
                     >
-                      <Edit className='h-4 w-4 mr-1' />
+                      <Edit className="h-4 w-4 mr-1" />
                       Edit
                     </Button>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant='outline' size='sm'>
-                          <MoreHorizontal className='h-4 w-4' />
+                        <Button variant="outline" size="sm">
+                          <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align='end'>
+                      <DropdownMenuContent align="end">
                         <DropdownMenuItem
                           onClick={() =>
                             handleStatusChange(assessment.id, 'active')
                           }
-                          disabled={assessment.status === 'active' || updating}
+                          disabled={
+                            assessment.status === 'active' ||
+                            updateAssessmentMutation.isLoading
+                          }
                         >
                           Activate
                         </DropdownMenuItem>
@@ -425,7 +428,10 @@ export default function AssessmentManagePage() {
                           onClick={() =>
                             handleStatusChange(assessment.id, 'draft')
                           }
-                          disabled={assessment.status === 'draft' || updating}
+                          disabled={
+                            assessment.status === 'draft' ||
+                            updateAssessmentMutation.isLoading
+                          }
                         >
                           Move to Draft
                         </DropdownMenuItem>
@@ -434,7 +440,8 @@ export default function AssessmentManagePage() {
                             handleStatusChange(assessment.id, 'archived')
                           }
                           disabled={
-                            assessment.status === 'archived' || updating
+                            assessment.status === 'archived' ||
+                            updateAssessmentMutation.isLoading
                           }
                         >
                           Archive
@@ -444,10 +451,10 @@ export default function AssessmentManagePage() {
                             setAssessmentToDelete(assessment.id);
                             setDeleteDialogOpen(true);
                           }}
-                          className='text-red-600'
-                          disabled={deleting}
+                          className="text-red-600"
+                          disabled={deleteAssessmentMutation.isLoading}
                         >
-                          <Trash2 className='h-4 w-4 mr-2' />
+                          <Trash2 className="h-4 w-4 mr-2" />
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -477,13 +484,13 @@ export default function AssessmentManagePage() {
               onClick={() =>
                 assessmentToDelete && handleDeleteAssessment(assessmentToDelete)
               }
-              className='bg-red-600 hover:bg-red-700'
-              disabled={deleting}
+              className="bg-red-600 hover:bg-red-700"
+              disabled={deleteAssessmentMutation.isLoading}
             >
-              {deleting ? (
-                <Loader2 className='h-4 w-4 animate-spin mr-2' />
+              {deleteAssessmentMutation.isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : (
-                <Trash2 className='h-4 w-4 mr-2' />
+                <Trash2 className="h-4 w-4 mr-2" />
               )}
               Delete
             </AlertDialogAction>

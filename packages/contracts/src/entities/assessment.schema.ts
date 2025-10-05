@@ -1,381 +1,705 @@
 import { z } from 'zod';
 
 // ============================================================================
-// ASSESSMENT ENUMS AND TYPES
+// ASSESSMENT ENTITY SCHEMA
 // ============================================================================
+// Based on assessments table from database documentation
 
-export const assessmentTypeSchema = z.enum([
-  'apest',
-  'mdna',
-  'cultural_intelligence',
-  'leadership_style',
-  'spiritual_gifts',
-  'other',
-]);
-
-export const culturalAdaptationSchema = z.enum([
-  'western',
-  'eastern',
-  'african',
-  'latin_american',
-  'middle_eastern',
-  'oceanic',
-  'universal',
-  'global',
-]);
-
-export const scoringMethodSchema = z.enum([
-  'likert_5',
-  'likert_7',
-  'binary',
-  'ranking',
-  'weighted',
-]);
-
-export const assessmentStatusSchema = z.enum([
-  'draft',
-  'active',
-  'archived',
-  'under_review',
-]);
-
-export const questionTypeSchema = z.enum([
-  'likert',
-  'multiple_choice',
-  'binary',
-  'ranking',
-  'text',
-]);
-
-export const apestDimensionSchema = z.enum([
-  'apostolic',
-  'prophetic',
-  'evangelistic',
-  'shepherding',
-  'teaching',
-]);
-
-// ============================================================================
-// ASSESSMENT ENTITY SCHEMA - SINGLE SOURCE OF TRUTH
-// ============================================================================
-
-/**
- * Complete Assessment Entity Schema
- * This is the single source of truth for all assessment data structures
- */
-export const AssessmentEntitySchema = z.object({
+export const assessmentEntitySchema = z.object({
   // Core Identity
   id: z.string().uuid(),
-  name: z.string().min(1).max(255),
-  slug: z.string().regex(/^[a-z0-9-]+$/),
-  description: z.string().max(2000).optional(),
-
-  // Assessment Classification
-  assessment_type: assessmentTypeSchema,
+  name: z.string().min(1).max(200),
+  slug: z.string().min(1).max(100),
+  description: z.string().max(1000).optional(),
 
   // Assessment Configuration
-  questions_count: z.number().int().min(1),
-  estimated_duration: z.number().int().min(1).optional(), // minutes
-  passing_score: z.number().int().min(0).optional(),
+  assessmentType: z.enum([
+    'apest',
+    'mdna',
+    'cultural_intelligence',
+    'leadership_style',
+    'spiritual_gifts',
+    'other',
+  ]),
+  questionsCount: z.number().int().min(1),
+  estimatedDuration: z.number().int().min(1).optional(), // in minutes
+  passingScore: z.number().int().min(0).optional(),
 
-  // Versioning & Localization
-  version: z.string().default('1.0'),
-  language: z.string().default('en'),
-  cultural_adaptation: culturalAdaptationSchema.default('universal'),
+  // Validation & Reliability
+  validityScore: z.number().min(0).max(1).optional(),
+  reliabilityScore: z.number().min(0).max(1).optional(),
 
-  // Research & Validity
-  research_backed: z.boolean().default(false),
-  validity_score: z.number().min(0).max(1).optional(),
-  reliability_score: z.number().min(0).max(1).optional(),
+  // Instructions & Content
+  instructions: z.string().max(2000).optional(),
+  publishedAt: z.string().datetime().optional(),
+  version: z.string().max(20).default('1.0'),
+  language: z.string().max(10).default('en'),
 
-  // Configuration
-  instructions: z.string().max(5000).optional(),
-  scoring_method: scoringMethodSchema.default('likert_5'),
+  // Cultural Adaptation
+  culturalAdaptation: z
+    .enum([
+      'western',
+      'eastern',
+      'african',
+      'latin_american',
+      'middle_eastern',
+      'oceanic',
+      'universal',
+      'global',
+    ])
+    .default('universal'),
+  researchBacked: z.boolean().default(false),
+  scoringMethod: z
+    .enum(['likert_5', 'likert_7', 'binary', 'ranking', 'weighted'])
+    .default('likert_5'),
 
   // Status
-  status: assessmentStatusSchema.default('draft'),
+  status: z
+    .enum(['draft', 'active', 'archived', 'under_review'])
+    .default('draft'),
 
   // Timestamps
-  created_at: z.string().datetime(),
-  updated_at: z.string().datetime(),
-  published_at: z.string().datetime().optional(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
 });
 
-/**
- * Complete Assessment Question Entity Schema
- * This is the single source of truth for all assessment question data structures
- */
-export const AssessmentQuestionEntitySchema = z.object({
+// ============================================================================
+// ASSESSMENT QUESTION ENTITY SCHEMA
+// ============================================================================
+// Based on assessment_questions table
+
+export const assessmentQuestionEntitySchema = z.object({
   // Core Identity
   id: z.string().uuid(),
-  assessment_id: z.string().uuid(),
-  question_text: z.string().min(1).max(2000),
-  question_type: questionTypeSchema,
-  order_index: z.number().int().min(1),
+  assessmentId: z.string().uuid(),
+  questionText: z.string().min(1).max(1000),
+  questionType: z.enum([
+    'likert',
+    'multiple_choice',
+    'binary',
+    'ranking',
+    'text',
+  ]),
+  orderIndex: z.number().int().min(0),
 
-  // Classification
+  // Question Configuration
   category: z.string().max(100).optional(),
-  apest_dimension: apestDimensionSchema.optional(),
-
-  // Configuration
-  answer_options: z.record(z.unknown()).optional(),
-  is_required: z.boolean().default(true),
-  weight: z.number().min(0).default(1),
-  reverse_scored: z.boolean().default(false),
+  apestDimension: z
+    .enum(['apostolic', 'prophetic', 'evangelistic', 'shepherding', 'teaching'])
+    .optional(),
+  answerOptions: z
+    .array(
+      z.object({
+        value: z.number(),
+        label: z.string(),
+        description: z.string().optional(),
+      })
+    )
+    .optional(),
+  isRequired: z.boolean().default(true),
+  weight: z.number().min(0).max(10).default(1.0),
+  reverseScored: z.boolean().default(false),
 
   // Timestamps
-  created_at: z.string().datetime(),
-  updated_at: z.string().datetime(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
 });
 
-/**
- * Complete User Assessment Entity Schema
- * This is the single source of truth for all user assessment data structures
- */
-export const UserAssessmentEntitySchema = z.object({
+// ============================================================================
+// USER ASSESSMENT ENTITY SCHEMA
+// ============================================================================
+// Based on user_assessments table
+
+export const userAssessmentEntitySchema = z.object({
   // Core Identity
   id: z.string().uuid(),
-  user_id: z.string().uuid(),
-  assessment_id: z.string().uuid(),
+  userId: z.string().uuid(),
+  assessmentId: z.string().uuid(),
 
-  // Progress Tracking
-  started_at: z.string().datetime(),
-  completed_at: z.string().datetime().optional(),
-  completion_percentage: z.number().min(0).max(100).default(0),
+  // Assessment Progress
+  startedAt: z.string().datetime(),
+  completedAt: z.string().datetime().optional(),
+  completionPercentage: z.number().int().min(0).max(100).default(0),
 
-  // Scoring
-  total_score: z.number().int().min(0).optional(),
-  max_possible_score: z.number().int().min(0).optional(),
+  // Raw Scores
+  rawScores: z.record(z.number()).optional(),
+  totalScore: z.number().int().min(0).optional(),
+  maxPossibleScore: z.number().int().min(0).optional(),
 
-  // APEST Scores (if applicable)
-  apostolic_score: z.number().int().min(0).max(100).optional(),
-  prophetic_score: z.number().int().min(0).max(100).optional(),
-  evangelistic_score: z.number().int().min(0).max(100).optional(),
-  shepherding_score: z.number().int().min(0).max(100).optional(),
-  teaching_score: z.number().int().min(0).max(100).optional(),
+  // APEST Scores
+  apostolicScore: z.number().int().min(0).max(100).optional(),
+  propheticScore: z.number().int().min(0).max(100).optional(),
+  evangelisticScore: z.number().int().min(0).max(100).optional(),
+  shepherdingScore: z.number().int().min(0).max(100).optional(),
+  teachingScore: z.number().int().min(0).max(100).optional(),
 
   // Normalized Scores
-  normalized_scores: z.record(z.number()).optional(),
+  normalizedScores: z.record(z.number()).optional(),
+  primaryGift: z.string().max(50).optional(),
+  secondaryGift: z.string().max(50).optional(),
 
-  // Results
-  primary_gift: apestDimensionSchema.optional(),
-  secondary_gift: apestDimensionSchema.optional(),
+  // Assessment Quality
+  responseConsistency: z.number().min(0).max(1).optional(),
+  completionTime: z.number().int().min(0).optional(), // in minutes
+  confidenceLevel: z.number().int().min(1).max(5).optional(),
 
-  // Metadata
-  completion_time: z.number().int().min(0).optional(), // seconds
-  confidence_level: z.number().int().min(1).max(5).optional(),
-  cultural_adjustment_applied: z.boolean().default(false),
+  // Cultural Adjustment
+  culturalAdjustmentApplied: z.boolean().default(false),
+  culturalAdjustmentFactor: z.number().min(0).max(2).optional(),
 
   // AI Insights
-  ai_insights: z.string().max(5000).optional(),
-  personalized_recommendations: z.array(z.string()).default([]),
-  complementary_gifts: z.array(apestDimensionSchema).default([]),
+  aiInsights: z.string().max(2000).optional(),
+  personalizedRecommendations: z
+    .object({
+      strengths: z.array(z.string()).default([]),
+      growthAreas: z.array(z.string()).default([]),
+      actionItems: z.array(z.string()).default([]),
+      contentRecommendations: z.array(z.string()).default([]),
+    })
+    .optional(),
+  suggestedPeers: z.array(z.string()).default([]),
+  complementaryGifts: z.array(z.string()).default([]),
 
   // Timestamps
-  created_at: z.string().datetime(),
-  updated_at: z.string().datetime(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
 });
 
-/**
- * Complete Assessment Response Entity Schema
- * This is the single source of truth for all assessment response data structures
- */
-export const AssessmentResponseEntitySchema = z.object({
+// ============================================================================
+// ASSESSMENT RESPONSE ENTITY SCHEMA
+// ============================================================================
+// Based on assessment_responses table
+
+export const assessmentResponseEntitySchema = z.object({
   // Core Identity
   id: z.string().uuid(),
-  user_assessment_id: z.string().uuid(),
-  question_id: z.string().uuid(),
+  userAssessmentId: z.string().uuid(),
+  questionId: z.string().uuid(),
 
   // Response Data
-  response_value: z.number().int().optional(),
-  response_text: z.string().max(1000).optional(),
-  response_time: z.number().int().min(0).optional(), // milliseconds
+  responseValue: z.number().int().optional(),
+  responseText: z.string().max(1000).optional(),
+  responseTime: z.number().int().min(0).optional(), // in seconds
   confidence: z.number().int().min(1).max(5).optional(),
   skipped: z.boolean().default(false),
 
   // Timestamps
-  created_at: z.string().datetime(),
-  updated_at: z.string().datetime(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
 });
 
 // ============================================================================
-// DERIVED SCHEMAS - NO DUPLICATION
+// ASSESSMENT RESPONSE SCHEMAS (with computed fields)
 // ============================================================================
 
-/**
- * Create Assessment Schema - Derived from Entity
- * Omits auto-generated fields
- */
-export const CreateAssessmentSchema = AssessmentEntitySchema.omit({
-  id: true,
-  created_at: true,
-  updated_at: true,
+export const assessmentResponseSchema = assessmentResponseEntitySchema.extend({
+  // Computed fields
+  isSkipped: z.boolean(),
+  hasResponse: z.boolean(),
+  responseTimeText: z.string().optional(),
+  confidenceLevel: z.string().optional(),
+
+  // Related data
+  question: z
+    .object({
+      id: z.string().uuid(),
+      questionText: z.string(),
+      questionType: z.string(),
+      orderIndex: z.number().int().min(0),
+      category: z.string().optional(),
+      apestDimension: z.string().optional(),
+      isRequired: z.boolean(),
+    })
+    .optional(),
+
+  userAssessment: z
+    .object({
+      id: z.string().uuid(),
+      userId: z.string().uuid(),
+      assessmentId: z.string().uuid(),
+      status: z.string(),
+    })
+    .optional(),
 });
 
-/**
- * Update Assessment Schema - Derived from Create Schema
- * Makes all fields optional for partial updates
- */
-export const UpdateAssessmentSchema = CreateAssessmentSchema.partial();
+export const assessmentQuestionResponseSchema =
+  assessmentQuestionEntitySchema.extend({
+    // Computed fields
+    isRequired: z.boolean(),
+    hasOptions: z.boolean(),
+    isReverseScored: z.boolean(),
+    typeDisplay: z.string(),
+    dimensionDisplay: z.string().optional(),
 
-/**
- * Assessment Query Schema - For filtering and searching
- * Extends entity with optional filters
- */
-export const AssessmentQuerySchema = AssessmentEntitySchema.partial().extend({
-  // Search fields
+    // Related data
+    assessment: z.object({
+      id: z.string().uuid(),
+      name: z.string(),
+      slug: z.string(),
+      assessmentType: z.string(),
+    }),
+  });
+
+export const userAssessmentResponseSchema = userAssessmentEntitySchema.extend({
+  // Computed fields
+  isCompleted: z.boolean(),
+  isInProgress: z.boolean(),
+  completionStatus: z.string(),
+  durationText: z.string().optional(),
+  scorePercentage: z.number().min(0).max(100).optional(),
+  primaryGiftDisplay: z.string().optional(),
+  secondaryGiftDisplay: z.string().optional(),
+
+  // APEST Profile
+  apestProfile: z
+    .object({
+      apostolic: z.number().int().min(0).max(100),
+      prophetic: z.number().int().min(0).max(100),
+      evangelistic: z.number().int().min(0).max(100),
+      shepherding: z.number().int().min(0).max(100),
+      teaching: z.number().int().min(0).max(100),
+      dominant: z.string(),
+      secondary: z.string(),
+    })
+    .optional(),
+
+  // Related data
+  user: z.object({
+    id: z.string().uuid(),
+    firstName: z.string(),
+    lastName: z.string(),
+    displayName: z.string().optional(),
+  }),
+
+  assessment: z.object({
+    id: z.string().uuid(),
+    name: z.string(),
+    slug: z.string(),
+    assessmentType: z.string(),
+    questionsCount: z.number().int().min(1),
+  }),
+
+  responses: z
+    .array(
+      z.object({
+        id: z.string().uuid(),
+        questionId: z.string().uuid(),
+        responseValue: z.number().int().optional(),
+        responseText: z.string().optional(),
+        responseTime: z.number().int().min(0).optional(),
+        confidence: z.number().int().min(1).max(5).optional(),
+        skipped: z.boolean(),
+      })
+    )
+    .optional(),
+});
+
+export const assessmentResponseResponseSchema =
+  assessmentResponseEntitySchema.extend({
+    // Computed fields
+    isSkipped: z.boolean(),
+    hasValue: z.boolean(),
+    hasText: z.boolean(),
+    responseTimeText: z.string().optional(),
+    confidenceDisplay: z.string().optional(),
+
+    // Related data
+    question: z.object({
+      id: z.string().uuid(),
+      questionText: z.string(),
+      questionType: z.string(),
+      orderIndex: z.number().int().min(0),
+      apestDimension: z.string().optional(),
+    }),
+
+    userAssessment: z.object({
+      id: z.string().uuid(),
+      userId: z.string().uuid(),
+      assessmentId: z.string().uuid(),
+      completedAt: z.string().datetime().optional(),
+    }),
+  });
+
+// ============================================================================
+// ASSESSMENT CREATE SCHEMAS
+// ============================================================================
+
+export const createAssessmentSchema = assessmentEntitySchema
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    name: z.string().min(1, 'Assessment name is required').max(200),
+    slug: z.string().min(1, 'Assessment slug is required').max(100),
+    assessmentType: z.enum([
+      'apest',
+      'mdna',
+      'cultural_intelligence',
+      'leadership_style',
+      'spiritual_gifts',
+      'other',
+    ]),
+    questionsCount: z
+      .number()
+      .int()
+      .min(1, 'Questions count must be at least 1'),
+  });
+
+export const createAssessmentQuestionSchema = assessmentQuestionEntitySchema
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    assessmentId: z.string().uuid(),
+    questionText: z.string().min(1, 'Question text is required').max(1000),
+    questionType: z.enum([
+      'likert',
+      'multiple_choice',
+      'binary',
+      'ranking',
+      'text',
+    ]),
+    orderIndex: z.number().int().min(0),
+  });
+
+export const createUserAssessmentSchema = userAssessmentEntitySchema
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    completedAt: true,
+    completionPercentage: true,
+  })
+  .extend({
+    userId: z.string().uuid(),
+    assessmentId: z.string().uuid(),
+  });
+
+export const createAssessmentResponseSchema = assessmentResponseEntitySchema
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    userAssessmentId: z.string().uuid(),
+    questionId: z.string().uuid(),
+  });
+
+// ============================================================================
+// ASSESSMENT UPDATE SCHEMAS
+// ============================================================================
+
+export const updateAssessmentSchema = createAssessmentSchema.partial().omit({
+  slug: true, // Slug cannot be changed after creation
+});
+
+export const updateAssessmentQuestionSchema =
+  createAssessmentQuestionSchema.partial();
+
+export const updateUserAssessmentSchema = createUserAssessmentSchema
+  .partial()
+  .omit({
+    userId: true,
+    assessmentId: true,
+  });
+
+export const updateAssessmentResponseSchema = createAssessmentResponseSchema
+  .partial()
+  .omit({
+    userAssessmentId: true,
+    questionId: true,
+  });
+
+// ============================================================================
+// ASSESSMENT QUERY SCHEMAS
+// ============================================================================
+
+export const assessmentQuerySchema = z.object({
+  // Pagination
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
+
+  // Search
   search: z.string().optional(),
 
-  // Filter fields
-  assessment_type: z.array(assessmentTypeSchema).optional(),
-  status: z.array(assessmentStatusSchema).optional(),
-  language: z.array(z.string()).optional(),
-  cultural_adaptation: z.array(culturalAdaptationSchema).optional(),
-  research_backed: z.boolean().optional(),
+  // Filters
+  assessmentType: z.string().optional(),
+  status: z.string().optional(),
+  language: z.string().optional(),
+  culturalAdaptation: z.string().optional(),
+  researchBacked: z.boolean().optional(),
 
-  // Date range filters
-  created_after: z.string().datetime().optional(),
-  created_before: z.string().datetime().optional(),
-  published_after: z.string().datetime().optional(),
-  published_before: z.string().datetime().optional(),
+  // Sorting
+  sortBy: z
+    .enum([
+      'createdAt',
+      'updatedAt',
+      'publishedAt',
+      'name',
+      'questionsCount',
+      'estimatedDuration',
+    ])
+    .default('createdAt'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
+
+  // Include related data
+  includeQuestions: z.boolean().default(false),
+  includeStatistics: z.boolean().default(false),
 });
 
-/**
- * Create Assessment Question Schema - Derived from Entity
- * Omits auto-generated fields
- */
-export const CreateAssessmentQuestionSchema =
-  AssessmentQuestionEntitySchema.omit({
-    id: true,
-    created_at: true,
-    updated_at: true,
-  });
+export const assessmentQuestionQuerySchema = z.object({
+  // Pagination
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
 
-/**
- * Update Assessment Question Schema - Derived from Create Schema
- * Makes all fields optional for partial updates
- */
-export const UpdateAssessmentQuestionSchema =
-  CreateAssessmentQuestionSchema.partial();
+  // Filters
+  assessmentId: z.string().uuid().optional(),
+  questionType: z.string().optional(),
+  category: z.string().optional(),
+  apestDimension: z.string().optional(),
+  isRequired: z.boolean().optional(),
 
-/**
- * Create User Assessment Schema - Derived from Entity
- * Omits auto-generated fields
- */
-export const CreateUserAssessmentSchema = UserAssessmentEntitySchema.omit({
-  id: true,
-  created_at: true,
-  updated_at: true,
+  // Sorting
+  sortBy: z
+    .enum(['orderIndex', 'createdAt', 'updatedAt'])
+    .default('orderIndex'),
+  sortOrder: z.enum(['asc', 'desc']).default('asc'),
+
+  // Include related data
+  includeAssessment: z.boolean().default(false),
 });
 
-/**
- * Update User Assessment Schema - Derived from Create Schema
- * Makes all fields optional for partial updates
- */
-export const UpdateUserAssessmentSchema = CreateUserAssessmentSchema.partial();
+export const userAssessmentQuerySchema = z.object({
+  // Pagination
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
 
-/**
- * User Assessment Query Schema - For filtering and searching
- * Extends entity with optional filters
- */
-export const UserAssessmentQuerySchema =
-  UserAssessmentEntitySchema.partial().extend({
-    // Search fields
-    search: z.string().optional(),
+  // Filters
+  userId: z.string().uuid().optional(),
+  assessmentId: z.string().uuid().optional(),
+  isCompleted: z.boolean().optional(),
+  primaryGift: z.string().optional(),
+  secondaryGift: z.string().optional(),
 
-    // Filter fields
-    user_id: z.array(z.string().uuid()).optional(),
-    assessment_id: z.array(z.string().uuid()).optional(),
-    primary_gift: z.array(apestDimensionSchema).optional(),
-    secondary_gift: z.array(apestDimensionSchema).optional(),
+  // Date filters
+  startedAfter: z.string().datetime().optional(),
+  startedBefore: z.string().datetime().optional(),
+  completedAfter: z.string().datetime().optional(),
+  completedBefore: z.string().datetime().optional(),
 
-    // Completion filters
-    is_completed: z.boolean().optional(),
-    completion_percentage_min: z.number().min(0).max(100).optional(),
-    completion_percentage_max: z.number().min(0).max(100).optional(),
+  // Sorting
+  sortBy: z
+    .enum([
+      'createdAt',
+      'updatedAt',
+      'startedAt',
+      'completedAt',
+      'totalScore',
+      'completionPercentage',
+    ])
+    .default('createdAt'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
 
-    // Date range filters
-    started_after: z.string().datetime().optional(),
-    started_before: z.string().datetime().optional(),
-    completed_after: z.string().datetime().optional(),
-    completed_before: z.string().datetime().optional(),
-  });
+  // Include related data
+  includeUser: z.boolean().default(true),
+  includeAssessment: z.boolean().default(true),
+  includeResponses: z.boolean().default(false),
+});
 
-/**
- * Create Assessment Response Schema - Derived from Entity
- * Omits auto-generated fields
- */
-export const CreateAssessmentResponseSchema =
-  AssessmentResponseEntitySchema.omit({
-    id: true,
-    created_at: true,
-    updated_at: true,
-  });
+export const assessmentResponseQuerySchema = z.object({
+  // Pagination
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
 
-/**
- * Update Assessment Response Schema - Derived from Create Schema
- * Makes all fields optional for partial updates
- */
-export const UpdateAssessmentResponseSchema =
-  CreateAssessmentResponseSchema.partial();
+  // Filters
+  userAssessmentId: z.string().uuid().optional(),
+  questionId: z.string().uuid().optional(),
+  skipped: z.boolean().optional(),
 
-/**
- * Assessment Response Query Schema - For filtering and searching
- * Extends entity with optional filters
- */
-export const AssessmentResponseQuerySchema =
-  AssessmentResponseEntitySchema.partial().extend({
-    // Filter fields
-    user_assessment_id: z.array(z.string().uuid()).optional(),
-    question_id: z.array(z.string().uuid()).optional(),
-    skipped: z.boolean().optional(),
+  // Sorting
+  sortBy: z.enum(['createdAt', 'updatedAt']).default('createdAt'),
+  sortOrder: z.enum(['asc', 'desc']).default('asc'),
 
-    // Date range filters
-    created_after: z.string().datetime().optional(),
-    created_before: z.string().datetime().optional(),
-  });
+  // Include related data
+  includeQuestion: z.boolean().default(true),
+  includeUserAssessment: z.boolean().default(false),
+});
+
+// ============================================================================
+// ASSESSMENT FORM SCHEMAS (for UI forms)
+// ============================================================================
+
+export const startAssessmentInputSchema = z.object({
+  assessmentId: z.string().uuid(),
+  userId: z.string().uuid(),
+});
+
+export const completeAssessmentInputSchema = z.object({
+  userAssessmentId: z.string().uuid(),
+  responses: z.array(
+    z.object({
+      questionId: z.string().uuid(),
+      responseValue: z.number().int().optional(),
+      responseText: z.string().optional(),
+      responseTime: z.number().int().min(0).optional(),
+      confidence: z.number().int().min(1).max(5).optional(),
+      skipped: z.boolean().default(false),
+    })
+  ),
+});
+
+export const saveResponsesInputSchema = z.object({
+  userAssessmentId: z.string().uuid(),
+  responses: z.array(
+    z.object({
+      questionId: z.string().uuid(),
+      responseValue: z.number().int().optional(),
+      responseText: z.string().optional(),
+      responseTime: z.number().int().min(0).optional(),
+      confidence: z.number().int().min(1).max(5).optional(),
+      skipped: z.boolean().default(false),
+    })
+  ),
+});
+
+// ============================================================================
+// ASSESSMENT FILTER SCHEMAS
+// ============================================================================
+
+export const userAssessmentFiltersSchema = z.object({
+  assessmentType: z.string().optional(),
+  isCompleted: z.boolean().optional(),
+  primaryGift: z.string().optional(),
+  secondaryGift: z.string().optional(),
+  dateRange: z
+    .object({
+      start: z.string().datetime().optional(),
+      end: z.string().datetime().optional(),
+    })
+    .optional(),
+});
 
 // ============================================================================
 // TYPE EXPORTS
 // ============================================================================
 
-export type AssessmentEntity = z.infer<typeof AssessmentEntitySchema>;
-export type CreateAssessment = z.infer<typeof CreateAssessmentSchema>;
-export type UpdateAssessment = z.infer<typeof UpdateAssessmentSchema>;
-export type AssessmentQuery = z.infer<typeof AssessmentQuerySchema>;
-
+export type AssessmentEntity = z.infer<typeof assessmentEntitySchema>;
 export type AssessmentQuestionEntity = z.infer<
-  typeof AssessmentQuestionEntitySchema
->;
-export type CreateAssessmentQuestion = z.infer<
-  typeof CreateAssessmentQuestionSchema
->;
-export type UpdateAssessmentQuestion = z.infer<
-  typeof UpdateAssessmentQuestionSchema
+  typeof assessmentQuestionEntitySchema
 >;
 
-export type UserAssessmentEntity = z.infer<typeof UserAssessmentEntitySchema>;
-export type CreateUserAssessment = z.infer<typeof CreateUserAssessmentSchema>;
-export type UpdateUserAssessment = z.infer<typeof UpdateUserAssessmentSchema>;
-export type UserAssessmentQuery = z.infer<typeof UserAssessmentQuerySchema>;
-
+// Alias for backward compatibility
+export type AssessmentQuestion = AssessmentQuestionEntity;
+export type UserAssessmentEntity = z.infer<typeof userAssessmentEntitySchema>;
 export type AssessmentResponseEntity = z.infer<
-  typeof AssessmentResponseEntitySchema
->;
-export type CreateAssessmentResponse = z.infer<
-  typeof CreateAssessmentResponseSchema
->;
-export type UpdateAssessmentResponse = z.infer<
-  typeof UpdateAssessmentResponseSchema
->;
-export type AssessmentResponseQuery = z.infer<
-  typeof AssessmentResponseQuerySchema
+  typeof assessmentResponseEntitySchema
 >;
 
-// Enum type exports
-export type AssessmentType = z.infer<typeof assessmentTypeSchema>;
-export type CulturalAdaptation = z.infer<typeof culturalAdaptationSchema>;
-export type ScoringMethod = z.infer<typeof scoringMethodSchema>;
-export type AssessmentStatus = z.infer<typeof assessmentStatusSchema>;
-export type QuestionType = z.infer<typeof questionTypeSchema>;
-export type ApestDimension = z.infer<typeof apestDimensionSchema>;
+export type AssessmentResponse = z.infer<typeof assessmentResponseSchema>;
+export type AssessmentQuestionResponse = z.infer<
+  typeof assessmentQuestionResponseSchema
+>;
+export type UserAssessmentResponse = z.infer<
+  typeof userAssessmentResponseSchema
+>;
+export type AssessmentResponseResponse = z.infer<
+  typeof assessmentResponseResponseSchema
+>;
+
+export type CreateAssessment = z.infer<typeof createAssessmentSchema>;
+export type CreateAssessmentQuestion = z.infer<
+  typeof createAssessmentQuestionSchema
+>;
+export type CreateUserAssessment = z.infer<typeof createUserAssessmentSchema>;
+export type CreateAssessmentResponse = z.infer<
+  typeof createAssessmentResponseSchema
+>;
+
+export type UpdateAssessment = z.infer<typeof updateAssessmentSchema>;
+export type UpdateAssessmentQuestion = z.infer<
+  typeof updateAssessmentQuestionSchema
+>;
+export type UpdateUserAssessment = z.infer<typeof updateUserAssessmentSchema>;
+export type UpdateAssessmentResponse = z.infer<
+  typeof updateAssessmentResponseSchema
+>;
+
+export type AssessmentQuery = z.infer<typeof assessmentQuerySchema>;
+export type AssessmentQuestionQuery = z.infer<
+  typeof assessmentQuestionQuerySchema
+>;
+export type UserAssessmentQuery = z.infer<typeof userAssessmentQuerySchema>;
+export type AssessmentResponseQuery = z.infer<
+  typeof assessmentResponseQuerySchema
+>;
+
+export type StartAssessmentInput = z.infer<typeof startAssessmentInputSchema>;
+export type CompleteAssessmentInput = z.infer<
+  typeof completeAssessmentInputSchema
+>;
+export type SaveResponsesInput = z.infer<typeof saveResponsesInputSchema>;
+export type UserAssessmentFilters = z.infer<typeof userAssessmentFiltersSchema>;
+
+// Legacy type exports for backward compatibility
+export type AssessmentWithQuestions = AssessmentResponse;
+export type AssessmentWithQuestionsResponse = AssessmentResponse;
+
+// Legacy aliases for backward compatibility
+export type Assessment = AssessmentEntity;
+export type NewAssessment = CreateAssessment;
+export type NewAssessmentQuestion = CreateAssessmentQuestion;
+export type NewAssessmentResponse = CreateAssessmentResponse;
+export type NewUserAssessment = CreateUserAssessment;
+export type UserAssessment = UserAssessmentEntity;
+export type AssessmentSearch = AssessmentQuery;
+export const paginatedAssessmentListResponseSchema = z.object({
+  data: z.array(assessmentResponseSchema),
+  pagination: z.object({
+    page: z.number().int().min(1),
+    limit: z.number().int().min(1),
+    total: z.number().int().min(0),
+    hasMore: z.boolean(),
+  }),
+});
+
+export const paginatedUserAssessmentListResponseSchema = z.object({
+  data: z.array(userAssessmentResponseSchema),
+  pagination: z.object({
+    page: z.number().int().min(1),
+    limit: z.number().int().min(1),
+    total: z.number().int().min(0),
+    hasMore: z.boolean(),
+  }),
+});
+
+export type PaginatedAssessmentListResponse = z.infer<
+  typeof paginatedAssessmentListResponseSchema
+>;
+export type PaginatedUserAssessmentListResponse = z.infer<
+  typeof paginatedUserAssessmentListResponseSchema
+>;
+export type UserAssessmentWithDetailsResponse = UserAssessmentResponse;
+
+// ============================================================================
+// ADDITIONAL SCHEMAS FOR SHARED PACKAGE COMPATIBILITY
+// ============================================================================
+
+// Assessment Search Schema (alias for AssessmentQuery)
+export const assessmentSearchSchema = assessmentQuerySchema;
+
+// Assessment With Questions Schema
+export const assessmentWithQuestionsSchema = z.object({
+  assessment: assessmentEntitySchema,
+  questions: z.array(assessmentQuestionEntitySchema),
+});
+
+// Schema aliases for backward compatibility
+export const assessmentSchema = assessmentEntitySchema;
+export const assessmentQuestionSchema = assessmentQuestionEntitySchema;
+export const userAssessmentSchema = userAssessmentEntitySchema;
+export const newAssessmentResponseSchema = createAssessmentResponseSchema;

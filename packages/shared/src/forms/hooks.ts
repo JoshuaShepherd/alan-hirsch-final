@@ -1,17 +1,18 @@
+/// <reference lib="dom" />
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   FieldErrors,
-  FormEventHandler,
+  FieldValues,
   UseFormReturn,
   useForm,
 } from 'react-hook-form';
-import { useDebouncedCallback } from 'use-debounce';
+// Removed use-debounce dependency - will implement simple debouncing
 import { z } from 'zod';
 
 // Core form hook with complete TypeScript inference
-export interface TypedFormHook<TFormData> {
+export interface TypedFormHook<TFormData extends FieldValues> {
   form: UseFormReturn<TFormData>;
   isValid: boolean;
   isDirty: boolean;
@@ -19,13 +20,13 @@ export interface TypedFormHook<TFormData> {
   errors: FieldErrors<TFormData>;
   handleSubmit: (
     onValid: (data: TFormData) => Promise<void>
-  ) => FormEventHandler;
+  ) => (e: React.FormEvent) => void;
   reset: (values?: Partial<TFormData>) => void;
   setValue: <K extends keyof TFormData>(name: K, value: TFormData[K]) => void;
   watch: <K extends keyof TFormData>(name?: K) => TFormData[K] | TFormData;
 }
 
-export interface TypedFormOptions<TFormData> {
+export interface TypedFormOptions<TFormData extends FieldValues> {
   defaultValues?: Partial<TFormData>;
   mode?: 'onChange' | 'onBlur' | 'onSubmit' | 'onTouched' | 'all';
   reValidateMode?: 'onChange' | 'onBlur' | 'onSubmit';
@@ -41,7 +42,7 @@ export interface TypedFormOptions<TFormData> {
  * Main typed form hook that combines React Hook Form with Zod validation
  * Provides complete TypeScript inference and real-time validation
  */
-export function useTypedForm<TFormData extends Record<string, any>>(
+export function useTypedForm<TFormData extends FieldValues>(
   schema: z.ZodSchema<TFormData>,
   options: TypedFormOptions<TFormData> = {}
 ): TypedFormHook<TFormData> {
@@ -58,25 +59,31 @@ export function useTypedForm<TFormData extends Record<string, any>>(
   } = options;
 
   const form = useForm<TFormData>({
-    resolver: zodResolver(schema),
-    defaultValues,
+    resolver: zodResolver(schema as any),
+    defaultValues: defaultValues as any,
     mode,
     reValidateMode,
     shouldFocusError,
     shouldUnregister,
     shouldUseNativeValidation,
     delayError,
-  });
+  } as any);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form persistence
-  useFormPersistence(form, persistKey);
+  useFormPersistence(form as any, persistKey);
 
-  // Debounced validation for real-time feedback
-  const debouncedValidate = useDebouncedCallback(() => {
-    form.trigger();
-  }, debounceMs);
+  // Simple debounced validation for real-time feedback
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const debouncedValidate = useCallback(() => {
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
+    debounceTimeoutRef.current = setTimeout(() => {
+      form.trigger() as any;
+    }, debounceMs);
+  }, [form, debounceMs]);
 
   useEffect(() => {
     const subscription = form.watch(() => {
@@ -104,9 +111,9 @@ export function useTypedForm<TFormData extends Record<string, any>>(
 
   const reset = useCallback(
     (values?: Partial<TFormData>) => {
-      form.reset(values);
-      if (persistKey) {
-        localStorage.removeItem(`form-${persistKey}`);
+      form.reset(values as any);
+      if (persistKey && typeof window !== 'undefined') {
+        window.localStorage.removeItem(`form-${persistKey}`);
       }
     },
     [form, persistKey]
@@ -114,7 +121,10 @@ export function useTypedForm<TFormData extends Record<string, any>>(
 
   const setValue = useCallback(
     <K extends keyof TFormData>(name: K, value: TFormData[K]) => {
-      form.setValue(name, value, { shouldValidate: true, shouldDirty: true });
+      form.setValue(name as any, value, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
     },
     [form]
   );
@@ -194,7 +204,7 @@ export function useFormSubmission<TFormData>(): {
 }
 
 // Form persistence hook for auto-saving form state
-export function useFormPersistence<TFormData>(
+export function useFormPersistence<TFormData extends FieldValues>(
   form: UseFormReturn<TFormData>,
   persistKey?: string
 ) {
@@ -205,10 +215,12 @@ export function useFormPersistence<TFormData>(
 
     // Restore form state from localStorage
     try {
-      const savedState = localStorage.getItem(`form-${persistKey}`);
-      if (savedState) {
-        const parsedState = JSON.parse(savedState);
-        form.reset(parsedState);
+      if (typeof window !== 'undefined') {
+        const savedState = window.localStorage.getItem(`form-${persistKey}`);
+        if (savedState) {
+          const parsedState = JSON.parse(savedState);
+          form.reset(parsedState);
+        }
       }
     } catch (error) {
       console.warn('Failed to restore form state:', error);
@@ -223,7 +235,12 @@ export function useFormPersistence<TFormData>(
     // Save form state to localStorage on changes
     const subscription = form.watch(data => {
       try {
-        localStorage.setItem(`form-${persistKey}`, JSON.stringify(data));
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem(
+            `form-${persistKey}`,
+            JSON.stringify(data)
+          );
+        }
       } catch (error) {
         console.warn('Failed to save form state:', error);
       }
@@ -244,7 +261,7 @@ export interface MultiStepFormState {
   canGoPrevious: boolean;
 }
 
-export function useMultiStepForm<TFormData>(
+export function useMultiStepForm<TFormData extends FieldValues>(
   steps: string[],
   form: UseFormReturn<TFormData>
 ): {
@@ -270,7 +287,7 @@ export function useMultiStepForm<TFormData>(
   const validateCurrentStep = useCallback(async () => {
     // Get fields for current step (this would need to be configured per step)
     // For now, validate all fields
-    const isValid = await form.trigger();
+    const isValid = (await form.trigger()) as any;
     return isValid;
   }, [form]);
 
@@ -307,7 +324,7 @@ export function useMultiStepForm<TFormData>(
 }
 
 // Real-time validation hook with debouncing
-export function useFormValidation<TFormData>(
+export function useFormValidation<TFormData extends FieldValues>(
   form: UseFormReturn<TFormData>,
   debounceMs: number = 300
 ) {
@@ -315,13 +332,19 @@ export function useFormValidation<TFormData>(
     FieldErrors<TFormData>
   >({});
 
-  const debouncedValidate = useDebouncedCallback(
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const debouncedValidate = useCallback(
     async (fields?: (keyof TFormData)[]) => {
-      const result = await form.trigger(fields);
-      setValidationErrors(form.formState.errors);
-      return result;
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(async () => {
+        const result = await form.trigger(fields as any);
+        setValidationErrors(form.formState.errors);
+        return result;
+      }, debounceMs);
     },
-    debounceMs
+    [form, debounceMs]
   );
 
   useEffect(() => {
@@ -339,7 +362,7 @@ export function useFormValidation<TFormData>(
 }
 
 // URL synchronization hook for search/filter forms
-export function useURLSync<TFormData>(
+export function useURLSync<TFormData extends FieldValues>(
   form: UseFormReturn<TFormData>,
   basePath: string = ''
 ) {
@@ -375,7 +398,7 @@ export function useURLSync<TFormData>(
 
     params.forEach((value, key) => {
       const fieldName = key as keyof TFormData;
-      const currentValue = form.getValues(fieldName);
+      const currentValue = form.getValues(fieldName as any);
 
       if (Array.isArray(currentValue)) {
         urlData[fieldName] = value.split(',') as TFormData[keyof TFormData];
@@ -388,7 +411,7 @@ export function useURLSync<TFormData>(
       }
     });
 
-    form.reset({ ...form.getValues(), ...urlData });
+    form.reset({ ...form.getValues(), ...urlData } as any);
   }, [form]);
 
   return {

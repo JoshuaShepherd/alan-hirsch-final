@@ -1,17 +1,17 @@
 import { z } from 'zod';
 import {
-  ContentCategoryQuerySchema,
-  ContentCrossReferenceQuerySchema,
-  ContentItemQuerySchema,
-  ContentSeriesQuerySchema,
-  CreateContentCategorySchema,
-  CreateContentCrossReferenceSchema,
-  CreateContentItemSchema,
-  CreateContentSeriesSchema,
-  UpdateContentCategorySchema,
-  UpdateContentCrossReferenceSchema,
-  UpdateContentItemSchema,
-  UpdateContentSeriesSchema,
+  contentCategoryQuerySchema as ContentCategoryQuerySchema,
+  contentCrossReferenceEntitySchema as ContentCrossReferenceQuerySchema,
+  contentItemQuerySchema as ContentItemQuerySchema,
+  contentSeriesQuerySchema as ContentSeriesQuerySchema,
+  createContentCategorySchema as CreateContentCategorySchema,
+  contentCrossReferenceEntitySchema as CreateContentCrossReferenceSchema,
+  createContentItemSchema as CreateContentItemSchema,
+  createContentSeriesSchema as CreateContentSeriesSchema,
+  updateContentCategorySchema as UpdateContentCategorySchema,
+  contentCrossReferenceEntitySchema as UpdateContentCrossReferenceSchema,
+  updateContentItemSchema as UpdateContentItemSchema,
+  updateContentSeriesSchema as UpdateContentSeriesSchema,
 } from '../entities/content.schema';
 
 // ============================================================================

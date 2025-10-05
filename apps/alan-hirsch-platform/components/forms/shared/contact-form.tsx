@@ -1,3 +1,6 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { BaseForm } from '@platform/shared/forms/base-form';
+import { FormFieldGroup, FormSection } from '@platform/shared/forms/form-field';
 import {
   Card,
   CardContent,
@@ -14,10 +17,8 @@ import {
   SelectValue,
 } from '@platform/ui/select';
 import { Textarea } from '@platform/ui/textarea';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { BaseForm, FormFieldGroup, FormSection } from '../base-form';
 import { FormField } from '../form-field';
 
 const contactFormSchema = z.object({

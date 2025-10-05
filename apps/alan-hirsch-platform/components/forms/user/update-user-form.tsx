@@ -1,3 +1,6 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { BaseForm } from '@platform/shared/forms/base-form';
+import { FormFieldGroup, FormSection } from '@platform/shared/forms/form-field';
 import { Avatar, AvatarFallback, AvatarImage } from '@platform/ui/avatar';
 import { Button } from '@platform/ui/button';
 import {
@@ -17,16 +20,9 @@ import {
 } from '@platform/ui/select';
 import { Switch } from '@platform/ui/switch';
 import { Textarea } from '@platform/ui/textarea';
-import {
-  NewUserProfile,
-  UserProfile,
-  newUserProfileSchema,
-} from '@/validations/auth';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Upload, X } from 'lucide-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { BaseForm, FormFieldGroup, FormSection } from '../base-form';
 import { FormField } from '../form-field';
 
 export interface UpdateUserFormProps {

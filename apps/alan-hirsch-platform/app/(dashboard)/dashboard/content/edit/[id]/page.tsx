@@ -1,6 +1,11 @@
 'use client';
 
 import { PublishingWorkflow } from '@/components/content/publishing-workflow';
+import { useContentById, useContentCategories } from '@/hooks/useContent';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { createSupabaseClient } from '@platform/database';
+import type { UpdateContentItemRequest } from '@platform/shared/contracts/content.request';
+import { updateContentItemRequestSchema } from '@platform/shared/contracts/content.request';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@platform/ui/card';
@@ -15,11 +20,6 @@ import {
   SelectValue,
 } from '@platform/ui/select';
 import { Textarea } from '@platform/ui/textarea';
-import { useContentById, useContentCategories } from '@/hooks/useContent';
-import type { UpdateContentItemRequest } from '@/lib/contracts/content.request';
-import { updateContentItemRequestSchema } from '@/lib/contracts/content.request';
-import { createClient } from '@platform/database/supabase/client';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, Loader2, Save, Trash2, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -68,7 +68,7 @@ interface EditContentPageProps {
 
 export default function EditContentPage({ params }: EditContentPageProps) {
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = createSupabaseClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
@@ -253,9 +253,9 @@ export default function EditContentPage({ params }: EditContentPageProps) {
 
   if (contentLoading) {
     return (
-      <div className='max-w-4xl mx-auto p-6 flex items-center justify-center min-h-[400px]'>
-        <div className='flex items-center gap-2'>
-          <Loader2 className='w-6 h-6 animate-spin' />
+      <div className="max-w-4xl mx-auto p-6 flex items-center justify-center min-h-[400px]">
+        <div className="flex items-center gap-2">
+          <Loader2 className="w-6 h-6 animate-spin" />
           <span>Loading content...</span>
         </div>
       </div>
@@ -264,12 +264,12 @@ export default function EditContentPage({ params }: EditContentPageProps) {
 
   if (!content) {
     return (
-      <div className='max-w-4xl mx-auto p-6'>
-        <div className='text-center'>
-          <h1 className='text-2xl font-bold text-gray-900 mb-4'>
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
             Content Not Found
           </h1>
-          <p className='text-gray-600 mb-6'>
+          <p className="text-gray-600 mb-6">
             The content you&apos;re looking for doesn&apos;t exist or you
             don&apos;t have permission to edit it.
           </p>
@@ -282,55 +282,55 @@ export default function EditContentPage({ params }: EditContentPageProps) {
   }
 
   return (
-    <div className='max-w-4xl mx-auto p-6 space-y-6'>
-      <div className='flex items-center justify-between'>
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className='text-3xl font-bold text-gray-900'>Edit Content</h1>
-          <p className='text-lg text-gray-600 mt-2'>
+          <h1 className="text-3xl font-bold text-gray-900">Edit Content</h1>
+          <p className="text-lg text-gray-600 mt-2">
             Update your content and manage its settings.
           </p>
         </div>
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <Button
-            variant='outline'
+            variant="outline"
             onClick={() => router.push(`/dashboard/content/${content.slug}`)}
           >
-            <Eye className='w-4 h-4 mr-2' />
+            <Eye className="w-4 h-4 mr-2" />
             Preview
           </Button>
           <Button
-            variant='destructive'
+            variant="destructive"
             onClick={handleDelete}
             disabled={isDeleting || isSubmitting}
           >
             {isDeleting ? (
               <>
-                <Loader2 className='w-4 h-4 mr-2 animate-spin' />
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Deleting...
               </>
             ) : (
               <>
-                <Trash2 className='w-4 h-4 mr-2' />
+                <Trash2 className="w-4 h-4 mr-2" />
                 Delete
               </>
             )}
           </Button>
           <Button
-            variant='outline'
+            variant="outline"
             onClick={() => router.back()}
             disabled={isSubmitting}
           >
             Cancel
           </Button>
-          <Button type='submit' form='content-form' disabled={isSubmitting}>
+          <Button type="submit" form="content-form" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
-                <Loader2 className='w-4 h-4 mr-2 animate-spin' />
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Saving...
               </>
             ) : (
               <>
-                <Save className='w-4 h-4 mr-2' />
+                <Save className="w-4 h-4 mr-2" />
                 Save Changes
               </>
             )}
@@ -339,39 +339,39 @@ export default function EditContentPage({ params }: EditContentPageProps) {
       </div>
 
       <form
-        id='content-form'
+        id="content-form"
         onSubmit={handleSubmit(onSubmit)}
-        className='space-y-6'
+        className="space-y-6"
       >
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
-          <div className='lg:col-span-2 space-y-6'>
+          <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>Content Details</CardTitle>
               </CardHeader>
-              <CardContent className='space-y-4'>
+              <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor='title'>Title *</Label>
+                  <Label htmlFor="title">Title *</Label>
                   <Input
-                    id='title'
+                    id="title"
                     {...register('title')}
-                    placeholder='Enter content title'
+                    placeholder="Enter content title"
                     className={errors.title ? 'border-red-500' : ''}
                   />
                   {errors.title && (
-                    <p className='text-sm text-red-500 mt-1'>
+                    <p className="text-sm text-red-500 mt-1">
                       {errors.title.message}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <Label htmlFor='excerpt'>Excerpt</Label>
+                  <Label htmlFor="excerpt">Excerpt</Label>
                   <Textarea
-                    id='excerpt'
+                    id="excerpt"
                     {...register('excerpt')}
-                    placeholder='Brief description of the content'
+                    placeholder="Brief description of the content"
                     rows={3}
                   />
                 </div>
@@ -381,10 +381,10 @@ export default function EditContentPage({ params }: EditContentPageProps) {
                   <RichTextEditor
                     content={watchedContent}
                     onChange={content => setValue('content', content)}
-                    placeholder='Write your content here...'
+                    placeholder="Write your content here..."
                   />
                   {errors.content && (
-                    <p className='text-sm text-red-500 mt-1'>
+                    <p className="text-sm text-red-500 mt-1">
                       {errors.content.message}
                     </p>
                   )}
@@ -396,15 +396,15 @@ export default function EditContentPage({ params }: EditContentPageProps) {
               <CardHeader>
                 <CardTitle>Tags & Themes</CardTitle>
               </CardHeader>
-              <CardContent className='space-y-4'>
+              <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor='new-tag'>Tags</Label>
-                  <div className='flex gap-2 mt-1'>
+                  <Label htmlFor="new-tag">Tags</Label>
+                  <div className="flex gap-2 mt-1">
                     <Input
-                      id='new-tag'
+                      id="new-tag"
                       value={newTag}
                       onChange={e => setNewTag(e.target.value)}
-                      placeholder='Add a tag'
+                      placeholder="Add a tag"
                       onKeyDown={e => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
@@ -412,24 +412,24 @@ export default function EditContentPage({ params }: EditContentPageProps) {
                         }
                       }}
                     />
-                    <Button type='button' variant='outline' onClick={addTag}>
+                    <Button type="button" variant="outline" onClick={addTag}>
                       Add
                     </Button>
                   </div>
-                  <div className='flex flex-wrap gap-2 mt-2'>
+                  <div className="flex flex-wrap gap-2 mt-2">
                     {tags.map(tag => (
                       <Badge
                         key={tag}
-                        variant='secondary'
-                        className='flex items-center gap-1'
+                        variant="secondary"
+                        className="flex items-center gap-1"
                       >
                         {tag}
                         <button
-                          type='button'
+                          type="button"
                           onClick={() => removeTag(tag)}
-                          className='ml-1 hover:text-red-500'
+                          className="ml-1 hover:text-red-500"
                         >
-                          <X className='w-3 h-3' />
+                          <X className="w-3 h-3" />
                         </button>
                       </Badge>
                     ))}
@@ -437,13 +437,13 @@ export default function EditContentPage({ params }: EditContentPageProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor='new-theme'>Theological Themes</Label>
-                  <div className='flex gap-2 mt-1'>
+                  <Label htmlFor="new-theme">Theological Themes</Label>
+                  <div className="flex gap-2 mt-1">
                     <Input
-                      id='new-theme'
+                      id="new-theme"
                       value={newTheme}
                       onChange={e => setNewTheme(e.target.value)}
-                      placeholder='Add a theological theme'
+                      placeholder="Add a theological theme"
                       onKeyDown={e => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
@@ -451,24 +451,24 @@ export default function EditContentPage({ params }: EditContentPageProps) {
                         }
                       }}
                     />
-                    <Button type='button' variant='outline' onClick={addTheme}>
+                    <Button type="button" variant="outline" onClick={addTheme}>
                       Add
                     </Button>
                   </div>
-                  <div className='flex flex-wrap gap-2 mt-2'>
+                  <div className="flex flex-wrap gap-2 mt-2">
                     {theologicalThemes.map(theme => (
                       <Badge
                         key={theme}
-                        variant='outline'
-                        className='flex items-center gap-1'
+                        variant="outline"
+                        className="flex items-center gap-1"
                       >
                         {theme}
                         <button
-                          type='button'
+                          type="button"
                           onClick={() => removeTheme(theme)}
-                          className='ml-1 hover:text-red-500'
+                          className="ml-1 hover:text-red-500"
                         >
-                          <X className='w-3 h-3' />
+                          <X className="w-3 h-3" />
                         </button>
                       </Badge>
                     ))}
@@ -479,7 +479,7 @@ export default function EditContentPage({ params }: EditContentPageProps) {
           </div>
 
           {/* Sidebar */}
-          <div className='space-y-6'>
+          <div className="space-y-6">
             {/* Publishing Workflow */}
             <PublishingWorkflow
               content={content as any}
@@ -497,9 +497,9 @@ export default function EditContentPage({ params }: EditContentPageProps) {
               <CardHeader>
                 <CardTitle>Settings</CardTitle>
               </CardHeader>
-              <CardContent className='space-y-4'>
+              <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor='contentType'>Content Type *</Label>
+                  <Label htmlFor="contentType">Content Type *</Label>
                   <Select
                     value={watch('contentType')}
                     onValueChange={value =>
@@ -507,7 +507,7 @@ export default function EditContentPage({ params }: EditContentPageProps) {
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Select content type' />
+                      <SelectValue placeholder="Select content type" />
                     </SelectTrigger>
                     <SelectContent>
                       {contentTypeOptions.map(option => (
@@ -520,13 +520,13 @@ export default function EditContentPage({ params }: EditContentPageProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor='format'>Format</Label>
+                  <Label htmlFor="format">Format</Label>
                   <Select
                     value={watch('format')}
                     onValueChange={value => setValue('format', value as any)}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Select format' />
+                      <SelectValue placeholder="Select format" />
                     </SelectTrigger>
                     <SelectContent>
                       {formatOptions.map(option => (
@@ -539,13 +539,13 @@ export default function EditContentPage({ params }: EditContentPageProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor='status'>Status</Label>
+                  <Label htmlFor="status">Status</Label>
                   <Select
                     value={watch('status')}
                     onValueChange={value => setValue('status', value as any)}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Select status' />
+                      <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
                       {statusOptions.map(option => (
@@ -558,7 +558,7 @@ export default function EditContentPage({ params }: EditContentPageProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor='visibility'>Visibility</Label>
+                  <Label htmlFor="visibility">Visibility</Label>
                   <Select
                     value={watch('visibility')}
                     onValueChange={value =>
@@ -566,7 +566,7 @@ export default function EditContentPage({ params }: EditContentPageProps) {
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Select visibility' />
+                      <SelectValue placeholder="Select visibility" />
                     </SelectTrigger>
                     <SelectContent>
                       {visibilityOptions.map(option => (
@@ -579,7 +579,7 @@ export default function EditContentPage({ params }: EditContentPageProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor='primaryCategoryId'>Primary Category</Label>
+                  <Label htmlFor="primaryCategoryId">Primary Category</Label>
                   <Select
                     value={watch('primaryCategoryId')}
                     onValueChange={value =>
@@ -588,7 +588,7 @@ export default function EditContentPage({ params }: EditContentPageProps) {
                     disabled={categoriesLoading}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Select category' />
+                      <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
                       {categories?.map((category: any) => (
@@ -601,29 +601,29 @@ export default function EditContentPage({ params }: EditContentPageProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor='featuredImageUrl'>Featured Image URL</Label>
+                  <Label htmlFor="featuredImageUrl">Featured Image URL</Label>
                   <Input
-                    id='featuredImageUrl'
+                    id="featuredImageUrl"
                     {...register('featuredImageUrl')}
-                    placeholder='https://example.com/image.jpg'
+                    placeholder="https://example.com/image.jpg"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor='videoUrl'>Video URL</Label>
+                  <Label htmlFor="videoUrl">Video URL</Label>
                   <Input
-                    id='videoUrl'
+                    id="videoUrl"
                     {...register('videoUrl')}
-                    placeholder='https://example.com/video.mp4'
+                    placeholder="https://example.com/video.mp4"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor='audioUrl'>Audio URL</Label>
+                  <Label htmlFor="audioUrl">Audio URL</Label>
                   <Input
-                    id='audioUrl'
+                    id="audioUrl"
                     {...register('audioUrl')}
-                    placeholder='https://example.com/audio.mp3'
+                    placeholder="https://example.com/audio.mp3"
                   />
                 </div>
               </CardContent>
@@ -633,32 +633,32 @@ export default function EditContentPage({ params }: EditContentPageProps) {
               <CardHeader>
                 <CardTitle>SEO & Metadata</CardTitle>
               </CardHeader>
-              <CardContent className='space-y-4'>
+              <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor='metaTitle'>Meta Title</Label>
+                  <Label htmlFor="metaTitle">Meta Title</Label>
                   <Input
-                    id='metaTitle'
+                    id="metaTitle"
                     {...register('metaTitle')}
-                    placeholder='SEO title'
+                    placeholder="SEO title"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor='metaDescription'>Meta Description</Label>
+                  <Label htmlFor="metaDescription">Meta Description</Label>
                   <Textarea
-                    id='metaDescription'
+                    id="metaDescription"
                     {...register('metaDescription')}
-                    placeholder='SEO description'
+                    placeholder="SEO description"
                     rows={3}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor='canonicalUrl'>Canonical URL</Label>
+                  <Label htmlFor="canonicalUrl">Canonical URL</Label>
                   <Input
-                    id='canonicalUrl'
+                    id="canonicalUrl"
                     {...register('canonicalUrl')}
-                    placeholder='https://example.com/original'
+                    placeholder="https://example.com/original"
                   />
                 </div>
               </CardContent>

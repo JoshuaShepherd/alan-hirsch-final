@@ -1,23 +1,23 @@
 'use server';
 
 import {
+  createSupabaseServerClient,
+  db,
+  getUserByEmail,
+  organizationMemberships,
+  organizations,
+  userProfiles,
+} from '@platform/database';
+import {
   validatedAction,
   validatedActionWithUser,
-} from '@/lib/auth/middleware';
+} from '@platform/shared/auth/middleware';
 import {
   ministryRoleSchema,
   type NewOrganization,
   type NewOrganizationMembership,
   type NewUserProfile,
 } from '@platform/shared/contracts';
-import { db } from '@platform/database/drizzle';
-import { getUserByEmail } from '@platform/database/queries';
-import {
-  organizationMemberships,
-  organizations,
-  userProfiles,
-} from '@platform/database/schema';
-import { createClient } from '@platform/database/supabase/server';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
@@ -91,7 +91,7 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
   const { email, password } = data;
 
   try {
-    const supabase = await createClient();
+    const supabase = await createSupabaseServerClient();
     if (process.env.NODE_ENV === 'development') {
       console.log('🔐 Supabase Client Created');
     }
@@ -235,7 +235,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
   } = data;
 
   try {
-    const supabase = await createClient();
+    const supabase = await createSupabaseServerClient();
     if (process.env.NODE_ENV === 'development') {
       console.log('🔐 Supabase Client Created for SignUp');
     }
@@ -504,7 +504,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
 });
 
 export async function signOut() {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
 
   // Sign out from Supabase Auth
   await supabase.auth.signOut();
@@ -563,7 +563,7 @@ export const updatePassword = validatedActionWithUser(
   async (data, _formData, user) => {
     const { currentPassword, newPassword } = data;
 
-    const supabase = await createClient();
+    const supabase = await createSupabaseServerClient();
 
     // Verify current password
     const { error: verifyError } = await supabase.auth.signInWithPassword({
@@ -612,7 +612,7 @@ export const deleteAccount = validatedActionWithUser(
   async (data, _formData, user) => {
     const { password } = data;
 
-    const supabase = await createClient();
+    const supabase = await createSupabaseServerClient();
 
     // Verify password
     const { error: verifyError } = await supabase.auth.signInWithPassword({

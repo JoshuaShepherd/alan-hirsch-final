@@ -1,10 +1,7 @@
 // Organization Query Module
 // Pure functions for organization operations with context-aware access control
 
-import type {
-  NewOrganization,
-  NewOrganizationMembership,
-} from '@/lib/contracts';
+// Note: Using database types directly to avoid circular dependencies
 import { and, count, desc, eq, like, or, sql } from 'drizzle-orm';
 import { db } from '../drizzle';
 import {
@@ -13,6 +10,10 @@ import {
   userProfiles,
   userSubscriptions,
 } from '../schema';
+import type {
+  NewOrganization,
+  NewOrganizationMembership,
+} from '../schema/auth';
 import { hasResults } from '../type-guards';
 
 // ============================================================================
@@ -116,15 +117,17 @@ export async function searchOrganizations(
       like(organizations.name, `%${searchTerm}%`),
       like(organizations.description, `%${searchTerm}%`)
     ),
-    eq(organizations.status, status),
+    eq(organizations.status, status as any),
   ];
 
   if (organizationType) {
-    conditions.push(eq(organizations.organizationType, organizationType));
+    conditions.push(
+      eq(organizations.organizationType, organizationType as any)
+    );
   }
 
   if (sizeCategory) {
-    conditions.push(eq(organizations.sizeCategory, sizeCategory));
+    conditions.push(eq(organizations.sizeCategory, sizeCategory as any));
   }
 
   // Add context-based filtering for non-admin users
@@ -175,12 +178,29 @@ export async function getOrganizationsByUser(
   ];
 
   if (role) {
-    conditions.push(eq(organizationMemberships.role, role));
+    conditions.push(eq(organizationMemberships.role, role as any));
   }
 
   const results = await db
     .select({
-      ...organizations,
+      id: organizations.id,
+      name: organizations.name,
+      slug: organizations.slug,
+      description: organizations.description,
+      website: organizations.website,
+      logoUrl: organizations.logoUrl,
+      organizationType: organizations.organizationType,
+      sizeCategory: organizations.sizeCategory,
+      contactEmail: organizations.contactEmail,
+      contactPhone: organizations.contactPhone,
+      address: organizations.address,
+      billingEmail: organizations.billingEmail,
+      accountOwnerId: organizations.accountOwnerId,
+      licenseType: organizations.licenseType,
+      maxUsers: organizations.maxUsers,
+      status: organizations.status,
+      createdAt: organizations.createdAt,
+      updatedAt: organizations.updatedAt,
       membership: organizationMemberships,
     })
     .from(organizations)
@@ -193,7 +213,7 @@ export async function getOrganizationsByUser(
     .limit(limit)
     .offset(offset);
 
-  return results;
+  return results as any;
 }
 
 /**
@@ -281,12 +301,48 @@ export async function getOrganizationMembers(
   ];
 
   if (role) {
-    conditions.push(eq(organizationMemberships.role, role));
+    conditions.push(eq(organizationMemberships.role, role as any));
   }
 
   const results = await db
     .select({
-      ...userProfiles,
+      id: userProfiles.id,
+      email: userProfiles.email,
+      firstName: userProfiles.firstName,
+      lastName: userProfiles.lastName,
+      displayName: userProfiles.displayName,
+      bio: userProfiles.bio,
+      avatarUrl: userProfiles.avatarUrl,
+      ministryRole: userProfiles.ministryRole,
+      denomination: userProfiles.denomination,
+      organizationName: userProfiles.organizationName,
+      yearsInMinistry: userProfiles.yearsInMinistry,
+      countryCode: userProfiles.countryCode,
+      timezone: userProfiles.timezone,
+      languagePrimary: userProfiles.languagePrimary,
+      culturalContext: userProfiles.culturalContext,
+      assessmentMovementAlignment: userProfiles.assessmentMovementAlignment,
+      assessmentAudienceEngagement: userProfiles.assessmentAudienceEngagement,
+      assessmentContentReadiness: userProfiles.assessmentContentReadiness,
+      assessmentRevenuePotential: userProfiles.assessmentRevenuePotential,
+      assessmentNetworkEffects: userProfiles.assessmentNetworkEffects,
+      assessmentStrategicFit: userProfiles.assessmentStrategicFit,
+      assessmentTotal: userProfiles.assessmentTotal,
+      leaderTier: userProfiles.leaderTier,
+      subdomain: userProfiles.subdomain,
+      customDomain: userProfiles.customDomain,
+      platformTitle: userProfiles.platformTitle,
+      subscriptionTier: userProfiles.subscriptionTier,
+      theologicalFocus: userProfiles.theologicalFocus,
+      brandColors: userProfiles.brandColors,
+      emailNotifications: userProfiles.emailNotifications,
+      privacySettings: userProfiles.privacySettings,
+      onboardingCompleted: userProfiles.onboardingCompleted,
+      onboardingStep: userProfiles.onboardingStep,
+      accountStatus: userProfiles.accountStatus,
+      createdAt: userProfiles.createdAt,
+      updatedAt: userProfiles.updatedAt,
+      lastActiveAt: userProfiles.lastActiveAt,
       membership: organizationMemberships,
     })
     .from(userProfiles)
@@ -299,7 +355,7 @@ export async function getOrganizationMembers(
     .limit(limit)
     .offset(offset);
 
-  return results;
+  return results as any;
 }
 
 /**
@@ -561,7 +617,7 @@ export async function inviteUserToOrganization(
     {
       userId: user[0].id,
       organizationId,
-      role,
+      role: role as any,
       status: 'pending',
       invitedAt: new Date(),
     },

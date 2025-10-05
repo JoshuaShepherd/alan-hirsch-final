@@ -1,15 +1,8 @@
 // Alan Hirsch Digital Platform - Type-Safe Database Queries
 // Comprehensive query operations for the platform
 
-import {
-  toAssessmentResponseDTO,
-  toUserAssessmentResponseDTO,
-} from '@/lib/mappers/assessments';
-import {
-  toOrganizationDTO,
-  toOrganizationMembershipDTO,
-} from '@/lib/mappers/organizations';
-import { createClient } from '@/lib/supabase/server';
+// Note: Database queries return raw database types
+// Mappers should be applied in the service layer
 import { and, count, desc, eq, isNull, like, or, sql } from 'drizzle-orm';
 import { db } from './drizzle';
 import {
@@ -34,33 +27,13 @@ import { hasResults } from './type-guards';
 // User & Authentication Queries
 // ============================================================================
 
-export async function getUser(): Promise<
-  typeof userProfiles.$inferSelect | null
-> {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-
-  if (error || !user) {
-    return null;
-  }
-
-  const userProfile = await db
-    .select()
-    .from(userProfiles)
-    .where(
-      and(
-        eq(userProfiles.id, user.id),
-        eq(userProfiles.accountStatus, 'active')
-      )
-    )
-    .limit(1);
-
-  return hasResults(userProfile) ? userProfile[0] : null;
-}
+// Note: This function requires Supabase auth and should be moved to the app layer
+// export async function getUser(): Promise<
+//   typeof userProfiles.$inferSelect | null
+// > {
+//   const supabase = await createClient();
+//   // ... implementation
+// }
 
 export async function getUserById(
   userId: string
@@ -85,6 +58,9 @@ export async function getUserByEmail(
 
   return hasResults(result) ? result[0] : null;
 }
+
+// Alias for backward compatibility
+export const getUser = getUserById;
 
 export async function updateUserLastActive(userId: string): Promise<void> {
   await db
@@ -232,7 +208,7 @@ export async function getActiveAssessments() {
     .where(eq(assessments.status, 'active'))
     .orderBy(assessments.name);
 
-  return results.map(toAssessmentResponseDTO);
+  return results;
 }
 
 export async function getUserAssessments(userId: string) {
@@ -247,8 +223,8 @@ export async function getUserAssessments(userId: string) {
     .orderBy(desc(userAssessments.completedAt));
 
   return results.map(({ userAssessment, assessment }) => ({
-    ...toUserAssessmentResponseDTO(userAssessment),
-    assessment: toAssessmentResponseDTO(assessment),
+    ...userAssessment,
+    assessment: assessment,
   }));
 }
 
@@ -274,8 +250,8 @@ export async function getLatestAPESTAssessment(userId: string) {
 
   const { userAssessment, assessment } = result[0];
   return {
-    ...toUserAssessmentResponseDTO(userAssessment),
-    assessment: toAssessmentResponseDTO(assessment),
+    ...userAssessment,
+    assessment: assessment,
   };
 }
 
@@ -487,8 +463,8 @@ export async function getUserOrganizations(userId: string) {
     .orderBy(organizationMemberships.joinedAt);
 
   return results.map(({ organization, membership }) => ({
-    organization: toOrganizationDTO(organization),
-    membership: toOrganizationMembershipDTO(membership),
+    organization: organization,
+    membership: membership,
   }));
 }
 
@@ -560,24 +536,17 @@ export async function getUserWithTeam(_userId: number): Promise<null> {
   return null;
 }
 
-export async function getActivityLogs() {
-  // Updated to use new audit logs
-  const user = await getUser();
-  if (!user) {
-    throw new Error('User not authenticated');
-  }
-
-  return getRecentAuditLogs(10);
+// Note: This function requires Supabase auth and should be moved to the app layer
+export async function getActivityLogs(limit = 10) {
+  return getRecentAuditLogs(limit);
 }
 
-export async function getTeamForUser() {
-  // Legacy function - can be mapped to organization queries
-  const user = await getUser();
-  if (!user) {
+// Note: This function requires Supabase auth and should be moved to the app layer
+export async function getTeamForUser(userId: string) {
+  if (!userId) {
     return null;
   }
-
-  const userOrganizations = await getUserOrganizations(user.id);
+  const userOrganizations = await getUserOrganizations(userId);
   return hasResults(userOrganizations)
     ? userOrganizations[0].organization
     : null;

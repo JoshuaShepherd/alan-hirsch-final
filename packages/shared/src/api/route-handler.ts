@@ -1,4 +1,4 @@
-import { createClient } from '@platform/database/supabase/server';
+import { createSupabaseServerClient } from '@platform/database';
 import { NextRequest } from 'next/server';
 import { ZodSchema, z } from 'zod';
 import {
@@ -70,7 +70,7 @@ export function createRouteHandler<TInput, TOutput>(config: {
       // Authentication check
       let user: AuthenticatedUser | null = null;
       if (config.requireAuth !== false) {
-        const supabase = await createClient();
+        const supabase = await createSupabaseServerClient();
         const {
           data: { user: authUser },
           error: authError,
@@ -85,9 +85,9 @@ export function createRouteHandler<TInput, TOutput>(config: {
         }
 
         user = {
+          ...authUser,
           id: authUser.id,
           email: authUser.email || '',
-          ...authUser,
         };
       }
 
@@ -163,7 +163,7 @@ export function createPaginatedRouteHandler<TInput, TOutput>(config: {
       // Authentication check
       let user: AuthenticatedUser | null = null;
       if (config.requireAuth !== false) {
-        const supabase = await createClient();
+        const supabase = await createSupabaseServerClient();
         const {
           data: { user: authUser },
           error: authError,
@@ -178,9 +178,9 @@ export function createPaginatedRouteHandler<TInput, TOutput>(config: {
         }
 
         user = {
+          ...authUser,
           id: authUser.id,
           email: authUser.email || '',
-          ...authUser,
         };
       }
 
@@ -296,7 +296,7 @@ export function createCrudRoutes<
     outputSchema: config.responseSchema,
     method: 'GET',
     handler: async (_, context) => {
-      const id = context.params?.id;
+      const id = context.params?.['id'];
       if (!id) {
         throw new ApiError(
           `${config.entityName} ID is required`,
@@ -324,7 +324,7 @@ export function createCrudRoutes<
     outputSchema: config.responseSchema,
     method: 'PUT',
     handler: async (data, context) => {
-      const id = context.params?.id;
+      const id = context.params?.['id'];
       if (!id) {
         throw new ApiError(
           `${config.entityName} ID is required`,
@@ -342,7 +342,7 @@ export function createCrudRoutes<
     inputSchema: z.object({}),
     method: 'DELETE',
     handler: async (_, context) => {
-      const id = context.params?.id;
+      const id = context.params?.['id'];
       if (!id) {
         throw new ApiError(
           `${config.entityName} ID is required`,
@@ -420,9 +420,5 @@ export function createBulkSchema<T>(itemSchema: ZodSchema<T>) {
 // Export Types
 // ============================================================================
 
-export type {
-  AuthenticatedUser,
-  PaginatedRouteHandler,
-  RouteContext,
-  RouteHandler,
-};
+// Note: Types are already exported as interfaces above
+// No need for separate type exports to avoid conflicts

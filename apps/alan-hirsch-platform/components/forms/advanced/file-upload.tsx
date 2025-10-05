@@ -1,10 +1,10 @@
+import { useFileUpload } from '@platform/shared/forms/hooks';
+import { cn } from '@platform/shared/utils';
 import { Alert, AlertDescription } from '@platform/ui/alert';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import { Card, CardContent } from '@platform/ui/card';
 import { Progress } from '@platform/ui/progress';
-import { useFileUpload } from '@/lib/forms/hooks';
-import { cn } from '@platform/shared/utils';
 import {
   AlertCircle,
   CheckCircle2,

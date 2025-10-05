@@ -375,10 +375,7 @@ export async function getAuditLogs(
   }
 
   const results = await db
-    .select({
-      ...auditLogs,
-      user: userProfiles,
-    })
+    .select()
     .from(auditLogs)
     .leftJoin(userProfiles, eq(auditLogs.userId, userProfiles.id))
     .where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -386,7 +383,7 @@ export async function getAuditLogs(
     .limit(limit)
     .offset(offset);
 
-  return results;
+  return results as any;
 }
 
 /**
@@ -425,10 +422,7 @@ export async function getSecurityEvents(
   }
 
   const results = await db
-    .select({
-      ...auditLogs,
-      user: userProfiles,
-    })
+    .select()
     .from(auditLogs)
     .leftJoin(userProfiles, eq(auditLogs.userId, userProfiles.id))
     .where(and(...conditions))
@@ -436,7 +430,7 @@ export async function getSecurityEvents(
     .limit(limit)
     .offset(offset);
 
-  return results;
+  return results as any;
 }
 
 // ============================================================================

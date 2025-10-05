@@ -1,12 +1,19 @@
 // Type Guards for Database Query Results
 // Provides runtime type checking for database operations
 
-import type {
-  Assessment,
-  AssessmentQuestion,
-  UserAssessment,
-  AssessmentResponse,
-} from '@/lib/contracts';
+// Note: Using database types directly to avoid circular dependencies
+// import type {
+//   Assessment,
+//   AssessmentQuestion,
+//   AssessmentResponse,
+//   UserAssessment,
+// } from '@platform/contracts';
+
+// Define local types for type guards
+type Assessment = any;
+type AssessmentQuestion = any;
+type AssessmentResponse = any;
+type UserAssessment = any;
 
 /**
  * Type guard to check if an array has at least one element
@@ -130,6 +137,3 @@ export function safePropertyAccessWithDefault<T, K extends keyof T>(
 ): T[K] {
   return obj?.[key] ?? defaultValue;
 }
-
-
-

@@ -1,7 +1,10 @@
 // Assessment Scoring Utilities
 // Handles APEST scoring and other assessment calculations
 
-import type { AssessmentQuestion, AssessmentResponse } from '@/lib/contracts';
+import type {
+  AssessmentQuestion,
+  AssessmentResponse,
+} from '@platform/contracts';
 
 // APEST dimensions
 export const APEST_DIMENSIONS = [

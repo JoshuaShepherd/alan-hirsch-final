@@ -1,3 +1,11 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  userProfileFormSchema,
+  type UserProfileForm,
+  type UserProfileResponse,
+} from '@platform/shared/contracts';
+import { BaseForm } from '@platform/shared/forms/base-form';
+import { FormFieldGroup, FormSection } from '@platform/shared/forms/form-field';
 import { Button } from '@platform/ui/button';
 import {
   Card,
@@ -16,17 +24,14 @@ import {
 } from '@platform/ui/select';
 import { Switch } from '@platform/ui/switch';
 import { Textarea } from '@platform/ui/textarea';
-import { NewUserProfile, newUserProfileSchema } from '@/validations/auth';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { BaseForm, FormFieldGroup, FormSection } from '../base-form';
 import { FormField } from '../form-field';
 
 export interface UserProfileFormProps {
-  onSuccess?: (user: NewUserProfile) => void;
+  onSuccess?: (user: UserProfileResponse) => void;
   onError?: (error: Error) => void;
-  defaultValues?: Partial<NewUserProfile>;
+  defaultValues?: Partial<UserProfileForm>;
   className?: string;
   isLoading?: boolean;
   mode?: 'create' | 'update' | 'profile';
@@ -44,11 +49,11 @@ export function UserProfileForm({
   isLoading = false,
   mode = 'profile',
 }: UserProfileFormProps) {
-  const form = useForm<NewUserProfile>({
+  const form = useForm<UserProfileForm>({
     resolver: zodResolver(
       mode === 'update' || mode === 'profile'
-        ? newUserProfileSchema.partial()
-        : newUserProfileSchema
+        ? userProfileFormSchema.partial()
+        : userProfileFormSchema
     ),
     defaultValues: {
       subscriptionTier: 'free',
@@ -78,7 +83,7 @@ export function UserProfileForm({
     },
   });
 
-  const onSubmit = async (data: NewUserProfile) => {
+  const onSubmit = async (data: UserProfileForm) => {
     try {
       const endpoint = mode === 'create' ? '/api/users' : '/api/user/profile';
       const method = mode === 'create' ? 'POST' : 'PATCH';
@@ -251,16 +256,39 @@ export function UserProfileForm({
                     <SelectValue placeholder="Select your role" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pastor">Pastor</SelectItem>
-                    <SelectItem value="elder">Elder</SelectItem>
-                    <SelectItem value="deacon">Deacon</SelectItem>
-                    <SelectItem value="teacher">Teacher</SelectItem>
-                    <SelectItem value="evangelist">Evangelist</SelectItem>
-                    <SelectItem value="apostle">Apostle</SelectItem>
-                    <SelectItem value="prophet">Prophet</SelectItem>
-                    <SelectItem value="shepherd">Shepherd</SelectItem>
-                    <SelectItem value="leader">Leader</SelectItem>
-                    <SelectItem value="member">Member</SelectItem>
+                    <SelectItem value="senior_pastor">Senior Pastor</SelectItem>
+                    <SelectItem value="associate_pastor">
+                      Associate Pastor
+                    </SelectItem>
+                    <SelectItem value="church_planter">
+                      Church Planter
+                    </SelectItem>
+                    <SelectItem value="denominational_leader">
+                      Denominational Leader
+                    </SelectItem>
+                    <SelectItem value="seminary_professor">
+                      Seminary Professor
+                    </SelectItem>
+                    <SelectItem value="seminary_student">
+                      Seminary Student
+                    </SelectItem>
+                    <SelectItem value="ministry_staff">
+                      Ministry Staff
+                    </SelectItem>
+                    <SelectItem value="missionary">Missionary</SelectItem>
+                    <SelectItem value="marketplace_minister">
+                      Marketplace Minister
+                    </SelectItem>
+                    <SelectItem value="nonprofit_leader">
+                      Nonprofit Leader
+                    </SelectItem>
+                    <SelectItem value="consultant">Consultant</SelectItem>
+                    <SelectItem value="academic_researcher">
+                      Academic Researcher
+                    </SelectItem>
+                    <SelectItem value="emerging_leader">
+                      Emerging Leader
+                    </SelectItem>
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>

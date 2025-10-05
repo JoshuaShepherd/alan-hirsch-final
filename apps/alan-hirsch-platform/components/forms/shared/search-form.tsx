@@ -1,3 +1,6 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { BaseForm } from '@platform/shared/forms/base-form';
+import { FormFieldGroup } from '@platform/shared/forms/form-field';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import {
@@ -15,13 +18,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@platform/ui/select';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Filter, RotateCcw, Search, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDebouncedCallback } from 'use-debounce';
 import { z } from 'zod';
-import { BaseForm, FormFieldGroup } from '../base-form';
 import { FormField } from '../form-field';
 
 // Generic search schema that can be extended

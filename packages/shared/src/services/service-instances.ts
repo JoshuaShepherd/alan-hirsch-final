@@ -12,18 +12,9 @@ export const assessmentService = new AssessmentService();
 export const organizationService = new OrganizationService();
 export const communityService = new CommunityService();
 
-// Note: These services don't exist yet but are imported by API routes
-// They should be implemented or the imports should be updated
-export const uploadService = {
-  // Placeholder - needs implementation
-  upload: async () => {
-    throw new Error('UploadService not implemented');
-  },
-};
+// Import actual service implementations
+import { analyticsService } from './analytics.service';
+import { uploadService } from './upload.service';
 
-export const analyticsService = {
-  // Placeholder - needs implementation
-  getAnalytics: async () => {
-    throw new Error('AnalyticsService not implemented');
-  },
-};
+// Export the actual service instances
+export { analyticsService, uploadService };

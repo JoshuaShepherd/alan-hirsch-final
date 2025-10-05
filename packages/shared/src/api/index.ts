@@ -4,7 +4,7 @@
 // Core utilities
 export * from './error-handler';
 export * from './route-handler';
-export * from '../utils';
+// Note: Utils are imported individually below
 
 // Security and rate limiting
 export * from './rate-limiter';
@@ -24,7 +24,7 @@ export {
 export type { ErrorCode } from './error-handler';
 export type { RateLimitConfig } from './rate-limiter';
 export type { SecurityHeaders } from './security';
-export type { ApiResponse, PaginatedResponse, ValidationError } from '../utils';
+export type { ApiResponse, PaginatedResponse, ValidationError } from './utils';
 export { z };
 
 // Common schemas

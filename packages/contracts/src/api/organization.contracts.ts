@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import {
-  OrganizationEntitySchema,
-  OrganizationMembershipEntitySchema,
+  organizationEntitySchema as OrganizationEntitySchema,
+  organizationMembershipEntitySchema as OrganizationMembershipEntitySchema,
 } from '../entities/organization.schema';
 import {
   AcceptOrganizationInvitationOperationSchema,

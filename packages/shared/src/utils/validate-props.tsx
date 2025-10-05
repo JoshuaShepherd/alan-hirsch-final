@@ -26,7 +26,7 @@ export function withPropsValidation<T extends Record<string, any>>(
 
     if (!result.success) {
       // Log error in development
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env['NODE_ENV'] === 'development') {
         console.error('Props validation failed:', {
           component: Component.name || 'Anonymous',
           error: result.error,
@@ -55,7 +55,7 @@ export function withPropsValidation<T extends Record<string, any>>(
             Component Props Validation Error
           </h3>
           <p className="text-sm text-red-600 mt-1">{result.error.message}</p>
-          {process.env.NODE_ENV === 'development' && (
+          {process.env['NODE_ENV'] === 'development' && (
             <details className="mt-2">
               <summary className="text-xs text-red-600 cursor-pointer">
                 Show validation details
@@ -121,7 +121,7 @@ export function PropsValidationError({
         {componentName} Props Validation Error
       </h3>
       <p className="text-sm text-red-600 mt-1">{error.message}</p>
-      {process.env.NODE_ENV === 'development' && (
+      {process.env['NODE_ENV'] === 'development' && (
         <details className="mt-2">
           <summary className="text-xs text-red-600 cursor-pointer">
             Show validation details
@@ -179,7 +179,7 @@ export function validateCriticalProps<T>(
     const errorMessage = `Critical props validation failed for ${componentName}: ${result.error.message}`;
 
     // In development, log detailed error
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.error(errorMessage, {
         component: componentName,
         error: result.error,
@@ -205,7 +205,7 @@ export function safeValidateProps<T>(
   const result = schema.safeParse(props);
 
   if (!result.success) {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.warn('Props validation failed, using defaults:', {
         error: result.error,
         defaultProps,
@@ -226,10 +226,10 @@ export function validatePartialProps<T extends Record<string, any>>(
   schema: z.ZodSchema<T>,
   defaultProps: T
 ): T {
-  const result = schema.partial().safeParse(props);
+  const result = schema.safeParse(props);
 
   if (!result.success) {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.warn('Partial props validation failed, using defaults:', {
         error: result.error,
         defaultProps,
@@ -256,7 +256,7 @@ export function validateProps<T extends Record<string, any>>(
     fallback?: React.ComponentType<{ error: z.ZodError }>;
   } = {}
 ) {
-  return function <P extends T>(Component: React.ComponentType<P>) {
+  return function <P extends T>(Component: React.ComponentType<T>) {
     return withPropsValidation(Component, schema, options);
   };
 }
@@ -267,9 +267,9 @@ export function validateProps<T extends Record<string, any>>(
 export function validateComponentProps<T extends Record<string, any>>(
   schema: z.ZodSchema<T>
 ) {
-  return function <P extends T>(Component: React.ComponentType<P>) {
+  return function <P extends T>(Component: React.ComponentType<T>) {
     return withPropsValidation(Component, schema, {
-      strict: process.env.NODE_ENV === 'development',
+      strict: process.env['NODE_ENV'] === 'development',
     });
   };
 }
@@ -300,8 +300,10 @@ export function createPropsBuilder<T extends Record<string, any>>(
         ? { success: true, data: result.data }
         : { success: false, error: result.error };
     },
-    extend: <U extends Record<string, any>>(extension: z.ZodSchema<U>) => {
-      return createPropsBuilder(schema.extend(extension.shape));
+    extend: <U extends Record<string, any>>(extension: z.ZodRawShape) => {
+      return createPropsBuilder(
+        (schema as unknown as z.ZodObject<any>).extend(extension)
+      );
     },
     schema,
   };

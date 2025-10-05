@@ -12,8 +12,21 @@ export { toUserProfileDTO, toUserProfileListDTO } from './user-profiles';
 // ============================================================================
 
 export {
+  // Create/Update mappers
+  fromCreateOrganization,
+  fromCreateOrganizationMembership,
+  fromUpdateOrganization,
+  fromUpdateOrganizationMembership,
+
+  // Legacy exports for backward compatibility
   toOrganizationDTO,
+  // Entity mappers
+  toOrganizationEntity,
   toOrganizationMembershipDTO,
+  toOrganizationMembershipEntity,
+  toOrganizationMembershipResponseDTO,
+  // Response DTO mappers
+  toOrganizationResponseDTO,
 } from './organizations';
 
 // ============================================================================

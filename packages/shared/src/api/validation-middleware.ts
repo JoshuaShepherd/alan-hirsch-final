@@ -1,6 +1,6 @@
+import { createSupabaseServerClient } from '@platform/database';
 import { NextRequest, NextResponse } from 'next/server';
-import { z, ZodSchema } from 'zod';
-import { createClient } from '@platform/database/supabase/server';
+import { ZodSchema, z } from 'zod';
 
 // Validation error type
 export interface ValidationError {
@@ -40,7 +40,7 @@ export function withValidation<T>(
   return async (request: NextRequest) => {
     try {
       // Get authenticated user
-      const supabase = await createClient();
+      const supabase = await createSupabaseServerClient();
       const {
         data: { user },
         error: authError,
@@ -121,7 +121,7 @@ export function withInputOutputValidation<TInput, TOutput>(
   return async (request: NextRequest) => {
     try {
       // Get authenticated user
-      const supabase = await createClient();
+      const supabase = await createSupabaseServerClient();
       const {
         data: { user },
         error: authError,
@@ -210,7 +210,7 @@ export function withPaginationValidation<TInput, TOutput>(
   return async (request: NextRequest) => {
     try {
       // Get authenticated user
-      const supabase = await createClient();
+      const supabase = await createSupabaseServerClient();
       const {
         data: { user },
         error: authError,
@@ -315,7 +315,7 @@ export function withRateLimit(
     return async (request: NextRequest) => {
       try {
         // Get authenticated user
-        const supabase = await createClient();
+        const supabase = await createSupabaseServerClient();
         const {
           data: { user },
           error: authError,

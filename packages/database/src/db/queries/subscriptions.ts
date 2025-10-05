@@ -1,11 +1,6 @@
 // Subscription Query Module
 // Pure functions for subscription operations with context-aware access control
 
-import type {
-  NewSubscriptionPlan,
-  NewTransaction,
-  NewUserSubscription,
-} from '@/lib/contracts';
 import { and, asc, count, desc, eq, sql } from 'drizzle-orm';
 import { db } from '../drizzle';
 import {
@@ -16,6 +11,11 @@ import {
   userProfiles,
   userSubscriptions,
 } from '../schema';
+import type {
+  NewSubscriptionPlan,
+  NewTransaction,
+  NewUserSubscription,
+} from '../schema/subscriptions';
 import { hasResults } from '../type-guards';
 
 // ============================================================================
@@ -90,7 +90,7 @@ export async function getActiveSubscriptionPlans(
   const conditions = [eq(subscriptionPlans.isActive, true)];
 
   if (planType) {
-    conditions.push(eq(subscriptionPlans.planType, planType));
+    conditions.push(eq(subscriptionPlans.planType, planType as any));
   }
 
   return db
@@ -207,7 +207,7 @@ export async function getUserActiveSubscription(
   context: QueryContext
 ): Promise<{
   subscription: typeof userSubscriptions.$inferSelect;
-  plan: typeof subscriptionPlans.$inferSelect;
+  plan: typeof subscriptionPlans.$inferSelect | null;
   leaderProfile: typeof userProfiles.$inferSelect | null;
   organization: typeof organizations.$inferSelect | null;
 } | null> {
@@ -291,7 +291,7 @@ export async function getUserSubscriptionHistory(
     .limit(limit)
     .offset(offset);
 
-  return results;
+  return results as any;
 }
 
 /**
@@ -337,7 +337,7 @@ export async function getOrganizationSubscriptions(
     .limit(limit)
     .offset(offset);
 
-  return results;
+  return results as any;
 }
 
 /**
@@ -535,7 +535,7 @@ export async function getTransactionsByUser(
   userId: string,
   context: QueryContext,
   options: {
-    status?: 'pending' | 'completed' | 'failed' | 'refunded';
+    status?: 'pending' | 'succeeded' | 'failed' | 'refunded';
     limit?: number;
     offset?: number;
   } = {}
@@ -564,7 +564,7 @@ export async function getTransactionsByOrganization(
   organizationId: string,
   context: QueryContext,
   options: {
-    status?: 'pending' | 'completed' | 'failed' | 'refunded';
+    status?: 'pending' | 'succeeded' | 'failed' | 'refunded';
     limit?: number;
     offset?: number;
   } = {}
@@ -594,7 +594,7 @@ export async function getTransactionsByOrganization(
     .limit(limit)
     .offset(offset);
 
-  return results;
+  return results as any;
 }
 
 /**
@@ -683,18 +683,14 @@ export async function createPaymentMethod(
   paymentMethodData: {
     userId: string;
     stripePaymentMethodId: string;
-    type: string;
+    type: 'card' | 'bank_account' | 'paypal';
     isDefault?: boolean;
   },
   context: QueryContext
 ): Promise<typeof paymentMethods.$inferSelect> {
   const result = await db
     .insert(paymentMethods)
-    .values({
-      ...paymentMethodData,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    })
+    .values(paymentMethodData)
     .returning();
 
   if (!hasResults(result)) {

@@ -1,3 +1,13 @@
+'use client';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  contentItemFormSchema,
+  type ContentItemForm,
+  type ContentItemResponse,
+} from '@platform/shared/contracts';
+import { BaseForm } from '@platform/shared/forms/base-form';
+import { FormFieldGroup, FormSection } from '@platform/shared/forms/form-field';
 import { Button } from '@platform/ui/button';
 import {
   Card,
@@ -14,26 +24,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@platform/ui/select';
-import { Switch } from '@platform/ui/switch';
 import { Textarea } from '@platform/ui/textarea';
-import { NewContentItem, newContentItemSchema } from '@/validations/content';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus, Upload, X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { BaseForm, FormFieldGroup, FormSection } from '../base-form';
 import { FormField } from '../form-field';
 
 export interface ContentItemFormProps {
-  onSuccess?: (content: NewContentItem) => void;
+  onSuccess?: (content: ContentItemResponse) => void;
   onError?: (error: Error) => void;
-  defaultValues?: Partial<NewContentItem>;
+  defaultValues?: Partial<ContentItemForm>;
   className?: string;
   isLoading?: boolean;
   mode?: 'create' | 'update';
 }
 
 /**
- * Form for creating and updating content items with rich media support
+ * Content item form for creating and updating content items
+ * Uses contract schemas for validation and type safety
  */
 export function ContentItemForm({
   onSuccess,
@@ -43,39 +51,34 @@ export function ContentItemForm({
   isLoading = false,
   mode = 'create',
 }: ContentItemFormProps) {
-  const form = useForm<NewContentItem>({
+  const [tags, setTags] = useState<string[]>(defaultValues?.tags || []);
+  const [theologicalThemes, setTheologicalThemes] = useState<string[]>(
+    defaultValues?.theologicalThemes || []
+  );
+
+  const form = useForm<ContentItemForm>({
     resolver: zodResolver(
-      mode === 'update' ? newContentItemSchema.partial() : newContentItemSchema
+      mode === 'update'
+        ? contentItemFormSchema.partial()
+        : contentItemFormSchema
     ),
     defaultValues: {
+      contentType: 'article',
       format: 'text',
       visibility: 'public',
       status: 'draft',
-      viewCount: 0,
-      likeCount: 0,
-      shareCount: 0,
-      commentCount: 0,
-      bookmarkCount: 0,
-      secondaryCategories: [],
-      tags: [],
-      theologicalThemes: [],
-      networkAmplificationScore: 0,
-      crossReferenceCount: 0,
-      aiEnhanced: false,
-      aiKeyPoints: [],
-      attachments: [],
       licenseType: 'all_rights_reserved',
       attributionRequired: true,
+      tags: [],
+      theologicalThemes: [],
       ...defaultValues,
     },
   });
 
-  const onSubmit = async (data: NewContentItem) => {
+  const onSubmit = async (data: ContentItemForm) => {
     try {
       const endpoint =
-        mode === 'create'
-          ? '/api/content'
-          : `/api/content/${defaultValues?.id}`;
+        mode === 'create' ? '/api/content' : `/api/content/${data.id}`;
       const method = mode === 'create' ? 'POST' : 'PATCH';
 
       const response = await fetch(endpoint, {
@@ -83,7 +86,7 @@ export function ContentItemForm({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, tags, theologicalThemes }),
       });
 
       if (!response.ok) {
@@ -102,56 +105,48 @@ export function ContentItemForm({
   };
 
   const addTag = () => {
-    const currentTags = form.getValues('tags') || [];
-    form.setValue('tags', [...currentTags, '']);
+    setTags([...tags, '']);
   };
 
   const removeTag = (index: number) => {
-    const currentTags = form.getValues('tags') || [];
-    form.setValue(
-      'tags',
-      currentTags.filter((_, i) => i !== index)
-    );
+    setTags(tags.filter((_, i) => i !== index));
   };
 
   const updateTag = (index: number, value: string) => {
-    const currentTags = form.getValues('tags') || [];
-    const newTags = [...currentTags];
+    const newTags = [...tags];
     newTags[index] = value;
-    form.setValue('tags', newTags);
+    setTags(newTags);
   };
 
   const addTheologicalTheme = () => {
-    const currentThemes = form.getValues('theologicalThemes') || [];
-    form.setValue('theologicalThemes', [...currentThemes, '']);
+    setTheologicalThemes([...theologicalThemes, '']);
   };
 
   const removeTheologicalTheme = (index: number) => {
-    const currentThemes = form.getValues('theologicalThemes') || [];
-    form.setValue(
-      'theologicalThemes',
-      currentThemes.filter((_, i) => i !== index)
-    );
+    setTheologicalThemes(theologicalThemes.filter((_, i) => i !== index));
   };
 
   const updateTheologicalTheme = (index: number, value: string) => {
-    const currentThemes = form.getValues('theologicalThemes') || [];
-    const newThemes = [...currentThemes];
+    const newThemes = [...theologicalThemes];
     newThemes[index] = value;
-    form.setValue('theologicalThemes', newThemes);
+    setTheologicalThemes(newThemes);
+  };
+
+  const getTitle = () => {
+    return mode === 'create' ? 'Create Content' : 'Update Content';
+  };
+
+  const getDescription = () => {
+    return mode === 'create'
+      ? 'Create a new piece of content'
+      : 'Update your content';
   };
 
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle>
-          {mode === 'create' ? 'Create Content' : 'Update Content'}
-        </CardTitle>
-        <CardDescription>
-          {mode === 'create'
-            ? 'Create new content with rich media and metadata'
-            : 'Update content details and configuration'}
-        </CardDescription>
+        <CardTitle>{getTitle()}</CardTitle>
+        <CardDescription>{getDescription()}</CardDescription>
       </CardHeader>
       <CardContent>
         <BaseForm
@@ -179,25 +174,13 @@ export function ContentItemForm({
             </FormField>
 
             <FormField
-              name="slug"
-              label="URL Slug"
-              required
-              description="URL-friendly identifier (lowercase, hyphens only)"
-            >
-              <Input
-                {...form.register('slug')}
-                placeholder="content-url-slug"
-              />
-            </FormField>
-
-            <FormField
               name="excerpt"
               label="Excerpt"
-              description="Brief summary or teaser for your content"
+              description="Brief description of your content"
             >
               <Textarea
                 {...form.register('excerpt')}
-                placeholder="A brief summary of your content..."
+                placeholder="Enter a brief excerpt..."
                 rows={3}
               />
             </FormField>
@@ -205,7 +188,7 @@ export function ContentItemForm({
             <FormField
               name="content"
               label="Content"
-              description="The main content body"
+              description="The main content"
             >
               <Textarea
                 {...form.register('content')}
@@ -225,7 +208,7 @@ export function ContentItemForm({
                 name="contentType"
                 label="Content Type"
                 required
-                description="The type of content"
+                description="Type of content"
               >
                 <Select
                   onValueChange={value =>
@@ -278,7 +261,7 @@ export function ContentItemForm({
             >
               <Input
                 {...form.register('primaryCategoryId')}
-                placeholder="Category ID"
+                placeholder="Category ID (UUID)"
               />
             </FormField>
           </FormSection>
@@ -286,157 +269,81 @@ export function ContentItemForm({
           {/* Tags and Themes */}
           <FormSection
             title="Tags and Themes"
-            description="Add tags and theological themes for better discoverability"
+            description="Add tags and theological themes"
           >
-            {/* Tags */}
-            <div className="space-y-3">
-              <label className="text-sm font-medium">Tags</label>
+            <div className="space-y-4">
+              {/* Tags */}
               <div className="space-y-2">
-                {(form.watch('tags') || []).map((tag, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <Input
-                      value={tag}
-                      onChange={e => updateTag(index, e.target.value)}
-                      placeholder="Enter tag"
-                      className="flex-1"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => removeTag(index)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={addTag}
-                  className="w-full"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Tag
-                </Button>
-              </div>
-            </div>
-
-            {/* Theological Themes */}
-            <div className="space-y-3">
-              <label className="text-sm font-medium">Theological Themes</label>
-              <div className="space-y-2">
-                {(form.watch('theologicalThemes') || []).map((theme, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <Input
-                      value={theme}
-                      onChange={e =>
-                        updateTheologicalTheme(index, e.target.value)
-                      }
-                      placeholder="Enter theological theme"
-                      className="flex-1"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => removeTheologicalTheme(index)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={addTheologicalTheme}
-                  className="w-full"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Theological Theme
-                </Button>
-              </div>
-            </div>
-          </FormSection>
-
-          {/* Media and Assets */}
-          <FormSection
-            title="Media and Assets"
-            description="Add images, videos, and other media"
-          >
-            <FormFieldGroup columns={2}>
-              <FormField
-                name="featuredImageUrl"
-                label="Featured Image URL"
-                description="URL for the featured image"
-              >
-                <div className="flex space-x-2">
-                  <Input
-                    {...form.register('featuredImageUrl')}
-                    placeholder="https://..."
-                  />
-                  <Button type="button" variant="outline" size="sm">
-                    <Upload className="h-4 w-4" />
+                <label className="text-sm font-medium">Tags</label>
+                <div className="space-y-2">
+                  {tags.map((tag, index) => (
+                    <div key={index} className="flex items-center space-x-2">
+                      <Input
+                        value={tag}
+                        onChange={e => updateTag(index, e.target.value)}
+                        placeholder="Enter tag"
+                        className="flex-1"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeTag(index)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={addTag}
+                    className="w-full"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Tag
                   </Button>
                 </div>
-              </FormField>
+              </div>
 
-              <FormField
-                name="videoUrl"
-                label="Video URL"
-                description="URL for embedded video"
-              >
-                <Input
-                  {...form.register('videoUrl')}
-                  placeholder="https://..."
-                />
-              </FormField>
-            </FormFieldGroup>
-
-            <FormField
-              name="audioUrl"
-              label="Audio URL"
-              description="URL for audio content"
-            >
-              <Input {...form.register('audioUrl')} placeholder="https://..." />
-            </FormField>
-          </FormSection>
-
-          {/* SEO and Metadata */}
-          <FormSection
-            title="SEO and Metadata"
-            description="Search engine optimization and metadata"
-          >
-            <FormField
-              name="metaTitle"
-              label="Meta Title"
-              description="SEO title (if different from main title)"
-            >
-              <Input {...form.register('metaTitle')} placeholder="SEO title" />
-            </FormField>
-
-            <FormField
-              name="metaDescription"
-              label="Meta Description"
-              description="SEO description for search engines"
-            >
-              <Textarea
-                {...form.register('metaDescription')}
-                placeholder="Brief description for search engines..."
-                rows={3}
-              />
-            </FormField>
-
-            <FormField
-              name="canonicalUrl"
-              label="Canonical URL"
-              description="Canonical URL for SEO"
-            >
-              <Input
-                {...form.register('canonicalUrl')}
-                placeholder="https://..."
-              />
-            </FormField>
+              {/* Theological Themes */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  Theological Themes
+                </label>
+                <div className="space-y-2">
+                  {theologicalThemes.map((theme, index) => (
+                    <div key={index} className="flex items-center space-x-2">
+                      <Input
+                        value={theme}
+                        onChange={e =>
+                          updateTheologicalTheme(index, e.target.value)
+                        }
+                        placeholder="Enter theological theme"
+                        className="flex-1"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeTheologicalTheme(index)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={addTheologicalTheme}
+                    className="w-full"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Theological Theme
+                  </Button>
+                </div>
+              </div>
+            </div>
           </FormSection>
 
           {/* Visibility and Status */}
@@ -448,7 +355,7 @@ export function ContentItemForm({
               <FormField
                 name="visibility"
                 label="Visibility"
-                description="Who can see this content"
+                description="Who can view this content"
               >
                 <Select
                   onValueChange={value =>
@@ -460,11 +367,11 @@ export function ContentItemForm({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="public">Public</SelectItem>
+                    <SelectItem value="premium">Premium</SelectItem>
+                    <SelectItem value="vip">VIP</SelectItem>
                     <SelectItem value="private">Private</SelectItem>
-                    <SelectItem value="unlisted">Unlisted</SelectItem>
-                    <SelectItem value="organization">
-                      Organization Only
-                    </SelectItem>
+                    <SelectItem value="organization">Organization</SelectItem>
+                    <SelectItem value="invite_only">Invite Only</SelectItem>
                   </SelectContent>
                 </Select>
               </FormField>
@@ -472,7 +379,7 @@ export function ContentItemForm({
               <FormField
                 name="status"
                 label="Status"
-                description="Content status"
+                description="Publication status"
               >
                 <Select
                   onValueChange={value => form.setValue('status', value as any)}
@@ -490,45 +397,111 @@ export function ContentItemForm({
                 </Select>
               </FormField>
             </FormFieldGroup>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <label className="text-sm font-medium">AI Enhanced</label>
-                  <p className="text-sm text-gray-600">
-                    This content has been enhanced with AI
-                  </p>
-                </div>
-                <Switch
-                  checked={form.watch('aiEnhanced')}
-                  onCheckedChange={checked =>
-                    form.setValue('aiEnhanced', checked)
-                  }
-                />
-              </div>
-            </div>
           </FormSection>
 
-          {/* Attribution and Licensing */}
-          <FormSection
-            title="Attribution and Licensing"
-            description="Content attribution and licensing information"
-          >
+          {/* Media */}
+          <FormSection title="Media" description="Add media to your content">
+            <FormFieldGroup columns={2}>
+              <FormField
+                name="featuredImageUrl"
+                label="Featured Image URL"
+                description="URL for featured image"
+              >
+                <Input
+                  {...form.register('featuredImageUrl')}
+                  placeholder="https://example.com/image.jpg"
+                />
+              </FormField>
+
+              <FormField
+                name="videoUrl"
+                label="Video URL"
+                description="URL for video content"
+              >
+                <Input
+                  {...form.register('videoUrl')}
+                  placeholder="https://example.com/video.mp4"
+                />
+              </FormField>
+            </FormFieldGroup>
+
             <FormField
-              name="originalSource"
-              label="Original Source"
-              description="Original source if this is republished content"
+              name="audioUrl"
+              label="Audio URL"
+              description="URL for audio content"
             >
               <Input
-                {...form.register('originalSource')}
-                placeholder="Original source URL or citation"
+                {...form.register('audioUrl')}
+                placeholder="https://example.com/audio.mp3"
               />
             </FormField>
+          </FormSection>
 
+          {/* SEO */}
+          <FormSection title="SEO" description="Search engine optimization">
+            <FormFieldGroup columns={2}>
+              <FormField
+                name="metaTitle"
+                label="Meta Title"
+                description="SEO title (max 100 characters)"
+              >
+                <Input
+                  {...form.register('metaTitle')}
+                  placeholder="SEO title"
+                  maxLength={100}
+                />
+              </FormField>
+
+              <FormField
+                name="metaDescription"
+                label="Meta Description"
+                description="SEO description (max 200 characters)"
+              >
+                <Input
+                  {...form.register('metaDescription')}
+                  placeholder="SEO description"
+                  maxLength={200}
+                />
+              </FormField>
+            </FormFieldGroup>
+          </FormSection>
+
+          {/* Publication */}
+          <FormSection title="Publication" description="Publication settings">
+            <FormFieldGroup columns={2}>
+              <FormField
+                name="publishedAt"
+                label="Published At"
+                description="Publication date"
+              >
+                <Input
+                  type="datetime-local"
+                  {...form.register('publishedAt')}
+                />
+              </FormField>
+
+              <FormField
+                name="scheduledAt"
+                label="Scheduled At"
+                description="Schedule publication"
+              >
+                <Input
+                  type="datetime-local"
+                  {...form.register('scheduledAt')}
+                />
+              </FormField>
+            </FormFieldGroup>
+          </FormSection>
+
+          {/* Licensing */}
+          <FormSection
+            title="Licensing"
+            description="Content licensing and attribution"
+          >
             <FormField
               name="licenseType"
               label="License Type"
-              description="How this content can be used"
+              description="Content license"
             >
               <Select
                 onValueChange={value =>
@@ -536,7 +509,7 @@ export function ContentItemForm({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select license type" />
+                  <SelectValue placeholder="Select license" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all_rights_reserved">
@@ -550,23 +523,6 @@ export function ContentItemForm({
                 </SelectContent>
               </Select>
             </FormField>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <label className="text-sm font-medium">
-                  Attribution Required
-                </label>
-                <p className="text-sm text-gray-600">
-                  Require attribution when sharing
-                </p>
-              </div>
-              <Switch
-                checked={form.watch('attributionRequired')}
-                onCheckedChange={checked =>
-                  form.setValue('attributionRequired', checked)
-                }
-              />
-            </div>
           </FormSection>
         </BaseForm>
       </CardContent>

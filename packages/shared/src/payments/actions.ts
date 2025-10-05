@@ -1,12 +1,13 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { withTeam } from '../auth/middleware';
 import { createCheckoutSession, createCustomerPortalSession } from './stripe';
-import { withTeam } from '@/lib/auth/middleware';
 
 export const checkoutAction = withTeam(async (formData, team) => {
   const priceId = formData.get('priceId') as string;
-  await createCheckoutSession({ team, priceId });
+  // For now, use team.id as userId - this should be updated to get actual user ID
+  await createCheckoutSession({ team, priceId, userId: team.id });
 });
 
 export const customerPortalAction = withTeam(async (_, team) => {

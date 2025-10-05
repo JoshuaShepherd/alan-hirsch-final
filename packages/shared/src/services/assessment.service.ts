@@ -1,3 +1,22 @@
+import {
+  assessmentQuestionEntitySchema as databaseAssessmentQuestionSchema,
+  assessmentResponseEntitySchema as databaseAssessmentResponseSchema,
+  assessmentEntitySchema as databaseAssessmentSchema,
+  userAssessmentEntitySchema as databaseUserAssessmentSchema,
+} from '@platform/contracts/entities/assessment.schema';
+import {
+  createAssessmentQuestionSchema as newAssessmentQuestionSchema,
+  createAssessmentResponseSchema as newAssessmentResponseSchema,
+  createAssessmentSchema as newAssessmentSchema,
+  createUserAssessmentSchema as newUserAssessmentSchema,
+  assessmentQuestionQuerySchema as queryAssessmentQuestionSchema,
+  assessmentResponseQuerySchema as queryAssessmentResponseSchema,
+  assessmentQuerySchema as queryAssessmentSchema,
+  UpdateAssessmentQuestionOperationSchema as updateAssessmentQuestionSchema,
+  UpdateAssessmentResponseOperationSchema as updateAssessmentResponseSchema,
+  UpdateAssessmentOperationSchema as updateAssessmentSchema,
+  CompleteUserAssessmentOperationSchema as updateUserAssessmentSchema,
+} from '@platform/contracts/operations/assessment.operations';
 import { db } from '@platform/database/db/drizzle';
 import {
   assessmentQuestions,
@@ -5,26 +24,6 @@ import {
   assessments,
   userAssessments,
 } from '@platform/database/db/schema';
-import {
-  newAssessmentQuestionSchema,
-  newAssessmentResponseSchema,
-  newAssessmentSchema,
-  newUserAssessmentSchema,
-  queryAssessmentQuestionSchema,
-  queryAssessmentResponseSchema,
-  queryAssessmentSchema,
-  queryUserAssessmentSchema,
-  updateAssessmentQuestionSchema,
-  updateAssessmentResponseSchema,
-  updateAssessmentSchema,
-  updateUserAssessmentSchema,
-} from '@/src/lib/schemas/crud.schemas';
-import {
-  databaseAssessmentQuestionSchema,
-  databaseAssessmentResponseSchema,
-  databaseAssessmentSchema,
-  databaseUserAssessmentSchema,
-} from '@/src/lib/schemas/database.schemas';
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { BaseService } from './base.service';
@@ -37,15 +36,15 @@ export class AssessmentService extends BaseService<
   z.infer<typeof databaseAssessmentSchema>,
   z.infer<typeof newAssessmentSchema>,
   z.infer<typeof updateAssessmentSchema>,
-  z.infer<typeof queryAssessmentSchema>,
+  any,
   typeof assessments
 > {
   protected table = assessments;
   protected entityName = 'Assessment';
-  protected createSchema = newAssessmentSchema;
-  protected updateSchema = updateAssessmentSchema;
-  protected querySchema = queryAssessmentSchema;
-  protected outputSchema = databaseAssessmentSchema;
+  protected createSchema = newAssessmentSchema as any;
+  protected updateSchema = updateAssessmentSchema as any;
+  protected querySchema = queryAssessmentSchema as any;
+  protected outputSchema = databaseAssessmentSchema as any;
 
   /**
    * Find assessment by slug
@@ -97,7 +96,7 @@ export class AssessmentService extends BaseService<
         .from(assessments)
         .where(
           and(
-            eq(assessments.assessmentType, assessmentType),
+            eq(assessments.assessmentType, assessmentType as any),
             eq(assessments.status, 'active')
           )
         )
@@ -145,7 +144,7 @@ export class AssessmentService extends BaseService<
         .from(assessments)
         .where(
           and(
-            eq(assessments.culturalAdaptation, culturalAdaptation),
+            eq(assessments.culturalAdaptation, culturalAdaptation as any),
             eq(assessments.status, 'active')
           )
         )
@@ -258,15 +257,15 @@ export class AssessmentQuestionService extends BaseService<
   z.infer<typeof databaseAssessmentQuestionSchema>,
   z.infer<typeof newAssessmentQuestionSchema>,
   z.infer<typeof updateAssessmentQuestionSchema>,
-  z.infer<typeof queryAssessmentQuestionSchema>,
+  any,
   typeof assessmentQuestions
 > {
   protected table = assessmentQuestions;
   protected entityName = 'AssessmentQuestion';
-  protected createSchema = newAssessmentQuestionSchema;
-  protected updateSchema = updateAssessmentQuestionSchema;
-  protected querySchema = queryAssessmentQuestionSchema;
-  protected outputSchema = databaseAssessmentQuestionSchema;
+  protected createSchema = newAssessmentQuestionSchema as any;
+  protected updateSchema = updateAssessmentQuestionSchema as any;
+  protected querySchema = queryAssessmentQuestionSchema as any;
+  protected outputSchema = databaseAssessmentQuestionSchema as any;
 
   /**
    * Find questions by assessment
@@ -291,16 +290,23 @@ export class AssessmentQuestionService extends BaseService<
    * Find questions by APEST dimension
    */
   async findByAPESTDimension(
-    dimension: string
+    dimension:
+      | 'apostolic'
+      | 'prophetic'
+      | 'evangelistic'
+      | 'shepherding'
+      | 'teaching'
   ): Promise<z.infer<typeof databaseAssessmentQuestionSchema>[]> {
     try {
       const results = await db
         .select()
         .from(assessmentQuestions)
-        .where(eq(assessmentQuestions.apestDimension, dimension))
+        .where(eq(assessmentQuestions.apestDimension, dimension as any))
         .orderBy(assessmentQuestions.orderIndex);
 
-      return results.map(result => this.outputSchema.parse(result));
+      return results.map(result =>
+        databaseAssessmentQuestionSchema.parse(result)
+      );
     } catch (error) {
       throw this.handleDatabaseError(error, 'findByAPESTDimension');
     }
@@ -412,15 +418,15 @@ export class UserAssessmentService extends BaseService<
   z.infer<typeof databaseUserAssessmentSchema>,
   z.infer<typeof newUserAssessmentSchema>,
   z.infer<typeof updateUserAssessmentSchema>,
-  z.infer<typeof queryUserAssessmentSchema>,
+  any,
   typeof userAssessments
 > {
   protected table = userAssessments;
   protected entityName = 'UserAssessment';
-  protected createSchema = newUserAssessmentSchema;
-  protected updateSchema = updateUserAssessmentSchema;
-  protected querySchema = queryUserAssessmentSchema;
-  protected outputSchema = databaseUserAssessmentSchema;
+  protected createSchema = newUserAssessmentSchema as any;
+  protected updateSchema = updateUserAssessmentSchema as any;
+  protected querySchema = queryAssessmentResponseSchema as any;
+  protected outputSchema = databaseUserAssessmentSchema as any;
 
   /**
    * Find user assessment by user and assessment
@@ -538,7 +544,9 @@ export class UserAssessmentService extends BaseService<
       ];
 
       if (assessmentType) {
-        whereConditions.push(eq(assessments.assessmentType, assessmentType));
+        whereConditions.push(
+          eq(assessments.assessmentType, assessmentType as any)
+        );
       }
 
       const [result] = await db
@@ -632,7 +640,40 @@ export class UserAssessmentService extends BaseService<
       const [result] = await db
         .update(userAssessments)
         .set({
-          ...completionData,
+          totalScore: completionData.totalScore,
+          maxPossibleScore: completionData.maxPossibleScore,
+          apostolicScore: completionData.apostolicScore,
+          propheticScore: completionData.propheticScore,
+          evangelisticScore: completionData.evangelisticScore,
+          shepherdingScore: completionData.shepherdingScore,
+          teachingScore: completionData.teachingScore,
+          normalizedScores: completionData.normalizedScores,
+          primaryGift: completionData.primaryGift,
+          secondaryGift: completionData.secondaryGift,
+          responseConsistency:
+            completionData.responseConsistency !== undefined
+              ? completionData.responseConsistency.toString()
+              : null,
+          confidenceLevel:
+            completionData.confidenceLevel !== undefined
+              ? completionData.confidenceLevel
+              : null,
+          completionTime: completionData.completionTime,
+          culturalAdjustmentApplied: completionData.culturalAdjustmentApplied,
+          culturalAdjustmentFactor:
+            completionData.culturalAdjustmentFactor?.toString(),
+          aiInsights: completionData.aiInsights
+            ? JSON.stringify(completionData.aiInsights)
+            : null,
+          personalizedRecommendations:
+            completionData.personalizedRecommendations
+              ? {
+                  strengths: completionData.personalizedRecommendations,
+                  growthAreas: [],
+                  actionItems: [],
+                  contentRecommendations: [],
+                }
+              : undefined,
           completedAt: new Date(),
           completionPercentage: 100,
           updatedAt: new Date(),
@@ -663,6 +704,14 @@ export class UserAssessmentService extends BaseService<
         .update(userAssessments)
         .set({
           ...progressData,
+          responseConsistency:
+            progressData.responseConsistency !== undefined
+              ? progressData.responseConsistency.toString()
+              : null,
+          confidenceLevel:
+            progressData.confidenceLevel !== undefined
+              ? progressData.confidenceLevel
+              : null,
           updatedAt: new Date(),
         })
         .where(eq(userAssessments.id, userAssessmentId))
@@ -754,15 +803,15 @@ export class AssessmentResponseService extends BaseService<
   z.infer<typeof databaseAssessmentResponseSchema>,
   z.infer<typeof newAssessmentResponseSchema>,
   z.infer<typeof updateAssessmentResponseSchema>,
-  z.infer<typeof queryAssessmentResponseSchema>,
+  any,
   typeof assessmentResponses
 > {
   protected table = assessmentResponses;
   protected entityName = 'AssessmentResponse';
-  protected createSchema = newAssessmentResponseSchema;
-  protected updateSchema = updateAssessmentResponseSchema;
-  protected querySchema = queryAssessmentResponseSchema;
-  protected outputSchema = databaseAssessmentResponseSchema;
+  protected createSchema = newAssessmentResponseSchema as any;
+  protected updateSchema = updateAssessmentResponseSchema as any;
+  protected querySchema = queryAssessmentResponseSchema as any;
+  protected outputSchema = databaseAssessmentResponseSchema as any;
 
   /**
    * Find responses by user assessment

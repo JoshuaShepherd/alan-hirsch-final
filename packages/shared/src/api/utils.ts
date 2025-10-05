@@ -1,7 +1,6 @@
+import { createSupabaseServerClient, db } from '@platform/database';
 import { NextRequest, NextResponse } from 'next/server';
-import { z, ZodSchema } from 'zod';
-import { db } from '@platform/database/db/drizzle';
-import { createClient } from '@platform/database/supabase/server';
+import { ZodSchema, z } from 'zod';
 
 // API Response types
 export interface ApiResponse<T = any> {
@@ -50,7 +49,7 @@ export function createApiRoute<TInput, TOutput>(
   return async (request: NextRequest) => {
     try {
       // Get authenticated user
-      const supabase = await createClient();
+      const supabase = await createSupabaseServerClient();
       const {
         data: { user },
         error: authError,
@@ -114,7 +113,7 @@ export function createApiRouteInputOnly<TInput>(
   return async (request: NextRequest) => {
     try {
       // Get authenticated user
-      const supabase = await createClient();
+      const supabase = await createSupabaseServerClient();
       const {
         data: { user },
         error: authError,
@@ -182,7 +181,7 @@ export function createPaginatedApiRoute<TInput, TItemOutput, TResponseOutput>(
   return async (request: NextRequest) => {
     try {
       // Get authenticated user
-      const supabase = await createClient();
+      const supabase = await createSupabaseServerClient();
       const {
         data: { user },
         error: authError,

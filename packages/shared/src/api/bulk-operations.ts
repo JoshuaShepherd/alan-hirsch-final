@@ -212,9 +212,5 @@ export const defaultFileUploadConfig: FileUploadConfig = {
 // Export Types
 // ============================================================================
 
-export type {
-  BulkOperation,
-  BulkOperationResponse,
-  BulkOperationResult,
-  FileUploadConfig,
-};
+// Note: Types are already exported as interfaces above
+// No need for separate type exports to avoid conflicts

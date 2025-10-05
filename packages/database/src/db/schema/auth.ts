@@ -13,6 +13,7 @@ import {
 export const userProfiles = pgTable('user_profiles', {
   id: uuid('id').primaryKey(), // References auth.users.id
   email: text('email').notNull().unique(),
+  passwordHash: text('password_hash'), // For local auth if needed
   firstName: text('first_name').notNull(),
   lastName: text('last_name').notNull(),
   displayName: text('display_name'),
@@ -158,7 +159,7 @@ export const organizations = pgTable('organizations', {
     ],
   }).notNull(),
   sizeCategory: text('size_category', {
-    enum: ['small', 'medium', 'large', 'enterprise'],
+    enum: ['startup', 'small', 'medium', 'large', 'enterprise'],
   }),
 
   // Contact Information
@@ -174,7 +175,7 @@ export const organizations = pgTable('organizations', {
 
   // Licensing & Billing
   licenseType: text('license_type', {
-    enum: ['individual', 'institutional', 'enterprise'],
+    enum: ['individual', 'team', 'enterprise'],
   }).default('individual'),
   maxUsers: integer('max_users').default(1),
   billingEmail: text('billing_email'),
@@ -188,7 +189,7 @@ export const organizations = pgTable('organizations', {
 
   // Status
   status: text('status', {
-    enum: ['active', 'inactive', 'trial', 'suspended'],
+    enum: ['trial', 'active', 'suspended', 'cancelled'],
   }).default('trial'),
 
   // Timestamps
@@ -214,7 +215,7 @@ export const organizationMemberships = pgTable('organization_memberships', {
 
   // Status
   status: text('status', {
-    enum: ['active', 'inactive', 'pending', 'invited'],
+    enum: ['pending', 'active', 'inactive', 'cancelled'],
   }).default('pending'),
 
   // Timestamps

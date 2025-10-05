@@ -1,19 +1,44 @@
 import type {
-  contentItems,
-  contentCategories,
-  userProfiles,
-} from '../db/schema';
-import type {
-  ContentItemResponse,
+  ContentCategoryEntity,
   ContentCategoryResponse,
-  UserProfile,
-  ContentCategory,
-} from '../contracts';
+  ContentItemEntity,
+  ContentItemResponse,
+  ContentSeriesEntity,
+  ContentSeriesResponse,
+  CreateContentCategory,
+  CreateContentItem,
+  CreateContentSeries,
+  UpdateContentCategory,
+  UpdateContentItem,
+  UpdateContentSeries,
+} from '@platform/contracts';
+import {
+  contentCategoryEntitySchema,
+  contentCategoryResponseSchema,
+  contentItemEntitySchema,
+  contentItemResponseSchema,
+  contentSeriesEntitySchema,
+  contentSeriesResponseSchema,
+  createContentCategorySchema,
+  createContentItemSchema,
+  createContentSeriesSchema,
+  updateContentCategorySchema,
+  updateContentItemSchema,
+  updateContentSeriesSchema,
+} from '@platform/contracts';
+import type {
+  contentCategories,
+  contentItems,
+  contentSeries,
+} from '@platform/database';
 
 // Drizzle row types
 type ContentItemRow = typeof contentItems.$inferSelect;
 type ContentCategoryRow = typeof contentCategories.$inferSelect;
-type UserProfileRow = typeof userProfiles.$inferSelect;
+type ContentSeriesRow = typeof contentSeries.$inferSelect;
+type NewContentItemRow = typeof contentItems.$inferInsert;
+type NewContentCategoryRow = typeof contentCategories.$inferInsert;
+type NewContentSeriesRow = typeof contentSeries.$inferInsert;
 
 /**
  * Content Mappers - Convert Drizzle rows to UI-friendly DTOs
@@ -23,16 +48,25 @@ type UserProfileRow = typeof userProfiles.$inferSelect;
  * - Date formatting for consistent API responses
  * - Computed fields for UI convenience
  * - Type safety between DB and API layers
+ * - Zod schema validation for data integrity
  */
 
-// Helper function to format reading time
-function formatReadingTime(minutes: number | null): string {
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * Helper function to format reading time
+ */
+function formatReadingTime(minutes: number | null | undefined): string {
   if (!minutes || minutes === 0) return '0 min read';
   return `${minutes} min read`;
 }
 
-// Helper function to format view count
-function formatViewCount(count: number | null): string {
+/**
+ * Helper function to format view count
+ */
+function formatViewCount(count: number | null | undefined): string {
   if (!count || count === 0) return '0 views';
   if (count < 1000) return `${count} views`;
   if (count < 1000000) return `${Math.round(count / 1000)}K views`;
@@ -40,247 +74,964 @@ function formatViewCount(count: number | null): string {
 }
 
 /**
- * Map ContentItemRow to ContentItemResponse
+ * Helper function to calculate engagement score
  */
-export function toContentItemResponseDTO(
-  row: ContentItemRow,
-  author?: UserProfile,
-  category?: ContentCategoryResponse
-): ContentItemResponse {
-  return {
+function calculateEngagementScore(
+  viewCount: number,
+  likeCount: number,
+  shareCount: number,
+  commentCount: number,
+  bookmarkCount: number
+): number {
+  // Weighted algorithm: views (1x), likes (2x), shares (3x), comments (2x), bookmarks (2x)
+  const totalEngagement =
+    viewCount +
+    likeCount * 2 +
+    shareCount * 3 +
+    commentCount * 2 +
+    bookmarkCount * 2;
+  // Normalize to 0-10 scale (assuming max 1000 views as baseline)
+  return Math.min(10, Math.max(0, totalEngagement / 100));
+}
+
+/**
+ * Helper function to calculate reading time from word count
+ */
+function calculateReadingTimeFromWordCount(
+  wordCount: number | null | undefined
+): number {
+  if (!wordCount) return 0;
+  // Average reading speed: 200 words per minute
+  return Math.ceil(wordCount / 200);
+}
+
+// ============================================================================
+// CONTENT ITEM MAPPERS
+// ============================================================================
+
+/**
+ * Map ContentItemRow to ContentItemEntity
+ */
+export function toContentItemEntity(row: ContentItemRow): ContentItemEntity {
+  const entity: ContentItemEntity = {
     id: row.id,
     title: row.title,
     slug: row.slug,
-    excerpt: row.excerpt ?? '',
-    content: row.content ?? '',
+    excerpt: row.excerpt ?? undefined,
+    content: row.content ?? undefined,
     authorId: row.authorId,
-    coAuthors: (row.coAuthors as string[]) ?? [],
+    coAuthors: row.coAuthors ?? [],
     contentType: row.contentType,
     format: row.format ?? 'text',
-    wordCount: row.wordCount ?? 0,
-    estimatedReadingTime: row.estimatedReadingTime ?? 0,
+    wordCount: row.wordCount ?? undefined,
+    estimatedReadingTime: row.estimatedReadingTime ?? undefined,
     viewCount: row.viewCount ?? 0,
     likeCount: row.likeCount ?? 0,
     shareCount: row.shareCount ?? 0,
     commentCount: row.commentCount ?? 0,
     bookmarkCount: row.bookmarkCount ?? 0,
-    primaryCategoryId: row.primaryCategoryId ?? '',
-    secondaryCategories: (row.secondaryCategories as string[]) ?? [],
-    tags: (row.tags as string[]) ?? [],
-    theologicalThemes: (row.theologicalThemes as string[]) ?? [],
-    seriesId: row.seriesId ?? '',
-    seriesOrder: row.seriesOrder ?? 0,
-    visibility:
-      (row.visibility === 'invite_only' ? 'private' : row.visibility) ??
-      'public',
+    primaryCategoryId: row.primaryCategoryId ?? undefined,
+    secondaryCategories: row.secondaryCategories ?? [],
+    tags: row.tags ?? [],
+    theologicalThemes: row.theologicalThemes ?? [],
+    seriesId: row.seriesId ?? undefined,
+    seriesOrder: row.seriesOrder ?? undefined,
+    visibility: row.visibility ?? 'public',
     status: row.status ?? 'draft',
-    networkAmplificationScore: row.networkAmplificationScore ?? '',
+    networkAmplificationScore: Number(row.networkAmplificationScore) ?? 0,
     crossReferenceCount: row.crossReferenceCount ?? 0,
     aiEnhanced: row.aiEnhanced ?? false,
-    aiSummary: row.aiSummary ?? '',
-    aiKeyPoints: (row.aiKeyPoints as string[]) ?? [],
-    featuredImageUrl: row.featuredImageUrl ?? '',
-    videoUrl: row.videoUrl ?? '',
-    audioUrl: row.audioUrl ?? '',
-    attachments: Array.isArray(row.attachments)
-      ? row.attachments.map((att: any) => att.url || att)
-      : [],
-    metaTitle: row.metaTitle ?? '',
-    metaDescription: row.metaDescription ?? '',
-    canonicalUrl: row.canonicalUrl ?? '',
-    originalSource: row.originalSource ?? '',
+    aiSummary: row.aiSummary ?? undefined,
+    aiKeyPoints: row.aiKeyPoints ?? [],
+    featuredImageUrl: row.featuredImageUrl ?? undefined,
+    videoUrl: row.videoUrl ?? undefined,
+    audioUrl: row.audioUrl ?? undefined,
+    attachments: row.attachments ?? [],
+    metaTitle: row.metaTitle ?? undefined,
+    metaDescription: row.metaDescription ?? undefined,
+    canonicalUrl: row.canonicalUrl ?? undefined,
+    originalSource: row.originalSource ?? undefined,
+    publishedAt: row.publishedAt?.toISOString() ?? undefined,
+    scheduledAt: row.scheduledAt?.toISOString() ?? undefined,
     licenseType: row.licenseType ?? 'all_rights_reserved',
-    attributionRequired: row.attributionRequired ?? false,
-
-    // Computed fields for UI
-    isPublished: row.status === 'published',
-    isDraft: row.status === 'draft',
-    isScheduled: row.status === 'scheduled',
-    hasFeaturedImage: row.featuredImageUrl !== null,
-    hasVideo: row.videoUrl !== null,
-    hasAudio: row.audioUrl !== null,
-    readingTimeText: formatReadingTime(row.estimatedReadingTime),
-    viewCountText: formatViewCount(row.viewCount),
-    isAiEnhanced: row.aiEnhanced ?? false,
-
-    // Related data (if provided)
-    author: author
-      ? {
-          id: author.id,
-          firstName: author.firstName ?? '',
-          lastName: author.lastName ?? '',
-          displayName: author.displayName ?? '',
-          avatarUrl: author.avatarUrl ?? '',
-        }
-      : undefined,
-    category,
-
-    // Timestamps (formatted as ISO strings)
+    attributionRequired: row.attributionRequired ?? true,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
-    publishedAt: row.publishedAt?.toISOString() ?? null,
-    scheduledAt: row.scheduledAt?.toISOString() ?? null,
   };
+
+  // Validate against Zod schema in development
+  if (
+    process.env['NODE_ENV'] === 'development' ||
+    process.env['NODE_ENV'] === 'test'
+  ) {
+    const validation = contentItemEntitySchema.safeParse(entity);
+    if (!validation.success) {
+      throw new Error(
+        `ContentItemEntity validation failed: ${validation.error.message}`
+      );
+    }
+  }
+
+  return entity;
 }
 
 /**
- * Map ContentCategoryRow to ContentCategoryResponse
+ * Map ContentItemRow with relations to ContentItemResponse
  */
-export function toContentCategoryResponseDTO(
+export function toContentItemResponseDTO(
+  row: ContentItemRow & {
+    author?: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      displayName?: string;
+      avatarUrl?: string;
+    };
+    primaryCategory?: {
+      id: string;
+      name: string;
+      slug: string;
+    };
+    series?: {
+      id: string;
+      title: string;
+      slug: string;
+      totalEpisodes: number;
+    };
+    coAuthors?: Array<{
+      id: string;
+      firstName: string;
+      lastName: string;
+      displayName?: string;
+    }>;
+  }
+): ContentItemResponse {
+  const entity = toContentItemEntity(row);
+
+  // Calculate computed fields
+  const readingTime =
+    row.estimatedReadingTime ??
+    calculateReadingTimeFromWordCount(row.wordCount);
+  const engagementScore = calculateEngagementScore(
+    row.viewCount ?? 0,
+    row.likeCount ?? 0,
+    row.shareCount ?? 0,
+    row.commentCount ?? 0,
+    row.bookmarkCount ?? 0
+  );
+
+  const response: ContentItemResponse = {
+    ...entity,
+    // Computed fields
+    isPublished: row.status === 'published',
+    isDraft: row.status === 'draft',
+    isScheduled:
+      row.status === 'scheduled' &&
+      !!row.scheduledAt &&
+      new Date(row.scheduledAt) > new Date(),
+    isArchived: row.status === 'archived',
+    hasFeaturedImage: !!row.featuredImageUrl,
+    hasVideo: !!row.videoUrl,
+    hasAudio: !!row.audioUrl,
+    hasAttachments:
+      Array.isArray(row.attachments) && row.attachments.length > 0,
+    isAiEnhanced: row.aiEnhanced === true,
+    readingTimeText:
+      readingTime > 0 ? formatReadingTime(readingTime) : 'Unknown',
+    viewCountText: formatViewCount(row.viewCount),
+    engagementScore,
+    // Related data
+    author: row.author
+      ? {
+          id: row.author.id,
+          firstName: row.author.firstName,
+          lastName: row.author.lastName,
+          displayName: row.author.displayName,
+          avatarUrl: row.author.avatarUrl,
+        }
+      : {
+          id: row.authorId,
+          firstName: 'Unknown',
+          lastName: 'Author',
+        },
+    primaryCategory: row.primaryCategory,
+    series: row.series,
+    coAuthors: row.coAuthors ?? [],
+  };
+
+  // Validate against Zod schema in development
+  if (
+    process.env['NODE_ENV'] === 'development' ||
+    process.env['NODE_ENV'] === 'test'
+  ) {
+    const validation = contentItemResponseSchema.safeParse(response);
+    if (!validation.success) {
+      throw new Error(
+        `ContentItemResponse validation failed: ${validation.error.message}`
+      );
+    }
+  }
+
+  return response;
+}
+
+// ============================================================================
+// CONTENT CATEGORY MAPPERS
+// ============================================================================
+
+/**
+ * Map ContentCategoryRow to ContentCategoryEntity
+ */
+export function toContentCategoryEntity(
   row: ContentCategoryRow
-): ContentCategoryResponse {
-  return {
+): ContentCategoryEntity {
+  const entity: ContentCategoryEntity = {
     id: row.id,
     name: row.name,
     slug: row.slug,
-    description: row.description ?? '',
-    parentId: row.parentId ?? '',
+    description: row.description ?? undefined,
+    parentId: row.parentId ?? undefined,
     orderIndex: row.orderIndex ?? 0,
-    theologicalDiscipline: row.theologicalDiscipline,
+    theologicalDiscipline: row.theologicalDiscipline ?? undefined,
     movementRelevanceScore: row.movementRelevanceScore ?? 5,
-    apestRelevance: (row.apestRelevance as {
-      apostolic: number;
-      prophetic: number;
-      evangelistic: number;
-      shepherding: number;
-      teaching: number;
-    }) ?? {
+    apestRelevance: row.apestRelevance ?? {
       apostolic: 5,
       prophetic: 5,
       evangelistic: 5,
       shepherding: 5,
       teaching: 5,
     },
-    metaDescription: row.metaDescription ?? '',
-    keywords: (row.keywords as string[]) ?? [],
+    metaDescription: row.metaDescription ?? undefined,
+    keywords: row.keywords ?? [],
     isActive: row.isActive ?? true,
-
-    // Computed fields for UI
-    hasParent: row.parentId !== null,
-    hasChildren: false, // Would need to be populated separately
-
-    // Timestamps (formatted as ISO strings)
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
+
+  // Validate against Zod schema in development
+  if (
+    process.env['NODE_ENV'] === 'development' ||
+    process.env['NODE_ENV'] === 'test'
+  ) {
+    const validation = contentCategoryEntitySchema.safeParse(entity);
+    if (!validation.success) {
+      throw new Error(
+        `ContentCategoryEntity validation failed: ${validation.error.message}`
+      );
+    }
+  }
+
+  return entity;
 }
 
 /**
- * Map UserProfileRow to UserProfile (for content author)
+ * Map ContentCategoryRow with relations to ContentCategoryResponse
  */
-export function toUserProfileDTO(row: UserProfileRow): UserProfile {
-  return {
+export function toContentCategoryResponseDTO(
+  row: ContentCategoryRow & {
+    parent?: { id: string; name: string; slug: string };
+    children?: Array<{
+      id: string;
+      name: string;
+      slug: string;
+      contentCount: number;
+    }>;
+    contentCount?: number;
+    childCount?: number;
+  }
+): ContentCategoryResponse {
+  const entity = toContentCategoryEntity(row);
+
+  const response: ContentCategoryResponse = {
+    ...entity,
+    // Computed fields
+    isActive: row.isActive ?? true,
+    hasParent: !!row.parentId,
+    hasChildren: (row.childCount ?? 0) > 0,
+    childCount: row.childCount ?? 0,
+    contentCount: row.contentCount ?? 0,
+    displayName: row.name,
+    breadcrumb: [], // Would need to be populated separately
+    // Related data
+    parent: row.parent,
+    children: row.children,
+  };
+
+  // Validate against Zod schema in development
+  if (
+    process.env['NODE_ENV'] === 'development' ||
+    process.env['NODE_ENV'] === 'test'
+  ) {
+    const validation = contentCategoryResponseSchema.safeParse(response);
+    if (!validation.success) {
+      throw new Error(
+        `ContentCategoryResponse validation failed: ${validation.error.message}`
+      );
+    }
+  }
+
+  return response;
+}
+
+// ============================================================================
+// CONTENT SERIES MAPPERS
+// ============================================================================
+
+/**
+ * Map ContentSeriesRow to ContentSeriesEntity
+ */
+export function toContentSeriesEntity(
+  row: ContentSeriesRow
+): ContentSeriesEntity {
+  const entity: ContentSeriesEntity = {
     id: row.id,
-    email: row.email,
-    firstName: row.firstName ?? '',
-    lastName: row.lastName ?? '',
-    displayName: row.displayName ?? '',
-    avatarUrl: row.avatarUrl ?? '',
-    bio: row.bio ?? '',
-    countryCode: row.countryCode ?? '',
-    timezone: row.timezone ?? '',
-    languagePrimary: row.languagePrimary ?? 'en',
-    ministryRole: row.ministryRole,
-    denomination: row.denomination ?? '',
-    organizationName: row.organizationName ?? '',
-    yearsInMinistry: row.yearsInMinistry ?? 0,
-    culturalContext: row.culturalContext ?? 'western',
-    lastActiveAt: row.lastActiveAt,
-
-    // Required properties for UserProfile type
-    theologicalFocus: row.theologicalFocus ?? [],
-    brandColors: row.brandColors ?? {
-      primary: '#2563eb',
-      secondary: '#64748b',
-      accent: '#059669',
-    },
-    emailNotifications: row.emailNotifications ?? {
-      dailyDigest: true,
-      collaborationRequests: true,
-      revenueReports: true,
-      communityUpdates: true,
-    },
-    privacySettings: row.privacySettings ?? {
-      publicProfile: true,
-      showAssessmentResults: false,
-      allowNetworking: true,
-      shareAnalytics: false,
-    },
-    onboardingCompleted: row.onboardingCompleted ?? false,
-    onboardingStep: row.onboardingStep ?? 1,
-    subscriptionTier: row.subscriptionTier ?? 'free',
-    accountStatus: row.accountStatus ?? 'pending_verification',
-
-    // Timestamps (keep as Date objects for UserProfile)
-    createdAt: row.createdAt,
-    updatedAt: row.updatedAt,
+    title: row.title,
+    slug: row.slug,
+    description: row.description ?? undefined,
+    authorId: row.authorId,
+    collaborators: row.collaborators ?? [],
+    seriesType: row.seriesType,
+    difficulty: row.difficulty ?? 'intermediate',
+    totalItems: row.totalItems ?? 0,
+    estimatedDuration: row.estimatedDuration ?? undefined,
+    primaryCategoryId: row.primaryCategoryId ?? undefined,
+    tags: row.tags ?? [],
+    visibility: row.visibility ?? 'public',
+    status: row.status ?? 'draft',
+    featuredImageUrl: row.featuredImageUrl ?? undefined,
+    metaDescription: row.metaDescription ?? undefined,
+    publishedAt: row.publishedAt?.toISOString() ?? undefined,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
   };
+
+  // Validate against Zod schema in development
+  if (
+    process.env['NODE_ENV'] === 'development' ||
+    process.env['NODE_ENV'] === 'test'
+  ) {
+    const validation = contentSeriesEntitySchema.safeParse(entity);
+    if (!validation.success) {
+      throw new Error(
+        `ContentSeriesEntity validation failed: ${validation.error.message}`
+      );
+    }
+  }
+
+  return entity;
 }
 
 /**
- * Map content item with author and category details
+ * Map ContentSeriesRow with relations to ContentSeriesResponse
  */
-export function toContentItemWithDetailsDTO(
-  contentRow: ContentItemRow,
-  authorRow?: UserProfileRow,
-  categoryRow?: ContentCategoryRow
-) {
-  return toContentItemResponseDTO(
-    contentRow,
-    authorRow ? toUserProfileDTO(authorRow) : undefined,
-    categoryRow ? toContentCategoryResponseDTO(categoryRow) : undefined
-  );
-}
+export function toContentSeriesResponseDTO(
+  row: ContentSeriesRow & {
+    author?: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      displayName?: string;
+    };
+    category?: {
+      id: string;
+      name: string;
+      slug: string;
+    };
+    episodes?: Array<{
+      id: string;
+      title: string;
+      slug: string;
+      order: number;
+      status: string;
+      publishedAt?: string;
+    }>;
+  }
+): ContentSeriesResponse {
+  const entity = toContentSeriesEntity(row);
 
-/**
- * Map content series with author and category details
- */
-export function toContentSeriesWithDetailsDTO(
-  seriesRow: any,
-  authorRow?: UserProfileRow,
-  categoryRow?: ContentCategoryRow
-) {
-  return {
-    id: seriesRow.id,
-    title: seriesRow.title,
-    slug: seriesRow.slug,
-    description: seriesRow.description ?? '',
-    excerpt: seriesRow.excerpt ?? '',
-    authorId: seriesRow.authorId,
-    collaborators: (seriesRow.collaborators as string[]) ?? [],
-    seriesType: seriesRow.seriesType,
-    difficulty: seriesRow.difficulty,
-    totalItems: seriesRow.totalItems ?? 0,
-    estimatedDuration: seriesRow.estimatedDuration ?? 0,
-    primaryCategoryId: seriesRow.primaryCategoryId ?? '',
-    tags: (seriesRow.tags as string[]) ?? [],
-    visibility: seriesRow.visibility,
-    status: seriesRow.status,
-    featuredImageUrl: seriesRow.featuredImageUrl ?? '',
-    metaDescription: seriesRow.metaDescription ?? '',
-
-    // Computed fields for UI
-    isPublished: seriesRow.status === 'published',
-    isDraft: seriesRow.status === 'draft',
-    hasFeaturedImage: seriesRow.featuredImageUrl !== null,
-
-    // Related data (if provided)
-    author: authorRow
+  const response: ContentSeriesResponse = {
+    ...entity,
+    // Computed fields
+    isPublished: row.status === 'published',
+    isDraft: row.status === 'draft',
+    hasFeaturedImage: !!row.featuredImageUrl,
+    completionPercentage:
+      (row.totalItems ?? 0) > 0
+        ? Math.min(100, ((row.totalItems ?? 0) / 10) * 100)
+        : 0, // Simplified calculation
+    estimatedDurationText: row.estimatedDuration
+      ? formatReadingTime(row.estimatedDuration)
+      : undefined,
+    // Related data
+    author: row.author
       ? {
-          id: authorRow.id,
-          firstName: authorRow.firstName ?? '',
-          lastName: authorRow.lastName ?? '',
-          displayName: authorRow.displayName ?? '',
-          avatarUrl: authorRow.avatarUrl ?? '',
+          id: row.author.id,
+          firstName: row.author.firstName,
+          lastName: row.author.lastName,
+          displayName: row.author.displayName,
         }
-      : undefined,
-    category: categoryRow
-      ? toContentCategoryResponseDTO(categoryRow)
-      : undefined,
+      : {
+          id: row.authorId,
+          firstName: 'Unknown',
+          lastName: 'Author',
+        },
+    category: row.category,
+    episodes: row.episodes,
+  };
 
-    // Timestamps (formatted as ISO strings)
-    createdAt: seriesRow.createdAt.toISOString(),
-    updatedAt: seriesRow.updatedAt.toISOString(),
-    publishedAt: seriesRow.publishedAt?.toISOString() ?? null,
+  // Validate against Zod schema in development
+  if (
+    process.env['NODE_ENV'] === 'development' ||
+    process.env['NODE_ENV'] === 'test'
+  ) {
+    const validation = contentSeriesResponseSchema.safeParse(response);
+    if (!validation.success) {
+      throw new Error(
+        `ContentSeriesResponse validation failed: ${validation.error.message}`
+      );
+    }
+  }
+
+  return response;
+}
+
+// ============================================================================
+// BIDIRECTIONAL MAPPERS (DTO to Database)
+// ============================================================================
+
+/**
+ * Map CreateContentItem to database insert format
+ */
+export function fromCreateContentItem(
+  data: CreateContentItem
+): NewContentItemRow {
+  // Validate input data
+  if (
+    process.env['NODE_ENV'] === 'development' ||
+    process.env['NODE_ENV'] === 'test'
+  ) {
+    const validation = createContentItemSchema.safeParse(data);
+    if (!validation.success) {
+      throw new Error(
+        `CreateContentItem validation failed: ${validation.error.message}`
+      );
+    }
+  }
+
+  return {
+    title: data.title,
+    slug: data.slug,
+    excerpt: data.excerpt ?? null,
+    content: data.content ?? null,
+    authorId: data.authorId,
+    coAuthors: data.coAuthors ?? [],
+    contentType: data.contentType,
+    format: data.format ?? 'text',
+    wordCount: data.wordCount ?? null,
+    estimatedReadingTime: data.estimatedReadingTime ?? null,
+    primaryCategoryId: data.primaryCategoryId ?? null,
+    secondaryCategories: data.secondaryCategories ?? [],
+    tags: data.tags ?? [],
+    theologicalThemes: data.theologicalThemes ?? [],
+    seriesId: data.seriesId ?? null,
+    seriesOrder: data.seriesOrder ?? null,
+    visibility: data.visibility ?? 'public',
+    status: data.status ?? 'draft',
+    featuredImageUrl: data.featuredImageUrl ?? null,
+    videoUrl: data.videoUrl ?? null,
+    audioUrl: data.audioUrl ?? null,
+    attachments: data.attachments ?? [],
+    metaTitle: data.metaTitle ?? null,
+    metaDescription: data.metaDescription ?? null,
+    canonicalUrl: data.canonicalUrl ?? null,
+    originalSource: data.originalSource ?? null,
+    publishedAt: data.publishedAt ? new Date(data.publishedAt) : null,
+    scheduledAt: data.scheduledAt ? new Date(data.scheduledAt) : null,
+    licenseType: data.licenseType ?? 'all_rights_reserved',
+    attributionRequired: data.attributionRequired ?? true,
   };
 }
+
+/**
+ * Map UpdateContentItem to database update format
+ */
+export function fromUpdateContentItem(
+  data: UpdateContentItem
+): Partial<NewContentItemRow> {
+  // Validate input data
+  if (
+    process.env['NODE_ENV'] === 'development' ||
+    process.env['NODE_ENV'] === 'test'
+  ) {
+    const validation = updateContentItemSchema.safeParse(data);
+    if (!validation.success) {
+      throw new Error(
+        `UpdateContentItem validation failed: ${validation.error.message}`
+      );
+    }
+  }
+
+  const updateData: Partial<NewContentItemRow> = {
+    updatedAt: new Date(),
+  };
+
+  // Only include defined fields
+  if (data.title !== undefined) updateData.title = data.title;
+  if (data.excerpt !== undefined) updateData.excerpt = data.excerpt ?? null;
+  if (data.content !== undefined) updateData.content = data.content ?? null;
+  if (data.contentType !== undefined) updateData.contentType = data.contentType;
+  if (data.format !== undefined) updateData.format = data.format;
+  if (data.wordCount !== undefined)
+    updateData.wordCount = data.wordCount ?? null;
+  if (data.estimatedReadingTime !== undefined)
+    updateData.estimatedReadingTime = data.estimatedReadingTime ?? null;
+  if (data.primaryCategoryId !== undefined)
+    updateData.primaryCategoryId = data.primaryCategoryId ?? null;
+  if (data.secondaryCategories !== undefined)
+    updateData.secondaryCategories = data.secondaryCategories;
+  if (data.tags !== undefined) updateData.tags = data.tags;
+  if (data.theologicalThemes !== undefined)
+    updateData.theologicalThemes = data.theologicalThemes;
+  if (data.seriesId !== undefined) updateData.seriesId = data.seriesId ?? null;
+  if (data.seriesOrder !== undefined)
+    updateData.seriesOrder = data.seriesOrder ?? null;
+  if (data.visibility !== undefined) updateData.visibility = data.visibility;
+  if (data.status !== undefined) updateData.status = data.status;
+  if (data.featuredImageUrl !== undefined)
+    updateData.featuredImageUrl = data.featuredImageUrl ?? null;
+  if (data.videoUrl !== undefined) updateData.videoUrl = data.videoUrl ?? null;
+  if (data.audioUrl !== undefined) updateData.audioUrl = data.audioUrl ?? null;
+  if (data.attachments !== undefined) updateData.attachments = data.attachments;
+  if (data.metaTitle !== undefined)
+    updateData.metaTitle = data.metaTitle ?? null;
+  if (data.metaDescription !== undefined)
+    updateData.metaDescription = data.metaDescription ?? null;
+  if (data.canonicalUrl !== undefined)
+    updateData.canonicalUrl = data.canonicalUrl ?? null;
+  if (data.originalSource !== undefined)
+    updateData.originalSource = data.originalSource ?? null;
+  if (data.publishedAt !== undefined)
+    updateData.publishedAt = data.publishedAt
+      ? new Date(data.publishedAt)
+      : null;
+  if (data.scheduledAt !== undefined)
+    updateData.scheduledAt = data.scheduledAt
+      ? new Date(data.scheduledAt)
+      : null;
+  if (data.licenseType !== undefined) updateData.licenseType = data.licenseType;
+  if (data.attributionRequired !== undefined)
+    updateData.attributionRequired = data.attributionRequired;
+
+  return updateData;
+}
+
+/**
+ * Map CreateContentCategory to database insert format
+ */
+export function fromCreateContentCategory(
+  data: CreateContentCategory
+): NewContentCategoryRow {
+  // Validate input data
+  if (
+    process.env['NODE_ENV'] === 'development' ||
+    process.env['NODE_ENV'] === 'test'
+  ) {
+    const validation = createContentCategorySchema.safeParse(data);
+    if (!validation.success) {
+      throw new Error(
+        `CreateContentCategory validation failed: ${validation.error.message}`
+      );
+    }
+  }
+
+  return {
+    name: data.name,
+    slug: data.slug,
+    description: data.description ?? null,
+    parentId: data.parentId ?? null,
+    orderIndex: data.orderIndex ?? 0,
+    theologicalDiscipline: data.theologicalDiscipline ?? null,
+    movementRelevanceScore: data.movementRelevanceScore ?? 5,
+    apestRelevance: data.apestRelevance ?? {
+      apostolic: 5,
+      prophetic: 5,
+      evangelistic: 5,
+      shepherding: 5,
+      teaching: 5,
+    },
+    metaDescription: data.metaDescription ?? null,
+    keywords: data.keywords ?? [],
+    isActive: data.isActive ?? true,
+  };
+}
+
+/**
+ * Map UpdateContentCategory to database update format
+ */
+export function fromUpdateContentCategory(
+  data: UpdateContentCategory
+): Partial<NewContentCategoryRow> {
+  // Validate input data
+  if (
+    process.env['NODE_ENV'] === 'development' ||
+    process.env['NODE_ENV'] === 'test'
+  ) {
+    const validation = updateContentCategorySchema.safeParse(data);
+    if (!validation.success) {
+      throw new Error(
+        `UpdateContentCategory validation failed: ${validation.error.message}`
+      );
+    }
+  }
+
+  const updateData: Partial<NewContentCategoryRow> = {
+    updatedAt: new Date(),
+  };
+
+  // Only include defined fields
+  if (data['name'] !== undefined) updateData['name'] = data['name'];
+  if (data['description'] !== undefined)
+    updateData['description'] = data['description'] ?? null;
+  if (data['parentId'] !== undefined)
+    updateData['parentId'] = data['parentId'] ?? null;
+  if (data['orderIndex'] !== undefined)
+    updateData['orderIndex'] = data['orderIndex'];
+  if (data['theologicalDiscipline'] !== undefined)
+    updateData['theologicalDiscipline'] = data['theologicalDiscipline'] ?? null;
+  if (data['movementRelevanceScore'] !== undefined)
+    updateData['movementRelevanceScore'] = data['movementRelevanceScore'];
+  if (data['apestRelevance'] !== undefined)
+    updateData['apestRelevance'] = data['apestRelevance'];
+  if (data['metaDescription'] !== undefined)
+    updateData['metaDescription'] = data['metaDescription'] ?? null;
+  if (data['keywords'] !== undefined) updateData['keywords'] = data['keywords'];
+  if (data['isActive'] !== undefined) updateData['isActive'] = data['isActive'];
+
+  return updateData;
+}
+
+/**
+ * Map CreateContentSeries to database insert format
+ */
+export function fromCreateContentSeries(
+  data: CreateContentSeries
+): NewContentSeriesRow {
+  // Validate input data
+  if (
+    process.env['NODE_ENV'] === 'development' ||
+    process.env['NODE_ENV'] === 'test'
+  ) {
+    const validation = createContentSeriesSchema.safeParse(data);
+    if (!validation.success) {
+      throw new Error(
+        `CreateContentSeries validation failed: ${validation.error.message}`
+      );
+    }
+  }
+
+  return {
+    title: data.title,
+    slug: data.slug,
+    description: data.description ?? null,
+    authorId: data.authorId,
+    collaborators: data.collaborators ?? [],
+    seriesType: data.seriesType,
+    difficulty: data.difficulty ?? 'intermediate',
+    estimatedDuration: data.estimatedDuration ?? null,
+    primaryCategoryId: data.primaryCategoryId ?? null,
+    tags: data.tags ?? [],
+    visibility: data.visibility ?? 'public',
+    status: data.status ?? 'draft',
+    featuredImageUrl: data.featuredImageUrl ?? null,
+    metaDescription: data.metaDescription ?? null,
+    publishedAt: data.publishedAt ? new Date(data.publishedAt) : null,
+  };
+}
+
+/**
+ * Map UpdateContentSeries to database update format
+ */
+export function fromUpdateContentSeries(
+  data: UpdateContentSeries
+): Partial<NewContentSeriesRow> {
+  // Validate input data
+  if (
+    process.env['NODE_ENV'] === 'development' ||
+    process.env['NODE_ENV'] === 'test'
+  ) {
+    const validation = updateContentSeriesSchema.safeParse(data);
+    if (!validation.success) {
+      throw new Error(
+        `UpdateContentSeries validation failed: ${validation.error.message}`
+      );
+    }
+  }
+
+  const updateData: Partial<NewContentSeriesRow> = {
+    updatedAt: new Date(),
+  };
+
+  // Only include defined fields
+  if (data.title !== undefined) updateData.title = data.title;
+  if (data.description !== undefined)
+    updateData.description = data.description ?? null;
+  if (data.collaborators !== undefined)
+    updateData.collaborators = data.collaborators;
+  if (data.seriesType !== undefined) updateData.seriesType = data.seriesType;
+  if (data.difficulty !== undefined) updateData.difficulty = data.difficulty;
+  if (data.estimatedDuration !== undefined)
+    updateData.estimatedDuration = data.estimatedDuration ?? null;
+  if (data.primaryCategoryId !== undefined)
+    updateData.primaryCategoryId = data.primaryCategoryId ?? null;
+  if (data.tags !== undefined) updateData.tags = data.tags;
+  if (data.visibility !== undefined) updateData.visibility = data.visibility;
+  if (data.status !== undefined) updateData.status = data.status;
+  if (data.featuredImageUrl !== undefined)
+    updateData.featuredImageUrl = data.featuredImageUrl ?? null;
+  if (data.metaDescription !== undefined)
+    updateData.metaDescription = data.metaDescription ?? null;
+  if (data.publishedAt !== undefined)
+    updateData.publishedAt = data.publishedAt
+      ? new Date(data.publishedAt)
+      : null;
+
+  return updateData;
+}
+
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
+/**
+ * Check if content is publicly accessible
+ */
+export function isContentPublic(content: ContentItemResponse): boolean {
+  return content.isPublished && content.visibility === 'public';
+}
+
+/**
+ * Get content reading time estimate
+ */
+export function getReadingTimeEstimate(content: ContentItemResponse): string {
+  return content.readingTimeText;
+}
+
+/**
+ * Map array of ContentItemRow to array of ContentItemEntity
+ */
+export function toContentItemEntityArray(
+  rows: ContentItemRow[]
+): ContentItemEntity[] {
+  return rows.map(toContentItemEntity);
+}
+
+/**
+ * Map array of ContentItemRow to array of ContentItemResponse
+ */
+export function toContentItemResponseArray(
+  rows: (ContentItemRow & {
+    author?: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      displayName?: string;
+      avatarUrl?: string;
+    };
+    primaryCategory?: {
+      id: string;
+      name: string;
+      slug: string;
+    };
+    series?: {
+      id: string;
+      title: string;
+      slug: string;
+      totalEpisodes: number;
+    };
+    coAuthors?: Array<{
+      id: string;
+      firstName: string;
+      lastName: string;
+      displayName?: string;
+    }>;
+  })[]
+): ContentItemResponse[] {
+  return rows.map(toContentItemResponseDTO);
+}
+
+/**
+ * Map array of ContentCategoryRow to array of ContentCategoryEntity
+ */
+export function toContentCategoryEntityArray(
+  rows: ContentCategoryRow[]
+): ContentCategoryEntity[] {
+  return rows.map(toContentCategoryEntity);
+}
+
+/**
+ * Map array of ContentCategoryRow to array of ContentCategoryResponse
+ */
+export function toContentCategoryResponseArray(
+  rows: (ContentCategoryRow & {
+    parent?: { id: string; name: string; slug: string };
+    children?: Array<{
+      id: string;
+      name: string;
+      slug: string;
+      contentCount: number;
+    }>;
+    contentCount?: number;
+    childCount?: number;
+  })[]
+): ContentCategoryResponse[] {
+  return rows.map(toContentCategoryResponseDTO);
+}
+
+/**
+ * Map array of ContentSeriesRow to array of ContentSeriesEntity
+ */
+export function toContentSeriesEntityArray(
+  rows: ContentSeriesRow[]
+): ContentSeriesEntity[] {
+  return rows.map(toContentSeriesEntity);
+}
+
+/**
+ * Map array of ContentSeriesRow to array of ContentSeriesResponse
+ */
+export function toContentSeriesResponseArray(
+  rows: (ContentSeriesRow & {
+    author?: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      displayName?: string;
+    };
+    category?: {
+      id: string;
+      name: string;
+      slug: string;
+    };
+    episodes?: Array<{
+      id: string;
+      title: string;
+      slug: string;
+      order: number;
+      status: string;
+      publishedAt?: string;
+    }>;
+  })[]
+): ContentSeriesResponse[] {
+  return rows.map(toContentSeriesResponseDTO);
+}
+
+// ============================================================================
+// TYPE EXPORTS
+// ============================================================================
+
+export type ContentItemMapperInput = ContentItemRow;
+export type ContentItemMapperOutput = ContentItemEntity;
+export type ContentItemResponseMapperInput = ContentItemRow & {
+  author?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    displayName?: string;
+    avatarUrl?: string;
+  };
+  primaryCategory?: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  series?: {
+    id: string;
+    title: string;
+    slug: string;
+    totalEpisodes: number;
+  };
+  coAuthors?: Array<{
+    id: string;
+    firstName: string;
+    lastName: string;
+    displayName?: string;
+  }>;
+};
+export type ContentItemResponseMapperOutput = ContentItemResponse;
+
+export type ContentCategoryMapperInput = ContentCategoryRow;
+export type ContentCategoryMapperOutput = ContentCategoryEntity;
+export type ContentCategoryResponseMapperInput = ContentCategoryRow & {
+  parent?: { id: string; name: string; slug: string };
+  children?: Array<{
+    id: string;
+    name: string;
+    slug: string;
+    contentCount: number;
+  }>;
+  contentCount?: number;
+  childCount?: number;
+};
+export type ContentCategoryResponseMapperOutput = ContentCategoryResponse;
+
+export type ContentSeriesMapperInput = ContentSeriesRow;
+export type ContentSeriesMapperOutput = ContentSeriesEntity;
+export type ContentSeriesResponseMapperInput = ContentSeriesRow & {
+  author?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    displayName?: string;
+  };
+  category?: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  episodes?: Array<{
+    id: string;
+    title: string;
+    slug: string;
+    order: number;
+    status: string;
+    publishedAt?: string;
+  }>;
+};
+export type ContentSeriesResponseMapperOutput = ContentSeriesResponse;
+
+// ============================================================================
+// MAPPER OBJECTS
+// ============================================================================
+
+export const contentItemMapper = {
+  toEntity: toContentItemEntity,
+  toResponse: toContentItemResponseDTO,
+  fromCreate: fromCreateContentItem,
+  fromUpdate: fromUpdateContentItem,
+  toEntityArray: toContentItemEntityArray,
+  toResponseArray: toContentItemResponseArray,
+  isPublic: isContentPublic,
+  getReadingTime: getReadingTimeEstimate,
+};
+
+export const contentCategoryMapper = {
+  toEntity: toContentCategoryEntity,
+  toResponse: toContentCategoryResponseDTO,
+  fromCreate: fromCreateContentCategory,
+  fromUpdate: fromUpdateContentCategory,
+  toEntityArray: toContentCategoryEntityArray,
+  toResponseArray: toContentCategoryResponseArray,
+};
+
+export const contentSeriesMapper = {
+  toEntity: toContentSeriesEntity,
+  toResponse: toContentSeriesResponseDTO,
+  fromCreate: fromCreateContentSeries,
+  fromUpdate: fromUpdateContentSeries,
+  toEntityArray: toContentSeriesEntityArray,
+  toResponseArray: toContentSeriesResponseArray,
+};
+
+// Legacy exports for backward compatibility
+export const toContentItemWithDetailsDTO = toContentItemResponseDTO;
+export const toContentSeriesWithDetailsDTO = toContentSeriesResponseDTO;

@@ -3,7 +3,7 @@ import {
   ministryPlatformErrorSchema,
   organizationScopedRequestSchema,
   roleBasedValidationSchema,
-} from '@/lib/contracts';
+} from '@platform/contracts';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -460,7 +460,7 @@ function getFieldPermissions(role: string): Record<string, boolean> {
     },
   };
 
-  return fieldPermissions[role] || fieldPermissions.viewer;
+  return fieldPermissions[role] || fieldPermissions['viewer'];
 }
 
 // ============================================================================

@@ -75,11 +75,11 @@ export async function globalSearch(
   context: QueryContext,
   filters: SearchFilters = {}
 ): Promise<{
-  users: SearchResult<typeof userProfiles.$inferSelect>;
-  content: SearchResult<typeof contentItems.$inferSelect>;
-  communities: SearchResult<typeof communities.$inferSelect>;
-  organizations: SearchResult<typeof organizations.$inferSelect>;
-  assessments: SearchResult<typeof assessments.$inferSelect>;
+  users: SearchResult<any>;
+  content: SearchResult<any>;
+  communities: SearchResult<any>;
+  organizations: SearchResult<any>;
+  assessments: SearchResult<any>;
 }> {
   const [users, content, communities, organizations, assessments] =
     await Promise.all([
@@ -135,7 +135,7 @@ export async function searchUsers(
   ];
 
   if (ministryRole) {
-    conditions.push(eq(userProfiles.ministryRole, ministryRole));
+    conditions.push(eq(userProfiles.ministryRole, ministryRole as any));
   }
   if (denomination) {
     conditions.push(eq(userProfiles.denomination, denomination));
@@ -144,10 +144,10 @@ export async function searchUsers(
     conditions.push(eq(userProfiles.countryCode, countryCode));
   }
   if (culturalContext) {
-    conditions.push(eq(userProfiles.culturalContext, culturalContext));
+    conditions.push(eq(userProfiles.culturalContext, culturalContext as any));
   }
   if (leaderTier) {
-    conditions.push(eq(userProfiles.leaderTier, leaderTier));
+    conditions.push(eq(userProfiles.leaderTier, leaderTier as any));
   }
 
   // Add context-based filtering
@@ -234,7 +234,7 @@ export async function searchContent(
   ];
 
   if (contentType) {
-    conditions.push(eq(contentItems.contentType, contentType));
+    conditions.push(eq(contentItems.contentType, contentType as any));
   }
   if (categoryId) {
     conditions.push(eq(contentItems.primaryCategoryId, categoryId));
@@ -329,7 +329,7 @@ export async function searchCommunities(
   ];
 
   if (communityType) {
-    conditions.push(eq(communities.communityType, communityType));
+    conditions.push(eq(communities.communityType, communityType as any));
   }
   if (languagePrimary) {
     conditions.push(eq(communities.languagePrimary, languagePrimary));
@@ -415,10 +415,12 @@ export async function searchOrganizations(
   ];
 
   if (organizationType) {
-    conditions.push(eq(organizations.organizationType, organizationType));
+    conditions.push(
+      eq(organizations.organizationType, organizationType as any)
+    );
   }
   if (sizeCategory) {
-    conditions.push(eq(organizations.sizeCategory, sizeCategory));
+    conditions.push(eq(organizations.sizeCategory, sizeCategory as any));
   }
 
   // Add context-based filtering for non-admin users
@@ -495,7 +497,7 @@ export async function searchAssessments(
   ];
 
   if (assessmentType) {
-    conditions.push(eq(assessments.assessmentType, assessmentType));
+    conditions.push(eq(assessments.assessmentType, assessmentType as any));
   }
 
   const orderByField =
@@ -598,7 +600,7 @@ export async function searchUsersByApestProfile(
     );
   }
   if (leaderTier) {
-    conditions.push(eq(userProfiles.leaderTier, leaderTier));
+    conditions.push(eq(userProfiles.leaderTier, leaderTier as any));
   }
 
   // Add context-based filtering
@@ -656,15 +658,15 @@ export async function searchContentByTheologicalThemes(
 
   // Add context-based filtering for draft content
   if (context.userId && context.role !== 'admin') {
-    conditions.push(
-      or(
-        eq(contentItems.status, 'published'),
-        and(
-          eq(contentItems.status, 'draft'),
-          eq(contentItems.authorId, context.userId)
-        )
-      )
+    const publishedCondition = eq(contentItems.status, 'published');
+    const draftCondition = and(
+      eq(contentItems.status, 'draft'),
+      eq(contentItems.authorId, context.userId)
     );
+    const combinedCondition = or(publishedCondition, draftCondition);
+    if (combinedCondition) {
+      conditions.push(combinedCondition);
+    }
   }
 
   const [results, totalCount] = await Promise.all([

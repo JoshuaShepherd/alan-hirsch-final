@@ -162,10 +162,10 @@ export function ConditionalRenderWithEnvironment({
   fallback,
   className,
 }: ConditionalRenderWithEnvironmentProps) {
-  const currentEnv = process.env.NODE_ENV;
+  const currentEnv = process.env['NODE_ENV'];
   const allowedEnvs = Array.isArray(environment) ? environment : [environment];
 
-  if (!allowedEnvs.includes(currentEnv)) {
+  if (!allowedEnvs.includes(currentEnv || 'development')) {
     return fallback ? <div className={className}>{fallback}</div> : null;
   }
 
@@ -324,7 +324,7 @@ export function withConditionalRender<T extends Record<string, any>>(
 ) {
   return function ConditionalComponent(props: T) {
     if (!condition(props)) {
-      return fallback ? <fallback {...props} /> : null;
+      return fallback ? React.createElement(fallback, props) : null;
     }
 
     return <Component {...props} />;
@@ -344,7 +344,7 @@ export function withPermission(
     const hasPermission = true; // Replace with actual permission check
 
     if (!hasPermission) {
-      return fallback ? <fallback {...props} /> : null;
+      return fallback ? React.createElement(fallback, props) : null;
     }
 
     return <Component {...props} />;
@@ -364,7 +364,7 @@ export function withFeatureFlag(
     const featureEnabled = true; // Replace with actual feature flag check
 
     if (!featureEnabled) {
-      return fallback ? <fallback {...props} /> : null;
+      return fallback ? React.createElement(fallback, props) : null;
     }
 
     return <Component {...props} />;
