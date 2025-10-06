@@ -1,0 +1,34 @@
+{
+  "timestamp": "2025-10-03T23:25:40.640Z",
+  "totalTests": 3,
+  "passedTests": 0,
+  "failedTests": 3,
+  "skippedTests": 0,
+  "totalDuration": 363740,
+  "testResults": [
+    {
+      "testName": "User Registration Journey",
+      "status": "failed",
+      "duration": 0,
+      "error": "Command failed: npx playwright test tests/e2e/registration-journey.spec.ts --reporter=json"
+    },
+    {
+      "testName": "Assessment Taking Journey",
+      "status": "failed",
+      "duration": 0,
+      "error": "Command failed: npx playwright test tests/e2e/assessment-journey.spec.ts --reporter=json"
+    },
+    {
+      "testName": "Content Management Journey",
+      "status": "failed",
+      "duration": 0,
+      "error": "Command failed: npx playwright test tests/e2e/content-journey.spec.ts --reporter=json"
+    }
+  ],
+  "summary": {
+    "registrationJourney": false,
+    "assessmentJourney": false,
+    "contentJourney": false,
+    "overallStatus": "failed"
+  }
+}

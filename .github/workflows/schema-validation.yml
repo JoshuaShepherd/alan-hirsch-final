@@ -1,0 +1,100 @@
+name: Schema Alignment Validation
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'packages/contracts/**'
+      - 'apps/alan-hirsch-platform/lib/mappers/**'
+      - 'apps/alan-hirsch-platform/types/**'
+      - 'apps/alan-hirsch-platform/validations/**'
+      - 'scripts/validate-schema-alignment.ts'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'packages/contracts/**'
+      - 'apps/alan-hirsch-platform/lib/mappers/**'
+      - 'apps/alan-hirsch-platform/types/**'
+      - 'apps/alan-hirsch-platform/validations/**'
+      - 'scripts/validate-schema-alignment.ts'
+
+jobs:
+  validate-schema-alignment:
+    name: Validate Schema Alignment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build contracts package
+        run: npm run packages:build --filter='@platform/contracts'
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Validate schema alignment
+        run: npm run validate:schemas
+
+      - name: Run mapper tests (if any exist)
+        run: |
+          if [ -f "__tests__/mappers/validation.test.ts" ]; then
+            npm test __tests__/mappers/validation.test.ts
+          else
+            echo "No mapper validation tests found - skipping"
+          fi
+        continue-on-error: true
+
+      - name: Upload validation results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: schema-validation-results
+          path: |
+            test-results/
+            coverage/
+          retention-days: 7
+
+  validate-contract-changes:
+    name: Validate Contract Changes
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, '[contracts]') || contains(github.event.pull_request.title, '[contracts]')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build all packages
+        run: npm run packages:build
+
+      - name: Full validation suite
+        run: |
+          npm run type-check
+          npm run lint
+          npm run validate:schemas
+
+      - name: Check for breaking changes
+        run: |
+          echo "Checking for potential breaking changes in contracts..."
+          # This could be expanded to run a more sophisticated breaking change detector
+          if git diff --name-only HEAD~1 HEAD | grep -q "packages/contracts/"; then
+            echo "Contract changes detected - manual review recommended"
+          fi

@@ -1,13 +1,16 @@
-import { createMockDatabase, testDataFactories } from '@/lib/mocks';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  createMockDatabase,
+  testDataFactories,
+} from '../../utils/test-imports';
 
 // Mock the database module
-vi.mock('@/lib/db/drizzle', () => ({
+vi.mock('@platform/database/drizzle', () => ({
   db: createMockDatabase(),
 }));
 
 // Import the mocked database
-import { db } from '@/lib/db/drizzle';
+import { db } from '@platform/database/drizzle';
 
 // Mock API route handlers
 const mockHandler = vi.fn();
@@ -68,7 +71,7 @@ describe('/api/user/profile', () => {
 
       const result = await mockHandler(testDataFactories.userProfile(), {
         user: testUser,
-        db: db,
+        db,
       });
 
       expect(result.success).toBe(true);
@@ -106,7 +109,7 @@ describe('/api/user/profile', () => {
       await expect(
         mockHandler(testDataFactories.userProfile(), {
           user: testUser,
-          db: db,
+          db,
         })
       ).rejects.toThrow('Profile not found');
     });
@@ -160,7 +163,7 @@ describe('/api/user/profile', () => {
 
       const result = await mockHandler(updateData, {
         user: testUser,
-        db: db,
+        db,
       });
 
       expect(result.success).toBe(true);
@@ -237,7 +240,7 @@ describe('/api/user/profile', () => {
 
       const result = await mockHandler(newProfileData, {
         user: testUser,
-        db: db,
+        db,
       });
 
       expect(result.success).toBe(true);
@@ -280,7 +283,7 @@ describe('/api/user/profile', () => {
       await expect(
         mockHandler(testDataFactories.userProfile(), {
           user: testUser,
-          db: db,
+          db,
         })
       ).rejects.toThrow('Profile already exists');
     });

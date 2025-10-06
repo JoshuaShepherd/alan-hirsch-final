@@ -1,16 +1,16 @@
-import { createMockDatabase, testDataFactories } from '@/lib/mocks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createMockDatabase, testDataFactories } from '../utils/test-imports';
 
 // Mock the database module
-vi.mock('@/lib/db/drizzle', () => ({
+vi.mock('@platform/database/drizzle', () => ({
   db: createMockDatabase(),
 }));
 
 // Import the mocked database
-import { db } from '@/lib/db/drizzle';
+import { db } from '@platform/database/drizzle';
 
 // Mock the mappers
-vi.mock('@/lib/mappers/assessments', () => ({
+vi.mock('@platform/shared/mappers/assessments', () => ({
   toAssessmentResponseDTO: vi.fn(assessment => ({
     id: assessment.id,
     name: assessment.name,
@@ -44,7 +44,7 @@ vi.mock('@/lib/mappers/assessments', () => ({
 }));
 
 // Mock the contracts
-vi.mock('@/lib/contracts', () => ({
+vi.mock('@platform/shared/contracts', () => ({
   createAssessmentRequestSchema: {
     parse: vi.fn(data => data),
   },
@@ -60,9 +60,9 @@ vi.mock('@/lib/contracts', () => ({
 }));
 
 // Import the route handlers after mocking
-import { GET as getAssessmentById } from '@/app/api/assessments/[id]/route';
-import { GET as getAssessments } from '@/app/api/assessments/route';
 import { NextRequest } from 'next/server';
+import { GET as getAssessmentById } from '../../apps/alan-hirsch-platform/app/api/assessments/[id]/route';
+import { GET as getAssessments } from '../../apps/alan-hirsch-platform/app/api/assessments/route';
 
 describe('/api/assessments', () => {
   beforeEach(() => {
@@ -180,14 +180,14 @@ describe('/api/assessments', () => {
       const mockQuestions = [
         testDataFactories.assessmentQuestionResponse({
           id: 'q1',
-          assessmentId: assessmentId,
+          assessmentId,
           questionText: 'Test question 1',
           orderIndex: 1,
           questionType: 'multiple_choice',
         }),
         testDataFactories.assessmentQuestionResponse({
           id: 'q2',
-          assessmentId: assessmentId,
+          assessmentId,
           questionText: 'Test question 2',
           orderIndex: 2,
           questionType: 'multiple_choice',

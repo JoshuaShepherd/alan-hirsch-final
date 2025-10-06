@@ -1,5 +1,4 @@
 import { vi } from 'vitest';
-import type { testDataFactories } from '@/lib/test-utils';
 
 /**
  * Centralized Database Mock Utilities
@@ -290,7 +289,7 @@ export function createMockDatabaseWithTransaction<T = any>(
       txMock.update.mockImplementation(() => createMockUpdateBuilder(data));
       txMock.delete.mockImplementation(() => createMockDeleteBuilder(data));
 
-      return await callback(txMock);
+      return callback(txMock);
     });
 
   mockDb.transaction = mockTransaction;

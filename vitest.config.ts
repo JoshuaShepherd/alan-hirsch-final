@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitest/config';
 import { resolve } from 'path';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -17,6 +17,9 @@ export default defineConfig({
       'build',
       'coverage',
       'tests/e2e/**/*',
+      'lib/db/setup.ts',
+      'lib/db/seed.ts',
+      'lib/db/reset.ts',
     ],
     coverage: {
       provider: 'v8',
@@ -43,8 +46,9 @@ export default defineConfig({
         },
       },
     },
-    testTimeout: 10000,
-    hookTimeout: 10000,
+    testTimeout: 5000,
+    hookTimeout: 5000,
+    teardownTimeout: 5000,
     // Ensure proper module resolution for tests
     pool: 'forks',
     poolOptions: {
@@ -57,10 +61,18 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, './'),
       '@/lib': resolve(__dirname, './lib'),
-      '@/components': resolve(__dirname, './components'),
+      '@/components/ui': resolve(__dirname, './packages/ui/src'),
       '@/app': resolve(__dirname, './app'),
       '@/types': resolve(__dirname, './types'),
       '@/validations': resolve(__dirname, './validations'),
+      // Monorepo package aliases
+      '@platform/database': resolve(__dirname, './packages/database/src'),
+      '@platform/database/drizzle': resolve(__dirname, './packages/database/src/db/drizzle'),
+      '@platform/shared': resolve(__dirname, './packages/shared/src'),
+      '@platform/shared/mappers': resolve(__dirname, './packages/shared/src/mappers'),
+      '@platform/shared/contracts': resolve(__dirname, './packages/shared/src/contracts'),
+      '@platform/contracts': resolve(__dirname, './packages/contracts/src'),
+      '@platform/ui': resolve(__dirname, './packages/ui/src'),
     },
   },
   // Ensure proper handling of ES modules and CommonJS

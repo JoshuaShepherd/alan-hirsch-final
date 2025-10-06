@@ -8,13 +8,13 @@
 // Database mocks
 export {
   createMockDatabase,
-  createMockDatabaseWithResponses,
-  createMockDatabaseWithPagination,
   createMockDatabaseWithCount,
+  createMockDatabaseWithPagination,
+  createMockDatabaseWithResponses,
   createMockDatabaseWithTransaction,
+  mockDatabaseConfigs,
   resetMockDatabase,
   verifyDatabaseCalls,
-  mockDatabaseConfigs,
   type MockDatabaseConfig,
   type MockQueryResult,
 } from './database';
@@ -22,11 +22,11 @@ export {
 // Supabase mocks
 export {
   createMockSupabaseClient,
-  createMockSupabaseClientWithResponses,
   createMockSupabaseClientWithRLS,
   createMockSupabaseClientWithRealtime,
-  resetMockSupabaseClient,
+  createMockSupabaseClientWithResponses,
   mockSupabaseConfigs,
+  resetMockSupabaseClient,
   type MockSupabaseConfig,
 } from './supabase';
 
@@ -35,25 +35,25 @@ export {
   createMockStripeClient,
   createMockStripeClientWithResponses,
   createMockStripeClientWithWebhooks,
-  resetMockStripeClient,
   mockStripeConfigs,
-  type MockStripeConfig,
-  type MockCustomer,
-  type MockSubscription,
+  resetMockStripeClient,
   type MockCheckoutSession,
+  type MockCustomer,
+  type MockStripeConfig,
+  type MockSubscription,
 } from './stripe';
 
 // Re-export test utilities for convenience
 export {
-  testDataFactories,
-  createTestUser,
-  cleanupTestUser,
-  createTestRequest,
-  mockSupabaseAuth,
-  mockDatabaseResponse,
-  seedTestUser,
   cleanupTestData,
+  cleanupTestUser,
   createMockDatabase as createMockDb,
-  createMockSupabaseClient as createMockSupabase,
   createMockStripeClient as createMockStripe,
-} from '@/lib/test-utils';
+  createMockSupabaseClient as createMockSupabase,
+  createTestRequest,
+  createTestUser,
+  mockDatabaseResponse,
+  mockSupabaseAuth,
+  seedTestUser,
+  testDataFactories,
+} from '../../apps/alan-hirsch-platform/lib/test-utils';

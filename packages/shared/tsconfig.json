@@ -1,0 +1,36 @@
+{
+  "extends": "../../tsconfig.packages.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+    "noEmit": false,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "isolatedModules": false,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@platform/contracts": ["../contracts/src"],
+      "@platform/contracts/*": ["../contracts/src/*"],
+      "@platform/database": ["../database/src"],
+      "@platform/database/*": ["../database/src/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ],
+  "references": [
+    { "path": "../contracts" },
+    { "path": "../database" },
+    { "path": "../ui" }
+  ]
+}

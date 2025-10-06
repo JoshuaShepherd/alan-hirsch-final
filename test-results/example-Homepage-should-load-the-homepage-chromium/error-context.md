@@ -1,0 +1,153 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - heading "AcademicPub" [level=1] [ref=e6]
+      - navigation [ref=e7]:
+        - link "Dashboard" [ref=e8] [cursor=pointer]:
+          - /url: /dashboard
+          - generic [ref=e9] [cursor=pointer]:
+            - img [ref=e10] [cursor=pointer]
+            - generic [ref=e15] [cursor=pointer]: Dashboard
+          - img [ref=e16] [cursor=pointer]
+        - link "Articles" [ref=e18] [cursor=pointer]:
+          - /url: /articles
+          - generic [ref=e19] [cursor=pointer]:
+            - img [ref=e20] [cursor=pointer]
+            - generic [ref=e23] [cursor=pointer]: Articles
+        - link "Drafts" [ref=e24] [cursor=pointer]:
+          - /url: /drafts
+          - generic [ref=e25] [cursor=pointer]:
+            - img [ref=e26] [cursor=pointer]
+            - generic [ref=e28] [cursor=pointer]: Drafts
+        - link "Reviews" [ref=e29] [cursor=pointer]:
+          - /url: /reviews
+          - generic [ref=e30] [cursor=pointer]:
+            - img [ref=e31] [cursor=pointer]
+            - generic [ref=e33] [cursor=pointer]: Reviews
+        - link "Analytics" [ref=e34] [cursor=pointer]:
+          - /url: /analytics
+          - generic [ref=e35] [cursor=pointer]:
+            - img [ref=e36] [cursor=pointer]
+            - generic [ref=e38] [cursor=pointer]: Analytics
+        - link "Settings" [ref=e39] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e40] [cursor=pointer]:
+            - img [ref=e41] [cursor=pointer]
+            - generic [ref=e44] [cursor=pointer]: Settings
+      - generic [ref=e46] [cursor=pointer]:
+        - generic [ref=e48] [cursor=pointer]: JS
+        - generic [ref=e49] [cursor=pointer]:
+          - paragraph [ref=e50] [cursor=pointer]: John Scholar
+          - paragraph [ref=e51] [cursor=pointer]: john@university.edu
+    - generic [ref=e52]:
+      - generic [ref=e53]:
+        - navigation [ref=e55]:
+          - generic [ref=e56]: Dashboard
+          - generic [ref=e57]: /
+          - generic [ref=e58]: Overview
+        - generic [ref=e59]:
+          - generic [ref=e60]:
+            - img [ref=e61]
+            - textbox "Search articles, authors..." [ref=e64]
+          - button "Toggle theme" [ref=e65] [cursor=pointer]:
+            - img [ref=e66] [cursor=pointer]
+            - img
+            - generic [ref=e72] [cursor=pointer]: Toggle theme
+          - button [ref=e73] [cursor=pointer]:
+            - img [ref=e74] [cursor=pointer]
+          - button [ref=e78] [cursor=pointer]:
+            - img [ref=e79] [cursor=pointer]
+      - main [ref=e82]:
+        - generic [ref=e84]:
+          - generic [ref=e85]:
+            - generic [ref=e86]:
+              - heading "Welcome back, Dr. Scholar" [level=1] [ref=e87]
+              - paragraph [ref=e88]: Here's what's happening in your academic publishing platform today.
+            - button "Create Article" [ref=e89] [cursor=pointer]:
+              - generic [ref=e90] [cursor=pointer]: Create Article
+              - img [ref=e91] [cursor=pointer]
+          - generic [ref=e93]:
+            - generic [ref=e94]:
+              - generic [ref=e95]:
+                - heading "Total Articles" [level=3] [ref=e96]
+                - img [ref=e97]
+              - generic [ref=e100]:
+                - generic [ref=e101]: 1,247
+                - paragraph [ref=e102]: +12% from last month
+            - generic [ref=e103]:
+              - generic [ref=e104]:
+                - heading "Active Authors" [level=3] [ref=e105]
+                - img [ref=e106]
+              - generic [ref=e111]:
+                - generic [ref=e112]: "89"
+                - paragraph [ref=e113]: +5% from last month
+            - generic [ref=e114]:
+              - generic [ref=e115]:
+                - heading "Pending Reviews" [level=3] [ref=e116]
+                - img [ref=e117]
+              - generic [ref=e120]:
+                - generic [ref=e121]: "23"
+                - paragraph [ref=e122]: "-3% from last month"
+            - generic [ref=e123]:
+              - generic [ref=e124]:
+                - heading "Views This Month" [level=3] [ref=e125]
+                - img [ref=e126]
+              - generic [ref=e129]:
+                - generic [ref=e130]: 45.2K
+                - paragraph [ref=e131]: +18% from last month
+          - generic [ref=e132]:
+            - generic [ref=e133]:
+              - heading "Recent Articles" [level=2] [ref=e134]
+              - button "View All" [ref=e135] [cursor=pointer]:
+                - text: View All
+                - img [ref=e136] [cursor=pointer]
+            - generic [ref=e138]:
+              - generic [ref=e139] [cursor=pointer]:
+                - generic [ref=e142] [cursor=pointer]:
+                  - heading "Machine Learning Applications in Climate Science" [level=3] [ref=e143] [cursor=pointer]
+                  - paragraph [ref=e144] [cursor=pointer]: A comprehensive review of how machine learning techniques are revolutionizing climate modeling and prediction.
+                - paragraph [ref=e146] [cursor=pointer]: Dr. Sarah Chen • 2 hours ago
+              - generic [ref=e147] [cursor=pointer]:
+                - generic [ref=e150] [cursor=pointer]:
+                  - heading "Quantum Computing Breakthroughs in 2024" [level=3] [ref=e151] [cursor=pointer]
+                  - paragraph [ref=e152] [cursor=pointer]: Recent advances in quantum computing hardware and algorithms that are pushing the boundaries of computational science.
+                - paragraph [ref=e154] [cursor=pointer]: Prof. Michael Rodriguez • 5 hours ago
+              - generic [ref=e155] [cursor=pointer]:
+                - generic [ref=e158] [cursor=pointer]:
+                  - heading "Sustainable Energy Solutions for Developing Nations" [level=3] [ref=e159] [cursor=pointer]
+                  - paragraph [ref=e160] [cursor=pointer]: Exploring innovative approaches to bringing clean energy to underserved communities worldwide.
+                - paragraph [ref=e162] [cursor=pointer]: Dr. Aisha Patel • 1 day ago
+              - generic [ref=e163] [cursor=pointer]:
+                - generic [ref=e166] [cursor=pointer]:
+                  - heading "The Future of Academic Publishing" [level=3] [ref=e167] [cursor=pointer]
+                  - paragraph [ref=e168] [cursor=pointer]: How open access and digital platforms are transforming the landscape of scholarly communication.
+                - paragraph [ref=e170] [cursor=pointer]: Dr. James Wilson • 2 days ago
+          - generic [ref=e171]:
+            - heading "Quick Actions" [level=2] [ref=e172]
+            - generic [ref=e173]:
+              - generic [ref=e174] [cursor=pointer]:
+                - heading "Start New Article" [level=3] [ref=e176] [cursor=pointer]
+                - generic [ref=e177] [cursor=pointer]:
+                  - paragraph [ref=e178] [cursor=pointer]: Begin writing a new research article with our intuitive editor.
+                  - button "Create Article" [ref=e179] [cursor=pointer]
+              - generic [ref=e180] [cursor=pointer]:
+                - heading "Review Submissions" [level=3] [ref=e182] [cursor=pointer]
+                - generic [ref=e183] [cursor=pointer]:
+                  - paragraph [ref=e184] [cursor=pointer]: Review and provide feedback on pending article submissions.
+                  - button "Start Review" [ref=e185] [cursor=pointer]
+              - generic [ref=e186] [cursor=pointer]:
+                - heading "View Analytics" [level=3] [ref=e188] [cursor=pointer]
+                - generic [ref=e189] [cursor=pointer]:
+                  - paragraph [ref=e190] [cursor=pointer]: Track performance metrics and engagement with your publications.
+                  - button "View Analytics" [ref=e191] [cursor=pointer]
+              - generic [ref=e192] [cursor=pointer]:
+                - heading "Image Showcase" [level=3] [ref=e194] [cursor=pointer]
+                - generic [ref=e195] [cursor=pointer]:
+                  - paragraph [ref=e196] [cursor=pointer]: Explore our curated collection of modern academic imagery and design assets.
+                  - link "View Showcase" [ref=e197] [cursor=pointer]:
+                    - /url: /image-showcase
+  - alert [ref=e198]
+```

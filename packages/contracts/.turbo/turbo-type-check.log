@@ -1,0 +1,5 @@
+
+
+> @platform/contracts@0.1.0 type-check /Users/joshshepherd/Projects/alan-hirsch-final/packages/contracts
+> tsc --noEmit
+
