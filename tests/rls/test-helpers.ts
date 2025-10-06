@@ -5,7 +5,7 @@
  * with mocked Supabase clients that simulate real RLS behavior.
  */
 
-import type { TestUser } from '@/lib/test-utils';
+import type { TestUser } from '@platform/shared/test-utils';
 import { vi } from 'vitest';
 
 export interface MockRLSConfig {

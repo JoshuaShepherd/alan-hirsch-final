@@ -1,5 +1,6 @@
-import { ministryPaginatedResponseSchema, ministryPlatformResponseSchema, } from '@/lib/contracts';
-import { createClient } from '@/lib/supabase/server';
+import { ministryPaginatedResponseSchema, ministryPlatformResponseSchema, } from '@platform/contracts';
+import { createSupabaseServerClient } from '@platform/database';
+import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { ApiError, ErrorCode, handleApiError } from './error-handler';
 import { validateCrossEntityAccess, validateEgressResponse, validateIngressRequest, validateOrganizationContext, validateRoleBasedPermissions, } from './ministry-platform-validation';
@@ -19,20 +20,20 @@ export function createMinistryRouteHandler(config) {
             // Authentication check
             let user = null;
             if (config.requireAuth !== false) {
-                const supabase = await createClient();
+                const supabase = await createSupabaseServerClient();
                 const { data: { user: authUser }, error: authError, } = await supabase.auth.getUser();
                 if (authError || !authUser) {
                     throw new ApiError('Authentication required', ErrorCode.AUTHENTICATION_ERROR, 401);
                 }
                 // TODO: Fetch user profile and organization context from database
                 user = {
+                    ...authUser,
                     id: authUser.id,
                     email: authUser.email || '',
                     ministryRole: 'emerging_leader', // This should come from user profile
                     organizationId: undefined, // This should come from user profile
                     culturalContext: 'western', // This should come from user profile
                     permissions: ['read'], // This should come from user profile
-                    ...authUser,
                 };
             }
             // Create ministry platform context
@@ -120,20 +121,20 @@ export function createMinistryPaginatedRouteHandler(config) {
             // Authentication check
             let user = null;
             if (config.requireAuth !== false) {
-                const supabase = await createClient();
+                const supabase = await createSupabaseServerClient();
                 const { data: { user: authUser }, error: authError, } = await supabase.auth.getUser();
                 if (authError || !authUser) {
                     throw new ApiError('Authentication required', ErrorCode.AUTHENTICATION_ERROR, 401);
                 }
                 // TODO: Fetch user profile and organization context from database
                 user = {
+                    ...authUser,
                     id: authUser.id,
                     email: authUser.email || '',
                     ministryRole: 'emerging_leader',
                     organizationId: undefined,
                     culturalContext: 'western',
                     permissions: ['read'],
-                    ...authUser,
                 };
             }
             // Create ministry platform context
@@ -247,21 +248,15 @@ export function createMinistrySuccessResponse(data, context, message) {
     };
     // Validate response with ministry platform schema
     try {
-        const validatedResponse = ministryPlatformResponseSchema(z.any()).parse(response);
-        return new Response(JSON.stringify(validatedResponse), {
+        const validatedResponse = ministryPlatformResponseSchema.parse(response);
+        return NextResponse.json(validatedResponse, {
             status: 200,
-            headers: {
-                'Content-Type': 'application/json',
-            },
         });
     }
     catch (error) {
         console.error('Ministry platform response validation failed:', error);
-        return new Response(JSON.stringify(response), {
+        return NextResponse.json(response, {
             status: 200,
-            headers: {
-                'Content-Type': 'application/json',
-            },
         });
     }
 }
@@ -307,21 +302,15 @@ export function createMinistryPaginatedResponse(items, pagination, context, mess
     };
     // Validate response with ministry platform paginated schema
     try {
-        const validatedResponse = ministryPaginatedResponseSchema(z.any()).parse(response);
-        return new Response(JSON.stringify(validatedResponse), {
+        const validatedResponse = ministryPaginatedResponseSchema.parse(response);
+        return NextResponse.json(validatedResponse, {
             status: 200,
-            headers: {
-                'Content-Type': 'application/json',
-            },
         });
     }
     catch (error) {
         console.error('Ministry platform paginated response validation failed:', error);
-        return new Response(JSON.stringify(response), {
+        return NextResponse.json(response, {
             status: 200,
-            headers: {
-                'Content-Type': 'application/json',
-            },
         });
     }
 }
@@ -343,4 +332,9 @@ export function createMinistryQuerySchema(baseSchema) {
         culturalContext: z.string().optional(),
     });
 }
+// ============================================================================
+// EXPORT TYPES
+// ============================================================================
+// Note: Types are already exported as interfaces above
+// No need for separate type exports to avoid conflicts
 //# sourceMappingURL=ministry-route-handler.js.map

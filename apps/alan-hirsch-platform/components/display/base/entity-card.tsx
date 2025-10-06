@@ -1,13 +1,10 @@
 'use client';
 
+import { EntityCardProps } from '@/lib/types/component-props';
+import { cn } from '@platform/shared/utils';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '@platform/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@platform/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,8 +12,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@platform/ui/dropdown-menu';
-import { EntityCardProps } from '@/lib/types/component-props';
-import { cn } from '@platform/shared/utils';
 import {
   BookOpen,
   Building,
@@ -51,7 +46,7 @@ const getEntityIcon = (entityType: string, variant: string = 'default') => {
     default: Tag,
   };
 
-  const Icon = iconMap[entityType.toLowerCase()] || iconMap.default;
+  const Icon = iconMap[entityType.toLowerCase()] || iconMap['default'];
   return <Icon className="h-4 w-4" />;
 };
 
@@ -80,99 +75,124 @@ const formatStat = (value: number, type: string = 'number'): string => {
   }
 };
 
-export function EntityCard<T extends Record<string, any>>({
-  item,
+export function EntityCard<T extends BaseEntity>({
+  entity,
   variant = 'default',
   showActions = true,
-  showStats = true,
+  onSelect,
   onEdit,
   onDelete,
   onView,
   className,
 }: EntityCardProps<T>) {
-  // Determine entity type from item structure
+  // Determine entity type from entity structure
   const entityType = (() => {
-    if ('email' in item && 'firstName' in item) return 'user';
-    if ('name' in item && 'organizationType' in item) return 'organization';
-    if ('assessmentType' in item && 'questionsCount' in item)
+    if ('email' in entity && 'firstName' in entity) return 'user';
+    if ('name' in entity && 'organizationType' in entity) return 'organization';
+    if ('assessmentType' in entity && 'questionsCount' in entity)
       return 'assessment';
-    if ('contentType' in item && 'title' in item) return 'content';
-    if ('communityType' in item && 'currentMemberCount' in item)
+    if ('contentType' in entity && 'title' in entity) return 'content';
+    if ('communityType' in entity && 'currentMemberCount' in entity)
       return 'community';
-    if ('planType' in item && 'priceMonthly' in item) return 'subscription';
-    if ('collaborationType' in item && 'leadAuthorId' in item)
+    if ('planType' in entity && 'priceMonthly' in entity) return 'subscription';
+    if ('collaborationType' in entity && 'leadAuthorId' in entity)
       return 'collaboration';
-    if ('postType' in item && 'content' in item) return 'post';
-    if ('parentId' in item && 'theologicalDiscipline' in item)
+    if ('postType' in entity && 'content' in entity) return 'post';
+    if ('parentId' in entity && 'theologicalDiscipline' in entity)
       return 'category';
-    if ('seriesType' in item && 'totalItems' in item) return 'series';
+    if ('seriesType' in entity && 'totalItems' in entity) return 'series';
     return 'default';
   })();
 
   // Extract common fields with fallbacks
-  const title = item.title || item.name || item.displayName || 'Untitled';
-  const description = item.description || item.excerpt || item.bio || '';
+  const title =
+    entity['title'] || entity['name'] || entity['displayName'] || 'Untitled';
+  const description =
+    entity['description'] || entity['excerpt'] || entity['bio'] || '';
   const status =
-    item.status || item.accountStatus || item.visibility || 'active';
-  const createdAt = item.createdAt || item.joinedAt || item.publishedAt;
-  const updatedAt = item.updatedAt || item.lastActiveAt;
+    entity['status'] ||
+    entity['accountStatus'] ||
+    entity['visibility'] ||
+    'active';
+  const createdAt =
+    entity['createdAt'] || entity['joinedAt'] || entity['publishedAt'];
+  const updatedAt = entity['updatedAt'] || entity['lastActiveAt'];
 
   // Extract stats based on entity type
   const stats = (() => {
-    if (!showStats) return [];
-
     switch (entityType) {
       case 'user':
         return [
-          { label: 'Ministry Years', value: item.yearsInMinistry || 0 },
-          { label: 'Leader Tier', value: item.leaderTier || 'N/A' },
-          { label: 'Subscription', value: item.subscriptionTier || 'free' },
+          { label: 'Ministry Years', value: entity['yearsInMinistry'] || 0 },
+          { label: 'Leader Tier', value: entity['leaderTier'] || 'N/A' },
+          {
+            label: 'Subscription',
+            value: entity['subscriptionTier'] || 'free',
+          },
         ];
       case 'organization':
         return [
-          { label: 'Members', value: item.maxUsers || 1 },
-          { label: 'Type', value: item.organizationType || 'N/A' },
-          { label: 'Status', value: item.status || 'active' },
+          { label: 'Members', value: entity['maxUsers'] || 1 },
+          { label: 'Type', value: entity['organizationType'] || 'N/A' },
+          { label: 'Status', value: entity['status'] || 'active' },
         ];
       case 'assessment':
         return [
-          { label: 'Questions', value: item.questionsCount || 0 },
-          { label: 'Duration', value: `${item.estimatedDuration || 0}min` },
-          { label: 'Type', value: item.assessmentType || 'N/A' },
+          { label: 'Questions', value: entity['questionsCount'] || 0 },
+          {
+            label: 'Duration',
+            value: `${entity['estimatedDuration'] || 0}min`,
+          },
+          { label: 'Type', value: entity['assessmentType'] || 'N/A' },
         ];
       case 'content':
         return [
-          { label: 'Views', value: item.viewCount || 0, type: 'compact' },
-          { label: 'Likes', value: item.likeCount || 0, type: 'compact' },
-          { label: 'Type', value: item.contentType || 'N/A' },
+          { label: 'Views', value: entity['viewCount'] || 0, type: 'compact' },
+          { label: 'Likes', value: entity['likeCount'] || 0, type: 'compact' },
+          { label: 'Type', value: entity['contentType'] || 'N/A' },
         ];
       case 'community':
         return [
           {
             label: 'Members',
-            value: item.currentMemberCount || 0,
+            value: entity['currentMemberCount'] || 0,
             type: 'compact',
           },
-          { label: 'Posts', value: item.totalPostsCount || 0, type: 'compact' },
-          { label: 'Type', value: item.communityType || 'N/A' },
+          {
+            label: 'Posts',
+            value: entity['totalPostsCount'] || 0,
+            type: 'compact',
+          },
+          { label: 'Type', value: entity['communityType'] || 'N/A' },
         ];
       case 'subscription':
         return [
-          { label: 'Price', value: item.priceMonthly || 0, type: 'currency' },
-          { label: 'Type', value: item.planType || 'N/A' },
-          { label: 'Trial', value: item.trialDays || 0, suffix: ' days' },
+          {
+            label: 'Price',
+            value: entity['priceMonthly'] || 0,
+            type: 'currency',
+          },
+          { label: 'Type', value: entity['planType'] || 'N/A' },
+          { label: 'Trial', value: entity['trialDays'] || 0, suffix: ' days' },
         ];
       case 'collaboration':
         return [
-          { label: 'Collaborators', value: item.collaborators?.length || 0 },
-          { label: 'Status', value: item.status || 'planning' },
-          { label: 'Type', value: item.collaborationType || 'N/A' },
+          {
+            label: 'Collaborators',
+            value: entity['collaborators']?.length || 0,
+          },
+          { label: 'Status', value: entity['status'] || 'planning' },
+          { label: 'Type', value: entity['collaborationType'] || 'N/A' },
         ];
       case 'post':
         return [
-          { label: 'Upvotes', value: item.upvotes || 0, type: 'compact' },
-          { label: 'Replies', value: item.replyCount || 0, type: 'compact' },
-          { label: 'Type', value: item.postType || 'N/A' },
+          { label: 'Upvotes', value: entity['upvotes'] || 0, type: 'compact' },
+          {
+            label: 'Replies',
+            value: entity['replyCount'] || 0,
+            type: 'compact',
+          },
+          { label: 'Type', value: entity['postType'] || 'N/A' },
         ];
       default:
         return [];
@@ -220,13 +240,13 @@ export function EntityCard<T extends Record<string, any>>({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {onView && (
-                  <DropdownMenuItem onClick={() => onView(item)}>
+                  <DropdownMenuItem onClick={() => onView(entity)}>
                     <Eye className="mr-2 h-4 w-4" />
                     View
                   </DropdownMenuItem>
                 )}
                 {onEdit && (
-                  <DropdownMenuItem onClick={() => onEdit(item)}>
+                  <DropdownMenuItem onClick={() => onEdit(entity)}>
                     <Edit className="mr-2 h-4 w-4" />
                     Edit
                   </DropdownMenuItem>
@@ -235,7 +255,7 @@ export function EntityCard<T extends Record<string, any>>({
                   <>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                      onClick={() => onDelete(item.id || item.userId)}
+                      onClick={() => onDelete(entity.id)}
                       className="text-destructive"
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
@@ -293,13 +313,13 @@ export function EntityCard<T extends Record<string, any>>({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   {onView && (
-                    <DropdownMenuItem onClick={() => onView(item)}>
+                    <DropdownMenuItem onClick={() => onView(entity)}>
                       <Eye className="mr-2 h-4 w-4" />
                       View Details
                     </DropdownMenuItem>
                   )}
                   {onEdit && (
-                    <DropdownMenuItem onClick={() => onEdit(item)}>
+                    <DropdownMenuItem onClick={() => onEdit(entity)}>
                       <Edit className="mr-2 h-4 w-4" />
                       Edit
                     </DropdownMenuItem>
@@ -308,7 +328,7 @@ export function EntityCard<T extends Record<string, any>>({
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
-                        onClick={() => onDelete(item.id || item.userId)}
+                        onClick={() => onDelete(entity.id)}
                         className="text-destructive"
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
@@ -375,7 +395,7 @@ export function EntityCard<T extends Record<string, any>>({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => onView(item)}
+                onClick={() => onView(entity)}
                 className="flex-1"
               >
                 <Eye className="mr-2 h-4 w-4" />
@@ -383,7 +403,11 @@ export function EntityCard<T extends Record<string, any>>({
               </Button>
             )}
             {onEdit && (
-              <Button size="sm" onClick={() => onEdit(item)} className="flex-1">
+              <Button
+                size="sm"
+                onClick={() => onEdit(entity)}
+                className="flex-1"
+              >
                 <Edit className="mr-2 h-4 w-4" />
                 Edit
               </Button>

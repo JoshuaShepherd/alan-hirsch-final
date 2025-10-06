@@ -9,36 +9,44 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-          
+
       - name: Install dependencies
         run: npm install -g pnpm && pnpm install
-        
+
       - name: Type check
         run: pnpm type-check
-        
+
       - name: Lint
         run: pnpm lint
-        
+
       - name: Run tests
-        run: pnpm test
-        
+        run: pnpm test:coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
       - name: Check for raw Drizzle rows in API routes
         run: |
           if grep -r "\.rows\|\.row" app/api/ --include="*.ts" --include="*.tsx"; then
             echo "❌ Found raw Drizzle rows in API routes. Use proper response contracts instead."
             exit 1
           fi
-          
+
       - name: Check for unauthorized z.object definitions
         run: |
           # Check for z.object definitions outside contracts/ and validations/
@@ -48,7 +56,7 @@ jobs:
             grep -v contracts/ | \
             grep -v validations/ | \
             xargs grep -l "z\.object" 2>/dev/null || true)
-          
+
           if [ ! -z "$unauthorized_objects" ]; then
             echo "❌ Found z.object definitions outside contracts/ and validations/:"
             echo "$unauthorized_objects"

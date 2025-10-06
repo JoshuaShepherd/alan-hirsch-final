@@ -2,9 +2,9 @@
 
 import { useContentCategories } from '@/hooks/useContent';
 import { zodResolver } from '@hookform/resolvers/zod';
+import type { CreateContentItemApiRequest } from '@platform/contracts';
+import { createContentItemRequestSchema } from '@platform/contracts';
 import { createSupabaseClient } from '@platform/database';
-import type { CreateContentItemRequest } from '@platform/shared/contracts/content.request';
-import { createContentItemRequestSchema } from '@platform/shared/contracts/content.request';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@platform/ui/card';
@@ -128,7 +128,7 @@ export default function CreateContentPage() {
     setValue('theologicalThemes', updatedThemes);
   };
 
-  const onSubmit = async (data: CreateContentItemRequest) => {
+  const onSubmit = async (data: CreateContentItemApiRequest) => {
     setIsSubmitting(true);
 
     try {

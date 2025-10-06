@@ -3,7 +3,7 @@ import {
   userProfileFormSchema,
   type UserProfileForm,
   type UserProfileResponse,
-} from '@platform/shared/contracts';
+} from '@platform/contracts';
 import { BaseForm } from '@platform/shared/forms/base-form';
 import { FormFieldGroup, FormSection } from '@platform/shared/forms/form-field';
 import { Button } from '@platform/ui/button';
@@ -120,7 +120,7 @@ export function UserProfileForm({
     const currentFocus = form.getValues('theologicalFocus') || [];
     form.setValue(
       'theologicalFocus',
-      currentFocus.filter((_, i) => i !== index)
+      currentFocus.filter((_: string, i: number) => i !== index)
     );
   };
 
@@ -337,26 +337,28 @@ export function UserProfileForm({
             description="Areas of theological interest and expertise"
           >
             <div className="space-y-3">
-              {(form.watch('theologicalFocus') || []).map((focus, index) => (
-                <div key={index} className="flex items-center space-x-2">
-                  <Input
-                    value={focus}
-                    onChange={e =>
-                      updateTheologicalFocus(index, e.target.value)
-                    }
-                    placeholder="e.g., Systematic Theology, Biblical Studies"
-                    className="flex-1"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => removeTheologicalFocus(index)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
+              {(form.watch('theologicalFocus') || []).map(
+                (focus: string, index: number) => (
+                  <div key={index} className="flex items-center space-x-2">
+                    <Input
+                      value={focus}
+                      onChange={e =>
+                        updateTheologicalFocus(index, e.target.value)
+                      }
+                      placeholder="e.g., Systematic Theology, Biblical Studies"
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeTheologicalFocus(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )
+              )}
               <Button
                 type="button"
                 variant="outline"

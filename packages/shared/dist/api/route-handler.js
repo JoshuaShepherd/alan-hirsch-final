@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient } from '@platform/database';
 import { z } from 'zod';
 import { ApiError, ErrorCode, createPaginatedResponse, createSuccessResponse, handleApiError, } from './error-handler';
 // ============================================================================
@@ -17,15 +17,15 @@ export function createRouteHandler(config) {
             // Authentication check
             let user = null;
             if (config.requireAuth !== false) {
-                const supabase = await createClient();
+                const supabase = await createSupabaseServerClient();
                 const { data: { user: authUser }, error: authError, } = await supabase.auth.getUser();
                 if (authError || !authUser) {
                     throw new ApiError('Authentication required', ErrorCode.AUTHENTICATION_ERROR, 401);
                 }
                 user = {
+                    ...authUser,
                     id: authUser.id,
                     email: authUser.email || '',
-                    ...authUser,
                 };
             }
             // Parse and validate input
@@ -82,15 +82,15 @@ export function createPaginatedRouteHandler(config) {
             // Authentication check
             let user = null;
             if (config.requireAuth !== false) {
-                const supabase = await createClient();
+                const supabase = await createSupabaseServerClient();
                 const { data: { user: authUser }, error: authError, } = await supabase.auth.getUser();
                 if (authError || !authUser) {
                     throw new ApiError('Authentication required', ErrorCode.AUTHENTICATION_ERROR, 401);
                 }
                 user = {
+                    ...authUser,
                     id: authUser.id,
                     email: authUser.email || '',
-                    ...authUser,
                 };
             }
             // Parse and validate input
@@ -171,7 +171,7 @@ export function createCrudRoutes(config) {
         outputSchema: config.responseSchema,
         method: 'GET',
         handler: async (_, context) => {
-            const id = context.params?.id;
+            const id = context.params?.['id'];
             if (!id) {
                 throw new ApiError(`${config.entityName} ID is required`, ErrorCode.VALIDATION_ERROR, 400);
             }
@@ -188,7 +188,7 @@ export function createCrudRoutes(config) {
         outputSchema: config.responseSchema,
         method: 'PUT',
         handler: async (data, context) => {
-            const id = context.params?.id;
+            const id = context.params?.['id'];
             if (!id) {
                 throw new ApiError(`${config.entityName} ID is required`, ErrorCode.VALIDATION_ERROR, 400);
             }
@@ -200,7 +200,7 @@ export function createCrudRoutes(config) {
         inputSchema: z.object({}),
         method: 'DELETE',
         handler: async (_, context) => {
-            const id = context.params?.id;
+            const id = context.params?.['id'];
             if (!id) {
                 throw new ApiError(`${config.entityName} ID is required`, ErrorCode.VALIDATION_ERROR, 400);
             }
@@ -254,4 +254,9 @@ export function createBulkSchema(itemSchema) {
         items: z.array(itemSchema).min(1).max(100),
     });
 }
+// ============================================================================
+// Export Types
+// ============================================================================
+// Note: Types are already exported as interfaces above
+// No need for separate type exports to avoid conflicts
 //# sourceMappingURL=route-handler.js.map

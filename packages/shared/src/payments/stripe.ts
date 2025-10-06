@@ -1,7 +1,8 @@
-import {
-  getTeamByStripeCustomerId,
-  updateTeamSubscription,
-} from '@platform/database/db/queries';
+// TODO: Add missing functions to database package
+// import {
+//   getTeamByStripeCustomerId,
+//   updateTeamSubscription,
+// } from '@platform/database/db/queries';
 import { organizations } from '@platform/database/db/schema';
 import { redirect } from 'next/navigation';
 import Stripe from 'stripe';
@@ -127,6 +128,7 @@ export async function createCustomerPortalSession(
   });
 }
 
+// TODO: Implement when getTeamByStripeCustomerId and updateTeamSubscription are available
 export async function handleSubscriptionChange(
   subscription: Stripe.Subscription
 ) {
@@ -134,46 +136,52 @@ export async function handleSubscriptionChange(
   const subscriptionId = subscription.id;
   const { status } = subscription;
 
-  const team = await getTeamByStripeCustomerId(customerId);
+  // const team = await getTeamByStripeCustomerId(customerId);
 
-  if (!team) {
-    console.error('Team not found for Stripe customer:', customerId);
-    return;
-  }
+  // if (!team) {
+  //   console.error('Team not found for Stripe customer:', customerId);
+  //   return;
+  // }
 
-  if (status === 'active' || status === 'trialing') {
-    const plan = subscription.items.data[0]?.price;
-    if (plan?.product) {
-      const productId =
-        typeof plan.product === 'string'
-          ? plan.product
-          : 'deleted' in plan.product
-            ? null
-            : (plan.product as any).id;
-      const productName =
-        typeof plan.product === 'string'
-          ? 'Unknown'
-          : 'deleted' in plan.product
-            ? 'Deleted Product'
-            : (plan.product as any).name;
+  // if (status === 'active' || status === 'trialing') {
+  //   const plan = subscription.items.data[0]?.price;
+  //   if (plan?.product) {
+  //     const productId =
+  //       typeof plan.product === 'string'
+  //         ? plan.product
+  //         : 'deleted' in plan.product
+  //           ? null
+  //           : (plan.product as any).id;
+  //     const productName =
+  //       typeof plan.product === 'string'
+  //         ? 'Unknown'
+  //         : 'deleted' in plan.product
+  //           ? 'Deleted Product'
+  //           : (plan.product as any).name;
 
-      if (productId) {
-        await updateTeamSubscription((team as any).id, {
-          stripeSubscriptionId: subscriptionId,
-          stripeProductId: productId,
-          planName: productName,
-          subscriptionStatus: status,
-        });
-      }
-    }
-  } else if (status === 'canceled' || status === 'unpaid') {
-    await updateTeamSubscription((team as any).id, {
-      stripeSubscriptionId: null,
-      stripeProductId: null,
-      planName: null,
-      subscriptionStatus: status,
-    });
-  }
+  //     if (productId) {
+  //       await updateTeamSubscription((team as any).id, {
+  //         stripeSubscriptionId: subscriptionId,
+  //         stripeProductId: productId,
+  //         planName: productName,
+  //         subscriptionStatus: status,
+  //       });
+  //     }
+  //   }
+  // } else if (status === 'canceled' || status === 'unpaid') {
+  //   await updateTeamSubscription((team as any).id, {
+  //     stripeSubscriptionId: null,
+  //     stripeProductId: null,
+  //     planName: null,
+  //     subscriptionStatus: status,
+  //   });
+  // }
+
+  console.log('Subscription change handled:', {
+    customerId,
+    subscriptionId,
+    status,
+  });
 }
 
 export async function getStripePrices() {

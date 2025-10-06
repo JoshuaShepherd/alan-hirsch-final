@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from '@platform/ui/select';
 import { useContentCategories, useContentItems } from '@/hooks/useContent';
-import type { ContentItemResponse } from '@platform/shared/contracts';
+import type { ContentItemResponse } from '@platform/contracts';
 import {
   Bookmark,
   Calendar,

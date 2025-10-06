@@ -1,13 +1,13 @@
-/**
- * Metrics API Endpoint
- *
- * This endpoint provides system metrics and performance data
- * for monitoring and observability as recommended in the API Infrastructure Improvements Plan.
- */
+// ============================================================================
+// METRICS API ROUTES
+// ============================================================================
+// Type-safe API endpoints for system metrics with proper ingress/egress validation
+// Uses standardized route handlers with ingress/egress validation per alignment reference
 
 import { CacheService } from '@platform/shared/cache/redis';
 import { QueryOptimizer } from '@platform/shared/utils/query-optimizer';
-import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+import { createGetHandler } from '../../../../lib/api/route-handlers';
 
 export interface MetricsResult {
   timestamp: string;
@@ -72,76 +72,120 @@ export interface ApiMetrics {
   averageResponseTime: number;
 }
 
-export async function GET(request: NextRequest): Promise<NextResponse> {
-  const startTime = Date.now();
+// Define metrics response schema
+const MetricsResponseSchema = z.object({
+  timestamp: z.string(),
+  system: z.object({
+    uptime: z.number(),
+    memory: z.object({
+      used: z.number(),
+      total: z.number(),
+      percentage: z.number(),
+    }),
+    cpu: z.object({
+      usage: z.number(),
+    }),
+    version: z.string(),
+    environment: z.string(),
+  }),
+  performance: z.object({
+    responseTime: z.object({
+      average: z.number(),
+      p95: z.number(),
+      p99: z.number(),
+    }),
+    throughput: z.object({
+      requestsPerSecond: z.number(),
+      requestsPerMinute: z.number(),
+    }),
+    errorRate: z.number(),
+  }),
+  cache: z.object({
+    hitRate: z.number(),
+    missRate: z.number(),
+    totalRequests: z.number(),
+    averageResponseTime: z.number(),
+    memoryUsage: z.number(),
+  }),
+  database: z.object({
+    queryCount: z.number(),
+    averageQueryTime: z.number(),
+    slowQueries: z.number(),
+    connectionPool: z.object({
+      active: z.number(),
+      idle: z.number(),
+      total: z.number(),
+    }),
+  }),
+  api: z.object({
+    totalRequests: z.number(),
+    requestsByMethod: z.record(z.number()),
+    requestsByEndpoint: z.record(z.number()),
+    statusCodes: z.record(z.number()),
+    averageResponseTime: z.number(),
+  }),
+});
 
-  try {
-    // Collect metrics from various sources
-    const [
-      systemMetrics,
-      performanceMetrics,
-      cacheMetrics,
-      databaseMetrics,
-      apiMetrics,
-    ] = await Promise.allSettled([
-      getSystemMetrics(),
-      getPerformanceMetrics(),
-      getCacheMetrics(),
-      getDatabaseMetrics(),
-      getApiMetrics(),
-    ]);
+export const GET = createGetHandler({
+  inputSchema: z.object({}), // No input parameters needed
+  outputSchema: MetricsResponseSchema,
+  handler: async () => {
+    try {
+      // Collect metrics from various sources
+      const [
+        systemMetrics,
+        performanceMetrics,
+        cacheMetrics,
+        databaseMetrics,
+        apiMetrics,
+      ] = await Promise.allSettled([
+        getSystemMetrics(),
+        getPerformanceMetrics(),
+        getCacheMetrics(),
+        getDatabaseMetrics(),
+        getApiMetrics(),
+      ]);
 
-    const metricsResult: MetricsResult = {
-      timestamp: new Date().toISOString(),
-      system:
-        systemMetrics.status === 'fulfilled'
-          ? systemMetrics.value
-          : getDefaultSystemMetrics(),
-      performance:
-        performanceMetrics.status === 'fulfilled'
-          ? performanceMetrics.value
-          : getDefaultPerformanceMetrics(),
-      cache:
-        cacheMetrics.status === 'fulfilled'
-          ? cacheMetrics.value
-          : getDefaultCacheMetrics(),
-      database:
-        databaseMetrics.status === 'fulfilled'
-          ? databaseMetrics.value
-          : getDefaultDatabaseMetrics(),
-      api:
-        apiMetrics.status === 'fulfilled'
-          ? apiMetrics.value
-          : getDefaultApiMetrics(),
-    };
+      const metricsResult: MetricsResult = {
+        timestamp: new Date().toISOString(),
+        system:
+          systemMetrics.status === 'fulfilled'
+            ? systemMetrics.value
+            : getDefaultSystemMetrics(),
+        performance:
+          performanceMetrics.status === 'fulfilled'
+            ? performanceMetrics.value
+            : getDefaultPerformanceMetrics(),
+        cache:
+          cacheMetrics.status === 'fulfilled'
+            ? cacheMetrics.value
+            : getDefaultCacheMetrics(),
+        database:
+          databaseMetrics.status === 'fulfilled'
+            ? databaseMetrics.value
+            : getDefaultDatabaseMetrics(),
+        api:
+          apiMetrics.status === 'fulfilled'
+            ? apiMetrics.value
+            : getDefaultApiMetrics(),
+      };
 
-    return NextResponse.json(metricsResult, {
-      status: 200,
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'X-Metrics-Endpoint': 'true',
-      },
-    });
-  } catch (error) {
-    // Return basic metrics even if collection fails
-    const metricsResult: MetricsResult = {
-      timestamp: new Date().toISOString(),
-      system: getDefaultSystemMetrics(),
-      performance: getDefaultPerformanceMetrics(),
-      cache: getDefaultCacheMetrics(),
-      database: getDefaultDatabaseMetrics(),
-      api: getDefaultApiMetrics(),
-    };
+      return metricsResult;
+    } catch (error) {
+      // Return basic metrics even if collection fails
+      const metricsResult: MetricsResult = {
+        timestamp: new Date().toISOString(),
+        system: getDefaultSystemMetrics(),
+        performance: getDefaultPerformanceMetrics(),
+        cache: getDefaultCacheMetrics(),
+        database: getDefaultDatabaseMetrics(),
+        api: getDefaultApiMetrics(),
+      };
 
-    return NextResponse.json(metricsResult, {
-      status: 200,
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'X-Metrics-Endpoint': 'true',
-      },
-    });
-  }
-}
+      return metricsResult;
+    }
+  },
+});
 
 /**
  * Get system metrics
@@ -161,8 +205,8 @@ async function getSystemMetrics(): Promise<SystemMetrics> {
     cpu: {
       usage: 0, // CPU usage would need additional monitoring
     },
-    version: process.env.npm_package_version || '1.0.0',
-    environment: process.env.NODE_ENV || 'development',
+    version: process.env['npm_package_version'] || '1.0.0',
+    environment: process.env['NODE_ENV'] || 'development',
   };
 }
 
@@ -192,8 +236,8 @@ async function getPerformanceMetrics(): Promise<PerformanceMetrics> {
 async function getCacheMetrics(): Promise<CacheMetrics> {
   try {
     const cacheService = new CacheService(
-      process.env.UPSTASH_REDIS_REST_URL || '',
-      process.env.UPSTASH_REDIS_REST_TOKEN || ''
+      process.env['UPSTASH_REDIS_REST_URL'] || '',
+      process.env['UPSTASH_REDIS_REST_TOKEN'] || ''
     );
 
     const stats = cacheService.getStats();
@@ -278,8 +322,8 @@ function getDefaultSystemMetrics(): SystemMetrics {
     cpu: {
       usage: 0,
     },
-    version: process.env.npm_package_version || '1.0.0',
-    environment: process.env.NODE_ENV || 'development',
+    version: process.env['npm_package_version'] || '1.0.0',
+    environment: process.env['NODE_ENV'] || 'development',
   };
 }
 

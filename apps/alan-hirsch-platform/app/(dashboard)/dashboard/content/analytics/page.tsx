@@ -1,5 +1,6 @@
 'use client';
 
+import { useContentItems } from '@/hooks/useContent';
 import { Badge } from '@platform/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@platform/ui/card';
 import {
@@ -18,7 +19,6 @@ import {
   TableRow,
 } from '@platform/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@platform/ui/tabs';
-import { useContentItems } from '@/hooks/useContent';
 import {
   Activity,
   BarChart3,
@@ -78,6 +78,11 @@ export default function ContentAnalyticsPage() {
     page: 1,
     limit: 100,
     status: 'published',
+    sortBy: 'publishedAt',
+    sortOrder: 'desc',
+    includeAuthor: true,
+    includeCategory: true,
+    includeTags: true,
   });
 
   useEffect(() => {
@@ -196,10 +201,10 @@ export default function ContentAnalyticsPage() {
 
   if (isLoading) {
     return (
-      <div className='max-w-7xl mx-auto p-6'>
-        <div className='flex items-center justify-center min-h-[400px]'>
-          <div className='text-center'>
-            <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4'></div>
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
             <p>Loading analytics...</p>
           </div>
         </div>
@@ -209,12 +214,12 @@ export default function ContentAnalyticsPage() {
 
   if (!analytics) {
     return (
-      <div className='max-w-7xl mx-auto p-6'>
-        <div className='text-center'>
-          <h1 className='text-2xl font-bold text-red-600 mb-4'>
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">
             Error Loading Analytics
           </h1>
-          <p className='text-gray-600'>
+          <p className="text-gray-600">
             Unable to load content analytics data.
           </p>
         </div>
@@ -223,47 +228,47 @@ export default function ContentAnalyticsPage() {
   }
 
   return (
-    <div className='max-w-7xl mx-auto p-6 space-y-6'>
-      <div className='flex items-center justify-between'>
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className='text-3xl font-bold text-gray-900'>
+          <h1 className="text-3xl font-bold text-gray-900">
             Content Analytics
           </h1>
-          <p className='text-lg text-gray-600 mt-2'>
+          <p className="text-lg text-gray-600 mt-2">
             Track performance and engagement metrics for your content.
           </p>
         </div>
-        <div className='flex items-center gap-4'>
+        <div className="flex items-center gap-4">
           <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className='w-32'>
-              <Calendar className='w-4 h-4 mr-2' />
+            <SelectTrigger className="w-32">
+              <Calendar className="w-4 h-4 mr-2" />
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='7d'>Last 7 days</SelectItem>
-              <SelectItem value='30d'>Last 30 days</SelectItem>
-              <SelectItem value='90d'>Last 90 days</SelectItem>
-              <SelectItem value='1y'>Last year</SelectItem>
+              <SelectItem value="7d">Last 7 days</SelectItem>
+              <SelectItem value="30d">Last 30 days</SelectItem>
+              <SelectItem value="90d">Last 90 days</SelectItem>
+              <SelectItem value="1y">Last year</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
       {/* Key Metrics */}
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
-          <CardContent className='pt-6'>
-            <div className='flex items-center'>
-              <div className='p-2 bg-blue-100 rounded-lg'>
-                <Eye className='h-6 w-6 text-blue-600' />
+          <CardContent className="pt-6">
+            <div className="flex items-center">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Eye className="h-6 w-6 text-blue-600" />
               </div>
-              <div className='ml-4'>
-                <p className='text-sm font-medium text-gray-600'>Total Views</p>
-                <p className='text-2xl font-bold'>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Views</p>
+                <p className="text-2xl font-bold">
                   {analytics.totalViews.toLocaleString()}
                 </p>
-                <div className='flex items-center text-sm text-green-600'>
-                  <TrendingUp className='w-3 h-3 mr-1' />
+                <div className="flex items-center text-sm text-green-600">
+                  <TrendingUp className="w-3 h-3 mr-1" />
                   +12.5%
                 </div>
               </div>
@@ -272,18 +277,18 @@ export default function ContentAnalyticsPage() {
         </Card>
 
         <Card>
-          <CardContent className='pt-6'>
-            <div className='flex items-center'>
-              <div className='p-2 bg-red-100 rounded-lg'>
-                <Heart className='h-6 w-6 text-red-600' />
+          <CardContent className="pt-6">
+            <div className="flex items-center">
+              <div className="p-2 bg-red-100 rounded-lg">
+                <Heart className="h-6 w-6 text-red-600" />
               </div>
-              <div className='ml-4'>
-                <p className='text-sm font-medium text-gray-600'>Total Likes</p>
-                <p className='text-2xl font-bold'>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Likes</p>
+                <p className="text-2xl font-bold">
                   {analytics.totalLikes.toLocaleString()}
                 </p>
-                <div className='flex items-center text-sm text-green-600'>
-                  <TrendingUp className='w-3 h-3 mr-1' />
+                <div className="flex items-center text-sm text-green-600">
+                  <TrendingUp className="w-3 h-3 mr-1" />
                   +8.2%
                 </div>
               </div>
@@ -292,18 +297,18 @@ export default function ContentAnalyticsPage() {
         </Card>
 
         <Card>
-          <CardContent className='pt-6'>
-            <div className='flex items-center'>
-              <div className='p-2 bg-green-100 rounded-lg'>
-                <MessageCircle className='h-6 w-6 text-green-600' />
+          <CardContent className="pt-6">
+            <div className="flex items-center">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <MessageCircle className="h-6 w-6 text-green-600" />
               </div>
-              <div className='ml-4'>
-                <p className='text-sm font-medium text-gray-600'>Comments</p>
-                <p className='text-2xl font-bold'>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Comments</p>
+                <p className="text-2xl font-bold">
                   {analytics.totalComments.toLocaleString()}
                 </p>
-                <div className='flex items-center text-sm text-green-600'>
-                  <TrendingUp className='w-3 h-3 mr-1' />
+                <div className="flex items-center text-sm text-green-600">
+                  <TrendingUp className="w-3 h-3 mr-1" />
                   +15.3%
                 </div>
               </div>
@@ -312,18 +317,18 @@ export default function ContentAnalyticsPage() {
         </Card>
 
         <Card>
-          <CardContent className='pt-6'>
-            <div className='flex items-center'>
-              <div className='p-2 bg-purple-100 rounded-lg'>
-                <Bookmark className='h-6 w-6 text-purple-600' />
+          <CardContent className="pt-6">
+            <div className="flex items-center">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <Bookmark className="h-6 w-6 text-purple-600" />
               </div>
-              <div className='ml-4'>
-                <p className='text-sm font-medium text-gray-600'>Bookmarks</p>
-                <p className='text-2xl font-bold'>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Bookmarks</p>
+                <p className="text-2xl font-bold">
                   {analytics.totalBookmarks.toLocaleString()}
                 </p>
-                <div className='flex items-center text-sm text-green-600'>
-                  <TrendingUp className='w-3 h-3 mr-1' />
+                <div className="flex items-center text-sm text-green-600">
+                  <TrendingUp className="w-3 h-3 mr-1" />
                   +6.7%
                 </div>
               </div>
@@ -333,39 +338,39 @@ export default function ContentAnalyticsPage() {
       </div>
 
       {/* Content Overview */}
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
-        <Card className='lg:col-span-2'>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <BarChart3 className='w-5 h-5' />
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5" />
               Content Overview
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className='grid grid-cols-2 gap-4'>
-              <div className='text-center p-4 bg-gray-50 rounded-lg'>
-                <div className='text-2xl font-bold text-blue-600'>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                <div className="text-2xl font-bold text-blue-600">
                   {analytics.totalContent}
                 </div>
-                <div className='text-sm text-gray-600'>Total Content</div>
+                <div className="text-sm text-gray-600">Total Content</div>
               </div>
-              <div className='text-center p-4 bg-gray-50 rounded-lg'>
-                <div className='text-2xl font-bold text-green-600'>
+              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                <div className="text-2xl font-bold text-green-600">
                   {analytics.publishedContent}
                 </div>
-                <div className='text-sm text-gray-600'>Published</div>
+                <div className="text-sm text-gray-600">Published</div>
               </div>
-              <div className='text-center p-4 bg-gray-50 rounded-lg'>
-                <div className='text-2xl font-bold text-orange-600'>
+              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                <div className="text-2xl font-bold text-orange-600">
                   {analytics.draftContent}
                 </div>
-                <div className='text-sm text-gray-600'>Drafts</div>
+                <div className="text-sm text-gray-600">Drafts</div>
               </div>
-              <div className='text-center p-4 bg-gray-50 rounded-lg'>
-                <div className='text-2xl font-bold text-purple-600'>
+              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                <div className="text-2xl font-bold text-purple-600">
                   {analytics.averageReadingTime.toFixed(1)}
                 </div>
-                <div className='text-sm text-gray-600'>
+                <div className="text-sm text-gray-600">
                   Avg. Read Time (min)
                 </div>
               </div>
@@ -375,27 +380,27 @@ export default function ContentAnalyticsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <PieChart className='w-5 h-5' />
+            <CardTitle className="flex items-center gap-2">
+              <PieChart className="w-5 h-5" />
               Content by Type
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className='space-y-3'>
+            <div className="space-y-3">
               {analytics.contentByType.map(item => (
                 <div
                   key={item.type}
-                  className='flex items-center justify-between'
+                  className="flex items-center justify-between"
                 >
-                  <div className='flex items-center gap-2'>
-                    <div className='w-3 h-3 bg-blue-500 rounded-full'></div>
-                    <span className='text-sm font-medium capitalize'>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <span className="text-sm font-medium capitalize">
                       {item.type}
                     </span>
                   </div>
-                  <div className='text-right'>
-                    <div className='text-sm font-bold'>{item.count}</div>
-                    <div className='text-xs text-gray-500'>
+                  <div className="text-right">
+                    <div className="text-sm font-bold">{item.count}</div>
+                    <div className="text-xs text-gray-500">
                       {item.views} views
                     </div>
                   </div>
@@ -407,18 +412,18 @@ export default function ContentAnalyticsPage() {
       </div>
 
       {/* Analytics Tabs */}
-      <Tabs defaultValue='performance' className='space-y-4'>
+      <Tabs defaultValue="performance" className="space-y-4">
         <TabsList>
-          <TabsTrigger value='performance'>Top Performing</TabsTrigger>
-          <TabsTrigger value='engagement'>Engagement</TabsTrigger>
-          <TabsTrigger value='trends'>Trends</TabsTrigger>
+          <TabsTrigger value="performance">Top Performing</TabsTrigger>
+          <TabsTrigger value="engagement">Engagement</TabsTrigger>
+          <TabsTrigger value="trends">Trends</TabsTrigger>
         </TabsList>
 
-        <TabsContent value='performance' className='space-y-4'>
+        <TabsContent value="performance" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <Target className='w-5 h-5' />
+              <CardTitle className="flex items-center gap-2">
+                <Target className="w-5 h-5" />
                 Top Performing Content
               </CardTitle>
             </CardHeader>
@@ -439,36 +444,36 @@ export default function ContentAnalyticsPage() {
                     <TableRow key={item.id}>
                       <TableCell>
                         <div>
-                          <div className='font-medium'>{item.title}</div>
-                          <div className='text-sm text-gray-500'>
+                          <div className="font-medium">{item.title}</div>
+                          <div className="text-sm text-gray-500">
                             #{index + 1}
                           </div>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant='secondary'>{item.contentType}</Badge>
+                        <Badge variant="secondary">{item.contentType}</Badge>
                       </TableCell>
                       <TableCell>
-                        <div className='flex items-center gap-1'>
-                          <Eye className='w-4 h-4 text-gray-500' />
+                        <div className="flex items-center gap-1">
+                          <Eye className="w-4 h-4 text-gray-500" />
                           {item.views.toLocaleString()}
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className='flex items-center gap-1'>
-                          <Heart className='w-4 h-4 text-red-500' />
+                        <div className="flex items-center gap-1">
+                          <Heart className="w-4 h-4 text-red-500" />
                           {item.likes}
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className='flex items-center gap-1'>
-                          <MessageCircle className='w-4 h-4 text-blue-500' />
+                        <div className="flex items-center gap-1">
+                          <MessageCircle className="w-4 h-4 text-blue-500" />
                           {item.comments}
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className='flex items-center gap-1'>
-                          <Activity className='w-4 h-4 text-green-500' />
+                        <div className="flex items-center gap-1">
+                          <Activity className="w-4 h-4 text-green-500" />
                           {item.engagement.toFixed(1)}%
                         </div>
                       </TableCell>
@@ -480,20 +485,20 @@ export default function ContentAnalyticsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value='engagement' className='space-y-4'>
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+        <TabsContent value="engagement" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle className='flex items-center gap-2'>
-                  <Activity className='w-5 h-5' />
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="w-5 h-5" />
                   Engagement Metrics
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className='space-y-4'>
-                  <div className='flex items-center justify-between'>
-                    <span className='text-sm font-medium'>Like Rate</span>
-                    <span className='text-lg font-bold'>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Like Rate</span>
+                    <span className="text-lg font-bold">
                       {(
                         (analytics.totalLikes / analytics.totalViews) *
                         100
@@ -501,9 +506,9 @@ export default function ContentAnalyticsPage() {
                       %
                     </span>
                   </div>
-                  <div className='flex items-center justify-between'>
-                    <span className='text-sm font-medium'>Comment Rate</span>
-                    <span className='text-lg font-bold'>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Comment Rate</span>
+                    <span className="text-lg font-bold">
                       {(
                         (analytics.totalComments / analytics.totalViews) *
                         100
@@ -511,9 +516,9 @@ export default function ContentAnalyticsPage() {
                       %
                     </span>
                   </div>
-                  <div className='flex items-center justify-between'>
-                    <span className='text-sm font-medium'>Bookmark Rate</span>
-                    <span className='text-lg font-bold'>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Bookmark Rate</span>
+                    <span className="text-lg font-bold">
                       {(
                         (analytics.totalBookmarks / analytics.totalViews) *
                         100
@@ -521,9 +526,9 @@ export default function ContentAnalyticsPage() {
                       %
                     </span>
                   </div>
-                  <div className='flex items-center justify-between'>
-                    <span className='text-sm font-medium'>Share Rate</span>
-                    <span className='text-lg font-bold'>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Share Rate</span>
+                    <span className="text-lg font-bold">
                       {(
                         (analytics.totalShares / analytics.totalViews) *
                         100
@@ -537,41 +542,41 @@ export default function ContentAnalyticsPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle className='flex items-center gap-2'>
-                  <Clock className='w-5 h-5' />
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="w-5 h-5" />
                   Reading Behavior
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className='space-y-4'>
-                  <div className='flex items-center justify-between'>
-                    <span className='text-sm font-medium'>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">
                       Average Reading Time
                     </span>
-                    <span className='text-lg font-bold'>
+                    <span className="text-lg font-bold">
                       {analytics.averageReadingTime.toFixed(1)} min
                     </span>
                   </div>
-                  <div className='flex items-center justify-between'>
-                    <span className='text-sm font-medium'>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">
                       Total Reading Time
                     </span>
-                    <span className='text-lg font-bold'>
+                    <span className="text-lg font-bold">
                       {Math.round(
                         analytics.totalViews * analytics.averageReadingTime
                       ).toLocaleString()}{' '}
                       min
                     </span>
                   </div>
-                  <div className='flex items-center justify-between'>
-                    <span className='text-sm font-medium'>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">
                       Content Completion Rate
                     </span>
-                    <span className='text-lg font-bold'>78.5%</span>
+                    <span className="text-lg font-bold">78.5%</span>
                   </div>
-                  <div className='flex items-center justify-between'>
-                    <span className='text-sm font-medium'>Bounce Rate</span>
-                    <span className='text-lg font-bold'>21.5%</span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Bounce Rate</span>
+                    <span className="text-lg font-bold">21.5%</span>
                   </div>
                 </div>
               </CardContent>
@@ -579,11 +584,11 @@ export default function ContentAnalyticsPage() {
           </div>
         </TabsContent>
 
-        <TabsContent value='trends' className='space-y-4'>
+        <TabsContent value="trends" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <TrendingUp className='w-5 h-5' />
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5" />
                 Monthly Trends
               </CardTitle>
             </CardHeader>
@@ -601,7 +606,7 @@ export default function ContentAnalyticsPage() {
                 <TableBody>
                   {analytics.monthlyStats.map(stat => (
                     <TableRow key={stat.month}>
-                      <TableCell className='font-medium'>
+                      <TableCell className="font-medium">
                         {stat.month}
                       </TableCell>
                       <TableCell>{stat.views.toLocaleString()}</TableCell>

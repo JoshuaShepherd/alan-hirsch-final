@@ -42,8 +42,8 @@ export interface AuthUser {
 }
 
 export interface SessionUser extends AuthUser {
-  profile?: import('@platform/shared/contracts').UserProfile;
-  organizations?: import('@platform/shared/contracts').Organization[];
+  profile?: import('@platform/contracts').UserProfile;
+  organizations?: import('@platform/contracts').Organization[];
 }
 
 // ============================================================================
@@ -62,13 +62,6 @@ export interface FormFieldError {
 }
 
 // ============================================================================
-// Component Props Types (Re-exported from component-props.ts)
-// ============================================================================
-
-// Re-export all component prop types to avoid duplication
-export * from '@/lib/types/component-props';
-
-// ============================================================================
 // Database Query Types
 // ============================================================================
 
@@ -82,48 +75,6 @@ export interface QueryOptions {
 export interface FilterOptions {
   [key: string]: unknown;
 }
-
-// ============================================================================
-// Content Types (Re-exported from contracts)
-// ============================================================================
-
-// Re-export content types from contracts
-export type {
-  ContentCategoryResponse,
-  ContentItemResponse,
-  ContentSeriesResponse,
-  PaginatedContentCategoryListResponse,
-  PaginatedContentItemListResponse,
-  PaginatedContentSeriesListResponse,
-} from '@platform/contracts';
-
-// ============================================================================
-// Assessment Types (Re-exported from contracts)
-// ============================================================================
-
-// Re-export assessment types from contracts
-export type {
-  AssessmentQuestionResponse,
-  AssessmentResponse as AssessmentResponseDTO,
-  AssessmentResponseResponse,
-  AssessmentWithQuestionsResponse,
-  PaginatedAssessmentListResponse,
-  PaginatedUserAssessmentListResponse,
-  UserAssessmentResponse,
-  UserAssessmentWithDetailsResponse,
-} from '@platform/contracts';
-
-// ============================================================================
-// Subscription & Payment Types (Re-exported from contracts)
-// ============================================================================
-
-// These types are now re-exported from contracts to avoid duplication
-
-// ============================================================================
-// Community Types (Re-exported from contracts)
-// ============================================================================
-
-// These types are now re-exported from contracts to avoid duplication
 
 // ============================================================================
 // Analytics Types
@@ -291,39 +242,27 @@ export class ForbiddenError extends AppError {
 }
 
 // ============================================================================
-// Component Props Types (Re-exported from component-props.ts)
-// ============================================================================
-
-// Re-export all component prop types to avoid duplication
-export * from '@/lib/types/component-props';
-
-// ============================================================================
 // Export all types from contracts (Aligned with ALIGNMENT_REFERENCE)
 // ============================================================================
 
 // Re-export all contract types to maintain backward compatibility
 export type {
+  // AI Types
   AiContentJob,
   AiContentJobEntity,
   AiContentJobResponse,
-  AiContentJobWithDetailsResponse,
   AiConversation,
   AiConversationEntity,
   AiConversationResponse,
-  AiConversationWithMessagesResponse,
   AiCrossReferenceSuggestion,
   AiCrossReferenceSuggestionEntity,
   AiCrossReferenceSuggestionResponse,
-  AiCrossReferenceSuggestionWithDetailsResponse,
   AiMessage,
   AiMessageEntity,
   AiMessageResponse,
-  AiMessageWithConversationResponse,
-  // API Response Types
-  ApiResponse,
+  // Assessment Types
   Assessment,
   AssessmentEntity,
-  AssessmentForm,
   AssessmentQuery,
   AssessmentQuestion,
   AssessmentQuestionEntity,
@@ -331,80 +270,81 @@ export type {
   AssessmentQuestionResponse,
   AssessmentResponse,
   AssessmentResponseEntity,
-  AssessmentResponse as AssessmentResponseLegacy,
   AssessmentResponseQuery,
   AssessmentResponseResponse,
-  // Special Response Types
   AssessmentWithQuestionsResponse,
-  // Input Types
   CompleteAssessmentInput,
+  // Content Types
   ContentCategory,
   ContentCategoryEntity,
   ContentCategoryQuery,
   ContentCategoryResponse,
-  ContentCategoryWithChildrenResponse,
-  ContentCategoryWithParentResponse,
   ContentCrossReference,
   ContentCrossReferenceEntity,
-  ContentCrossReferenceResponse,
-  ContentCrossReferenceWithDetailsResponse,
   ContentItem,
   ContentItemEntity,
   ContentItemForm,
   ContentItemQuery,
   ContentItemResponse,
-  ContentItemWithAuthorResponse,
-  ContentItemWithCategoryResponse,
-  ContentItemWithSeriesResponse,
   ContentSeries,
   ContentSeriesEntity,
   ContentSeriesQuery,
   ContentSeriesResponse,
-  ContentSeriesWithContentResponse,
+  CreateAiContentJob,
+  CreateAiConversation,
+  CreateAiCrossReferenceSuggestion,
+  CreateAiMessage,
   CreateAssessment,
   CreateAssessmentQuestion,
   CreateAssessmentResponse,
   CreateContentCategory,
   CreateContentItem,
   CreateContentSeries,
+  // Organization Types
   CreateOrganization,
   CreateOrganizationMembership,
+  CreateTheologicalConcept,
   CreateUserAssessment,
-  // Create/Update Types
+  // User Types
   CreateUserProfile,
+  NewAiContentJob,
+  NewAiConversation,
+  NewAiCrossReferenceSuggestion,
+  NewAiMessage,
+  NewAssessment,
+  NewAssessmentQuestion,
+  NewAssessmentResponse,
+  NewContentCategory,
+  NewContentCrossReference,
+  NewContentItem,
+  NewContentSeries,
+  NewOrganization,
+  NewOrganizationMembership,
+  NewSeriesContentItem,
+  NewTheologicalConcept,
+  NewUserAssessment,
+  NewUserProfile,
   Organization,
   OrganizationEntity,
   OrganizationForm,
+  OrganizationInvitation,
   OrganizationMembership,
   OrganizationMembershipEntity,
   OrganizationMembershipQuery,
   OrganizationMembershipResponse,
   OrganizationQuery,
   OrganizationResponse,
-  OrganizationWithMembersResponse,
-  PaginatedAiContentJobListResponse,
-  PaginatedAiConversationListResponse,
-  PaginatedAiCrossReferenceSuggestionListResponse,
-  PaginatedAiMessageListResponse,
-  PaginatedAssessmentListResponse,
-  PaginatedAssessmentQuestionListResponse,
-  PaginatedAssessmentResponseListResponse,
-  PaginatedContentCategoryListResponse,
-  PaginatedContentItemListResponse,
-  PaginatedContentSeriesListResponse,
-  PaginatedOrganizationListResponse,
-  PaginatedOrganizationMembershipListResponse,
-  PaginatedResponse,
-  PaginatedTheologicalConceptListResponse,
-  PaginatedUserAssessmentListResponse,
-  // Paginated Response Types
-  PaginatedUserProfileListResponse,
+  PublicUser,
   SaveResponsesInput,
+  SeriesContentItem,
   StartAssessmentInput,
   TheologicalConcept,
   TheologicalConceptEntity,
   TheologicalConceptResponse,
-  TheologicalConceptWithRelatedResponse,
+  UpdateAiContentJob,
+  UpdateAiConversation,
+  UpdateAiCrossReferenceSuggestion,
+  UpdateAiMessage,
   UpdateAssessment,
   UpdateAssessmentQuestion,
   UpdateAssessmentResponse,
@@ -413,6 +353,7 @@ export type {
   UpdateContentSeries,
   UpdateOrganization,
   UpdateOrganizationMembership,
+  UpdateTheologicalConcept,
   UpdateUserAssessment,
   UpdateUserProfile,
   UserAssessment,
@@ -421,15 +362,226 @@ export type {
   UserAssessmentQuery,
   UserAssessmentResponse,
   UserAssessmentWithDetailsResponse,
-  // Entity Types
   UserEntity,
-  // Legacy types for backward compatibility
+  UserForm,
   UserProfile,
   UserProfileEntity,
-  // Form Types
   UserProfileForm,
-  // Query Types
   UserProfileQuery,
-  // Response Types
   UserProfileResponse,
+  UserQuery,
 } from '@platform/contracts';
+
+// ============================================================================
+// COMPUTED FIELD TYPES (Aligned with ALIGNMENT_REFERENCE.md)
+// ============================================================================
+// These types represent computed fields that are added by mappers
+
+export interface UserProfileComputedFields {
+  isActive: boolean;
+  hasCompletedOnboarding: boolean;
+  fullName: string;
+  displayNameOrFullName: string;
+  hasCustomDomain: boolean;
+  hasSubdomain: boolean;
+  isPublicProfile: boolean;
+  canReceiveNotifications: boolean;
+  assessmentCompleted: boolean;
+  primaryGift?: string;
+  secondaryGift?: string;
+  ministryExperience?: string;
+  locationDisplay?: string;
+}
+
+export interface ContentItemComputedFields {
+  isPublished: boolean;
+  isDraft: boolean;
+  isScheduled: boolean;
+  isArchived: boolean;
+  hasFeaturedImage: boolean;
+  hasVideo: boolean;
+  hasAudio: boolean;
+  hasAttachments: boolean;
+  isAiEnhanced: boolean;
+  readingTimeText: string;
+  viewCountText: string;
+  engagementScore: number;
+}
+
+export interface AssessmentComputedFields {
+  isActive: boolean;
+  isPublished: boolean;
+  isDraft: boolean;
+  hasQuestions: boolean;
+  questionCountText: string;
+  durationText?: string;
+  validityScoreText?: string;
+  reliabilityScoreText?: string;
+}
+
+export interface OrganizationComputedFields {
+  isActive: boolean;
+  isTrial: boolean;
+  hasCustomLogo: boolean;
+  hasWebsite: boolean;
+  memberCount: number;
+  displayName: string;
+  statusDisplay: string;
+  licenseTypeDisplay: string;
+}
+
+// ============================================================================
+// MAPPER PATTERN TYPES (Aligned with ALIGNMENT_REFERENCE.md)
+// ============================================================================
+// These types represent the bidirectional mapper architecture
+
+export type MapperResult<T> =
+  | {
+      success: true;
+      data: T;
+    }
+  | {
+      success: false;
+      error: string;
+    };
+
+export interface EntityMapper<TEntity, TRow> {
+  toEntity: (row: TRow) => MapperResult<TEntity>;
+  fromEntity: (entity: TEntity) => TRow;
+}
+
+export interface ResponseMapper<TResponse, TRow> {
+  toResponseDTO: (
+    row: TRow & Record<string, unknown>
+  ) => MapperResult<TResponse>;
+}
+
+export interface CreateMapper<TCreate, TNewRow> {
+  fromCreate: (data: TCreate) => MapperResult<TNewRow>;
+}
+
+export interface UpdateMapper<TUpdate, TPartialRow> {
+  fromUpdate: (data: TUpdate) => MapperResult<TPartialRow>;
+}
+
+export interface BidirectionalMapper<
+  TEntity,
+  TResponse,
+  TCreate,
+  TUpdate,
+  TRow,
+  TNewRow,
+> extends EntityMapper<TEntity, TRow>,
+    ResponseMapper<TResponse, TRow>,
+    CreateMapper<TCreate, TNewRow>,
+    UpdateMapper<TUpdate, Partial<TNewRow>> {}
+
+// ============================================================================
+// APEST PROFILE TYPES (Aligned with ALIGNMENT_REFERENCE.md)
+// ============================================================================
+
+export interface APESTProfile {
+  primary: string;
+  secondary: string;
+  scores: {
+    apostolic: number;
+    prophetic: number;
+    evangelistic: number;
+    shepherding: number;
+    teaching: number;
+  };
+  total: number;
+  assessmentCompleted: boolean;
+}
+
+export interface APESTScores {
+  apostolic: number;
+  prophetic: number;
+  evangelistic: number;
+  shepherding: number;
+  teaching: number;
+}
+
+// ============================================================================
+// VALIDATION UTILITY TYPES (Aligned with ALIGNMENT_REFERENCE.md)
+// ============================================================================
+
+export type ValidationResult<T> =
+  | {
+      success: true;
+      data: T;
+    }
+  | {
+      success: false;
+      error: {
+        message: string;
+        details?: Record<string, unknown>;
+      };
+    };
+
+export interface SchemaValidationOptions {
+  stripUnknown?: boolean;
+  abortEarly?: boolean;
+  context?: Record<string, unknown>;
+}
+
+// ============================================================================
+// PAGINATION TYPES (Enhanced from ALIGNMENT_REFERENCE.md)
+// ============================================================================
+
+export interface PaginationInfo {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasMore: boolean;
+  hasPrev: boolean;
+}
+
+export interface PaginatedListResponse<T> {
+  data: T[];
+  pagination: PaginationInfo;
+  success: boolean;
+  error?: string;
+  message?: string;
+}
+
+// ============================================================================
+// MINISTRY PLATFORM TYPES (From ALIGNMENT_REFERENCE.md)
+// ============================================================================
+
+export interface MinistryPlatformResponse<T = unknown> extends ApiResponse<T> {
+  timestamp: string;
+  requestId: string;
+  version: string;
+}
+
+export interface CrossEntityValidation {
+  entityType: string;
+  entityId: string;
+  validationRules: string[];
+  isValid: boolean;
+  errors: string[];
+}
+
+export interface RoleBasedValidation {
+  userId: string;
+  role: string;
+  permissions: string[];
+  hasAccess: boolean;
+  reason?: string;
+}
+
+export interface OrganizationScopedRequest {
+  organizationId: string;
+  userId: string;
+  role: string;
+  permissions: string[];
+}
+
+// ============================================================================
+// Component Props Types (Re-exported from component-props.ts)
+// ============================================================================
+
+// Re-export all component prop types to avoid duplication
+export * from '@/lib/types/component-props';

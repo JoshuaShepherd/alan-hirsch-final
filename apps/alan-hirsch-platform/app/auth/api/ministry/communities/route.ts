@@ -1,14 +1,9 @@
 import {
-  createPaginatedRouteHandler,
-  createQuerySchema,
-  createRouteHandler,
-} from '@platform/shared/api/route-handler';
-import {
   createMinistryCommunityRequestSchema,
   ministryCommunityResponseSchema,
-} from '@platform/shared/contracts';
-import { communityService } from '@platform/shared/services';
+} from '@platform/contracts';
 import { z } from 'zod';
+import { communityService } from '../../../../../lib/services';
 
 // ============================================================================
 // MINISTRY COMMUNITIES API ROUTES

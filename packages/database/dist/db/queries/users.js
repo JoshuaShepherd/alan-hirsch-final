@@ -1,5 +1,6 @@
 // User Profile Query Module
 // Pure functions for user profile operations with context-aware access control
+// Note: Using database types directly to avoid circular dependencies
 import { and, asc, desc, eq, like, or, sql } from 'drizzle-orm';
 import { db } from '../drizzle';
 import { organizationMemberships, organizations, userProfiles, } from '../schema';
@@ -105,10 +106,7 @@ export async function getUsersByOrganization(organizationId, context, options = 
         conditions.push(eq(organizationMemberships.role, role));
     }
     const results = await db
-        .select({
-        ...userProfiles,
-        membership: organizationMemberships,
-    })
+        .select()
         .from(userProfiles)
         .innerJoin(organizationMemberships, eq(userProfiles.id, organizationMemberships.userId))
         .where(and(...conditions))
@@ -282,10 +280,7 @@ export async function validateUserOrganizationAccess(userId, organizationId) {
  */
 export async function getUserOrganizationMemberships(userId, context) {
     const results = await db
-        .select({
-        ...organizationMemberships,
-        organization: organizations,
-    })
+        .select()
         .from(organizationMemberships)
         .innerJoin(organizations, eq(organizationMemberships.organizationId, organizations.id))
         .where(and(eq(organizationMemberships.userId, userId), eq(organizationMemberships.status, 'active')))

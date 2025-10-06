@@ -1,5 +1,11 @@
 'use client';
 
+import {
+  useAssessment,
+  useCompleteAssessment,
+  useSaveAssessmentResponses,
+  useUserAssessment,
+} from '@/hooks/useAssessment';
 import { Alert, AlertDescription } from '@platform/ui/alert';
 import { Button } from '@platform/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@platform/ui/card';
@@ -7,12 +13,6 @@ import { Label } from '@platform/ui/label';
 import { Progress } from '@platform/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@platform/ui/radio-group';
 import { Textarea } from '@platform/ui/textarea';
-import {
-  useAssessment,
-  useCompleteAssessment,
-  useSaveAssessmentResponses,
-  useUserAssessment,
-} from '@/hooks/useAssessment';
 import {
   AlertCircle,
   ArrowLeft,
@@ -58,9 +58,9 @@ export default function TakeAssessmentPage() {
   } = useAssessment(assessmentId);
   const { data: userAssessmentResponse, isLoading: userAssessmentLoading } =
     useUserAssessment(assessmentId);
-  const { saveResponses, isLoading: savingResponses } =
+  const { mutate: saveResponses, isLoading: savingResponses } =
     useSaveAssessmentResponses();
-  const { completeAssessment, isLoading: completingAssessment } =
+  const { mutate: completeAssessment, isLoading: completingAssessment } =
     useCompleteAssessment();
 
   const assessment = assessmentResponse;
@@ -237,23 +237,23 @@ export default function TakeAssessmentPage() {
     const questionResponse = responses.get(currentQuestion.id);
 
     return (
-      <Card className='mb-6'>
+      <Card className="mb-6">
         <CardHeader>
-          <CardTitle className='flex items-center justify-between'>
+          <CardTitle className="flex items-center justify-between">
             <span>
               Question {currentQuestionIndex + 1} of {questions.length}
             </span>
             {currentQuestion.apestDimension && (
-              <span className='text-sm font-normal text-gray-500 capitalize'>
+              <span className="text-sm font-normal text-gray-500 capitalize">
                 {currentQuestion.apestDimension} Dimension
               </span>
             )}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='space-y-6'>
+          <div className="space-y-6">
             <div>
-              <h3 className='text-lg font-medium mb-4'>
+              <h3 className="text-lg font-medium mb-4">
                 {currentQuestion.questionText}
               </h3>
 
@@ -270,12 +270,12 @@ export default function TakeAssessmentPage() {
                         : 0,
                     })
                   }
-                  className='space-y-3'
+                  className="space-y-3"
                 >
                   {currentQuestion.answerOptions?.map((option: any) => (
                     <div
                       key={option.value}
-                      className='flex items-center space-x-2'
+                      className="flex items-center space-x-2"
                     >
                       <RadioGroupItem
                         value={option.value.toString()}
@@ -283,16 +283,16 @@ export default function TakeAssessmentPage() {
                       />
                       <Label
                         htmlFor={`option-${option.value}`}
-                        className='flex-1 cursor-pointer'
+                        className="flex-1 cursor-pointer"
                       >
-                        <div className='flex items-center justify-between'>
+                        <div className="flex items-center justify-between">
                           <span>{option.label}</span>
-                          <span className='text-sm text-gray-500'>
+                          <span className="text-sm text-gray-500">
                             {option.value}
                           </span>
                         </div>
                         {option.description && (
-                          <p className='text-sm text-gray-600 mt-1'>
+                          <p className="text-sm text-gray-600 mt-1">
                             {option.description}
                           </p>
                         )}
@@ -304,7 +304,7 @@ export default function TakeAssessmentPage() {
                       {[1, 2, 3, 4, 5].map(value => (
                         <div
                           key={value}
-                          className='flex items-center space-x-2'
+                          className="flex items-center space-x-2"
                         >
                           <RadioGroupItem
                             value={value.toString()}
@@ -312,9 +312,9 @@ export default function TakeAssessmentPage() {
                           />
                           <Label
                             htmlFor={`option-${value}`}
-                            className='flex-1 cursor-pointer'
+                            className="flex-1 cursor-pointer"
                           >
-                            <div className='flex items-center justify-between'>
+                            <div className="flex items-center justify-between">
                               <span>
                                 {value === 1 && 'Strongly Disagree'}
                                 {value === 2 && 'Disagree'}
@@ -322,7 +322,7 @@ export default function TakeAssessmentPage() {
                                 {value === 4 && 'Agree'}
                                 {value === 5 && 'Strongly Agree'}
                               </span>
-                              <span className='text-sm text-gray-500'>
+                              <span className="text-sm text-gray-500">
                                 {value}
                               </span>
                             </div>
@@ -348,30 +348,36 @@ export default function TakeAssessmentPage() {
                           : 0,
                       })
                     }
-                    className='space-y-3'
+                    className="space-y-3"
                   >
-                    {currentQuestion.answerOptions.map(option => (
-                      <div
-                        key={option.value}
-                        className='flex items-center space-x-2'
-                      >
-                        <RadioGroupItem
-                          value={option.value.toString()}
-                          id={`option-${option.value}`}
-                        />
-                        <Label
-                          htmlFor={`option-${option.value}`}
-                          className='flex-1 cursor-pointer'
+                    {currentQuestion.answerOptions.map(
+                      (option: {
+                        value: number;
+                        label: string;
+                        description?: string;
+                      }) => (
+                        <div
+                          key={option.value}
+                          className="flex items-center space-x-2"
                         >
-                          {option.label}
-                          {option.description && (
-                            <p className='text-sm text-gray-600 mt-1'>
-                              {option.description}
-                            </p>
-                          )}
-                        </Label>
-                      </div>
-                    ))}
+                          <RadioGroupItem
+                            value={option.value.toString()}
+                            id={`option-${option.value}`}
+                          />
+                          <Label
+                            htmlFor={`option-${option.value}`}
+                            className="flex-1 cursor-pointer"
+                          >
+                            {option.label}
+                            {option.description && (
+                              <p className="text-sm text-gray-600 mt-1">
+                                {option.description}
+                              </p>
+                            )}
+                          </Label>
+                        </div>
+                      )
+                    )}
                   </RadioGroup>
                 )}
 
@@ -388,7 +394,7 @@ export default function TakeAssessmentPage() {
                         : 0,
                     })
                   }
-                  placeholder='Enter your response...'
+                  placeholder="Enter your response..."
                   rows={4}
                 />
               )}
@@ -406,17 +412,17 @@ export default function TakeAssessmentPage() {
                         : 0,
                     })
                   }
-                  className='space-y-3'
+                  className="space-y-3"
                 >
-                  <div className='flex items-center space-x-2'>
-                    <RadioGroupItem value='1' id='yes' />
-                    <Label htmlFor='yes' className='cursor-pointer'>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="1" id="yes" />
+                    <Label htmlFor="yes" className="cursor-pointer">
                       Yes
                     </Label>
                   </div>
-                  <div className='flex items-center space-x-2'>
-                    <RadioGroupItem value='0' id='no' />
-                    <Label htmlFor='no' className='cursor-pointer'>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="0" id="no" />
+                    <Label htmlFor="no" className="cursor-pointer">
                       No
                     </Label>
                   </div>
@@ -425,8 +431,8 @@ export default function TakeAssessmentPage() {
             </div>
 
             {/* Confidence rating */}
-            <div className='border-t pt-4'>
-              <Label className='text-sm font-medium'>
+            <div className="border-t pt-4">
+              <Label className="text-sm font-medium">
                 How confident are you in this answer?
               </Label>
               <RadioGroup
@@ -436,24 +442,24 @@ export default function TakeAssessmentPage() {
                     confidence: parseInt(value),
                   })
                 }
-                className='flex space-x-4 mt-2'
+                className="flex space-x-4 mt-2"
               >
                 {[1, 2, 3, 4, 5].map(value => (
-                  <div key={value} className='flex items-center space-x-1'>
+                  <div key={value} className="flex items-center space-x-1">
                     <RadioGroupItem
                       value={value.toString()}
                       id={`confidence-${value}`}
                     />
                     <Label
                       htmlFor={`confidence-${value}`}
-                      className='text-sm cursor-pointer'
+                      className="text-sm cursor-pointer"
                     >
                       {value}
                     </Label>
                   </div>
                 ))}
               </RadioGroup>
-              <div className='flex justify-between text-xs text-gray-500 mt-1'>
+              <div className="flex justify-between text-xs text-gray-500 mt-1">
                 <span>Not confident</span>
                 <span>Very confident</span>
               </div>
@@ -466,10 +472,10 @@ export default function TakeAssessmentPage() {
 
   if (assessmentLoading || userAssessmentLoading) {
     return (
-      <div className='max-w-4xl mx-auto p-6'>
-        <div className='flex items-center justify-center h-64'>
-          <Loader2 className='h-8 w-8 animate-spin' />
-          <span className='ml-2'>Loading assessment...</span>
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="ml-2">Loading assessment...</span>
         </div>
       </div>
     );
@@ -477,9 +483,9 @@ export default function TakeAssessmentPage() {
 
   if (assessmentError || !assessment) {
     return (
-      <div className='max-w-4xl mx-auto p-6'>
-        <Alert variant='destructive'>
-          <AlertCircle className='h-4 w-4' />
+      <div className="max-w-4xl mx-auto p-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             Failed to load assessment. Please try again.
           </AlertDescription>
@@ -490,9 +496,9 @@ export default function TakeAssessmentPage() {
 
   if (questions.length === 0) {
     return (
-      <div className='max-w-4xl mx-auto p-6'>
+      <div className="max-w-4xl mx-auto p-6">
         <Alert>
-          <AlertCircle className='h-4 w-4' />
+          <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             This assessment has no questions available.
           </AlertDescription>
@@ -502,55 +508,55 @@ export default function TakeAssessmentPage() {
   }
 
   return (
-    <div className='max-w-4xl mx-auto p-6'>
+    <div className="max-w-4xl mx-auto p-6">
       {/* Header */}
-      <div className='mb-6'>
-        <div className='flex items-center justify-between mb-4'>
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
           <Button
-            variant='outline'
+            variant="outline"
             onClick={() => router.back()}
-            className='flex items-center'
+            className="flex items-center"
           >
-            <ArrowLeft className='h-4 w-4 mr-2' />
+            <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
-          <div className='flex items-center text-sm text-gray-500'>
-            <Clock className='h-4 w-4 mr-1' />
+          <div className="flex items-center text-sm text-gray-500">
+            <Clock className="h-4 w-4 mr-1" />
             {startTime &&
               Math.round((Date.now() - startTime.getTime()) / 60000)}{' '}
             minutes
           </div>
         </div>
 
-        <h1 className='text-2xl font-bold text-gray-900 mb-2'>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">
           {assessment.name}
         </h1>
         {assessment.description && (
-          <p className='text-gray-600 mb-4'>{assessment.description}</p>
+          <p className="text-gray-600 mb-4">{assessment.description}</p>
         )}
 
-        <div className='flex items-center justify-between mb-4'>
-          <div className='flex items-center text-sm text-gray-500'>
-            <BookOpen className='h-4 w-4 mr-1' />
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center text-sm text-gray-500">
+            <BookOpen className="h-4 w-4 mr-1" />
             {assessment.estimatedDuration || 15} minutes estimated
           </div>
           <Button
-            variant='outline'
-            size='sm'
+            variant="outline"
+            size="sm"
             onClick={handleSaveProgress}
             disabled={savingResponses}
           >
             {savingResponses ? (
-              <Loader2 className='h-4 w-4 animate-spin mr-2' />
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
             ) : (
-              <Save className='h-4 w-4 mr-2' />
+              <Save className="h-4 w-4 mr-2" />
             )}
             Save Progress
           </Button>
         </div>
 
-        <Progress value={progress} className='mb-4' />
-        <div className='text-sm text-gray-600 text-center'>
+        <Progress value={progress} className="mb-4" />
+        <div className="text-sm text-gray-600 text-center">
           {currentQuestionIndex + 1} of {questions.length} questions
         </div>
       </div>
@@ -559,27 +565,27 @@ export default function TakeAssessmentPage() {
       {renderQuestion()}
 
       {/* Navigation */}
-      <div className='flex justify-between items-center'>
+      <div className="flex justify-between items-center">
         <Button
-          variant='outline'
+          variant="outline"
           onClick={() => handleQuestionNavigation('prev')}
           disabled={currentQuestionIndex === 0}
         >
-          <ArrowLeft className='h-4 w-4 mr-2' />
+          <ArrowLeft className="h-4 w-4 mr-2" />
           Previous
         </Button>
 
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           {currentQuestionIndex === questions.length - 1 ? (
             <Button
               onClick={() => setShowConfirmComplete(true)}
               disabled={isSubmitting || completingAssessment}
-              className='bg-green-600 hover:bg-green-700'
+              className="bg-green-600 hover:bg-green-700"
             >
               {completingAssessment ? (
-                <Loader2 className='h-4 w-4 animate-spin mr-2' />
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : (
-                <CheckCircle className='h-4 w-4 mr-2' />
+                <CheckCircle className="h-4 w-4 mr-2" />
               )}
               Complete Assessment
             </Button>
@@ -589,7 +595,7 @@ export default function TakeAssessmentPage() {
               disabled={currentQuestionIndex === questions.length - 1}
             >
               Next
-              <ArrowRight className='h-4 w-4 ml-2' />
+              <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           )}
         </div>
@@ -597,19 +603,19 @@ export default function TakeAssessmentPage() {
 
       {/* Completion Confirmation Modal */}
       {showConfirmComplete && (
-        <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-          <Card className='w-full max-w-md mx-4'>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <Card className="w-full max-w-md mx-4">
             <CardHeader>
               <CardTitle>Complete Assessment?</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className='text-gray-600 mb-4'>
+              <p className="text-gray-600 mb-4">
                 Are you sure you want to complete this assessment? You won't be
                 able to make changes after completion.
               </p>
-              <div className='flex gap-2 justify-end'>
+              <div className="flex gap-2 justify-end">
                 <Button
-                  variant='outline'
+                  variant="outline"
                   onClick={() => setShowConfirmComplete(false)}
                 >
                   Cancel
@@ -617,12 +623,12 @@ export default function TakeAssessmentPage() {
                 <Button
                   onClick={handleCompleteAssessment}
                   disabled={isSubmitting || completingAssessment}
-                  className='bg-green-600 hover:bg-green-700'
+                  className="bg-green-600 hover:bg-green-700"
                 >
                   {completingAssessment ? (
-                    <Loader2 className='h-4 w-4 animate-spin mr-2' />
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
                   ) : (
-                    <CheckCircle className='h-4 w-4 mr-2' />
+                    <CheckCircle className="h-4 w-4 mr-2" />
                   )}
                   Complete
                 </Button>

@@ -1,18 +1,44 @@
-import { db } from '@/lib/db/drizzle';
-import { organizationMemberships, organizations, userProfiles, } from '@/lib/db/schema';
-import { CreateOrganizationSchema, OrganizationEntitySchema, OrganizationQuerySchema, UpdateOrganizationSchema, } from '@platform/contracts';
+import { organizationEntitySchema as databaseOrganizationSchema, organizationMembershipEntitySchema, } from '@platform/contracts/entities/organization.schema';
+import { CreateOrganizationMembershipOperationSchema as createOrganizationMembershipSchema, CreateOrganizationOperationSchema as newOrganizationSchema, UpdateOrganizationMembershipOperationSchema as updateOrganizationMembershipSchema, UpdateOrganizationOperationSchema as updateOrganizationSchema, } from '@platform/contracts/operations/organization.operations';
+import { db, organizationMemberships, organizations, userProfiles, } from '@platform/database';
 import { and, desc, eq, sql } from 'drizzle-orm';
+import { z } from 'zod';
 import { BaseService } from './base.service';
 // ============================================================================
 // ORGANIZATION SERVICE
 // ============================================================================
+// Create proper query schemas that match QueryFilters interface
+const organizationQuerySchema = z.object({
+    where: z.record(z.any()).optional(),
+    orderBy: z
+        .array(z.object({
+        field: z.string(),
+        direction: z.enum(['asc', 'desc']),
+    }))
+        .optional(),
+    limit: z.number().optional(),
+    offset: z.number().optional(),
+    include: z.array(z.string()).optional(),
+});
+const organizationMembershipQuerySchema = z.object({
+    where: z.record(z.any()).optional(),
+    orderBy: z
+        .array(z.object({
+        field: z.string(),
+        direction: z.enum(['asc', 'desc']),
+    }))
+        .optional(),
+    limit: z.number().optional(),
+    offset: z.number().optional(),
+    include: z.array(z.string()).optional(),
+});
 export class OrganizationService extends BaseService {
     table = organizations;
     entityName = 'Organization';
-    createSchema = CreateOrganizationSchema;
-    updateSchema = UpdateOrganizationSchema;
-    querySchema = OrganizationQuerySchema;
-    outputSchema = OrganizationEntitySchema;
+    createSchema = newOrganizationSchema;
+    updateSchema = updateOrganizationSchema;
+    querySchema = organizationQuerySchema;
+    outputSchema = databaseOrganizationSchema;
     /**
      * Find organization by slug
      */
@@ -119,7 +145,7 @@ export class OrganizationService extends BaseService {
             return {
                 organization: this.outputSchema.parse(organizationResult),
                 members: membersResults.map(({ membership, user }) => ({
-                    membership: databaseOrganizationMembershipSchema.parse(membership),
+                    membership: organizationMembershipEntitySchema.parse(membership),
                     user,
                 })),
             };
@@ -150,7 +176,6 @@ export class OrganizationService extends BaseService {
                 pendingMembers: stats?.pendingMembers || 0,
                 ownerCount: stats?.ownerCount || 0,
                 adminCount: stats?.adminCount || 0,
-                regularMemberCount: stats?.regularMemberCount || 0,
             };
         }
         catch (error) {
@@ -184,7 +209,7 @@ export class OrganizationService extends BaseService {
             const [result] = await db
                 .update(organizations)
                 .set({
-                status: 'inactive',
+                status: 'suspended',
                 updatedAt: new Date(),
             })
                 .where(eq(organizations.id, organizationId))
@@ -262,10 +287,10 @@ export class OrganizationService extends BaseService {
 export class OrganizationMembershipService extends BaseService {
     table = organizationMemberships;
     entityName = 'OrganizationMembership';
-    createSchema = newOrganizationMembershipSchema;
+    createSchema = createOrganizationMembershipSchema;
     updateSchema = updateOrganizationMembershipSchema;
-    querySchema = queryOrganizationMembershipSchema;
-    outputSchema = databaseOrganizationMembershipSchema;
+    querySchema = organizationMembershipQuerySchema;
+    outputSchema = organizationMembershipEntitySchema;
     /**
      * Find membership by user and organization
      */
@@ -300,7 +325,7 @@ export class OrganizationMembershipService extends BaseService {
                 .orderBy(desc(organizationMemberships.joinedAt));
             return results.map(({ membership, organization }) => ({
                 ...this.outputSchema.parse(membership),
-                organization: OrganizationEntitySchema.parse(organization),
+                organization: databaseOrganizationSchema.parse(organization),
             }));
         }
         catch (error) {
@@ -346,7 +371,7 @@ export class OrganizationMembershipService extends BaseService {
                 .orderBy(desc(organizationMemberships.joinedAt));
             return results.map(({ membership, organization }) => ({
                 ...this.outputSchema.parse(membership),
-                organization: OrganizationEntitySchema.parse(organization),
+                organization: databaseOrganizationSchema.parse(organization),
             }));
         }
         catch (error) {
@@ -384,7 +409,7 @@ export class OrganizationMembershipService extends BaseService {
                 .values({
                 userId,
                 organizationId,
-                role,
+                role: role,
                 status: 'active',
                 joinedAt: new Date(),
                 invitedBy,
@@ -442,7 +467,7 @@ export class OrganizationMembershipService extends BaseService {
             const [result] = await db
                 .update(organizationMemberships)
                 .set({
-                status,
+                status: status,
                 updatedAt: new Date(),
             })
                 .where(and(eq(organizationMemberships.userId, userId), eq(organizationMemberships.organizationId, organizationId)))

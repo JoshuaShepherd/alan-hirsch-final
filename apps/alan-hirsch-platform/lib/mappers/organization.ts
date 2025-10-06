@@ -30,39 +30,39 @@ export function toOrganizationEntity(row: Organization): OrganizationEntity {
       slug: row.slug,
       description: row.description ?? undefined,
       website: row.website ?? undefined,
-      logoUrl: row.logo_url ?? undefined,
+      logoUrl: row.logoUrl ?? undefined,
 
       // Organization Details
-      organizationType: row.organization_type,
-      sizeCategory: row.size_category ?? undefined,
-      contactEmail: row.contact_email ?? undefined,
-      contactPhone: row.contact_phone ?? undefined,
+      organizationType: row.organizationType,
+      sizeCategory: row.sizeCategory ?? undefined,
+      contactEmail: row.contactEmail ?? undefined,
+      contactPhone: row.contactPhone ?? undefined,
 
       // Address Information
       address: row.address
         ? {
-            street: row.address.street ?? undefined,
-            city: row.address.city ?? undefined,
-            state: row.address.state ?? undefined,
-            country: row.address.country ?? undefined,
-            postalCode: row.address.postal_code ?? undefined,
+            street: row.address.street,
+            city: row.address.city,
+            state: row.address.state,
+            country: row.address.country,
+            postalCode: row.address.postalCode,
           }
         : undefined,
 
       // Billing & Account
-      billingEmail: row.billing_email ?? undefined,
-      accountOwnerId: row.account_owner_id ?? undefined,
+      billingEmail: row.billingEmail ?? undefined,
+      accountOwnerId: row.accountOwnerId ?? undefined,
 
       // License & Limits
-      licenseType: row.license_type ?? 'individual',
-      maxUsers: row.max_users ?? 1,
+      licenseType: row.licenseType ?? 'individual',
+      maxUsers: row.maxUsers ?? 1,
 
       // Status
       status: row.status ?? 'trial',
 
       // Timestamps
-      createdAt: row.created_at.toISOString(),
-      updatedAt: row.updated_at.toISOString(),
+      createdAt: row.createdAt.toISOString(),
+      updatedAt: row.updatedAt.toISOString(),
     };
 
     // Validate the result against the schema
@@ -118,13 +118,15 @@ export function toOrganizationResponseDTO(
   const isTrial = row.status === 'trial';
   const isSuspended = row.status === 'suspended';
   const isCancelled = row.status === 'cancelled';
-  const hasCustomLogo = !!row.logo_url;
+  const hasCustomLogo = !!row.logoUrl;
   const hasWebsite = !!row.website;
   const hasAddress = !!row.address;
   const memberCount = row.memberCount || row.members?.length || 0;
   const displayName = row.name;
-  const statusDisplay = getStatusDisplay(row.status);
-  const licenseTypeDisplay = getLicenseTypeDisplay(row.license_type);
+  const statusDisplay = getStatusDisplay(row.status || 'trial');
+  const licenseTypeDisplay = getLicenseTypeDisplay(
+    row.licenseType || 'individual'
+  );
 
   const result = {
     ...entity,
@@ -171,24 +173,24 @@ export function fromCreateOrganization(
     slug: data.slug,
     description: data.description ?? null,
     website: data.website ?? null,
-    logo_url: data.logoUrl ?? null,
-    organization_type: data.organizationType,
-    size_category: data.sizeCategory ?? null,
-    contact_email: data.contactEmail ?? null,
-    contact_phone: data.contactPhone ?? null,
+    logoUrl: data.logoUrl ?? null,
+    organizationType: data.organizationType,
+    sizeCategory: data.sizeCategory ?? null,
+    contactEmail: data.contactEmail ?? null,
+    contactPhone: data.contactPhone ?? null,
     address: data.address
       ? {
-          street: data.address.street ?? null,
-          city: data.address.city ?? null,
-          state: data.address.state ?? null,
-          country: data.address.country ?? null,
-          postal_code: data.address.postalCode ?? null,
+          street: data.address.street ?? '',
+          city: data.address.city ?? '',
+          state: data.address.state ?? '',
+          country: data.address.country ?? '',
+          postalCode: data.address.postalCode ?? '',
         }
       : null,
-    billing_email: data.billingEmail ?? null,
-    account_owner_id: data.accountOwnerId ?? null,
-    license_type: data.licenseType ?? 'individual',
-    max_users: data.maxUsers ?? 1,
+    billingEmail: data.billingEmail ?? null,
+    accountOwnerId: data.accountOwnerId ?? null,
+    licenseType: data.licenseType ?? 'individual',
+    maxUsers: data.maxUsers ?? 1,
     status: data.status ?? 'trial',
   };
 }
@@ -202,41 +204,39 @@ export function fromUpdateOrganization(
   const updateData: Partial<Organization> = {};
 
   if (data.name !== undefined) updateData.name = data.name;
-  if (data.slug !== undefined) updateData.slug = data.slug;
   if (data.description !== undefined)
     updateData.description = data.description ?? null;
   if (data.website !== undefined) updateData.website = data.website ?? null;
-  if (data.logoUrl !== undefined) updateData.logo_url = data.logoUrl ?? null;
+  if (data.logoUrl !== undefined) updateData.logoUrl = data.logoUrl ?? null;
   if (data.organizationType !== undefined)
-    updateData.organization_type = data.organizationType;
+    updateData.organizationType = data.organizationType;
   if (data.sizeCategory !== undefined)
-    updateData.size_category = data.sizeCategory ?? null;
+    updateData.sizeCategory = data.sizeCategory ?? null;
   if (data.contactEmail !== undefined)
-    updateData.contact_email = data.contactEmail ?? null;
+    updateData.contactEmail = data.contactEmail ?? null;
   if (data.contactPhone !== undefined)
-    updateData.contact_phone = data.contactPhone ?? null;
+    updateData.contactPhone = data.contactPhone ?? null;
   if (data.address !== undefined) {
     updateData.address = data.address
       ? {
-          street: data.address.street ?? null,
-          city: data.address.city ?? null,
-          state: data.address.state ?? null,
-          country: data.address.country ?? null,
-          postal_code: data.address.postalCode ?? null,
+          street: data.address.street ?? '',
+          city: data.address.city ?? '',
+          state: data.address.state ?? '',
+          country: data.address.country ?? '',
+          postalCode: data.address.postalCode ?? '',
         }
       : null;
   }
   if (data.billingEmail !== undefined)
-    updateData.billing_email = data.billingEmail ?? null;
+    updateData.billingEmail = data.billingEmail ?? null;
   if (data.accountOwnerId !== undefined)
-    updateData.account_owner_id = data.accountOwnerId ?? null;
-  if (data.licenseType !== undefined)
-    updateData.license_type = data.licenseType;
-  if (data.maxUsers !== undefined) updateData.max_users = data.maxUsers;
+    updateData.accountOwnerId = data.accountOwnerId ?? null;
+  if (data.licenseType !== undefined) updateData.licenseType = data.licenseType;
+  if (data.maxUsers !== undefined) updateData.maxUsers = data.maxUsers;
   if (data.status !== undefined) updateData.status = data.status;
 
-  // Always update the updated_at timestamp
-  updateData.updated_at = new Date();
+  // Always update the updatedAt timestamp
+  updateData.updatedAt = new Date();
 
   return updateData;
 }

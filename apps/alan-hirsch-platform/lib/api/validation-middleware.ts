@@ -25,12 +25,12 @@ export interface ValidationConfig<TInput, TOutput> {
 export function withValidation<TInput, TOutput>(
   config: ValidationConfig<TInput, TOutput>
 ) {
-  return function <T extends any[], R>(
-    handler: (input: TInput, context: any) => Promise<R>
+  return function <T extends unknown[], R>(
+    handler: (input: TInput, context: unknown) => Promise<R>
   ) {
     return async (
       request: NextRequest,
-      ...args: T[]
+      ..._args: T[]
     ): Promise<NextResponse> => {
       try {
         // Parse and validate input
@@ -169,7 +169,7 @@ export const commonValidators = {
   // Search validation
   search: z.object({
     query: z.string().min(1).max(100).optional(),
-    filters: z.record(z.any()).optional(),
+    filters: z.record(z.unknown()).optional(),
   }),
 
   // Date range validation
@@ -196,9 +196,4 @@ export const commonValidators = {
 // EXPORTS
 // ============================================================================
 
-export {
-  withFullValidation,
-  withInputValidation,
-  withOutputValidation,
-  withValidation,
-};
+// All functions are exported inline above

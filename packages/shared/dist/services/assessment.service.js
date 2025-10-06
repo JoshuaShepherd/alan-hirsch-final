@@ -1,7 +1,7 @@
-import { db } from '@/lib/db/drizzle';
-import { assessmentQuestions, assessmentResponses, assessments, userAssessments, } from '@/lib/db/schema';
-import { newAssessmentQuestionSchema, newAssessmentResponseSchema, newAssessmentSchema, newUserAssessmentSchema, queryAssessmentQuestionSchema, queryAssessmentResponseSchema, queryAssessmentSchema, queryUserAssessmentSchema, updateAssessmentQuestionSchema, updateAssessmentResponseSchema, updateAssessmentSchema, updateUserAssessmentSchema, } from '@/src/lib/schemas/crud.schemas';
-import { databaseAssessmentQuestionSchema, databaseAssessmentResponseSchema, databaseAssessmentSchema, databaseUserAssessmentSchema, } from '@/src/lib/schemas/database.schemas';
+import { assessmentQuestionEntitySchema as databaseAssessmentQuestionSchema, assessmentResponseEntitySchema as databaseAssessmentResponseSchema, assessmentEntitySchema as databaseAssessmentSchema, userAssessmentEntitySchema as databaseUserAssessmentSchema, } from '@platform/contracts/entities/assessment.schema';
+import { createAssessmentQuestionSchema as newAssessmentQuestionSchema, createAssessmentResponseSchema as newAssessmentResponseSchema, createAssessmentSchema as newAssessmentSchema, createUserAssessmentSchema as newUserAssessmentSchema, assessmentQuestionQuerySchema as queryAssessmentQuestionSchema, assessmentResponseQuerySchema as queryAssessmentResponseSchema, assessmentQuerySchema as queryAssessmentSchema, UpdateAssessmentQuestionOperationSchema as updateAssessmentQuestionSchema, UpdateAssessmentResponseOperationSchema as updateAssessmentResponseSchema, UpdateAssessmentOperationSchema as updateAssessmentSchema, CompleteUserAssessmentOperationSchema as updateUserAssessmentSchema, } from '@platform/contracts/operations/assessment.operations';
+import { db } from '@platform/database/db/drizzle';
+import { assessmentQuestions, assessmentResponses, assessments, userAssessments, } from '@platform/database/db/schema';
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { BaseService } from './base.service';
 // ============================================================================
@@ -202,7 +202,7 @@ export class AssessmentQuestionService extends BaseService {
                 .from(assessmentQuestions)
                 .where(eq(assessmentQuestions.apestDimension, dimension))
                 .orderBy(assessmentQuestions.orderIndex);
-            return results.map(result => this.outputSchema.parse(result));
+            return results.map(result => databaseAssessmentQuestionSchema.parse(result));
         }
         catch (error) {
             throw this.handleDatabaseError(error, 'findByAPESTDimension');
@@ -281,7 +281,7 @@ export class UserAssessmentService extends BaseService {
     entityName = 'UserAssessment';
     createSchema = newUserAssessmentSchema;
     updateSchema = updateUserAssessmentSchema;
-    querySchema = queryUserAssessmentSchema;
+    querySchema = queryAssessmentResponseSchema;
     outputSchema = databaseUserAssessmentSchema;
     /**
      * Find user assessment by user and assessment
@@ -418,7 +418,36 @@ export class UserAssessmentService extends BaseService {
             const [result] = await db
                 .update(userAssessments)
                 .set({
-                ...completionData,
+                totalScore: completionData.totalScore,
+                maxPossibleScore: completionData.maxPossibleScore,
+                apostolicScore: completionData.apostolicScore,
+                propheticScore: completionData.propheticScore,
+                evangelisticScore: completionData.evangelisticScore,
+                shepherdingScore: completionData.shepherdingScore,
+                teachingScore: completionData.teachingScore,
+                normalizedScores: completionData.normalizedScores,
+                primaryGift: completionData.primaryGift,
+                secondaryGift: completionData.secondaryGift,
+                responseConsistency: completionData.responseConsistency !== undefined
+                    ? completionData.responseConsistency.toString()
+                    : null,
+                confidenceLevel: completionData.confidenceLevel !== undefined
+                    ? completionData.confidenceLevel
+                    : null,
+                completionTime: completionData.completionTime,
+                culturalAdjustmentApplied: completionData.culturalAdjustmentApplied,
+                culturalAdjustmentFactor: completionData.culturalAdjustmentFactor?.toString(),
+                aiInsights: completionData.aiInsights
+                    ? JSON.stringify(completionData.aiInsights)
+                    : null,
+                personalizedRecommendations: completionData.personalizedRecommendations
+                    ? {
+                        strengths: completionData.personalizedRecommendations,
+                        growthAreas: [],
+                        actionItems: [],
+                        contentRecommendations: [],
+                    }
+                    : undefined,
                 completedAt: new Date(),
                 completionPercentage: 100,
                 updatedAt: new Date(),
@@ -440,6 +469,12 @@ export class UserAssessmentService extends BaseService {
                 .update(userAssessments)
                 .set({
                 ...progressData,
+                responseConsistency: progressData.responseConsistency !== undefined
+                    ? progressData.responseConsistency.toString()
+                    : null,
+                confidenceLevel: progressData.confidenceLevel !== undefined
+                    ? progressData.confidenceLevel
+                    : null,
                 updatedAt: new Date(),
             })
                 .where(eq(userAssessments.id, userAssessmentId))

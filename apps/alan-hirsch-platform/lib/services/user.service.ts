@@ -7,8 +7,8 @@
 import type {
   CreateUserProfile,
   UpdateUserProfile,
+  UserProfileQuery,
   UserProfileResponse,
-  UserQueryFilters,
 } from '@platform/contracts';
 import {
   createUserProfileSchema,
@@ -27,6 +27,7 @@ import {
   getUserProfileBySubdomain,
   getUserStats,
   searchUserProfiles,
+  updateUserLastActive,
   updateUserProfile,
 } from '@platform/database';
 import {
@@ -37,6 +38,8 @@ import {
 import { BaseService } from './base.service';
 import {
   AuthHelpers,
+  ForbiddenError,
+  NotFoundError,
   PaginatedServiceResult,
   ServiceContext,
   ServiceResult,
@@ -50,7 +53,7 @@ export class UserService extends BaseService<
   UserProfileResponse,
   CreateUserProfile,
   UpdateUserProfile,
-  UserQueryFilters
+  UserProfileQuery
 > {
   protected entityName = 'UserProfile';
   protected createSchema = createUserProfileSchema;
@@ -99,25 +102,53 @@ export class UserService extends BaseService<
   }
 
   protected async executeFindMany(
-    query: UserQueryFilters,
+    query: UserProfileQuery,
     context: ServiceContext
-  ): Promise<{ data: unknown[]; pagination: unknown }> {
+  ): Promise<{
+    data: unknown[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasMore: boolean;
+    };
+  }> {
     const queryContext = this.mapToQueryContext(context);
-    const results = await searchUserProfiles(query.search || '', queryContext, {
-      limit: query.limit || 20,
-      offset: query.offset || 0,
-      orderBy: query.sortBy || 'created_at',
-      orderDirection: query.sortOrder || 'desc',
+
+    // Map camelCase sortBy to snake_case database field names
+    const orderByMapping: Record<
+      string,
+      'name' | 'created_at' | 'last_active_at'
+    > = {
+      firstName: 'name',
+      lastName: 'name',
+      email: 'name',
+      createdAt: 'created_at',
+      updatedAt: 'created_at',
+      lastActiveAt: 'last_active_at',
+      ministryRole: 'name',
+      assessmentTotal: 'name',
+    };
+
+    const dbOrderBy =
+      orderByMapping[query.sortBy ?? 'createdAt'] ?? 'created_at';
+
+    const results = await searchUserProfiles(query.search ?? '', queryContext, {
+      limit: query.limit ?? 20,
+      offset: ((query.page ?? 1) - 1) * (query.limit ?? 20),
+      orderBy: dbOrderBy,
+      orderDirection: query.sortOrder ?? 'desc',
     });
 
     return {
       data: results,
       pagination: {
-        page: Math.floor((query.offset || 0) / (query.limit || 20)) + 1,
-        limit: query.limit || 20,
+        page: query.page ?? 1,
+        limit: query.limit ?? 20,
         total: results.length, // This would be improved with proper count query
-        totalPages: Math.ceil(results.length / (query.limit || 20)),
-        hasMore: results.length === (query.limit || 20),
+        totalPages: Math.ceil(results.length / (query.limit ?? 20)),
+        hasMore: results.length === (query.limit ?? 20),
       },
     };
   }
@@ -228,7 +259,6 @@ export class UserService extends BaseService<
         assessmentRevenuePotential: scores.revenuePotential,
         assessmentNetworkEffects: scores.networkEffects,
         assessmentStrategicFit: scores.strategicFit,
-        assessmentTotal: scores.total,
       };
 
       return this.update(userId, updateData, context);
@@ -274,11 +304,12 @@ export class UserService extends BaseService<
         throw new ForbiddenError('Cannot update last active for another user');
       }
 
-      const updateData: UpdateUserProfile = {
-        lastActiveAt: new Date().toISOString(),
-      };
+      // Use the database function directly since lastActiveAt is system-managed
+      const queryContext = this.mapToQueryContext(context);
+      await updateUserLastActive(userId, queryContext);
 
-      return this.update(userId, updateData, context);
+      // Return the updated user profile
+      return this.findById(userId, context);
     } catch (error) {
       return this.handleError(error, 'updateLastActive');
     }
@@ -391,15 +422,18 @@ export class UserService extends BaseService<
       }
 
       const queryContext = this.mapToQueryContext(context);
-      const context = await getUserMinistryContext(userId, queryContext);
+      const ministryContextData = await getUserMinistryContext(
+        userId,
+        queryContext
+      );
 
-      if (!context) {
+      if (!ministryContextData) {
         throw new NotFoundError(this.entityName, userId);
       }
 
       return {
         success: true,
-        data: context,
+        data: ministryContextData,
       };
     } catch (error) {
       return this.handleError(error, 'getMinistryContext');
@@ -487,24 +521,24 @@ export class UserService extends BaseService<
   // AUTHORIZATION OVERRIDES
   // ============================================================================
 
-  canRead(context: ServiceContext, resourceId?: string): boolean {
+  override canRead(context: ServiceContext, resourceId?: string): boolean {
     // Users can read their own profile, admins can read any
     if (resourceId && context.userId === resourceId) return true;
     return AuthHelpers.hasRole(context, 'admin');
   }
 
-  canUpdate(context: ServiceContext, resourceId?: string): boolean {
+  override canUpdate(context: ServiceContext, resourceId?: string): boolean {
     // Users can update their own profile, admins can update any
     if (resourceId && context.userId === resourceId) return true;
     return AuthHelpers.hasRole(context, 'admin');
   }
 
-  canCreate(context: ServiceContext): boolean {
+  override canCreate(context: ServiceContext): boolean {
     // Only admins can create users (registration handled separately)
     return AuthHelpers.hasRole(context, 'admin');
   }
 
-  canDelete(context: ServiceContext, resourceId?: string): boolean {
+  override canDelete(context: ServiceContext, resourceId?: string): boolean {
     // Only owners can delete users
     return AuthHelpers.hasRole(context, 'owner');
   }
@@ -530,5 +564,5 @@ export type CreateUserInput = CreateUserProfile;
 export type CreateUserOutput = UserProfileResponse;
 export type UpdateUserInput = UpdateUserProfile;
 export type UpdateUserOutput = UserProfileResponse;
-export type UserQueryInput = UserQueryFilters;
+export type UserQueryInput = UserProfileQuery;
 export type UserListOutput = PaginatedServiceResult<UserProfileResponse>;

@@ -1,9 +1,11 @@
-export { BaseService, QueryFiltersSchema, TransactionService, type PaginatedResult, type QueryFilters, type QueryFiltersType, type ServiceError, type TransactionContext, } from './base.service';
+export { BaseService, QueryFiltersSchema, type PaginatedResult, type QueryFilters, type QueryFiltersType, type ServiceError, type TransactionContext, } from './base.service';
 export { UserService } from './user.service';
 export { ContentCategoryService, ContentItemService } from './content.service';
 export { AssessmentQuestionService, AssessmentResponseService, AssessmentService, UserAssessmentService, } from './assessment.service';
 export { OrganizationMembershipService, OrganizationService, } from './organization.service';
 export { CommunityService } from './community.service';
+export { AnalyticsService } from './analytics.service';
+export { UploadService } from './upload.service';
 /**
  * Service Factory - Create new instances of services
  * Useful for testing or when you need multiple instances
@@ -52,7 +54,16 @@ export declare class ServiceFactory {
     /**
      * Create a new instance of TransactionService
      */
-    static createTransactionService(): any;
+    static createTransactionService(): TransactionService;
+}
+/**
+ * Transaction service for managing database transactions
+ */
+export declare class TransactionService {
+    /**
+     * Execute operations within a database transaction
+     */
+    executeInTransaction<T>(operations: (tx: any) => Promise<T>): Promise<T>;
 }
 /**
  * Service utilities for common operations
@@ -61,7 +72,7 @@ export declare class ServiceUtils {
     /**
      * Execute multiple operations in a transaction
      */
-    static executeInTransaction<T>(operations: (services: typeof services) => Promise<T>): Promise<T>;
+    static executeInTransaction<T>(operations: (services: any) => Promise<T>): Promise<T>;
     /**
      * Validate multiple entities at once
      */
@@ -73,11 +84,6 @@ export declare class ServiceUtils {
      */
     static handleServiceError(error: unknown, operation: string, entityName: string): never;
 }
-export type { UserService } from './user.service';
-export type { ContentCategoryService, ContentItemService, } from './content.service';
-export type { AssessmentQuestionService, AssessmentResponseService, AssessmentService, UserAssessmentService, } from './assessment.service';
-export type { OrganizationMembershipService, OrganizationService, } from './organization.service';
-export type { CommunityService } from './community.service';
 import { analyticsService, assessmentService, communityService, contentService, organizationService, uploadService, userService } from './service-instances';
 export { analyticsService, assessmentService, communityService, contentService, organizationService, uploadService, userService, };
 import { AssessmentQuestionService, AssessmentResponseService, AssessmentService, UserAssessmentService } from './assessment.service';
@@ -99,7 +105,7 @@ export declare const services: {
     organization: () => OrganizationService;
     organizationMembership: () => OrganizationMembershipService;
     community: () => CommunityService;
-    transaction: () => any;
+    transaction: () => TransactionService;
 };
 declare const _default: {
     ServiceFactory: typeof ServiceFactory;
@@ -115,7 +121,7 @@ declare const _default: {
         organization: () => OrganizationService;
         organizationMembership: () => OrganizationMembershipService;
         community: () => CommunityService;
-        transaction: () => any;
+        transaction: () => TransactionService;
     };
 };
 export default _default;

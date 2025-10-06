@@ -97,7 +97,7 @@ export const GET = createGetHandler({
       organizationContext,
     } = validatedQuery;
 
-    const offset = (page - 1) * limit;
+    const offset = ((page ?? 1) - 1) * (limit ?? 10);
 
     // Build search results across all ministry platform entities
     const searchResults = await Promise.all([
@@ -118,7 +118,7 @@ export const GET = createGetHandler({
       organizations.total +
       users.total;
 
-    const totalPages = Math.ceil(totalResults / limit);
+    const totalPages = Math.ceil(totalResults / (limit ?? 10));
 
     // Combine and rank results based on ministry relevance
     return {
@@ -129,12 +129,12 @@ export const GET = createGetHandler({
       users: users.data,
       totalResults,
       pagination: {
-        page,
-        limit,
+        page: page ?? 1,
+        limit: limit ?? 10,
         total: totalResults,
         totalPages,
-        hasNext: page < totalPages,
-        hasPrev: page > 1,
+        hasNext: (page ?? 1) < totalPages,
+        hasPrev: (page ?? 1) > 1,
       },
     };
   },

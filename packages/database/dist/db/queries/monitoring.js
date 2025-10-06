@@ -242,10 +242,7 @@ export async function getAuditLogs(context, options = {}) {
         conditions.push(sql `${auditLogs.createdAt} <= ${dateTo}`);
     }
     const results = await db
-        .select({
-        ...auditLogs,
-        user: userProfiles,
-    })
+        .select()
         .from(auditLogs)
         .leftJoin(userProfiles, eq(auditLogs.userId, userProfiles.id))
         .where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -272,10 +269,7 @@ export async function getSecurityEvents(context, options = {}) {
         conditions.push(sql `${auditLogs.createdAt} <= ${dateTo}`);
     }
     const results = await db
-        .select({
-        ...auditLogs,
-        user: userProfiles,
-    })
+        .select()
         .from(auditLogs)
         .leftJoin(userProfiles, eq(auditLogs.userId, userProfiles.id))
         .where(and(...conditions))

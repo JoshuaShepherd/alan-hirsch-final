@@ -1,116 +1,89 @@
-import {
-  getUserAssessmentsWithDetails,
-  startUserAssessment,
-} from '@platform/database';
-import {
-  createApiRoute,
-  paginationInputSchema,
-} from '@platform/shared/api/utils';
-import {
-  paginatedUserAssessmentListResponseSchema,
-  userAssessmentResponseSchema,
-} from '@platform/shared/contracts';
-import { apiResponseSchema } from '@platform/shared/contracts/api-responses';
-import { z } from 'zod';
+// ============================================================================
+// USER ASSESSMENTS API ROUTES
+// ============================================================================
+// Type-safe API endpoints for user assessment management with proper validation
+// Uses standardized route handlers with ingress/egress validation per alignment reference
 
-// Input schema for user assessments
-const userAssessmentsInputSchema = paginationInputSchema.extend({
-  assessmentType: z.string().optional(),
-  completed: z.boolean().optional(),
-});
+import {
+  ListUserAssessmentsApiQuerySchema,
+  StartUserAssessmentApiRequestSchema,
+  UserAssessmentResponseSchema,
+} from '@platform/contracts';
+import { AuthenticationError } from '../../../../lib/api/error-handler';
+import {
+  createGetListHandler,
+  createPostHandler,
+} from '../../../../lib/api/route-handlers';
+import { toUserAssessmentEntity } from '../../../../lib/mappers/assessment';
+import { userAssessmentService } from '../../../../lib/services';
 
-// GET /api/user/assessments - Get user's assessments
-export const GET = createApiRoute(
-  userAssessmentsInputSchema,
-  paginatedUserAssessmentListResponseSchema,
-  async (input, { user }) => {
-    if (!user) {
-      throw new Error('Authentication required');
+// ============================================================================
+// GET /api/user/assessments - List user's assessments with pagination and filtering
+// ============================================================================
+
+export const GET = createGetListHandler({
+  inputSchema: ListUserAssessmentsApiQuerySchema,
+  outputSchema: UserAssessmentResponseSchema,
+  requireAuth: true,
+  handler: async (validatedQuery, context) => {
+    if (!context.userId) {
+      throw new AuthenticationError('User ID not found in context');
     }
 
-    const userAssessments = await getUserAssessmentsWithDetails(user.id);
-
-    // Apply filters
-    let filteredAssessments = userAssessments;
-
-    if (input.assessmentType) {
-      filteredAssessments = filteredAssessments.filter(
-        ua => ua.assessment?.assessmentType === input.assessmentType
-      );
-    }
-
-    if (input.completed !== undefined) {
-      filteredAssessments = filteredAssessments.filter(ua =>
-        input.completed ? !!ua.completedAt : !ua.completedAt
-      );
-    }
-
-    // Apply pagination
-    const page = input.page ?? 1;
-    const limit = input.limit ?? 20;
-    const offset = (page - 1) * limit;
-    const paginatedAssessments = filteredAssessments.slice(
-      offset,
-      offset + limit
+    // Call service layer with validated input and tenant-scoped context
+    const result = await userAssessmentService.findMany(
+      validatedQuery,
+      context
     );
-    const total = filteredAssessments.length;
 
-    // Create standardized response
+    // Check if service call was successful
+    if (!result.success || !result.data) {
+      throw new Error(
+        result.error?.message || 'Failed to fetch user assessments'
+      );
+    }
+
+    // Transform DB rows to response DTOs using mappers (egress validation)
+    const transformedData = result.data.map(userAssessment =>
+      toUserAssessmentEntity(userAssessment)
+    );
+
     return {
-      items: {
-        data: paginatedAssessments,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages: Math.ceil(total / limit),
-          hasNext: page < Math.ceil(total / limit),
-          hasPrev: page > 1,
-        },
+      data: transformedData,
+      pagination: {
+        page: result.pagination?.page || 1,
+        limit: result.pagination?.limit || 10,
+        total: result.pagination?.total || 0,
+        totalPages: result.pagination?.totalPages || 0,
+        hasNext: result.pagination?.hasMore || false,
+        hasPrev: (result.pagination?.page || 1) > 1,
       },
-      success: true,
     };
-  }
-);
-
-// Input schema for starting a new assessment
-const startUserAssessmentInputSchema = z.object({
-  assessmentId: z.string().uuid(),
+  },
 });
 
+// ============================================================================
 // POST /api/user/assessments - Start a new assessment
-export const POST = createApiRoute(
-  startUserAssessmentInputSchema,
-  apiResponseSchema(userAssessmentResponseSchema),
-  async (input, { user }) => {
-    if (!user) {
-      throw new Error('Authentication required');
+// ============================================================================
+
+export const POST = createPostHandler({
+  inputSchema: StartUserAssessmentApiRequestSchema,
+  outputSchema: UserAssessmentResponseSchema,
+  requireAuth: true,
+  handler: async (validatedData, context) => {
+    if (!context.userId) {
+      throw new AuthenticationError('User ID not found in context');
     }
 
-    // Check if user already has an incomplete assessment of this type
-    const existingAssessments = await getUserAssessmentsWithDetails(user.id);
-    const incompleteAssessment = existingAssessments.find(
-      ua => ua.assessmentId === input.assessmentId && !ua.completedAt
-    );
+    // Call service layer with validated input and tenant-scoped context
+    const result = await userAssessmentService.create(validatedData, context);
 
-    if (incompleteAssessment) {
-      throw new Error('You already have an incomplete assessment of this type');
+    // Check if service call was successful
+    if (!result.success || !result.data) {
+      throw new Error(result.error?.message || 'Failed to start assessment');
     }
 
-    const newUserAssessment = await startUserAssessment({
-      ...input,
-      userId: user.id,
-      startedAt: new Date(),
-      completionPercentage: 0,
-      culturalAdjustmentApplied: false,
-      suggestedPeers: [],
-      complementaryGifts: [],
-    });
-
-    // Create standardized response
-    return {
-      data: newUserAssessment,
-      success: true,
-    };
-  }
-);
+    // Transform DB row to response DTO using mappers (egress validation)
+    return toUserAssessmentEntity(result.data);
+  },
+});

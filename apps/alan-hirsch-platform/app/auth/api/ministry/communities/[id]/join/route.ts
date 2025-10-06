@@ -1,10 +1,9 @@
-import { createRouteHandler } from '@platform/shared/api/route-handler';
 import {
   joinMinistryCommunityRequestSchema,
   ministryCommunityResponseSchema,
-} from '@platform/shared/contracts';
-import { communityService } from '@platform/shared/services';
+} from '@platform/contracts';
 import { z } from 'zod';
+import { communityService } from '../../../../../../../lib/services';
 
 // ============================================================================
 // MINISTRY COMMUNITY JOIN API ROUTES

@@ -1,12 +1,12 @@
+import { createSupabaseServerClient } from '@platform/database';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createClient } from '@/lib/supabase/server';
 // Validation middleware for request validation
 export function withValidation(schema, handler) {
     return async (request) => {
         try {
             // Get authenticated user
-            const supabase = await createClient();
+            const supabase = await createSupabaseServerClient();
             const { data: { user }, error: authError, } = await supabase.auth.getUser();
             if (authError || !user) {
                 return NextResponse.json({
@@ -61,7 +61,7 @@ export function withInputOutputValidation(inputSchema, outputSchema, handler) {
     return async (request) => {
         try {
             // Get authenticated user
-            const supabase = await createClient();
+            const supabase = await createSupabaseServerClient();
             const { data: { user }, error: authError, } = await supabase.auth.getUser();
             if (authError || !user) {
                 return NextResponse.json({
@@ -122,7 +122,7 @@ export function withPaginationValidation(inputSchema, outputSchema, handler) {
     return async (request) => {
         try {
             // Get authenticated user
-            const supabase = await createClient();
+            const supabase = await createSupabaseServerClient();
             const { data: { user }, error: authError, } = await supabase.auth.getUser();
             if (authError || !user) {
                 return NextResponse.json({
@@ -197,7 +197,7 @@ export function withRateLimit(maxRequests = 100, windowMs = 15 * 60 * 1000 // 15
         return async (request) => {
             try {
                 // Get authenticated user
-                const supabase = await createClient();
+                const supabase = await createSupabaseServerClient();
                 const { data: { user }, error: authError, } = await supabase.auth.getUser();
                 if (authError || !user) {
                     return NextResponse.json({

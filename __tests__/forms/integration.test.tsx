@@ -1,6 +1,5 @@
 import { ContactForm } from '@/components/forms/shared/contact-form';
 import { CreateUserForm } from '@/components/forms/user/create-user-form';
-import { newUserProfileSchema } from '@/validations/auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';

@@ -7,12 +7,25 @@
 import { createSupabaseServerClient } from '@platform/database';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import type { ServiceContext } from '../services/base.service';
+import type { ServiceContext } from '../services/types';
 import {
+  ApiError,
   AuthenticationError,
   ValidationError,
-  handleApiError,
-} from './error-handler';
+} from './route-handler';
+
+// ============================================================================
+// QUERY SCHEMA UTILITIES
+// ============================================================================
+
+/**
+ * Creates a standardized query schema for common query parameters
+ */
+export function createQuerySchema<T extends Record<string, z.ZodTypeAny>>(
+  schema: T
+): z.ZodObject<T> {
+  return z.object(schema);
+}
 
 // ============================================================================
 // TYPES
@@ -135,7 +148,9 @@ export function createStandardRouteHandler<TInput, TOutput>(
         },
       });
     } catch (error) {
-      return handleApiError(error, request);
+      return handleRouteError(error, request) as NextResponse<
+        StandardApiResponse<TOutput>
+      >;
     }
   };
 }
@@ -183,7 +198,9 @@ export function createStandardPaginatedRouteHandler<TInput, TOutput>(
 
       // Validate output items (egress validation)
       const validatedData = config.outputSchema
-        ? result.data.map(item => config.outputSchema!.parse(item))
+        ? result.data
+            .map(item => config.outputSchema?.parse(item))
+            .filter((item): item is TOutput => item !== undefined)
         : result.data;
 
       // Return standardized paginated response envelope
@@ -203,7 +220,9 @@ export function createStandardPaginatedRouteHandler<TInput, TOutput>(
         },
       });
     } catch (error) {
-      return handleApiError(error, request);
+      return handleRouteError(error, request) as NextResponse<
+        StandardApiResponse<TOutput[]>
+      >;
     }
   };
 }
@@ -260,11 +279,11 @@ async function getAuthenticatedContext(
   request: NextRequest,
   config: { requireAuth?: boolean; requirePermissions?: string[] }
 ): Promise<ServiceContext> {
-  const context: ServiceContext = {};
+  const context: Partial<ServiceContext> = {};
 
   // Get authentication if required
   if (config.requireAuth) {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const {
       data: { user },
       error,
@@ -275,32 +294,32 @@ async function getAuthenticatedContext(
     }
 
     context.userId = user.id;
-    context.tenantId = user.user_metadata?.tenant_id || 'default';
+    context.tenantId = user.user_metadata?.['tenant_id'] ?? 'default';
 
     // Get user permissions if required
     if (config.requirePermissions?.length) {
       // TODO: Implement proper permission checking from user metadata or separate table
       // For now, assume all authenticated users have basic permissions
-      context.permissions = ['read', 'write'];
+      context.role = 'member';
     }
   } else {
     // For non-authenticated routes, use default tenant
-    context.tenantId = request.headers.get('x-tenant-id') || 'default';
+    context.tenantId = request.headers.get('x-tenant-id') ?? 'default';
   }
 
   // Get organization context from headers or user data
   const organizationId = request.headers.get('x-organization-id');
   if (organizationId) {
-    context.organizationId = organizationId;
+    context.tenantId = organizationId;
   }
 
   // Get additional context from headers
   const role = request.headers.get('x-user-role');
   if (role) {
-    context.role = role;
+    context.role = role as ServiceContext['role'];
   }
 
-  return context;
+  return context as ServiceContext;
 }
 
 /**
@@ -315,7 +334,7 @@ async function parseAndValidateInput<TInput>(
     return {} as TInput;
   }
 
-  let rawInput: any = {};
+  let rawInput: unknown = {};
 
   // Parse input based on method
   if (request.method === 'GET') {
@@ -327,7 +346,7 @@ async function parseAndValidateInput<TInput>(
     try {
       const body = await request.json();
       rawInput = body;
-    } catch (error) {
+    } catch (_error) {
       throw new ValidationError('Invalid JSON in request body', []);
     }
   }
@@ -423,10 +442,6 @@ export function createPaginatedSuccessResponse<T>(
   );
 }
 
-// ============================================================================
-// ERROR RESPONSE HELPERS
-// ============================================================================
-
 /**
  * Creates a standardized error response
  */
@@ -442,7 +457,7 @@ export function createErrorResponse(
       error: {
         code,
         message,
-        ...(details && { details }),
+        ...(details ? { details } : {}),
       },
       meta: {
         timestamp: new Date().toISOString(),
@@ -453,26 +468,143 @@ export function createErrorResponse(
 }
 
 // ============================================================================
+// ERROR HANDLING
+// ============================================================================
+
+/**
+ * Handle route errors with consistent error responses
+ */
+function handleRouteError(error: unknown, request?: NextRequest): NextResponse {
+  if (process.env['NODE_ENV'] === 'development') {
+    console.error('Route Error:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      url: request?.url,
+      method: request?.method,
+    });
+  }
+
+  // Handle known API errors
+  if (error instanceof ApiError) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          code: error.code ?? 'UNKNOWN_ERROR',
+          message: error.message,
+        },
+        meta: {
+          timestamp: new Date().toISOString(),
+        },
+      },
+      { status: error.statusCode }
+    );
+  }
+
+  // Handle Zod validation errors
+  if (error instanceof z.ZodError) {
+    const validationError = new ValidationError(
+      'Validation failed',
+      error.errors
+    );
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          code: validationError.code ?? 'VALIDATION_ERROR',
+          message: validationError.message,
+          details: error.errors,
+        },
+        meta: {
+          timestamp: new Date().toISOString(),
+        },
+      },
+      { status: 400 }
+    );
+  }
+
+  // Handle authentication errors
+  if (
+    error instanceof Error &&
+    (error.message.includes('JWT') || error.message.includes('token'))
+  ) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          code: 'AUTHENTICATION_ERROR',
+          message: 'Authentication failed',
+        },
+        meta: {
+          timestamp: new Date().toISOString(),
+        },
+      },
+      { status: 401 }
+    );
+  }
+
+  // Handle permission errors
+  if (
+    error instanceof Error &&
+    (error.message.includes('permission') ||
+      error.message.includes('unauthorized'))
+  ) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          code: 'AUTHORIZATION_ERROR',
+          message: 'Insufficient permissions',
+        },
+        meta: {
+          timestamp: new Date().toISOString(),
+        },
+      },
+      { status: 403 }
+    );
+  }
+
+  // Handle not found errors
+  if (
+    error instanceof Error &&
+    (error.message.includes('not found') ||
+      error.message.includes('does not exist'))
+  ) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Resource not found',
+        },
+        meta: {
+          timestamp: new Date().toISOString(),
+        },
+      },
+      { status: 404 }
+    );
+  }
+
+  // Generic server error
+  return NextResponse.json(
+    {
+      success: false,
+      error: {
+        code: 'INTERNAL_ERROR',
+        message: 'Internal server error',
+      },
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    },
+    { status: 500 }
+  );
+}
+
+// ============================================================================
 // EXPORTS
 // ============================================================================
 
-export {
-  createDeleteHandler,
-  createErrorResponse,
-  createGetHandler,
-  createGetListHandler,
-  createPaginatedSuccessResponse,
-  createPatchHandler,
-  createPostHandler,
-  createPutHandler,
-  createStandardPaginatedRouteHandler,
-  createStandardRouteHandler,
-  createSuccessResponse,
-  validatePathParams,
-};
-
-export type {
-  PaginatedRouteHandlerConfig,
-  RouteHandlerConfig,
-  StandardApiResponse,
-};
+// Aliases for common usage patterns
+export const createRouteHandler = createStandardRouteHandler;
+export const createPaginatedRouteHandler = createStandardPaginatedRouteHandler;

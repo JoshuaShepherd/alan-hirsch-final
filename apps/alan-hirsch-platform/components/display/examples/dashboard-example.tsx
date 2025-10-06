@@ -48,12 +48,12 @@ const mockUsers = [
     firstName: 'John',
     lastName: 'Doe',
     email: 'john@example.com',
-    ministryRole: 'pastor',
+    ministryRole: 'senior_pastor' as const,
     denomination: 'Baptist',
     countryCode: 'US',
     leaderTier: 'core',
-    subscriptionTier: 'professional',
-    accountStatus: 'active',
+    subscriptionTier: 'professional' as const,
+    accountStatus: 'active' as const,
     yearsInMinistry: 10,
     bio: 'Experienced pastor with a heart for church planting.',
     avatarUrl: undefined,
@@ -63,14 +63,35 @@ const mockUsers = [
     theologicalFocus: ['church_planting', 'leadership'],
     onboardingCompleted: true,
     onboardingStep: 10,
-    createdAt: new Date('2023-01-15'),
-    updatedAt: new Date('2024-01-15'),
-    lastActiveAt: new Date('2024-01-15'),
+    createdAt: '2023-01-15T00:00:00Z',
+    updatedAt: '2024-01-15T00:00:00Z',
+    lastActiveAt: '2024-01-15T00:00:00Z',
     privacySettings: {
       publicProfile: true,
       showAssessmentResults: false,
       allowNetworking: true,
       shareAnalytics: false,
+    },
+    // Computed fields for UserProfileResponse
+    isActive: true,
+    hasCompletedOnboarding: true,
+    fullName: 'John Doe',
+    displayNameOrFullName: 'John Doe',
+    hasCustomDomain: false,
+    hasSubdomain: false,
+    isPublicProfile: true,
+    canReceiveNotifications: true,
+    assessmentCompleted: false,
+    brandColors: {
+      accent: '#059669',
+      primary: '#2563eb',
+      secondary: '#64748b',
+    },
+    emailNotifications: {
+      dailyDigest: true,
+      revenueReports: true,
+      communityUpdates: true,
+      collaborationRequests: true,
     },
   },
   {
@@ -78,12 +99,12 @@ const mockUsers = [
     firstName: 'Jane',
     lastName: 'Smith',
     email: 'jane@example.com',
-    ministryRole: 'church_planter',
+    ministryRole: 'church_planter' as const,
     denomination: 'Presbyterian',
     countryCode: 'CA',
     leaderTier: 'network',
-    subscriptionTier: 'leader',
-    accountStatus: 'active',
+    subscriptionTier: 'leader' as const,
+    accountStatus: 'active' as const,
     yearsInMinistry: 5,
     bio: 'Passionate about planting churches in urban areas.',
     avatarUrl: undefined,
@@ -93,14 +114,35 @@ const mockUsers = [
     theologicalFocus: ['urban_ministry', 'community_development'],
     onboardingCompleted: true,
     onboardingStep: 10,
-    createdAt: new Date('2023-06-20'),
-    updatedAt: new Date('2024-01-10'),
-    lastActiveAt: new Date('2024-01-14'),
+    createdAt: '2023-06-20T00:00:00Z',
+    updatedAt: '2024-01-10T00:00:00Z',
+    lastActiveAt: '2024-01-14T00:00:00Z',
     privacySettings: {
       publicProfile: true,
       showAssessmentResults: true,
       allowNetworking: true,
       shareAnalytics: true,
+    },
+    // Computed fields for UserProfileResponse
+    isActive: true,
+    hasCompletedOnboarding: true,
+    fullName: 'Jane Smith',
+    displayNameOrFullName: 'Jane Smith',
+    hasCustomDomain: false,
+    hasSubdomain: false,
+    isPublicProfile: true,
+    canReceiveNotifications: true,
+    assessmentCompleted: false,
+    brandColors: {
+      accent: '#059669',
+      primary: '#2563eb',
+      secondary: '#64748b',
+    },
+    emailNotifications: {
+      dailyDigest: true,
+      revenueReports: true,
+      communityUpdates: true,
+      collaborationRequests: true,
     },
   },
 ];
@@ -111,21 +153,21 @@ const mockAssessments = [
     name: 'APEST Leadership Assessment',
     slug: 'apest-leadership',
     description: 'Discover your leadership gifts and calling.',
-    assessmentType: 'apest',
+    assessmentType: 'apest' as const,
     questionsCount: 50,
     estimatedDuration: 15,
     version: '1.0',
     language: 'en',
-    culturalAdaptation: 'western',
+    culturalAdaptation: 'western' as const,
     researchBacked: true,
     validityScore: 0.85,
     reliabilityScore: 0.92,
     instructions: 'Answer honestly based on your natural tendencies.',
-    scoringMethod: 'likert_5',
-    status: 'active',
-    createdAt: new Date('2023-01-01'),
-    updatedAt: new Date('2024-01-01'),
-    publishedAt: new Date('2023-02-01'),
+    scoringMethod: 'likert_5' as const,
+    status: 'active' as const,
+    createdAt: '2023-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+    publishedAt: '2023-02-01T00:00:00Z',
   },
 ];
 
@@ -139,8 +181,8 @@ const mockContent = [
     content: 'Full content here...',
     authorId: '1',
     coAuthors: [],
-    contentType: 'article',
-    format: 'text',
+    contentType: 'article' as const,
+    format: 'text' as const,
     wordCount: 2500,
     estimatedReadingTime: 10,
     viewCount: 1250,
@@ -154,8 +196,8 @@ const mockContent = [
     theologicalThemes: ['ecclesiology', 'spiritual_gifts'],
     seriesId: undefined,
     seriesOrder: undefined,
-    visibility: 'public',
-    status: 'published',
+    visibility: 'public' as const,
+    status: 'published' as const,
     networkAmplificationScore: 85,
     crossReferenceCount: 3,
     aiEnhanced: true,
@@ -174,12 +216,35 @@ const mockContent = [
     metaDescription: undefined,
     canonicalUrl: undefined,
     originalSource: undefined,
-    licenseType: 'all_rights_reserved',
+    licenseType: 'all_rights_reserved' as const,
     attributionRequired: true,
-    createdAt: new Date('2023-12-01'),
-    updatedAt: new Date('2024-01-01'),
-    publishedAt: new Date('2023-12-15'),
+    createdAt: '2023-12-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+    publishedAt: '2023-12-15T00:00:00Z',
     scheduledAt: undefined,
+    // Computed fields for ContentItemResponse
+    isPublished: true,
+    isDraft: false,
+    isScheduled: false,
+    isArchived: false,
+    hasFeaturedImage: false,
+    hasVideo: false,
+    hasAudio: false,
+    hasAttachments: false,
+    viewCountText: '1.2K',
+    likeCountText: '45',
+    shareCountText: '12',
+    commentCountText: '8',
+    bookmarkCountText: '23',
+    readingTimeText: '10 min read',
+    engagementScore: 8.5,
+    author: {
+      id: '1',
+      firstName: 'John',
+      lastName: 'Doe',
+      displayName: 'John Doe',
+      avatarUrl: undefined,
+    },
   },
 ];
 
@@ -241,11 +306,11 @@ export function DashboardExample() {
   // Table columns for users
   const userTableColumns: ColumnDef<(typeof mockUsers)[0]>[] = [
     {
-      key: 'name',
-      label: 'Name',
-      render: user => (
+      key: 'name' as keyof (typeof mockUsers)[0],
+      header: 'Name',
+      render: (user: (typeof mockUsers)[0]) => (
         <div className="flex items-center space-x-3">
-          <UserAvatar user={user} size="sm" />
+          <UserAvatar user={user as any} size="sm" />
           <div>
             <div className="font-medium">
               {user.displayName || `${user.firstName} ${user.lastName}`}
@@ -256,29 +321,29 @@ export function DashboardExample() {
       ),
     },
     {
-      key: 'ministryRole',
-      label: 'Role',
-      render: user => (
+      key: 'ministryRole' as keyof (typeof mockUsers)[0],
+      header: 'Role',
+      render: (user: (typeof mockUsers)[0]) => (
         <span className="capitalize">
           {user.ministryRole.replace('_', ' ')}
         </span>
       ),
     },
     {
-      key: 'denomination',
-      label: 'Denomination',
+      key: 'denomination' as keyof (typeof mockUsers)[0],
+      header: 'Denomination',
     },
     {
-      key: 'subscriptionTier',
-      label: 'Subscription',
-      render: user => (
+      key: 'subscriptionTier' as keyof (typeof mockUsers)[0],
+      header: 'Subscription',
+      render: (user: (typeof mockUsers)[0]) => (
         <span className="capitalize">{user.subscriptionTier}</span>
       ),
     },
     {
-      key: 'accountStatus',
-      label: 'Status',
-      render: user => (
+      key: 'accountStatus' as keyof (typeof mockUsers)[0],
+      header: 'Status',
+      render: (user: (typeof mockUsers)[0]) => (
         <span
           className={`px-2 py-1 rounded-full text-xs ${
             user.accountStatus === 'active'
@@ -379,23 +444,29 @@ export function DashboardExample() {
               {selectedView === 'table' ? (
                 <DataTable
                   data={mockUsers}
-                  columns={userTableColumns}
+                  columns={
+                    userTableColumns.map(col => ({
+                      key: col.key,
+                      label: col.header,
+                      render: col.render,
+                    })) as any
+                  }
                   onRowClick={user => console.log('User clicked:', user)}
                   className="border-0"
                 />
               ) : selectedView === 'grid' ? (
                 <EntityGrid
                   items={mockUsers}
-                  renderItem={user => (
+                  renderItem={(user: (typeof mockUsers)[0]) => (
                     <UserCard
                       key={user.id}
-                      item={user}
+                      item={user as any}
                       variant="default"
                       showActions={true}
                       showMinistryInfo={true}
-                      onEdit={user => console.log('Edit user:', user)}
-                      onDelete={id => console.log('Delete user:', id)}
-                      onView={user => console.log('View user:', user)}
+                      onEdit={(user: any) => console.log('Edit user:', user)}
+                      onDelete={(id: string) => console.log('Delete user:', id)}
+                      onView={(user: any) => console.log('View user:', user)}
                     />
                   )}
                   columns={3}
@@ -403,16 +474,16 @@ export function DashboardExample() {
               ) : (
                 <EntityList
                   items={mockUsers}
-                  renderItem={user => (
+                  renderItem={(user: (typeof mockUsers)[0]) => (
                     <UserCard
                       key={user.id}
-                      item={user}
+                      item={user as any}
                       variant="compact"
                       showActions={true}
                       showMinistryInfo={true}
-                      onEdit={user => console.log('Edit user:', user)}
-                      onDelete={id => console.log('Delete user:', id)}
-                      onView={user => console.log('View user:', user)}
+                      onEdit={(user: any) => console.log('Edit user:', user)}
+                      onDelete={(id: string) => console.log('Delete user:', id)}
+                      onView={(user: any) => console.log('View user:', user)}
                     />
                   )}
                 />
@@ -430,19 +501,25 @@ export function DashboardExample() {
             <CardContent>
               <EntityGrid
                 items={mockContent}
-                renderItem={content => (
+                renderItem={(content: (typeof mockContent)[0]) => (
                   <ContentItemCard
                     key={content.id}
-                    item={content}
+                    item={content as any}
                     variant="default"
                     showActions={true}
                     showStats={true}
                     showAuthor={true}
                     showExcerpt={true}
                     showTags={true}
-                    onEdit={content => console.log('Edit content:', content)}
-                    onDelete={id => console.log('Delete content:', id)}
-                    onView={content => console.log('View content:', content)}
+                    onEdit={(content: any) =>
+                      console.log('Edit content:', content)
+                    }
+                    onDelete={(id: string) =>
+                      console.log('Delete content:', id)
+                    }
+                    onView={(content: any) =>
+                      console.log('View content:', content)
+                    }
                   />
                 )}
                 columns={3}
@@ -460,21 +537,22 @@ export function DashboardExample() {
             <CardContent>
               <EntityGrid
                 items={mockAssessments}
-                renderItem={assessment => (
+                renderItem={(assessment: (typeof mockAssessments)[0]) => (
                   <AssessmentCard
                     key={assessment.id}
-                    item={assessment}
+                    item={assessment as any}
                     variant="default"
                     showActions={true}
-                    showStats={true}
                     showQuestionCount={true}
                     showDuration={true}
                     showValidityScores={true}
-                    onEdit={assessment =>
+                    onEdit={(assessment: any) =>
                       console.log('Edit assessment:', assessment)
                     }
-                    onDelete={id => console.log('Delete assessment:', id)}
-                    onView={assessment =>
+                    onDelete={(id: string) =>
+                      console.log('Delete assessment:', id)
+                    }
+                    onView={(assessment: any) =>
                       console.log('View assessment:', assessment)
                     }
                   />
@@ -502,8 +580,12 @@ export function DashboardExample() {
             {users => (
               <EntityGrid
                 items={users}
-                renderItem={user => (
-                  <UserCard key={user.id} item={user} variant="compact" />
+                renderItem={(user: (typeof mockUsers)[0]) => (
+                  <UserCard
+                    key={user.id}
+                    item={user as any}
+                    variant="compact"
+                  />
                 )}
                 columns={3}
               />
@@ -530,7 +612,7 @@ export function DashboardExample() {
           >
             {user => (
               <UserCard
-                item={user}
+                item={user as any}
                 variant="detailed"
                 showActions={true}
                 showMinistryInfo={true}

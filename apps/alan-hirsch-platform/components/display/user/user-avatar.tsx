@@ -1,15 +1,14 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@platform/ui/avatar';
-import { Badge } from '@platform/ui/badge';
 import { UserAvatarProps } from '@/lib/types/component-props';
 import { cn } from '@platform/shared/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@platform/ui/avatar';
 
 export function UserAvatar({
   user,
   size = 'md',
-  showOnlineStatus = false,
-  showMinistryRole = false,
+  showStatus = false,
+  onClick,
   className,
 }: UserAvatarProps) {
   const displayName = user.displayName || `${user.firstName} ${user.lastName}`;
@@ -72,8 +71,8 @@ export function UserAvatar({
         <AvatarFallback className={config.text}>{initials}</AvatarFallback>
       </Avatar>
 
-      {/* Online Status Indicator */}
-      {showOnlineStatus && (
+      {/* Status Indicator */}
+      {showStatus && (
         <div
           className={cn(
             'absolute -bottom-0.5 -right-0.5 rounded-full border-2 border-white',
@@ -81,18 +80,6 @@ export function UserAvatar({
             getOnlineStatusColor(user.accountStatus === 'active')
           )}
         />
-      )}
-
-      {/* Ministry Role Badge */}
-      {showMinistryRole && (
-        <Badge
-          className={cn(
-            'absolute -top-1 -right-1 text-xs px-1 py-0.5 border-2 border-white',
-            getMinistryRoleColor(user.ministryRole)
-          )}
-        >
-          {user.ministryRole.replace('_', ' ')}
-        </Badge>
       )}
     </div>
   );

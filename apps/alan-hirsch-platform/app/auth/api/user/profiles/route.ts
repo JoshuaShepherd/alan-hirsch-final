@@ -1,10 +1,10 @@
 import { toUserProfileResponseArray } from '@/lib/mappers/user';
+import { UserListApiResponseSchema } from '@platform/contracts';
 import { userProfiles } from '@platform/database';
 import {
   createPaginatedApiRoute,
   paginationInputSchema,
 } from '@platform/shared/api/utils';
-import { userProfileListResponseSchema } from '@platform/shared/contracts';
 import { and, desc, eq, like, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -25,8 +25,8 @@ const profileSearchInputSchema = paginationInputSchema.extend({
 // GET /api/user/profiles - Get public profiles with search and filtering
 export const GET = createPaginatedApiRoute(
   profileSearchInputSchema,
-  userProfileListResponseSchema,
-  async (input, { user, db }) => {
+  UserListApiResponseSchema,
+  async (input, { db }) => {
     const {
       page,
       limit,
@@ -37,7 +37,7 @@ export const GET = createPaginatedApiRoute(
       subscriptionTier,
       accountStatus,
     } = input;
-    const offset = ((page || 1) - 1) * (limit || 20);
+    const offset = ((page ?? 1) - 1) * (limit ?? 20);
 
     // Build where conditions
     const conditions = [
@@ -47,14 +47,15 @@ export const GET = createPaginatedApiRoute(
 
     // Add search condition
     if (search) {
-      conditions.push(
-        or(
-          like(userProfiles.firstName, `%${search}%`),
-          like(userProfiles.lastName, `%${search}%`),
-          like(userProfiles.displayName, `%${search}%`),
-          like(userProfiles.bio, `%${search}%`)
-        )!
+      const searchCondition = or(
+        like(userProfiles.firstName, `%${search}%`),
+        like(userProfiles.lastName, `%${search}%`),
+        like(userProfiles.displayName, `%${search}%`),
+        like(userProfiles.bio, `%${search}%`)
       );
+      if (searchCondition) {
+        conditions.push(searchCondition);
+      }
     }
 
     // Add filter conditions
@@ -80,7 +81,7 @@ export const GET = createPaginatedApiRoute(
       .from(userProfiles)
       .where(and(...conditions))
       .orderBy(desc(userProfiles.lastActiveAt))
-      .limit(limit || 20)
+      .limit(limit ?? 20)
       .offset(offset);
 
     // Get total count
@@ -95,12 +96,12 @@ export const GET = createPaginatedApiRoute(
     return {
       items: mappedProfiles,
       pagination: {
-        page: page || 1,
-        limit: limit || 20,
+        page: page ?? 1,
+        limit: limit ?? 20,
         total,
-        totalPages: Math.ceil(total / (limit || 20)),
-        hasNext: (page || 1) < Math.ceil(total / (limit || 20)),
-        hasPrev: (page || 1) > 1,
+        totalPages: Math.ceil(total / (limit ?? 20)),
+        hasNext: (page ?? 1) < Math.ceil(total / (limit ?? 20)),
+        hasPrev: (page ?? 1) > 1,
       },
       success: true,
     };

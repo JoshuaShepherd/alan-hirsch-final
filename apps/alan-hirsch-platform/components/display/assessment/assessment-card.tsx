@@ -1,13 +1,14 @@
 'use client';
 
+import {
+  AssessmentCardProps,
+  assessmentCardPropsSchema,
+  validateComponentProps,
+} from '@/lib/types/component-props';
+import { cn } from '@platform/shared/utils';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '@platform/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@platform/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,12 +16,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@platform/ui/dropdown-menu';
-import {
-  AssessmentCardProps,
-  assessmentCardPropsSchema,
-  validateComponentProps,
-} from '@/lib/types/component-props';
-import { cn } from '@platform/shared/utils';
 import {
   AlertCircle,
   Award,
@@ -39,11 +34,11 @@ export function AssessmentCard({
   item: assessment,
   variant = 'default',
   showActions = true,
-  showStats = true,
   showQuestionCount = true,
   showDuration = true,
   showValidityScores = false,
   showCulturalAdaptation = true,
+  onSelect,
   onEdit,
   onDelete,
   onView,
@@ -55,7 +50,6 @@ export function AssessmentCard({
       item: assessment,
       variant,
       showActions,
-      showStats,
       showQuestionCount,
       showDuration,
       showValidityScores,
@@ -294,7 +288,7 @@ export function AssessmentCard({
         )}
 
         {/* Stats */}
-        {showStats && (
+        {(showQuestionCount || showDuration) && (
           <div className="grid grid-cols-3 gap-2 mb-3">
             {showQuestionCount && (
               <div className="text-center">

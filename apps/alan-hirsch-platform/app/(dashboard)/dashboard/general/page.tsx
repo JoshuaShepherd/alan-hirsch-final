@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@platform/ui/card';
 import { Label } from '@platform/ui/label';
 import { Loader2 } from 'lucide-react';
 import { updateAccount } from '@/app/(login)/actions';
-import { UserProfile } from '@platform/shared/contracts';
+import { UserProfile } from '@platform/contracts';
 import { useSWRAdapter } from '@/hooks';
 import { Suspense } from 'react';
 

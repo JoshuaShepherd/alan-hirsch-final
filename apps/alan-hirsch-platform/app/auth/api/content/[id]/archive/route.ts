@@ -3,7 +3,7 @@
 // ============================================================================
 // Type-safe API endpoint for archiving content
 
-import { createPostHandler } from '../../../../../../lib/api/route-handler';
+import { createPostHandler } from '../../../../../../lib/api/route-handlers';
 import { contentService } from '../../../../../../lib/services';
 
 // ============================================================================

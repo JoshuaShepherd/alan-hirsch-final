@@ -37,19 +37,19 @@ export const paginatedResponseSchema = (itemSchema) => z.object({
 // SPECIFIC RESPONSE SCHEMAS
 // ============================================================================
 // Import DTO schemas
-import { 
-// Auth & User
-userProfileSchema, organizationSchema, organizationMembershipSchema, 
+import { assessmentQuestionSchema, 
 // Assessments
-assessmentSchema, assessmentQuestionSchema, userAssessmentSchema, 
-// Content
-contentCategorySchema, contentSeriesSchema, contentItemSchema, 
+assessmentSchema, communityMembershipSchema, communityPostSchema, 
 // Community
-communitySchema, communityMembershipSchema, communityPostSchema, 
+communitySchema, 
+// Content
+contentCategorySchema, contentItemSchema, contentSeriesSchema, organizationMembershipSchema, organizationSchema, 
 // Subscriptions
-subscriptionPlanSchema, userSubscriptionSchema, 
+subscriptionPlanSchema, 
 // Analytics
-userAnalyticsEventSchema, userContentInteractionSchema, } from '../../validations';
+userAnalyticsEventSchema, userAssessmentSchema, userContentInteractionSchema, 
+// Auth & User
+userProfileSchema, userSubscriptionSchema, } from '@platform/contracts';
 // Auth & User Responses
 export const userProfileResponseSchema = apiResponseSchema(userProfileSchema);
 export const userProfileListResponseSchema = paginatedResponseSchema(userProfileSchema);

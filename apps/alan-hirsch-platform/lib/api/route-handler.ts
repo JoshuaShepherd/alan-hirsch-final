@@ -6,7 +6,7 @@
 import { createSupabaseServerClient } from '@platform/database';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import type { ServiceContext } from '../services/base.service';
+import type { ServiceContext } from '../services/types';
 
 // ============================================================================
 // TYPES
@@ -164,7 +164,7 @@ export function createPaginatedRouteHandler<TInput, TOutput>(
       // Validate output
       const validatedResult = {
         data: config.outputSchema
-          ? result.data.map(item => config.outputSchema!.parse(item))
+          ? result.data.map(item => config.outputSchema?.parse(item))
           : result.data,
         pagination: result.pagination,
       };
@@ -185,11 +185,11 @@ async function getServiceContext(
   request: NextRequest,
   config: { requireAuth?: boolean; requirePermissions?: string[] }
 ): Promise<ServiceContext> {
-  const context: ServiceContext = {};
+  const context: Partial<ServiceContext> = {};
 
   // Get authentication if required
   if (config.requireAuth) {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const {
       data: { user },
       error,
@@ -201,21 +201,17 @@ async function getServiceContext(
 
     context.userId = user.id;
 
-    // Get user permissions if required
-    if (config.requirePermissions?.length) {
-      // TODO: Implement permission checking
-      // For now, we'll assume all authenticated users have basic permissions
-      context.permissions = ['read', 'write'];
-    }
+    // TODO: Implement permission checking
+    // For now, we'll assume all authenticated users have basic permissions
   }
 
   // Get organization context from headers or user data
   const organizationId = request.headers.get('x-organization-id');
   if (organizationId) {
-    context.organizationId = organizationId;
+    context.tenantId = organizationId;
   }
 
-  return context;
+  return context as ServiceContext;
 }
 
 async function parseInput<TInput>(
@@ -226,7 +222,7 @@ async function parseInput<TInput>(
     return {} as TInput;
   }
 
-  let rawInput: any = {};
+  let rawInput: unknown = {};
 
   // Parse input based on method
   if (request.method === 'GET') {
@@ -238,7 +234,7 @@ async function parseInput<TInput>(
     try {
       const body = await request.json();
       rawInput = body;
-    } catch (error) {
+    } catch (_error) {
       throw new ValidationError('Invalid JSON in request body', []);
     }
   }
@@ -254,8 +250,10 @@ async function parseInput<TInput>(
   }
 }
 
-function handleError(error: any): NextResponse {
-  console.error('API Error:', error);
+function handleError(error: unknown): NextResponse {
+  if (process.env['NODE_ENV'] === 'development') {
+    console.error('API Error:', error);
+  }
 
   if (error instanceof ApiError) {
     return NextResponse.json(
@@ -327,10 +325,4 @@ export function createDeleteHandler<TInput, TOutput>(
 // EXPORTS
 // ============================================================================
 
-export {
-  ApiError,
-  AuthenticationError,
-  AuthorizationError,
-  NotFoundError,
-  ValidationError,
-};
+// Error classes are exported inline above

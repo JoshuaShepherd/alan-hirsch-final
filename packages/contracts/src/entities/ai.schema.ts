@@ -376,6 +376,82 @@ export type UpdateTheologicalConcept = z.infer<
 >;
 
 // ============================================================================
+// AI RESPONSE SCHEMAS
+// ============================================================================
+// Response schemas with computed fields for API responses
+
+export const aiConversationResponseSchema = aiConversationEntitySchema.extend({
+  // Computed fields
+  isActive: z.boolean(),
+  isCompleted: z.boolean(),
+  isAbandoned: z.boolean(),
+  isArchived: z.boolean(),
+  hasUserRating: z.boolean(),
+  conversationDurationText: z.string().optional(),
+  tokenUsageText: z.string().optional(),
+});
+
+export const aiMessageResponseSchema = aiMessageEntitySchema.extend({
+  // Computed fields
+  isUserMessage: z.boolean(),
+  isAssistantMessage: z.boolean(),
+  isSystemMessage: z.boolean(),
+  hasUserRating: z.boolean(),
+  hasUserFeedback: z.boolean(),
+  isFlagged: z.boolean(),
+  processingTimeText: z.string().optional(),
+  confidenceText: z.string().optional(),
+});
+
+export const aiContentJobResponseSchema = aiContentJobEntitySchema.extend({
+  // Computed fields
+  isPending: z.boolean(),
+  isProcessing: z.boolean(),
+  isCompleted: z.boolean(),
+  isFailed: z.boolean(),
+  isCancelled: z.boolean(),
+  hasError: z.boolean(),
+  needsHumanReview: z.boolean(),
+  isHighPriority: z.boolean(),
+  processingCostText: z.string().optional(),
+  confidenceText: z.string().optional(),
+});
+
+export const aiCrossReferenceSuggestionResponseSchema =
+  aiCrossReferenceSuggestionEntitySchema.extend({
+    // Computed fields
+    isPending: z.boolean(),
+    isApproved: z.boolean(),
+    isRejected: z.boolean(),
+    isImplemented: z.boolean(),
+    needsReview: z.boolean(),
+    hasHighConfidence: z.boolean(),
+    hasHighRelevance: z.boolean(),
+  });
+
+export const theologicalConceptResponseSchema =
+  theologicalConceptEntitySchema.extend({
+    // Computed fields
+    isActive: z.boolean(),
+    hasDefinition: z.boolean(),
+    hasRelatedConcepts: z.boolean(),
+    apestScoreText: z.string().optional(),
+  });
+
+// Response type exports
+export type AiConversationResponse = z.infer<
+  typeof aiConversationResponseSchema
+>;
+export type AiMessageResponse = z.infer<typeof aiMessageResponseSchema>;
+export type AiContentJobResponse = z.infer<typeof aiContentJobResponseSchema>;
+export type AiCrossReferenceSuggestionResponse = z.infer<
+  typeof aiCrossReferenceSuggestionResponseSchema
+>;
+export type TheologicalConceptResponse = z.infer<
+  typeof theologicalConceptResponseSchema
+>;
+
+// ============================================================================
 // SCHEMA ALIASES FOR BACKWARD COMPATIBILITY
 // ============================================================================
 

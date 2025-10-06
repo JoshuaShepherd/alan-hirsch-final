@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AssessmentEntitySchema, AssessmentQuestionEntitySchema, AssessmentResponseEntitySchema, UserAssessmentEntitySchema, } from '../entities/assessment.schema';
+import { assessmentEntitySchema as AssessmentEntitySchema, assessmentQuestionEntitySchema as AssessmentQuestionEntitySchema, assessmentResponseEntitySchema as AssessmentResponseEntitySchema, userAssessmentEntitySchema as UserAssessmentEntitySchema, } from '../entities/assessment.schema';
 import { BulkUpdateAssessmentResponsesOperationSchema, CompleteUserAssessmentOperationSchema, CreateAssessmentOperationSchema, CreateAssessmentQuestionOperationSchema, CreateAssessmentResponseOperationSchema, GetAssessmentByIdOperationSchema, GetAssessmentStatisticsOperationSchema, GetUserAssessmentInsightsOperationSchema, GetUserAssessmentOperationSchema, ListAssessmentsOperationSchema, ListUserAssessmentsOperationSchema, ReorderAssessmentQuestionsOperationSchema, SaveAssessmentResponsesOperationSchema, SearchAssessmentsOperationSchema, StartUserAssessmentOperationSchema, UpdateAssessmentOperationSchema, UpdateAssessmentQuestionOperationSchema, UpdateAssessmentResponseOperationSchema, } from '../operations/assessment.operations';
 import { PaginatedResponseSchema } from './user.contracts';
 // ============================================================================

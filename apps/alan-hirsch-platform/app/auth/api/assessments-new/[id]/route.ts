@@ -1,87 +1,117 @@
-import { createRouteHandler } from '@platform/shared/api/route-handler';
 import {
   assessmentResponseSchema,
-  assessmentUpdateSchema,
-} from '@platform/shared/contracts';
-import { assessmentService } from '@platform/shared/services';
+  updateAssessmentSchema,
+} from '@platform/contracts';
 import { z } from 'zod';
+import {
+  createDeleteHandler,
+  createGetHandler,
+  createPatchHandler,
+  createPutHandler,
+} from '../../../../../lib/api/route-handlers';
+import { assessmentService } from '../../../../../lib/services';
 
 // ============================================================================
 // Assessment Detail API Routes - Type-Safe Implementation
 // ============================================================================
 
 // GET /api/assessments-new/[id] - Get assessment by ID
-export const GET = createRouteHandler({
+export const GET = createGetHandler({
   inputSchema: z.object({}),
   outputSchema: assessmentResponseSchema,
-  method: 'GET',
-  handler: async (_, context) => {
-    const id = context.params?.id;
-    if (!id) {
+  requireAuth: true,
+  requirePermissions: ['read:assessments'],
+  handler: async (_, context, routeParams) => {
+    const id = routeParams?.params?.['id'];
+    if (!id || typeof id !== 'string') {
       throw new Error('Assessment ID is required');
     }
 
-    const assessment = await assessmentService.findById(id, context);
-    if (!assessment) {
-      throw new Error('Assessment not found');
+    const result = await assessmentService.findById(id, context);
+    if (!result.success || !result.data) {
+      throw new Error(result.error?.message || 'Assessment not found');
     }
 
-    return assessment;
+    return result.data;
   },
 });
 
 // PUT /api/assessments-new/[id] - Update assessment
-export const PUT = createRouteHandler({
-  inputSchema: assessmentUpdateSchema,
+export const PUT = createPutHandler({
+  inputSchema: updateAssessmentSchema,
   outputSchema: assessmentResponseSchema,
-  method: 'PUT',
-  handler: async (data, context) => {
-    const id = context.params?.id;
-    if (!id) {
+  requireAuth: true,
+  requirePermissions: ['update:assessments'],
+  handler: async (data, context, routeParams) => {
+    const id = routeParams?.params?.['id'];
+    if (!id || typeof id !== 'string') {
       throw new Error('Assessment ID is required');
     }
 
-    return await assessmentService.update(id, data, context);
+    const result = await assessmentService.update(id, data, context);
+    if (!result.success || !result.data) {
+      throw new Error(result.error?.message || 'Failed to update assessment');
+    }
+
+    return result.data;
   },
 });
 
 // DELETE /api/assessments-new/[id] - Delete assessment
-export const DELETE = createRouteHandler({
+export const DELETE = createDeleteHandler({
   inputSchema: z.object({}),
-  method: 'DELETE',
-  handler: async (_, context) => {
-    const id = context.params?.id;
-    if (!id) {
+  requireAuth: true,
+  requirePermissions: ['delete:assessments'],
+  handler: async (_, context, routeParams) => {
+    const id = routeParams?.params?.['id'];
+    if (!id || typeof id !== 'string') {
       throw new Error('Assessment ID is required');
     }
 
-    await assessmentService.delete(id, context);
+    const result = await assessmentService.delete(id, context);
+    if (!result.success) {
+      throw new Error(result.error?.message || 'Failed to delete assessment');
+    }
+
     return { success: true };
   },
 });
 
 // PATCH /api/assessments-new/[id]/publish - Publish assessment
-export const PATCH = createRouteHandler({
+export const PATCH = createPatchHandler({
   inputSchema: z.object({
     action: z.enum(['publish', 'unpublish', 'archive']),
   }),
   outputSchema: assessmentResponseSchema,
-  method: 'PATCH',
-  handler: async (data, context) => {
-    const id = context.params?.id;
-    if (!id) {
+  requireAuth: true,
+  requirePermissions: ['update:assessments'],
+  handler: async (data, context, routeParams) => {
+    const id = routeParams?.params?.['id'];
+    if (!id || typeof id !== 'string') {
       throw new Error('Assessment ID is required');
     }
 
+    let result;
     switch (data.action) {
       case 'publish':
-        return await assessmentService.publish(id, context);
+        result = await assessmentService.publish(id, context);
+        break;
       case 'unpublish':
-        return await assessmentService.unpublish(id, context);
+        result = await assessmentService.unpublish(id, context);
+        break;
       case 'archive':
-        return await assessmentService.archive(id, context);
+        result = await assessmentService.archive(id, context);
+        break;
       default:
         throw new Error('Invalid action');
     }
+
+    if (!result.success || !result.data) {
+      throw new Error(
+        result.error?.message || `Failed to ${data.action} assessment`
+      );
+    }
+
+    return result.data;
   },
 });

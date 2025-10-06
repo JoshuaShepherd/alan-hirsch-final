@@ -1,10 +1,5 @@
 import { createBulkOperationHandler } from '@platform/shared/api/bulk-operations';
-import {
-  assessmentResponseDTOSchema,
-  createAssessmentRequestSchema,
-  updateAssessmentRequestSchema,
-} from '@platform/shared/contracts';
-import { assessmentService } from '@platform/shared/services';
+import { assessmentService } from '../../../../../lib/services';
 
 // ============================================================================
 // Assessment Bulk Operations API Route - Type-Safe Implementation

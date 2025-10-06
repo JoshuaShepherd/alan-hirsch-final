@@ -37,7 +37,7 @@ module.exports = [
     languageOptions: {
       parser: require('@typescript-eslint/parser'),
       parserOptions: {
-        project: './tsconfig.json',
+        projectService: true,
       },
     },
     plugins: {
@@ -87,7 +87,7 @@ module.exports = [
     languageOptions: {
       parser: require('@typescript-eslint/parser'),
       parserOptions: {
-        project: './tsconfig.test.json',
+        projectService: true,
       },
     },
     plugins: {

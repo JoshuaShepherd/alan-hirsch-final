@@ -261,6 +261,23 @@ export declare const communities: import("drizzle-orm/pg-core").PgTableWithColum
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
+        memberCount: import("drizzle-orm/pg-core").PgColumn<{
+            name: "member_count";
+            tableName: "communities";
+            dataType: "number";
+            columnType: "PgInteger";
+            data: number;
+            driverParam: string | number;
+            notNull: false;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
         totalPostsCount: import("drizzle-orm/pg-core").PgColumn<{
             name: "total_posts_count";
             tableName: "communities";
@@ -363,6 +380,40 @@ export declare const communities: import("drizzle-orm/pg-core").PgTableWithColum
             isAutoincrement: false;
             hasRuntimeDefault: false;
             enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        status: import("drizzle-orm/pg-core").PgColumn<{
+            name: "status";
+            tableName: "communities";
+            dataType: "string";
+            columnType: "PgText";
+            data: "active" | "inactive" | "archived";
+            driverParam: string;
+            notNull: false;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: ["active", "inactive", "archived"];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        focus: import("drizzle-orm/pg-core").PgColumn<{
+            name: "focus";
+            tableName: "communities";
+            dataType: "string";
+            columnType: "PgText";
+            data: string;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
             baseColumn: never;
             identity: undefined;
             generated: undefined;
@@ -933,7 +984,7 @@ export declare const collaborations: import("drizzle-orm/pg-core").PgTableWithCo
             tableName: "collaborations";
             dataType: "string";
             columnType: "PgText";
-            data: "active" | "completed" | "cancelled" | "planning" | "review";
+            data: "active" | "cancelled" | "completed" | "planning" | "review";
             driverParam: string;
             notNull: false;
             hasDefault: true;

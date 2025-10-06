@@ -1,5 +1,6 @@
 // Organization Query Module
 // Pure functions for organization operations with context-aware access control
+// Note: Using database types directly to avoid circular dependencies
 import { and, count, desc, eq, like, or, sql } from 'drizzle-orm';
 import { db } from '../drizzle';
 import { organizationMemberships, organizations, userProfiles, userSubscriptions, } from '../schema';
@@ -95,7 +96,24 @@ export async function getOrganizationsByUser(userId, context, options = {}) {
     }
     const results = await db
         .select({
-        ...organizations,
+        id: organizations.id,
+        name: organizations.name,
+        slug: organizations.slug,
+        description: organizations.description,
+        website: organizations.website,
+        logoUrl: organizations.logoUrl,
+        organizationType: organizations.organizationType,
+        sizeCategory: organizations.sizeCategory,
+        contactEmail: organizations.contactEmail,
+        contactPhone: organizations.contactPhone,
+        address: organizations.address,
+        billingEmail: organizations.billingEmail,
+        accountOwnerId: organizations.accountOwnerId,
+        licenseType: organizations.licenseType,
+        maxUsers: organizations.maxUsers,
+        status: organizations.status,
+        createdAt: organizations.createdAt,
+        updatedAt: organizations.updatedAt,
         membership: organizationMemberships,
     })
         .from(organizations)
@@ -158,7 +176,43 @@ export async function getOrganizationMembers(organizationId, context, options = 
     }
     const results = await db
         .select({
-        ...userProfiles,
+        id: userProfiles.id,
+        email: userProfiles.email,
+        firstName: userProfiles.firstName,
+        lastName: userProfiles.lastName,
+        displayName: userProfiles.displayName,
+        bio: userProfiles.bio,
+        avatarUrl: userProfiles.avatarUrl,
+        ministryRole: userProfiles.ministryRole,
+        denomination: userProfiles.denomination,
+        organizationName: userProfiles.organizationName,
+        yearsInMinistry: userProfiles.yearsInMinistry,
+        countryCode: userProfiles.countryCode,
+        timezone: userProfiles.timezone,
+        languagePrimary: userProfiles.languagePrimary,
+        culturalContext: userProfiles.culturalContext,
+        assessmentMovementAlignment: userProfiles.assessmentMovementAlignment,
+        assessmentAudienceEngagement: userProfiles.assessmentAudienceEngagement,
+        assessmentContentReadiness: userProfiles.assessmentContentReadiness,
+        assessmentRevenuePotential: userProfiles.assessmentRevenuePotential,
+        assessmentNetworkEffects: userProfiles.assessmentNetworkEffects,
+        assessmentStrategicFit: userProfiles.assessmentStrategicFit,
+        assessmentTotal: userProfiles.assessmentTotal,
+        leaderTier: userProfiles.leaderTier,
+        subdomain: userProfiles.subdomain,
+        customDomain: userProfiles.customDomain,
+        platformTitle: userProfiles.platformTitle,
+        subscriptionTier: userProfiles.subscriptionTier,
+        theologicalFocus: userProfiles.theologicalFocus,
+        brandColors: userProfiles.brandColors,
+        emailNotifications: userProfiles.emailNotifications,
+        privacySettings: userProfiles.privacySettings,
+        onboardingCompleted: userProfiles.onboardingCompleted,
+        onboardingStep: userProfiles.onboardingStep,
+        accountStatus: userProfiles.accountStatus,
+        createdAt: userProfiles.createdAt,
+        updatedAt: userProfiles.updatedAt,
+        lastActiveAt: userProfiles.lastActiveAt,
         membership: organizationMemberships,
     })
         .from(userProfiles)
@@ -338,7 +392,7 @@ export async function inviteUserToOrganization(organizationId, userEmail, role, 
     return createOrganizationMembership({
         userId: user[0].id,
         organizationId,
-        role,
+        role: role,
         status: 'pending',
         invitedAt: new Date(),
     }, context);

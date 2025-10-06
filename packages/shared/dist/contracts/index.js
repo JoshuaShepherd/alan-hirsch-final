@@ -4,33 +4,33 @@
 // SCHEMA EXPORTS (Zod Schemas)
 // ============================================================================
 // Shared schemas
-export { attachmentSchema, culturalContextSchema, membershipRoleSchema, ministryRoleSchema, organizationTypeSchema, subscriptionStatusSchema, visibilitySchema, } from '../../validations/shared';
+export { attachmentSchema, culturalContextSchema, membershipRoleSchema, ministryRoleSchema, organizationTypeSchema, subscriptionStatusSchema, visibilitySchema, } from '@platform/contracts';
 // Auth & User Management Schemas
-export { newOrganizationMembershipSchema, newOrganizationSchema, newUserProfileSchema, organizationMembershipSchema, organizationSchema, userProfileSchema, } from '../../validations/auth';
+export { newOrganizationMembershipSchema, newOrganizationSchema, newUserProfileSchema, organizationMembershipSchema, organizationSchema, userProfileSchema, } from '@platform/contracts';
 // Assessment System Schemas
-export { assessmentQuestionSchema, assessmentSchema, assessmentSearchSchema, assessmentWithQuestionsSchema, completeAssessmentInputSchema, newAssessmentQuestionSchema, newAssessmentResponseSchema, newAssessmentSchema, newUserAssessmentSchema, saveResponsesInputSchema, startAssessmentInputSchema, userAssessmentFiltersSchema, userAssessmentSchema, } from '../../validations/assessments';
+export { assessmentQuestionSchema, assessmentSchema, assessmentSearchSchema, assessmentWithQuestionsSchema, completeAssessmentInputSchema, newAssessmentQuestionSchema, newAssessmentResponseSchema, newAssessmentSchema, newUserAssessmentSchema, saveResponsesInputSchema, startAssessmentInputSchema, userAssessmentFiltersSchema, userAssessmentSchema, } from '@platform/contracts';
 // Assessment Request Schemas
 export { assessmentSearchRequestSchema, completeAssessmentRequestSchema, createAssessmentQuestionRequestSchema, createAssessmentRequestSchema, saveAssessmentResponsesRequestSchema, startAssessmentRequestSchema, updateAssessmentQuestionRequestSchema, updateAssessmentRequestSchema, userAssessmentFiltersRequestSchema, } from './assessments.request';
 // Assessment Response Schemas
 export { assessmentQuestionResponseSchema, assessmentResponseSchema as assessmentResponseDTOSchema, assessmentResponseResponseSchema, assessmentWithQuestionsResponseSchema, paginatedAssessmentListResponseSchema, paginatedUserAssessmentListResponseSchema, userAssessmentResponseSchema, userAssessmentWithDetailsResponseSchema, } from './assessments.response';
 // Content Management Schemas
-export { contentCategorySchema, contentCrossReferenceSchema, contentItemSchema, contentSeriesSchema, newContentCategorySchema, newContentCrossReferenceSchema, newContentItemSchema, newContentSeriesSchema, newSeriesContentItemSchema, seriesContentItemSchema, } from '../../validations/content';
+export { contentCategorySchema, contentCrossReferenceSchema, contentItemSchema, contentSeriesSchema, newContentCategorySchema, newContentCrossReferenceSchema, newContentItemSchema, newContentSeriesSchema, newSeriesContentItemSchema, seriesContentItemSchema, } from '@platform/contracts';
 // Content Request Schemas
 export { contentSearchRequestSchema, createContentCategoryRequestSchema, createContentItemRequestSchema, createContentSeriesRequestSchema, updateContentCategoryRequestSchema, updateContentItemRequestSchema, updateContentSeriesRequestSchema, } from './content.request';
 // Content Response Schemas
 export { contentCategoryResponseSchema, contentItemResponseSchema, contentSeriesResponseSchema, paginatedContentCategoryListResponseSchema, paginatedContentItemListResponseSchema, paginatedContentSeriesListResponseSchema, } from './content.response';
 // AI System Schemas
-export { aiContentJobSchema, aiConversationSchema, aiCrossReferenceSuggestionSchema, aiMessageSchema, newAiContentJobSchema, newAiConversationSchema, newAiCrossReferenceSuggestionSchema, newAiMessageSchema, newTheologicalConceptSchema, theologicalConceptSchema, } from '../../validations/ai';
+export { aiContentJobSchema, aiConversationSchema, aiCrossReferenceSuggestionSchema, aiMessageSchema, newAiContentJobSchema, newAiConversationSchema, newAiCrossReferenceSuggestionSchema, newAiMessageSchema, newTheologicalConceptSchema, theologicalConceptSchema, } from '@platform/contracts';
 // AI Response Schemas
 export { aiContentJobResponseSchema, aiConversationResponseSchema, aiCrossReferenceSuggestionResponseSchema, aiMessageResponseSchema, paginatedAiContentJobListResponseSchema, paginatedAiConversationListResponseSchema, paginatedAiCrossReferenceSuggestionListResponseSchema, paginatedAiMessageListResponseSchema, paginatedTheologicalConceptListResponseSchema, theologicalConceptResponseSchema, } from './ai.response';
 // Community System Schemas
-export { collaborationSchema, communityMembershipSchema, communityPostSchema, communityPostVoteSchema, communitySchema, newCollaborationSchema, newCommunityMembershipSchema, newCommunityPostSchema, newCommunityPostVoteSchema, newCommunitySchema, } from '../../validations/community';
+export { collaborationSchema, communityMembershipSchema, communityPostSchema, communityPostVoteSchema, communitySchema, newCollaborationSchema, newCommunityMembershipSchema, newCommunityPostSchema, newCommunityPostVoteSchema, newCommunitySchema, } from '@platform/contracts';
 // Subscription & Payment Schemas
-export { newPaymentMethodSchema, newSubscriptionPlanSchema, newTransactionSchema, newUserSubscriptionSchema, paymentMethodSchema, subscriptionPlanSchema, transactionSchema, userSubscriptionSchema, } from '../../validations/subscriptions';
+export { newPaymentMethodSchema, newSubscriptionPlanSchema, newTransactionSchema, newUserSubscriptionSchema, paymentMethodSchema, subscriptionPlanSchema, transactionSchema, userSubscriptionSchema, } from '@platform/contracts';
 // Analytics Schemas
-export { newUserAnalyticsEventSchema, newUserContentInteractionSchema, userAnalyticsEventSchema, userContentInteractionSchema, } from '../../validations/analytics';
+export { newUserAnalyticsEventSchema, newUserContentInteractionSchema, userAnalyticsEventSchema, userContentInteractionSchema, } from '@platform/contracts';
 // System & Administration Schemas
-export { apiKeySchema, auditLogSchema, featureFlagSchema, newApiKeySchema, newAuditLogSchema, newFeatureFlagSchema, newSystemNotificationSchema, newUserConsentSchema, newUserFeatureFlagSchema, newUserNotificationStatusSchema, systemNotificationSchema, userConsentSchema, userFeatureFlagSchema, userNotificationStatusSchema, } from '../../validations/system';
+export { apiKeySchema, auditLogSchema, featureFlagSchema, newApiKeySchema, newAuditLogSchema, newFeatureFlagSchema, newSystemNotificationSchema, newUserConsentSchema, newUserFeatureFlagSchema, newUserNotificationStatusSchema, systemNotificationSchema, userConsentSchema, userFeatureFlagSchema, userNotificationStatusSchema, } from '@platform/contracts';
 // ============================================================================
 // API RESPONSE SCHEMAS
 // ============================================================================

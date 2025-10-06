@@ -51,6 +51,7 @@ Extended user profiles with ministry context and APEST integration.
 - Cultural context and language support
 - Brand customization and privacy settings
 - Onboarding workflow tracking
+- Password hash support for local authentication
 
 **Notable Columns:**
 
@@ -72,10 +73,11 @@ Multi-tenant organization structure.
 
 **Key Features:**
 
-- Organization types and size categories
+- Organization types and size categories (updated enums)
 - Billing and contact information
-- License type management (individual/team)
+- License type management (individual/team/enterprise)
 - Account owner relationship
+- Updated status enum (trial/active/suspended/cancelled)
 
 **RLS Policies:**
 
@@ -144,6 +146,8 @@ Discussion groups and networking spaces with cultural context.
 - Multi-language support
 - Moderation and approval workflows
 - Member and post counting
+- Status tracking (active/inactive/archived)
+- Focus area specification
 
 **RLS Policies:**
 
@@ -310,6 +314,7 @@ erDiagram
     user_profiles {
         uuid id PK
         text email UK
+        text password_hash
         text first_name
         text last_name
         text ministry_role
@@ -515,6 +520,8 @@ erDiagram
         jsonb rules
         jsonb moderators
         boolean is_active
+        text status
+        text focus
         timestamp created_at
         timestamp updated_at
     }

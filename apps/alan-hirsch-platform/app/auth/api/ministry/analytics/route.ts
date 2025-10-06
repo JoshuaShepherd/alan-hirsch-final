@@ -1,10 +1,13 @@
-import { createQuerySchema, createRouteHandler } from '@platform/shared/api/route-handler';
 import {
   ministryAnalyticsRequestSchema,
   ministryMetricsResponseSchema,
-} from '@platform/shared/contracts';
-import { analyticsService } from '@platform/shared/services';
+} from '@platform/contracts';
 import { z } from 'zod';
+import {
+  createQuerySchema,
+  createRouteHandler,
+} from '../../../../../lib/api/route-handlers';
+import { analyticsService } from '../../../../../lib/services';
 
 // ============================================================================
 // MINISTRY ANALYTICS API ROUTES
@@ -30,16 +33,24 @@ export const GET = createRouteHandler({
   handler: async (query, context) => {
     // Add ministry context to analytics query
     const analyticsQuery = {
-      ...query,
-      ministryContext: {
-        userMinistryRole: context.user.ministryRole,
-        organizationId: context.user.organizationId,
-        culturalContext: context.user.culturalContext,
-        requestingUserId: context.user.id,
-      },
+      startDate: query.dateFrom,
+      endDate: query.dateTo,
+      organizationId: query.organizationId,
+      userId: query.userId,
     };
 
-    return await analyticsService.getMinistryAnalytics(analyticsQuery, context);
+    const result = await analyticsService.getMinistryAnalytics(
+      analyticsQuery,
+      context
+    );
+
+    if (!result.success || !result.data) {
+      throw new Error(
+        result.error?.message || 'Failed to fetch ministry analytics'
+      );
+    }
+
+    return result.data;
   },
 });
 
@@ -49,19 +60,17 @@ export const POST = createRouteHandler({
   outputSchema: ministryMetricsResponseSchema,
   method: 'POST',
   handler: async (data, context) => {
-    // Add ministry context to analytics request
-    const analyticsData = {
-      ...data,
-      ministryContext: {
-        requestedBy: context.user.id,
-        organizationId: context.user.organizationId,
-        userMinistryRole: context.user.ministryRole,
-      },
-    };
-
-    return await analyticsService.generateMinistryAnalyticsReport(
-      analyticsData,
+    const result = await analyticsService.generateMinistryAnalyticsReport(
+      data,
       context
     );
+
+    if (!result.success || !result.data) {
+      throw new Error(
+        result.error?.message || 'Failed to generate ministry analytics report'
+      );
+    }
+
+    return result.data;
   },
 });

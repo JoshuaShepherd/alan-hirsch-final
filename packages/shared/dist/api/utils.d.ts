@@ -1,6 +1,6 @@
+import { db } from '@platform/database';
 import { NextRequest, NextResponse } from 'next/server';
-import { z, ZodSchema } from 'zod';
-import { db } from '@/lib/db/drizzle';
+import { ZodSchema, z } from 'zod';
 export interface ApiResponse<T = any> {
     data?: T;
     error?: string;
@@ -41,34 +41,34 @@ export declare function createPaginatedApiRoute<TInput, TItemOutput, TResponseOu
     error: string;
 }> | NextResponse<TResponseOutput>>;
 export declare const createResponseSchema: <T>(dataSchema: ZodSchema<T>) => z.ZodObject<{
-    data: z.ZodType<T, z.ZodTypeDef, T>;
+    data: ZodSchema<T, z.ZodTypeDef, T>;
     success: z.ZodBoolean;
     error: z.ZodOptional<z.ZodString>;
     message: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, z.objectUtil.addQuestionMarks<z.baseObjectOutputType<{
-    data: z.ZodType<T, z.ZodTypeDef, T>;
+    data: ZodSchema<T, z.ZodTypeDef, T>;
     success: z.ZodBoolean;
     error: z.ZodOptional<z.ZodString>;
     message: z.ZodOptional<z.ZodString>;
 }>, any> extends infer T_1 ? { [k in keyof T_1]: z.objectUtil.addQuestionMarks<z.baseObjectOutputType<{
-    data: z.ZodType<T, z.ZodTypeDef, T>;
+    data: ZodSchema<T, z.ZodTypeDef, T>;
     success: z.ZodBoolean;
     error: z.ZodOptional<z.ZodString>;
     message: z.ZodOptional<z.ZodString>;
 }>, any>[k]; } : never, z.baseObjectInputType<{
-    data: z.ZodType<T, z.ZodTypeDef, T>;
+    data: ZodSchema<T, z.ZodTypeDef, T>;
     success: z.ZodBoolean;
     error: z.ZodOptional<z.ZodString>;
     message: z.ZodOptional<z.ZodString>;
 }> extends infer T_2 ? { [k_1 in keyof T_2]: z.baseObjectInputType<{
-    data: z.ZodType<T, z.ZodTypeDef, T>;
+    data: ZodSchema<T, z.ZodTypeDef, T>;
     success: z.ZodBoolean;
     error: z.ZodOptional<z.ZodString>;
     message: z.ZodOptional<z.ZodString>;
 }>[k_1]; } : never>;
 export declare const createPaginatedResponseSchema: <T>(itemSchema: ZodSchema<T>) => z.ZodObject<{
     items: z.ZodObject<{
-        data: z.ZodArray<z.ZodType<T, z.ZodTypeDef, T>, "many">;
+        data: z.ZodArray<ZodSchema<T, z.ZodTypeDef, T>, "many">;
         pagination: z.ZodObject<{
             page: z.ZodNumber;
             limit: z.ZodNumber;
@@ -77,16 +77,16 @@ export declare const createPaginatedResponseSchema: <T>(itemSchema: ZodSchema<T>
             hasNext: z.ZodBoolean;
             hasPrev: z.ZodBoolean;
         }, "strip", z.ZodTypeAny, {
+            page: number;
             limit: number;
             total: number;
-            page: number;
             totalPages: number;
             hasNext: boolean;
             hasPrev: boolean;
         }, {
+            page: number;
             limit: number;
             total: number;
-            page: number;
             totalPages: number;
             hasNext: boolean;
             hasPrev: boolean;
@@ -94,9 +94,9 @@ export declare const createPaginatedResponseSchema: <T>(itemSchema: ZodSchema<T>
     }, "strip", z.ZodTypeAny, {
         data: T[];
         pagination: {
+            page: number;
             limit: number;
             total: number;
-            page: number;
             totalPages: number;
             hasNext: boolean;
             hasPrev: boolean;
@@ -104,9 +104,9 @@ export declare const createPaginatedResponseSchema: <T>(itemSchema: ZodSchema<T>
     }, {
         data: T[];
         pagination: {
+            page: number;
             limit: number;
             total: number;
-            page: number;
             totalPages: number;
             hasNext: boolean;
             hasPrev: boolean;
@@ -120,9 +120,9 @@ export declare const createPaginatedResponseSchema: <T>(itemSchema: ZodSchema<T>
     items: {
         data: T[];
         pagination: {
+            page: number;
             limit: number;
             total: number;
-            page: number;
             totalPages: number;
             hasNext: boolean;
             hasPrev: boolean;
@@ -135,9 +135,9 @@ export declare const createPaginatedResponseSchema: <T>(itemSchema: ZodSchema<T>
     items: {
         data: T[];
         pagination: {
+            page: number;
             limit: number;
             total: number;
-            page: number;
             totalPages: number;
             hasNext: boolean;
             hasPrev: boolean;
@@ -150,11 +150,11 @@ export declare const paginationInputSchema: z.ZodObject<{
     page: z.ZodDefault<z.ZodNumber>;
     limit: z.ZodDefault<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    limit: number;
     page: number;
+    limit: number;
 }, {
-    limit?: number | undefined;
     page?: number | undefined;
+    limit?: number | undefined;
 }>;
 export declare const idInputSchema: z.ZodObject<{
     id: z.ZodString;

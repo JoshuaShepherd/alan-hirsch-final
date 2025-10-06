@@ -1,5 +1,7 @@
 'use client';
 
+import { DataTableProps } from '@/lib/types/component-props';
+import { cn } from '@platform/shared/utils';
 import { Button } from '@platform/ui/button';
 import { Checkbox } from '@platform/ui/checkbox';
 import { Input } from '@platform/ui/input';
@@ -18,8 +20,6 @@ import {
   TableHeader,
   TableRow,
 } from '@platform/ui/table';
-import { DataTableProps } from '@/lib/types/component-props';
-import { cn } from '@platform/shared/utils';
 import {
   ChevronDown,
   ChevronLeft,
@@ -29,7 +29,6 @@ import {
   Search,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { ErrorBoundary } from './error-boundary';
 
 interface SortConfig<T> {
   key: keyof T;
@@ -187,20 +186,15 @@ export function DataTable<T extends Record<string, any>>({
   // Error state
   if (error) {
     return (
-      <ErrorBoundary
-        error={error}
-        fallback={
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="text-destructive mb-4">
-              <h3 className="text-lg font-semibold">Error loading data</h3>
-              <p className="text-sm text-muted-foreground">{error.message}</p>
-            </div>
-            <Button variant="outline" onClick={() => window.location.reload()}>
-              Try Again
-            </Button>
-          </div>
-        }
-      />
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="text-destructive mb-4">
+          <h3 className="text-lg font-semibold">Error loading data</h3>
+          <p className="text-sm text-muted-foreground">{error}</p>
+        </div>
+        <Button variant="outline" onClick={() => window.location.reload()}>
+          Try Again
+        </Button>
+      </div>
     );
   }
 
@@ -281,9 +275,15 @@ export function DataTable<T extends Record<string, any>>({
         {pagination && (
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <span>
-              Showing {(pagination.page - 1) * pagination.limit + 1} to{' '}
-              {Math.min(pagination.page * pagination.limit, pagination.total)}{' '}
-              of {pagination.total} results
+              Showing{' '}
+              {(pagination.pagination.page - 1) * pagination.pagination.limit +
+                1}{' '}
+              to{' '}
+              {Math.min(
+                pagination.pagination.page * pagination.pagination.limit,
+                pagination.pagination.total
+              )}{' '}
+              of {pagination.pagination.total} results
             </span>
           </div>
         )}
@@ -365,23 +365,31 @@ export function DataTable<T extends Record<string, any>>({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => pagination.onPageChange(pagination.page - 1)}
-              disabled={pagination.page <= 1}
+              onClick={() =>
+                pagination.onPageChange(pagination.pagination.page - 1)
+              }
+              disabled={pagination.pagination.page <= 1}
             >
               <ChevronLeft className="h-4 w-4" />
               Previous
             </Button>
             <span className="text-sm text-muted-foreground">
-              Page {pagination.page} of{' '}
-              {Math.ceil(pagination.total / pagination.limit)}
+              Page {pagination.pagination.page} of{' '}
+              {Math.ceil(
+                pagination.pagination.total / pagination.pagination.limit
+              )}
             </span>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => pagination.onPageChange(pagination.page + 1)}
+              onClick={() =>
+                pagination.onPageChange(pagination.pagination.page + 1)
+              }
               disabled={
-                pagination.page >=
-                Math.ceil(pagination.total / pagination.limit)
+                pagination.pagination.page >=
+                Math.ceil(
+                  pagination.pagination.total / pagination.pagination.limit
+                )
               }
             >
               Next
@@ -391,7 +399,7 @@ export function DataTable<T extends Record<string, any>>({
 
           {pagination.onLimitChange && (
             <Select
-              value={String(pagination.limit)}
+              value={String(pagination.pagination.limit)}
               onValueChange={value => pagination.onLimitChange?.(Number(value))}
             >
               <SelectTrigger className="w-20">

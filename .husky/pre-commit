@@ -6,3 +6,6 @@ npx lint-staged
 
 # Run type checking
 npm run type-check
+
+# Run schema alignment validation
+npm run validate:schemas

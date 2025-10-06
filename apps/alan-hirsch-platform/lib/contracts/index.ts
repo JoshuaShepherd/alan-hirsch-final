@@ -9,7 +9,7 @@ import {
   validateSchema,
   validateSchemaOrThrow,
 } from '@platform/contracts';
-import type { z } from 'zod';
+import { z } from 'zod';
 
 // ============================================================================
 // VALIDATION UTILITIES
@@ -93,28 +93,46 @@ export function safeValidateApiResponse<T>(
 /**
  * Create a partial schema from a full schema
  */
-export function createPartialSchema<T>(schema: z.ZodSchema<T>) {
+export function createPartialSchema<T extends z.ZodRawShape>(
+  schema: z.ZodObject<T>
+) {
   return schema.partial();
 }
 
 /**
  * Create a pick schema from a full schema
  */
-export function createPickSchema<T, K extends keyof T>(
-  schema: z.ZodSchema<T>,
-  keys: K[]
+export function createPickSchema<T extends z.ZodRawShape>(
+  schema: z.ZodObject<T>,
+  keys: (keyof T)[]
 ) {
-  return schema.pick(Object.fromEntries(keys.map(key => [key, true])) as any);
+  const pickShape = keys.reduce(
+    (acc, key) => {
+      acc[key] = true;
+      return acc;
+    },
+    {} as Partial<Record<keyof T, true>>
+  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return schema.pick(pickShape as any);
 }
 
 /**
  * Create an omit schema from a full schema
  */
-export function createOmitSchema<T, K extends keyof T>(
-  schema: z.ZodSchema<T>,
-  keys: K[]
+export function createOmitSchema<T extends z.ZodRawShape>(
+  schema: z.ZodObject<T>,
+  keys: (keyof T)[]
 ) {
-  return schema.omit(Object.fromEntries(keys.map(key => [key, true])) as any);
+  const omitShape = keys.reduce(
+    (acc, key) => {
+      acc[key] = true;
+      return acc;
+    },
+    {} as Partial<Record<keyof T, true>>
+  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return schema.omit(omitShape as any);
 }
 
 // ============================================================================
@@ -228,11 +246,15 @@ export function logValidationErrors(
   data?: unknown
 ): void {
   if (process.env['NODE_ENV'] === 'development') {
+    // eslint-disable-next-line no-console
     console.group(`❌ Validation Error: ${context}`);
+    // eslint-disable-next-line no-console
     console.error('Errors:', formatValidationErrors(error));
     if (data) {
+      // eslint-disable-next-line no-console
       console.log('Data:', data);
     }
+    // eslint-disable-next-line no-console
     console.groupEnd();
   }
 }

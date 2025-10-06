@@ -1,1015 +1,1101 @@
 import { z } from 'zod';
-export declare const organizationStatusSchema: z.ZodEnum<["active", "inactive", "suspended", "pending_approval"]>;
-export declare const organizationSizeSchema: z.ZodEnum<["startup", "small", "medium", "large", "enterprise"]>;
-/**
- * Complete Organization Entity Schema
- * This is the single source of truth for all organization data structures
- */
-export declare const OrganizationEntitySchema: z.ZodObject<{
+export declare const organizationEntitySchema: z.ZodObject<{
     id: z.ZodString;
     name: z.ZodString;
     slug: z.ZodString;
     description: z.ZodOptional<z.ZodString>;
-    organization_type: z.ZodEnum<["church", "denomination", "seminary", "nonprofit", "ministry", "business", "other"]>;
-    organization_size: z.ZodOptional<z.ZodEnum<["startup", "small", "medium", "large", "enterprise"]>>;
-    website_url: z.ZodOptional<z.ZodString>;
-    email: z.ZodOptional<z.ZodString>;
-    phone: z.ZodOptional<z.ZodString>;
-    address_line1: z.ZodOptional<z.ZodString>;
-    address_line2: z.ZodOptional<z.ZodString>;
-    city: z.ZodOptional<z.ZodString>;
-    state_province: z.ZodOptional<z.ZodString>;
-    postal_code: z.ZodOptional<z.ZodString>;
-    country_code: z.ZodOptional<z.ZodString>;
-    founded_year: z.ZodOptional<z.ZodNumber>;
-    employee_count: z.ZodOptional<z.ZodNumber>;
-    annual_budget: z.ZodOptional<z.ZodNumber>;
-    subdomain: z.ZodOptional<z.ZodString>;
-    custom_domain: z.ZodOptional<z.ZodString>;
-    logo_url: z.ZodOptional<z.ZodString>;
-    brand_colors: z.ZodOptional<z.ZodObject<{
-        primary: z.ZodString;
-        secondary: z.ZodString;
-        accent: z.ZodString;
+    website: z.ZodOptional<z.ZodString>;
+    logoUrl: z.ZodOptional<z.ZodString>;
+    organizationType: z.ZodEnum<["church", "denomination", "seminary", "ministry_network", "nonprofit", "business", "other"]>;
+    sizeCategory: z.ZodOptional<z.ZodEnum<["startup", "small", "medium", "large", "enterprise"]>>;
+    contactEmail: z.ZodOptional<z.ZodString>;
+    contactPhone: z.ZodOptional<z.ZodString>;
+    address: z.ZodOptional<z.ZodObject<{
+        street: z.ZodOptional<z.ZodString>;
+        city: z.ZodOptional<z.ZodString>;
+        state: z.ZodOptional<z.ZodString>;
+        country: z.ZodOptional<z.ZodString>;
+        postalCode: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
-        primary: string;
-        secondary: string;
-        accent: string;
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
     }, {
-        primary: string;
-        secondary: string;
-        accent: string;
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
     }>>;
-    settings: z.ZodOptional<z.ZodObject<{
-        allow_public_membership: z.ZodDefault<z.ZodBoolean>;
-        require_approval_for_membership: z.ZodDefault<z.ZodBoolean>;
-        allow_member_invites: z.ZodDefault<z.ZodBoolean>;
-        default_member_role: z.ZodDefault<z.ZodEnum<["owner", "admin", "member", "viewer"]>>;
-        max_members: z.ZodOptional<z.ZodNumber>;
-    }, "strip", z.ZodTypeAny, {
-        allow_public_membership: boolean;
-        require_approval_for_membership: boolean;
-        allow_member_invites: boolean;
-        default_member_role: "owner" | "admin" | "member" | "viewer";
-        max_members?: number | undefined;
-    }, {
-        allow_public_membership?: boolean | undefined;
-        require_approval_for_membership?: boolean | undefined;
-        allow_member_invites?: boolean | undefined;
-        default_member_role?: "owner" | "admin" | "member" | "viewer" | undefined;
-        max_members?: number | undefined;
-    }>>;
-    status: z.ZodDefault<z.ZodEnum<["active", "inactive", "suspended", "pending_approval"]>>;
-    created_at: z.ZodString;
-    updated_at: z.ZodString;
+    licenseType: z.ZodDefault<z.ZodEnum<["individual", "team", "enterprise"]>>;
+    maxUsers: z.ZodDefault<z.ZodNumber>;
+    billingEmail: z.ZodOptional<z.ZodString>;
+    accountOwnerId: z.ZodOptional<z.ZodString>;
+    stripeCustomerId: z.ZodOptional<z.ZodString>;
+    stripeProductId: z.ZodOptional<z.ZodString>;
+    status: z.ZodDefault<z.ZodEnum<["trial", "active", "suspended", "cancelled"]>>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    status: "active" | "inactive" | "suspended" | "pending_approval";
     id: string;
-    created_at: string;
-    updated_at: string;
+    status: "active" | "suspended" | "trial" | "cancelled";
+    createdAt: string;
+    updatedAt: string;
     name: string;
     slug: string;
-    organization_type: "other" | "church" | "denomination" | "seminary" | "nonprofit" | "ministry" | "business";
-    email?: string | undefined;
-    country_code?: string | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
+    licenseType: "individual" | "enterprise" | "team";
+    organizationType: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "business" | "ministry_network";
+    maxUsers: number;
     description?: string | undefined;
-    organization_size?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
-    website_url?: string | undefined;
-    phone?: string | undefined;
-    address_line1?: string | undefined;
-    address_line2?: string | undefined;
-    city?: string | undefined;
-    state_province?: string | undefined;
-    postal_code?: string | undefined;
-    founded_year?: number | undefined;
-    employee_count?: number | undefined;
-    annual_budget?: number | undefined;
-    logo_url?: string | undefined;
-    settings?: {
-        allow_public_membership: boolean;
-        require_approval_for_membership: boolean;
-        allow_member_invites: boolean;
-        default_member_role: "owner" | "admin" | "member" | "viewer";
-        max_members?: number | undefined;
+    website?: string | undefined;
+    logoUrl?: string | undefined;
+    sizeCategory?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
+    contactEmail?: string | undefined;
+    contactPhone?: string | undefined;
+    address?: {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
     } | undefined;
+    billingEmail?: string | undefined;
+    accountOwnerId?: string | undefined;
+    stripeCustomerId?: string | undefined;
+    stripeProductId?: string | undefined;
 }, {
     id: string;
-    created_at: string;
-    updated_at: string;
+    createdAt: string;
+    updatedAt: string;
     name: string;
     slug: string;
-    organization_type: "other" | "church" | "denomination" | "seminary" | "nonprofit" | "ministry" | "business";
-    status?: "active" | "inactive" | "suspended" | "pending_approval" | undefined;
-    email?: string | undefined;
-    country_code?: string | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
+    organizationType: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "business" | "ministry_network";
+    status?: "active" | "suspended" | "trial" | "cancelled" | undefined;
     description?: string | undefined;
-    organization_size?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
-    website_url?: string | undefined;
-    phone?: string | undefined;
-    address_line1?: string | undefined;
-    address_line2?: string | undefined;
-    city?: string | undefined;
-    state_province?: string | undefined;
-    postal_code?: string | undefined;
-    founded_year?: number | undefined;
-    employee_count?: number | undefined;
-    annual_budget?: number | undefined;
-    logo_url?: string | undefined;
-    settings?: {
-        allow_public_membership?: boolean | undefined;
-        require_approval_for_membership?: boolean | undefined;
-        allow_member_invites?: boolean | undefined;
-        default_member_role?: "owner" | "admin" | "member" | "viewer" | undefined;
-        max_members?: number | undefined;
+    licenseType?: "individual" | "enterprise" | "team" | undefined;
+    website?: string | undefined;
+    logoUrl?: string | undefined;
+    sizeCategory?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
+    contactEmail?: string | undefined;
+    contactPhone?: string | undefined;
+    address?: {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
     } | undefined;
+    maxUsers?: number | undefined;
+    billingEmail?: string | undefined;
+    accountOwnerId?: string | undefined;
+    stripeCustomerId?: string | undefined;
+    stripeProductId?: string | undefined;
 }>;
-/**
- * Complete Organization Membership Entity Schema
- * This is the single source of truth for all organization membership data structures
- */
-export declare const OrganizationMembershipEntitySchema: z.ZodObject<{
+export declare const organizationMembershipEntitySchema: z.ZodObject<{
     id: z.ZodString;
-    organization_id: z.ZodString;
-    user_id: z.ZodString;
+    userId: z.ZodString;
+    organizationId: z.ZodString;
     role: z.ZodEnum<["owner", "admin", "member", "viewer"]>;
-    status: z.ZodDefault<z.ZodEnum<["active", "inactive", "pending", "suspended"]>>;
-    permissions: z.ZodOptional<z.ZodObject<{
-        can_manage_members: z.ZodDefault<z.ZodBoolean>;
-        can_manage_content: z.ZodDefault<z.ZodBoolean>;
-        can_manage_assessments: z.ZodDefault<z.ZodBoolean>;
-        can_view_analytics: z.ZodDefault<z.ZodBoolean>;
-        can_manage_billing: z.ZodDefault<z.ZodBoolean>;
-    }, "strip", z.ZodTypeAny, {
-        can_manage_members: boolean;
-        can_manage_content: boolean;
-        can_manage_assessments: boolean;
-        can_view_analytics: boolean;
-        can_manage_billing: boolean;
-    }, {
-        can_manage_members?: boolean | undefined;
-        can_manage_content?: boolean | undefined;
-        can_manage_assessments?: boolean | undefined;
-        can_view_analytics?: boolean | undefined;
-        can_manage_billing?: boolean | undefined;
-    }>>;
-    invited_by: z.ZodOptional<z.ZodString>;
-    invited_at: z.ZodOptional<z.ZodString>;
-    joined_at: z.ZodOptional<z.ZodString>;
-    created_at: z.ZodString;
-    updated_at: z.ZodString;
+    permissions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    status: z.ZodDefault<z.ZodEnum<["pending", "active", "inactive", "cancelled"]>>;
+    joinedAt: z.ZodOptional<z.ZodString>;
+    invitedAt: z.ZodOptional<z.ZodString>;
+    invitedBy: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    status: "active" | "inactive" | "suspended" | "pending";
     id: string;
-    created_at: string;
-    updated_at: string;
-    user_id: string;
-    organization_id: string;
+    status: "active" | "inactive" | "pending" | "cancelled";
+    createdAt: string;
+    updatedAt: string;
+    organizationId: string;
     role: "owner" | "admin" | "member" | "viewer";
-    permissions?: {
-        can_manage_members: boolean;
-        can_manage_content: boolean;
-        can_manage_assessments: boolean;
-        can_view_analytics: boolean;
-        can_manage_billing: boolean;
-    } | undefined;
-    invited_by?: string | undefined;
-    invited_at?: string | undefined;
-    joined_at?: string | undefined;
+    userId: string;
+    permissions: string[];
+    joinedAt?: string | undefined;
+    invitedAt?: string | undefined;
+    invitedBy?: string | undefined;
 }, {
     id: string;
-    created_at: string;
-    updated_at: string;
-    user_id: string;
-    organization_id: string;
+    createdAt: string;
+    updatedAt: string;
+    organizationId: string;
     role: "owner" | "admin" | "member" | "viewer";
-    status?: "active" | "inactive" | "suspended" | "pending" | undefined;
-    permissions?: {
-        can_manage_members?: boolean | undefined;
-        can_manage_content?: boolean | undefined;
-        can_manage_assessments?: boolean | undefined;
-        can_view_analytics?: boolean | undefined;
-        can_manage_billing?: boolean | undefined;
-    } | undefined;
-    invited_by?: string | undefined;
-    invited_at?: string | undefined;
-    joined_at?: string | undefined;
+    userId: string;
+    status?: "active" | "inactive" | "pending" | "cancelled" | undefined;
+    permissions?: string[] | undefined;
+    joinedAt?: string | undefined;
+    invitedAt?: string | undefined;
+    invitedBy?: string | undefined;
 }>;
-/**
- * Create Organization Schema - Derived from Entity
- * Omits auto-generated fields
- */
-export declare const CreateOrganizationSchema: z.ZodObject<Omit<{
+export declare const organizationResponseSchema: z.ZodObject<{
     id: z.ZodString;
     name: z.ZodString;
     slug: z.ZodString;
     description: z.ZodOptional<z.ZodString>;
-    organization_type: z.ZodEnum<["church", "denomination", "seminary", "nonprofit", "ministry", "business", "other"]>;
-    organization_size: z.ZodOptional<z.ZodEnum<["startup", "small", "medium", "large", "enterprise"]>>;
-    website_url: z.ZodOptional<z.ZodString>;
-    email: z.ZodOptional<z.ZodString>;
-    phone: z.ZodOptional<z.ZodString>;
-    address_line1: z.ZodOptional<z.ZodString>;
-    address_line2: z.ZodOptional<z.ZodString>;
-    city: z.ZodOptional<z.ZodString>;
-    state_province: z.ZodOptional<z.ZodString>;
-    postal_code: z.ZodOptional<z.ZodString>;
-    country_code: z.ZodOptional<z.ZodString>;
-    founded_year: z.ZodOptional<z.ZodNumber>;
-    employee_count: z.ZodOptional<z.ZodNumber>;
-    annual_budget: z.ZodOptional<z.ZodNumber>;
-    subdomain: z.ZodOptional<z.ZodString>;
-    custom_domain: z.ZodOptional<z.ZodString>;
-    logo_url: z.ZodOptional<z.ZodString>;
-    brand_colors: z.ZodOptional<z.ZodObject<{
-        primary: z.ZodString;
-        secondary: z.ZodString;
-        accent: z.ZodString;
+    website: z.ZodOptional<z.ZodString>;
+    logoUrl: z.ZodOptional<z.ZodString>;
+    organizationType: z.ZodEnum<["church", "denomination", "seminary", "ministry_network", "nonprofit", "business", "other"]>;
+    sizeCategory: z.ZodOptional<z.ZodEnum<["startup", "small", "medium", "large", "enterprise"]>>;
+    contactEmail: z.ZodOptional<z.ZodString>;
+    contactPhone: z.ZodOptional<z.ZodString>;
+    address: z.ZodOptional<z.ZodObject<{
+        street: z.ZodOptional<z.ZodString>;
+        city: z.ZodOptional<z.ZodString>;
+        state: z.ZodOptional<z.ZodString>;
+        country: z.ZodOptional<z.ZodString>;
+        postalCode: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
-        primary: string;
-        secondary: string;
-        accent: string;
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
     }, {
-        primary: string;
-        secondary: string;
-        accent: string;
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
     }>>;
-    settings: z.ZodOptional<z.ZodObject<{
-        allow_public_membership: z.ZodDefault<z.ZodBoolean>;
-        require_approval_for_membership: z.ZodDefault<z.ZodBoolean>;
-        allow_member_invites: z.ZodDefault<z.ZodBoolean>;
-        default_member_role: z.ZodDefault<z.ZodEnum<["owner", "admin", "member", "viewer"]>>;
-        max_members: z.ZodOptional<z.ZodNumber>;
-    }, "strip", z.ZodTypeAny, {
-        allow_public_membership: boolean;
-        require_approval_for_membership: boolean;
-        allow_member_invites: boolean;
-        default_member_role: "owner" | "admin" | "member" | "viewer";
-        max_members?: number | undefined;
-    }, {
-        allow_public_membership?: boolean | undefined;
-        require_approval_for_membership?: boolean | undefined;
-        allow_member_invites?: boolean | undefined;
-        default_member_role?: "owner" | "admin" | "member" | "viewer" | undefined;
-        max_members?: number | undefined;
-    }>>;
-    status: z.ZodDefault<z.ZodEnum<["active", "inactive", "suspended", "pending_approval"]>>;
-    created_at: z.ZodString;
-    updated_at: z.ZodString;
-}, "id" | "created_at" | "updated_at">, "strip", z.ZodTypeAny, {
-    status: "active" | "inactive" | "suspended" | "pending_approval";
-    name: string;
-    slug: string;
-    organization_type: "other" | "church" | "denomination" | "seminary" | "nonprofit" | "ministry" | "business";
-    email?: string | undefined;
-    country_code?: string | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
-    description?: string | undefined;
-    organization_size?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
-    website_url?: string | undefined;
-    phone?: string | undefined;
-    address_line1?: string | undefined;
-    address_line2?: string | undefined;
-    city?: string | undefined;
-    state_province?: string | undefined;
-    postal_code?: string | undefined;
-    founded_year?: number | undefined;
-    employee_count?: number | undefined;
-    annual_budget?: number | undefined;
-    logo_url?: string | undefined;
-    settings?: {
-        allow_public_membership: boolean;
-        require_approval_for_membership: boolean;
-        allow_member_invites: boolean;
-        default_member_role: "owner" | "admin" | "member" | "viewer";
-        max_members?: number | undefined;
-    } | undefined;
-}, {
-    name: string;
-    slug: string;
-    organization_type: "other" | "church" | "denomination" | "seminary" | "nonprofit" | "ministry" | "business";
-    status?: "active" | "inactive" | "suspended" | "pending_approval" | undefined;
-    email?: string | undefined;
-    country_code?: string | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
-    description?: string | undefined;
-    organization_size?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
-    website_url?: string | undefined;
-    phone?: string | undefined;
-    address_line1?: string | undefined;
-    address_line2?: string | undefined;
-    city?: string | undefined;
-    state_province?: string | undefined;
-    postal_code?: string | undefined;
-    founded_year?: number | undefined;
-    employee_count?: number | undefined;
-    annual_budget?: number | undefined;
-    logo_url?: string | undefined;
-    settings?: {
-        allow_public_membership?: boolean | undefined;
-        require_approval_for_membership?: boolean | undefined;
-        allow_member_invites?: boolean | undefined;
-        default_member_role?: "owner" | "admin" | "member" | "viewer" | undefined;
-        max_members?: number | undefined;
-    } | undefined;
-}>;
-/**
- * Update Organization Schema - Derived from Create Schema
- * Makes all fields optional for partial updates
- */
-export declare const UpdateOrganizationSchema: z.ZodObject<{
-    status: z.ZodOptional<z.ZodDefault<z.ZodEnum<["active", "inactive", "suspended", "pending_approval"]>>>;
-    email: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    country_code: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    subdomain: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    custom_domain: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    brand_colors: z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        primary: z.ZodString;
-        secondary: z.ZodString;
-        accent: z.ZodString;
-    }, "strip", z.ZodTypeAny, {
-        primary: string;
-        secondary: string;
-        accent: string;
-    }, {
-        primary: string;
-        secondary: string;
-        accent: string;
-    }>>>;
-    name: z.ZodOptional<z.ZodString>;
-    slug: z.ZodOptional<z.ZodString>;
-    description: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    organization_type: z.ZodOptional<z.ZodEnum<["church", "denomination", "seminary", "nonprofit", "ministry", "business", "other"]>>;
-    organization_size: z.ZodOptional<z.ZodOptional<z.ZodEnum<["startup", "small", "medium", "large", "enterprise"]>>>;
-    website_url: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    phone: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    address_line1: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    address_line2: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    city: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    state_province: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    postal_code: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    founded_year: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    employee_count: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    annual_budget: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    logo_url: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    settings: z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        allow_public_membership: z.ZodDefault<z.ZodBoolean>;
-        require_approval_for_membership: z.ZodDefault<z.ZodBoolean>;
-        allow_member_invites: z.ZodDefault<z.ZodBoolean>;
-        default_member_role: z.ZodDefault<z.ZodEnum<["owner", "admin", "member", "viewer"]>>;
-        max_members: z.ZodOptional<z.ZodNumber>;
-    }, "strip", z.ZodTypeAny, {
-        allow_public_membership: boolean;
-        require_approval_for_membership: boolean;
-        allow_member_invites: boolean;
-        default_member_role: "owner" | "admin" | "member" | "viewer";
-        max_members?: number | undefined;
-    }, {
-        allow_public_membership?: boolean | undefined;
-        require_approval_for_membership?: boolean | undefined;
-        allow_member_invites?: boolean | undefined;
-        default_member_role?: "owner" | "admin" | "member" | "viewer" | undefined;
-        max_members?: number | undefined;
-    }>>>;
-}, "strip", z.ZodTypeAny, {
-    status?: "active" | "inactive" | "suspended" | "pending_approval" | undefined;
-    email?: string | undefined;
-    country_code?: string | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
-    name?: string | undefined;
-    slug?: string | undefined;
-    description?: string | undefined;
-    organization_type?: "other" | "church" | "denomination" | "seminary" | "nonprofit" | "ministry" | "business" | undefined;
-    organization_size?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
-    website_url?: string | undefined;
-    phone?: string | undefined;
-    address_line1?: string | undefined;
-    address_line2?: string | undefined;
-    city?: string | undefined;
-    state_province?: string | undefined;
-    postal_code?: string | undefined;
-    founded_year?: number | undefined;
-    employee_count?: number | undefined;
-    annual_budget?: number | undefined;
-    logo_url?: string | undefined;
-    settings?: {
-        allow_public_membership: boolean;
-        require_approval_for_membership: boolean;
-        allow_member_invites: boolean;
-        default_member_role: "owner" | "admin" | "member" | "viewer";
-        max_members?: number | undefined;
-    } | undefined;
-}, {
-    status?: "active" | "inactive" | "suspended" | "pending_approval" | undefined;
-    email?: string | undefined;
-    country_code?: string | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
-    name?: string | undefined;
-    slug?: string | undefined;
-    description?: string | undefined;
-    organization_type?: "other" | "church" | "denomination" | "seminary" | "nonprofit" | "ministry" | "business" | undefined;
-    organization_size?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
-    website_url?: string | undefined;
-    phone?: string | undefined;
-    address_line1?: string | undefined;
-    address_line2?: string | undefined;
-    city?: string | undefined;
-    state_province?: string | undefined;
-    postal_code?: string | undefined;
-    founded_year?: number | undefined;
-    employee_count?: number | undefined;
-    annual_budget?: number | undefined;
-    logo_url?: string | undefined;
-    settings?: {
-        allow_public_membership?: boolean | undefined;
-        require_approval_for_membership?: boolean | undefined;
-        allow_member_invites?: boolean | undefined;
-        default_member_role?: "owner" | "admin" | "member" | "viewer" | undefined;
-        max_members?: number | undefined;
-    } | undefined;
-}>;
-/**
- * Organization Query Schema - For filtering and searching
- * Extends entity with optional filters
- */
-export declare const OrganizationQuerySchema: z.ZodObject<{
-    id: z.ZodOptional<z.ZodString>;
-    name: z.ZodOptional<z.ZodString>;
-    slug: z.ZodOptional<z.ZodString>;
-    description: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    website_url: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    email: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    phone: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    address_line1: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    address_line2: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    city: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    state_province: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    postal_code: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    founded_year: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    employee_count: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    annual_budget: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    subdomain: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    custom_domain: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    logo_url: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    brand_colors: z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        primary: z.ZodString;
-        secondary: z.ZodString;
-        accent: z.ZodString;
-    }, "strip", z.ZodTypeAny, {
-        primary: string;
-        secondary: string;
-        accent: string;
-    }, {
-        primary: string;
-        secondary: string;
-        accent: string;
-    }>>>;
-    settings: z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        allow_public_membership: z.ZodDefault<z.ZodBoolean>;
-        require_approval_for_membership: z.ZodDefault<z.ZodBoolean>;
-        allow_member_invites: z.ZodDefault<z.ZodBoolean>;
-        default_member_role: z.ZodDefault<z.ZodEnum<["owner", "admin", "member", "viewer"]>>;
-        max_members: z.ZodOptional<z.ZodNumber>;
-    }, "strip", z.ZodTypeAny, {
-        allow_public_membership: boolean;
-        require_approval_for_membership: boolean;
-        allow_member_invites: boolean;
-        default_member_role: "owner" | "admin" | "member" | "viewer";
-        max_members?: number | undefined;
-    }, {
-        allow_public_membership?: boolean | undefined;
-        require_approval_for_membership?: boolean | undefined;
-        allow_member_invites?: boolean | undefined;
-        default_member_role?: "owner" | "admin" | "member" | "viewer" | undefined;
-        max_members?: number | undefined;
-    }>>>;
-    created_at: z.ZodOptional<z.ZodString>;
-    updated_at: z.ZodOptional<z.ZodString>;
+    licenseType: z.ZodDefault<z.ZodEnum<["individual", "team", "enterprise"]>>;
+    maxUsers: z.ZodDefault<z.ZodNumber>;
+    billingEmail: z.ZodOptional<z.ZodString>;
+    accountOwnerId: z.ZodOptional<z.ZodString>;
+    stripeCustomerId: z.ZodOptional<z.ZodString>;
+    stripeProductId: z.ZodOptional<z.ZodString>;
+    status: z.ZodDefault<z.ZodEnum<["trial", "active", "suspended", "cancelled"]>>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
 } & {
-    search: z.ZodOptional<z.ZodString>;
-    organization_type: z.ZodOptional<z.ZodArray<z.ZodEnum<["church", "denomination", "seminary", "nonprofit", "ministry", "business", "other"]>, "many">>;
-    organization_size: z.ZodOptional<z.ZodArray<z.ZodEnum<["startup", "small", "medium", "large", "enterprise"]>, "many">>;
-    status: z.ZodOptional<z.ZodArray<z.ZodEnum<["active", "inactive", "suspended", "pending_approval"]>, "many">>;
-    country_code: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-    created_after: z.ZodOptional<z.ZodString>;
-    created_before: z.ZodOptional<z.ZodString>;
-    founded_after: z.ZodOptional<z.ZodNumber>;
-    founded_before: z.ZodOptional<z.ZodNumber>;
-    employee_count_min: z.ZodOptional<z.ZodNumber>;
-    employee_count_max: z.ZodOptional<z.ZodNumber>;
-    annual_budget_min: z.ZodOptional<z.ZodNumber>;
-    annual_budget_max: z.ZodOptional<z.ZodNumber>;
-}, "strip", z.ZodTypeAny, {
-    status?: ("active" | "inactive" | "suspended" | "pending_approval")[] | undefined;
-    id?: string | undefined;
-    email?: string | undefined;
-    country_code?: string[] | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
-    created_at?: string | undefined;
-    updated_at?: string | undefined;
-    search?: string | undefined;
-    created_after?: string | undefined;
-    created_before?: string | undefined;
-    name?: string | undefined;
-    slug?: string | undefined;
-    description?: string | undefined;
-    organization_type?: ("other" | "church" | "denomination" | "seminary" | "nonprofit" | "ministry" | "business")[] | undefined;
-    organization_size?: ("startup" | "small" | "medium" | "large" | "enterprise")[] | undefined;
-    website_url?: string | undefined;
-    phone?: string | undefined;
-    address_line1?: string | undefined;
-    address_line2?: string | undefined;
-    city?: string | undefined;
-    state_province?: string | undefined;
-    postal_code?: string | undefined;
-    founded_year?: number | undefined;
-    employee_count?: number | undefined;
-    annual_budget?: number | undefined;
-    logo_url?: string | undefined;
-    settings?: {
-        allow_public_membership: boolean;
-        require_approval_for_membership: boolean;
-        allow_member_invites: boolean;
-        default_member_role: "owner" | "admin" | "member" | "viewer";
-        max_members?: number | undefined;
-    } | undefined;
-    founded_after?: number | undefined;
-    founded_before?: number | undefined;
-    employee_count_min?: number | undefined;
-    employee_count_max?: number | undefined;
-    annual_budget_min?: number | undefined;
-    annual_budget_max?: number | undefined;
-}, {
-    status?: ("active" | "inactive" | "suspended" | "pending_approval")[] | undefined;
-    id?: string | undefined;
-    email?: string | undefined;
-    country_code?: string[] | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
-    created_at?: string | undefined;
-    updated_at?: string | undefined;
-    search?: string | undefined;
-    created_after?: string | undefined;
-    created_before?: string | undefined;
-    name?: string | undefined;
-    slug?: string | undefined;
-    description?: string | undefined;
-    organization_type?: ("other" | "church" | "denomination" | "seminary" | "nonprofit" | "ministry" | "business")[] | undefined;
-    organization_size?: ("startup" | "small" | "medium" | "large" | "enterprise")[] | undefined;
-    website_url?: string | undefined;
-    phone?: string | undefined;
-    address_line1?: string | undefined;
-    address_line2?: string | undefined;
-    city?: string | undefined;
-    state_province?: string | undefined;
-    postal_code?: string | undefined;
-    founded_year?: number | undefined;
-    employee_count?: number | undefined;
-    annual_budget?: number | undefined;
-    logo_url?: string | undefined;
-    settings?: {
-        allow_public_membership?: boolean | undefined;
-        require_approval_for_membership?: boolean | undefined;
-        allow_member_invites?: boolean | undefined;
-        default_member_role?: "owner" | "admin" | "member" | "viewer" | undefined;
-        max_members?: number | undefined;
-    } | undefined;
-    founded_after?: number | undefined;
-    founded_before?: number | undefined;
-    employee_count_min?: number | undefined;
-    employee_count_max?: number | undefined;
-    annual_budget_min?: number | undefined;
-    annual_budget_max?: number | undefined;
-}>;
-/**
- * Create Organization Membership Schema - Derived from Entity
- * Omits auto-generated fields
- */
-export declare const CreateOrganizationMembershipSchema: z.ZodObject<Omit<{
-    id: z.ZodString;
-    organization_id: z.ZodString;
-    user_id: z.ZodString;
-    role: z.ZodEnum<["owner", "admin", "member", "viewer"]>;
-    status: z.ZodDefault<z.ZodEnum<["active", "inactive", "pending", "suspended"]>>;
-    permissions: z.ZodOptional<z.ZodObject<{
-        can_manage_members: z.ZodDefault<z.ZodBoolean>;
-        can_manage_content: z.ZodDefault<z.ZodBoolean>;
-        can_manage_assessments: z.ZodDefault<z.ZodBoolean>;
-        can_view_analytics: z.ZodDefault<z.ZodBoolean>;
-        can_manage_billing: z.ZodDefault<z.ZodBoolean>;
+    isActive: z.ZodBoolean;
+    isTrial: z.ZodBoolean;
+    hasCustomLogo: z.ZodBoolean;
+    hasWebsite: z.ZodBoolean;
+    memberCount: z.ZodNumber;
+    displayName: z.ZodString;
+    statusDisplay: z.ZodString;
+    licenseTypeDisplay: z.ZodString;
+    owner: z.ZodOptional<z.ZodObject<{
+        id: z.ZodString;
+        firstName: z.ZodString;
+        lastName: z.ZodString;
+        email: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        can_manage_members: boolean;
-        can_manage_content: boolean;
-        can_manage_assessments: boolean;
-        can_view_analytics: boolean;
-        can_manage_billing: boolean;
+        id: string;
+        email: string;
+        firstName: string;
+        lastName: string;
     }, {
-        can_manage_members?: boolean | undefined;
-        can_manage_content?: boolean | undefined;
-        can_manage_assessments?: boolean | undefined;
-        can_view_analytics?: boolean | undefined;
-        can_manage_billing?: boolean | undefined;
+        id: string;
+        email: string;
+        firstName: string;
+        lastName: string;
     }>>;
-    invited_by: z.ZodOptional<z.ZodString>;
-    invited_at: z.ZodOptional<z.ZodString>;
-    joined_at: z.ZodOptional<z.ZodString>;
-    created_at: z.ZodString;
-    updated_at: z.ZodString;
-}, "id" | "created_at" | "updated_at">, "strip", z.ZodTypeAny, {
-    status: "active" | "inactive" | "suspended" | "pending";
-    user_id: string;
-    organization_id: string;
-    role: "owner" | "admin" | "member" | "viewer";
-    permissions?: {
-        can_manage_members: boolean;
-        can_manage_content: boolean;
-        can_manage_assessments: boolean;
-        can_view_analytics: boolean;
-        can_manage_billing: boolean;
+    members: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        userId: z.ZodString;
+        role: z.ZodString;
+        status: z.ZodString;
+        joinedAt: z.ZodString;
+        user: z.ZodObject<{
+            id: z.ZodString;
+            firstName: z.ZodString;
+            lastName: z.ZodString;
+            email: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            email: string;
+            firstName: string;
+            lastName: string;
+        }, {
+            id: string;
+            email: string;
+            firstName: string;
+            lastName: string;
+        }>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        status: string;
+        role: string;
+        user: {
+            id: string;
+            email: string;
+            firstName: string;
+            lastName: string;
+        };
+        userId: string;
+        joinedAt: string;
+    }, {
+        id: string;
+        status: string;
+        role: string;
+        user: {
+            id: string;
+            email: string;
+            firstName: string;
+            lastName: string;
+        };
+        userId: string;
+        joinedAt: string;
+    }>, "many">>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    displayName: string;
+    status: "active" | "suspended" | "trial" | "cancelled";
+    createdAt: string;
+    updatedAt: string;
+    isActive: boolean;
+    name: string;
+    slug: string;
+    memberCount: number;
+    licenseType: "individual" | "enterprise" | "team";
+    organizationType: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "business" | "ministry_network";
+    maxUsers: number;
+    isTrial: boolean;
+    hasCustomLogo: boolean;
+    hasWebsite: boolean;
+    statusDisplay: string;
+    licenseTypeDisplay: string;
+    owner?: {
+        id: string;
+        email: string;
+        firstName: string;
+        lastName: string;
     } | undefined;
-    invited_by?: string | undefined;
-    invited_at?: string | undefined;
-    joined_at?: string | undefined;
+    description?: string | undefined;
+    website?: string | undefined;
+    logoUrl?: string | undefined;
+    sizeCategory?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
+    contactEmail?: string | undefined;
+    contactPhone?: string | undefined;
+    address?: {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    } | undefined;
+    billingEmail?: string | undefined;
+    accountOwnerId?: string | undefined;
+    stripeCustomerId?: string | undefined;
+    stripeProductId?: string | undefined;
+    members?: {
+        id: string;
+        status: string;
+        role: string;
+        user: {
+            id: string;
+            email: string;
+            firstName: string;
+            lastName: string;
+        };
+        userId: string;
+        joinedAt: string;
+    }[] | undefined;
 }, {
-    user_id: string;
-    organization_id: string;
-    role: "owner" | "admin" | "member" | "viewer";
-    status?: "active" | "inactive" | "suspended" | "pending" | undefined;
-    permissions?: {
-        can_manage_members?: boolean | undefined;
-        can_manage_content?: boolean | undefined;
-        can_manage_assessments?: boolean | undefined;
-        can_view_analytics?: boolean | undefined;
-        can_manage_billing?: boolean | undefined;
+    id: string;
+    displayName: string;
+    createdAt: string;
+    updatedAt: string;
+    isActive: boolean;
+    name: string;
+    slug: string;
+    memberCount: number;
+    organizationType: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "business" | "ministry_network";
+    isTrial: boolean;
+    hasCustomLogo: boolean;
+    hasWebsite: boolean;
+    statusDisplay: string;
+    licenseTypeDisplay: string;
+    status?: "active" | "suspended" | "trial" | "cancelled" | undefined;
+    owner?: {
+        id: string;
+        email: string;
+        firstName: string;
+        lastName: string;
     } | undefined;
-    invited_by?: string | undefined;
-    invited_at?: string | undefined;
-    joined_at?: string | undefined;
+    description?: string | undefined;
+    licenseType?: "individual" | "enterprise" | "team" | undefined;
+    website?: string | undefined;
+    logoUrl?: string | undefined;
+    sizeCategory?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
+    contactEmail?: string | undefined;
+    contactPhone?: string | undefined;
+    address?: {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    } | undefined;
+    maxUsers?: number | undefined;
+    billingEmail?: string | undefined;
+    accountOwnerId?: string | undefined;
+    stripeCustomerId?: string | undefined;
+    stripeProductId?: string | undefined;
+    members?: {
+        id: string;
+        status: string;
+        role: string;
+        user: {
+            id: string;
+            email: string;
+            firstName: string;
+            lastName: string;
+        };
+        userId: string;
+        joinedAt: string;
+    }[] | undefined;
 }>;
-/**
- * Update Organization Membership Schema - Derived from Create Schema
- * Makes all fields optional for partial updates
- */
-export declare const UpdateOrganizationMembershipSchema: z.ZodObject<{
-    status: z.ZodOptional<z.ZodDefault<z.ZodEnum<["active", "inactive", "pending", "suspended"]>>>;
-    user_id: z.ZodOptional<z.ZodString>;
-    organization_id: z.ZodOptional<z.ZodString>;
+export declare const organizationMembershipResponseSchema: z.ZodObject<{
+    id: z.ZodString;
+    userId: z.ZodString;
+    organizationId: z.ZodString;
+    role: z.ZodEnum<["owner", "admin", "member", "viewer"]>;
+    permissions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    status: z.ZodDefault<z.ZodEnum<["pending", "active", "inactive", "cancelled"]>>;
+    joinedAt: z.ZodOptional<z.ZodString>;
+    invitedAt: z.ZodOptional<z.ZodString>;
+    invitedBy: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+} & {
+    isActive: z.ZodBoolean;
+    isPending: z.ZodBoolean;
+    canManage: z.ZodBoolean;
+    roleDisplay: z.ZodString;
+    statusDisplay: z.ZodString;
+    user: z.ZodObject<{
+        id: z.ZodString;
+        firstName: z.ZodString;
+        lastName: z.ZodString;
+        email: z.ZodString;
+        avatarUrl: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        email: string;
+        firstName: string;
+        lastName: string;
+        avatarUrl?: string | undefined;
+    }, {
+        id: string;
+        email: string;
+        firstName: string;
+        lastName: string;
+        avatarUrl?: string | undefined;
+    }>;
+    organization: z.ZodObject<{
+        id: z.ZodString;
+        name: z.ZodString;
+        slug: z.ZodString;
+        logoUrl: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        name: string;
+        slug: string;
+        logoUrl?: string | undefined;
+    }, {
+        id: string;
+        name: string;
+        slug: string;
+        logoUrl?: string | undefined;
+    }>;
+    invitedByUser: z.ZodOptional<z.ZodObject<{
+        id: z.ZodString;
+        firstName: z.ZodString;
+        lastName: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        firstName: string;
+        lastName: string;
+    }, {
+        id: string;
+        firstName: string;
+        lastName: string;
+    }>>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    status: "active" | "inactive" | "pending" | "cancelled";
+    createdAt: string;
+    updatedAt: string;
+    isActive: boolean;
+    organization: {
+        id: string;
+        name: string;
+        slug: string;
+        logoUrl?: string | undefined;
+    };
+    organizationId: string;
+    role: "owner" | "admin" | "member" | "viewer";
+    user: {
+        id: string;
+        email: string;
+        firstName: string;
+        lastName: string;
+        avatarUrl?: string | undefined;
+    };
+    userId: string;
+    permissions: string[];
+    statusDisplay: string;
+    isPending: boolean;
+    canManage: boolean;
+    roleDisplay: string;
+    joinedAt?: string | undefined;
+    invitedAt?: string | undefined;
+    invitedBy?: string | undefined;
+    invitedByUser?: {
+        id: string;
+        firstName: string;
+        lastName: string;
+    } | undefined;
+}, {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    isActive: boolean;
+    organization: {
+        id: string;
+        name: string;
+        slug: string;
+        logoUrl?: string | undefined;
+    };
+    organizationId: string;
+    role: "owner" | "admin" | "member" | "viewer";
+    user: {
+        id: string;
+        email: string;
+        firstName: string;
+        lastName: string;
+        avatarUrl?: string | undefined;
+    };
+    userId: string;
+    statusDisplay: string;
+    isPending: boolean;
+    canManage: boolean;
+    roleDisplay: string;
+    status?: "active" | "inactive" | "pending" | "cancelled" | undefined;
+    permissions?: string[] | undefined;
+    joinedAt?: string | undefined;
+    invitedAt?: string | undefined;
+    invitedBy?: string | undefined;
+    invitedByUser?: {
+        id: string;
+        firstName: string;
+        lastName: string;
+    } | undefined;
+}>;
+export declare const createOrganizationSchema: z.ZodObject<{
+    status: z.ZodDefault<z.ZodEnum<["trial", "active", "suspended", "cancelled"]>>;
+    description: z.ZodOptional<z.ZodString>;
+    licenseType: z.ZodDefault<z.ZodEnum<["individual", "team", "enterprise"]>>;
+    website: z.ZodOptional<z.ZodString>;
+    logoUrl: z.ZodOptional<z.ZodString>;
+    sizeCategory: z.ZodOptional<z.ZodEnum<["startup", "small", "medium", "large", "enterprise"]>>;
+    contactEmail: z.ZodOptional<z.ZodString>;
+    contactPhone: z.ZodOptional<z.ZodString>;
+    address: z.ZodOptional<z.ZodObject<{
+        street: z.ZodOptional<z.ZodString>;
+        city: z.ZodOptional<z.ZodString>;
+        state: z.ZodOptional<z.ZodString>;
+        country: z.ZodOptional<z.ZodString>;
+        postalCode: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    }, {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    }>>;
+    maxUsers: z.ZodDefault<z.ZodNumber>;
+    billingEmail: z.ZodOptional<z.ZodString>;
+    accountOwnerId: z.ZodOptional<z.ZodString>;
+    stripeCustomerId: z.ZodOptional<z.ZodString>;
+    stripeProductId: z.ZodOptional<z.ZodString>;
+} & {
+    name: z.ZodString;
+    slug: z.ZodString;
+    organizationType: z.ZodEnum<["church", "denomination", "seminary", "ministry_network", "nonprofit", "business", "other"]>;
+}, "strip", z.ZodTypeAny, {
+    status: "active" | "suspended" | "trial" | "cancelled";
+    name: string;
+    slug: string;
+    licenseType: "individual" | "enterprise" | "team";
+    organizationType: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "business" | "ministry_network";
+    maxUsers: number;
+    description?: string | undefined;
+    website?: string | undefined;
+    logoUrl?: string | undefined;
+    sizeCategory?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
+    contactEmail?: string | undefined;
+    contactPhone?: string | undefined;
+    address?: {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    } | undefined;
+    billingEmail?: string | undefined;
+    accountOwnerId?: string | undefined;
+    stripeCustomerId?: string | undefined;
+    stripeProductId?: string | undefined;
+}, {
+    name: string;
+    slug: string;
+    organizationType: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "business" | "ministry_network";
+    status?: "active" | "suspended" | "trial" | "cancelled" | undefined;
+    description?: string | undefined;
+    licenseType?: "individual" | "enterprise" | "team" | undefined;
+    website?: string | undefined;
+    logoUrl?: string | undefined;
+    sizeCategory?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
+    contactEmail?: string | undefined;
+    contactPhone?: string | undefined;
+    address?: {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    } | undefined;
+    maxUsers?: number | undefined;
+    billingEmail?: string | undefined;
+    accountOwnerId?: string | undefined;
+    stripeCustomerId?: string | undefined;
+    stripeProductId?: string | undefined;
+}>;
+export declare const updateOrganizationSchema: z.ZodObject<Omit<{
+    status: z.ZodOptional<z.ZodDefault<z.ZodEnum<["trial", "active", "suspended", "cancelled"]>>>;
+    description: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    licenseType: z.ZodOptional<z.ZodDefault<z.ZodEnum<["individual", "team", "enterprise"]>>>;
+    website: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    logoUrl: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    sizeCategory: z.ZodOptional<z.ZodOptional<z.ZodEnum<["startup", "small", "medium", "large", "enterprise"]>>>;
+    contactEmail: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    contactPhone: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    address: z.ZodOptional<z.ZodOptional<z.ZodObject<{
+        street: z.ZodOptional<z.ZodString>;
+        city: z.ZodOptional<z.ZodString>;
+        state: z.ZodOptional<z.ZodString>;
+        country: z.ZodOptional<z.ZodString>;
+        postalCode: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    }, {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    }>>>;
+    maxUsers: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
+    billingEmail: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    accountOwnerId: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    stripeCustomerId: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    stripeProductId: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    name: z.ZodOptional<z.ZodString>;
+    slug: z.ZodOptional<z.ZodString>;
+    organizationType: z.ZodOptional<z.ZodEnum<["church", "denomination", "seminary", "ministry_network", "nonprofit", "business", "other"]>>;
+}, "slug">, "strip", z.ZodTypeAny, {
+    status?: "active" | "suspended" | "trial" | "cancelled" | undefined;
+    name?: string | undefined;
+    description?: string | undefined;
+    licenseType?: "individual" | "enterprise" | "team" | undefined;
+    website?: string | undefined;
+    logoUrl?: string | undefined;
+    organizationType?: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "business" | "ministry_network" | undefined;
+    sizeCategory?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
+    contactEmail?: string | undefined;
+    contactPhone?: string | undefined;
+    address?: {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    } | undefined;
+    maxUsers?: number | undefined;
+    billingEmail?: string | undefined;
+    accountOwnerId?: string | undefined;
+    stripeCustomerId?: string | undefined;
+    stripeProductId?: string | undefined;
+}, {
+    status?: "active" | "suspended" | "trial" | "cancelled" | undefined;
+    name?: string | undefined;
+    description?: string | undefined;
+    licenseType?: "individual" | "enterprise" | "team" | undefined;
+    website?: string | undefined;
+    logoUrl?: string | undefined;
+    organizationType?: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "business" | "ministry_network" | undefined;
+    sizeCategory?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
+    contactEmail?: string | undefined;
+    contactPhone?: string | undefined;
+    address?: {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    } | undefined;
+    maxUsers?: number | undefined;
+    billingEmail?: string | undefined;
+    accountOwnerId?: string | undefined;
+    stripeCustomerId?: string | undefined;
+    stripeProductId?: string | undefined;
+}>;
+export declare const createOrganizationMembershipSchema: z.ZodObject<{
+    status: z.ZodDefault<z.ZodEnum<["pending", "active", "inactive", "cancelled"]>>;
+    permissions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    invitedAt: z.ZodOptional<z.ZodString>;
+    invitedBy: z.ZodOptional<z.ZodString>;
+} & {
+    userId: z.ZodString;
+    organizationId: z.ZodString;
+    role: z.ZodEnum<["owner", "admin", "member", "viewer"]>;
+}, "strip", z.ZodTypeAny, {
+    status: "active" | "inactive" | "pending" | "cancelled";
+    organizationId: string;
+    role: "owner" | "admin" | "member" | "viewer";
+    userId: string;
+    permissions: string[];
+    invitedAt?: string | undefined;
+    invitedBy?: string | undefined;
+}, {
+    organizationId: string;
+    role: "owner" | "admin" | "member" | "viewer";
+    userId: string;
+    status?: "active" | "inactive" | "pending" | "cancelled" | undefined;
+    permissions?: string[] | undefined;
+    invitedAt?: string | undefined;
+    invitedBy?: string | undefined;
+}>;
+export declare const updateOrganizationMembershipSchema: z.ZodObject<Omit<{
+    status: z.ZodOptional<z.ZodDefault<z.ZodEnum<["pending", "active", "inactive", "cancelled"]>>>;
+    permissions: z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodString, "many">>>;
+    invitedAt: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    invitedBy: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    userId: z.ZodOptional<z.ZodString>;
+    organizationId: z.ZodOptional<z.ZodString>;
     role: z.ZodOptional<z.ZodEnum<["owner", "admin", "member", "viewer"]>>;
-    permissions: z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        can_manage_members: z.ZodDefault<z.ZodBoolean>;
-        can_manage_content: z.ZodDefault<z.ZodBoolean>;
-        can_manage_assessments: z.ZodDefault<z.ZodBoolean>;
-        can_view_analytics: z.ZodDefault<z.ZodBoolean>;
-        can_manage_billing: z.ZodDefault<z.ZodBoolean>;
-    }, "strip", z.ZodTypeAny, {
-        can_manage_members: boolean;
-        can_manage_content: boolean;
-        can_manage_assessments: boolean;
-        can_view_analytics: boolean;
-        can_manage_billing: boolean;
-    }, {
-        can_manage_members?: boolean | undefined;
-        can_manage_content?: boolean | undefined;
-        can_manage_assessments?: boolean | undefined;
-        can_view_analytics?: boolean | undefined;
-        can_manage_billing?: boolean | undefined;
-    }>>>;
-    invited_by: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    invited_at: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    joined_at: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-}, "strip", z.ZodTypeAny, {
-    status?: "active" | "inactive" | "suspended" | "pending" | undefined;
-    user_id?: string | undefined;
-    organization_id?: string | undefined;
+}, "organizationId" | "userId">, "strip", z.ZodTypeAny, {
+    status?: "active" | "inactive" | "pending" | "cancelled" | undefined;
     role?: "owner" | "admin" | "member" | "viewer" | undefined;
-    permissions?: {
-        can_manage_members: boolean;
-        can_manage_content: boolean;
-        can_manage_assessments: boolean;
-        can_view_analytics: boolean;
-        can_manage_billing: boolean;
-    } | undefined;
-    invited_by?: string | undefined;
-    invited_at?: string | undefined;
-    joined_at?: string | undefined;
+    permissions?: string[] | undefined;
+    invitedAt?: string | undefined;
+    invitedBy?: string | undefined;
 }, {
-    status?: "active" | "inactive" | "suspended" | "pending" | undefined;
-    user_id?: string | undefined;
-    organization_id?: string | undefined;
+    status?: "active" | "inactive" | "pending" | "cancelled" | undefined;
     role?: "owner" | "admin" | "member" | "viewer" | undefined;
-    permissions?: {
-        can_manage_members?: boolean | undefined;
-        can_manage_content?: boolean | undefined;
-        can_manage_assessments?: boolean | undefined;
-        can_view_analytics?: boolean | undefined;
-        can_manage_billing?: boolean | undefined;
-    } | undefined;
-    invited_by?: string | undefined;
-    invited_at?: string | undefined;
-    joined_at?: string | undefined;
+    permissions?: string[] | undefined;
+    invitedAt?: string | undefined;
+    invitedBy?: string | undefined;
 }>;
-/**
- * Organization Membership Query Schema - For filtering and searching
- * Extends entity with optional filters
- */
-export declare const OrganizationMembershipQuerySchema: z.ZodObject<{
-    id: z.ZodOptional<z.ZodString>;
-    permissions: z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        can_manage_members: z.ZodDefault<z.ZodBoolean>;
-        can_manage_content: z.ZodDefault<z.ZodBoolean>;
-        can_manage_assessments: z.ZodDefault<z.ZodBoolean>;
-        can_view_analytics: z.ZodDefault<z.ZodBoolean>;
-        can_manage_billing: z.ZodDefault<z.ZodBoolean>;
-    }, "strip", z.ZodTypeAny, {
-        can_manage_members: boolean;
-        can_manage_content: boolean;
-        can_manage_assessments: boolean;
-        can_view_analytics: boolean;
-        can_manage_billing: boolean;
-    }, {
-        can_manage_members?: boolean | undefined;
-        can_manage_content?: boolean | undefined;
-        can_manage_assessments?: boolean | undefined;
-        can_view_analytics?: boolean | undefined;
-        can_manage_billing?: boolean | undefined;
-    }>>>;
-    invited_by: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    invited_at: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    joined_at: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    created_at: z.ZodOptional<z.ZodString>;
-    updated_at: z.ZodOptional<z.ZodString>;
-} & {
-    organization_id: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-    user_id: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-    role: z.ZodOptional<z.ZodArray<z.ZodEnum<["owner", "admin", "member", "viewer"]>, "many">>;
-    status: z.ZodOptional<z.ZodArray<z.ZodEnum<["active", "inactive", "pending", "suspended"]>, "many">>;
-    created_after: z.ZodOptional<z.ZodString>;
-    created_before: z.ZodOptional<z.ZodString>;
-    joined_after: z.ZodOptional<z.ZodString>;
-    joined_before: z.ZodOptional<z.ZodString>;
+export declare const organizationQuerySchema: z.ZodObject<{
+    page: z.ZodDefault<z.ZodNumber>;
+    limit: z.ZodDefault<z.ZodNumber>;
+    search: z.ZodOptional<z.ZodString>;
+    organizationType: z.ZodOptional<z.ZodString>;
+    sizeCategory: z.ZodOptional<z.ZodString>;
+    status: z.ZodOptional<z.ZodString>;
+    licenseType: z.ZodOptional<z.ZodString>;
+    sortBy: z.ZodDefault<z.ZodEnum<["createdAt", "updatedAt", "name", "organizationType", "memberCount"]>>;
+    sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
+    includeOwner: z.ZodDefault<z.ZodBoolean>;
+    includeMembers: z.ZodDefault<z.ZodBoolean>;
+    includeMemberCount: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
-    status?: ("active" | "inactive" | "suspended" | "pending")[] | undefined;
-    id?: string | undefined;
-    created_at?: string | undefined;
-    updated_at?: string | undefined;
-    created_after?: string | undefined;
-    created_before?: string | undefined;
-    user_id?: string[] | undefined;
-    organization_id?: string[] | undefined;
-    role?: ("owner" | "admin" | "member" | "viewer")[] | undefined;
-    permissions?: {
-        can_manage_members: boolean;
-        can_manage_content: boolean;
-        can_manage_assessments: boolean;
-        can_view_analytics: boolean;
-        can_manage_billing: boolean;
-    } | undefined;
-    invited_by?: string | undefined;
-    invited_at?: string | undefined;
-    joined_at?: string | undefined;
-    joined_after?: string | undefined;
-    joined_before?: string | undefined;
+    page: number;
+    limit: number;
+    sortBy: "createdAt" | "updatedAt" | "name" | "memberCount" | "organizationType";
+    sortOrder: "asc" | "desc";
+    includeOwner: boolean;
+    includeMembers: boolean;
+    includeMemberCount: boolean;
+    status?: string | undefined;
+    search?: string | undefined;
+    licenseType?: string | undefined;
+    organizationType?: string | undefined;
+    sizeCategory?: string | undefined;
 }, {
-    status?: ("active" | "inactive" | "suspended" | "pending")[] | undefined;
-    id?: string | undefined;
-    created_at?: string | undefined;
-    updated_at?: string | undefined;
-    created_after?: string | undefined;
-    created_before?: string | undefined;
-    user_id?: string[] | undefined;
-    organization_id?: string[] | undefined;
-    role?: ("owner" | "admin" | "member" | "viewer")[] | undefined;
-    permissions?: {
-        can_manage_members?: boolean | undefined;
-        can_manage_content?: boolean | undefined;
-        can_manage_assessments?: boolean | undefined;
-        can_view_analytics?: boolean | undefined;
-        can_manage_billing?: boolean | undefined;
-    } | undefined;
-    invited_by?: string | undefined;
-    invited_at?: string | undefined;
-    joined_at?: string | undefined;
-    joined_after?: string | undefined;
-    joined_before?: string | undefined;
+    status?: string | undefined;
+    page?: number | undefined;
+    limit?: number | undefined;
+    search?: string | undefined;
+    sortBy?: "createdAt" | "updatedAt" | "name" | "memberCount" | "organizationType" | undefined;
+    sortOrder?: "asc" | "desc" | undefined;
+    licenseType?: string | undefined;
+    organizationType?: string | undefined;
+    sizeCategory?: string | undefined;
+    includeOwner?: boolean | undefined;
+    includeMembers?: boolean | undefined;
+    includeMemberCount?: boolean | undefined;
 }>;
-/**
- * Organization Form Schema - For form validation
- * Extends create schema with form-specific fields
- */
-export declare const OrganizationFormSchema: z.ZodObject<Omit<{
+export declare const organizationMembershipQuerySchema: z.ZodObject<{
+    page: z.ZodDefault<z.ZodNumber>;
+    limit: z.ZodDefault<z.ZodNumber>;
+    organizationId: z.ZodOptional<z.ZodString>;
+    userId: z.ZodOptional<z.ZodString>;
+    role: z.ZodOptional<z.ZodString>;
+    status: z.ZodOptional<z.ZodString>;
+    sortBy: z.ZodDefault<z.ZodEnum<["createdAt", "joinedAt", "role", "status"]>>;
+    sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
+    includeUser: z.ZodDefault<z.ZodBoolean>;
+    includeOrganization: z.ZodDefault<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    page: number;
+    limit: number;
+    sortBy: "status" | "createdAt" | "role" | "joinedAt";
+    sortOrder: "asc" | "desc";
+    includeOrganization: boolean;
+    includeUser: boolean;
+    status?: string | undefined;
+    organizationId?: string | undefined;
+    role?: string | undefined;
+    userId?: string | undefined;
+}, {
+    status?: string | undefined;
+    page?: number | undefined;
+    limit?: number | undefined;
+    sortBy?: "status" | "createdAt" | "role" | "joinedAt" | undefined;
+    sortOrder?: "asc" | "desc" | undefined;
+    organizationId?: string | undefined;
+    includeOrganization?: boolean | undefined;
+    role?: string | undefined;
+    userId?: string | undefined;
+    includeUser?: boolean | undefined;
+}>;
+export declare const organizationFormSchema: z.ZodObject<{
+    name: z.ZodString;
+    description: z.ZodOptional<z.ZodString>;
+    website: z.ZodOptional<z.ZodString>;
+    organizationType: z.ZodEnum<["church", "denomination", "seminary", "ministry_network", "nonprofit", "business", "other"]>;
+    sizeCategory: z.ZodOptional<z.ZodEnum<["startup", "small", "medium", "large", "enterprise"]>>;
+    contactEmail: z.ZodOptional<z.ZodString>;
+    contactPhone: z.ZodOptional<z.ZodString>;
+    billingEmail: z.ZodOptional<z.ZodString>;
+    address: z.ZodOptional<z.ZodObject<{
+        street: z.ZodOptional<z.ZodString>;
+        city: z.ZodOptional<z.ZodString>;
+        state: z.ZodOptional<z.ZodString>;
+        postalCode: z.ZodOptional<z.ZodString>;
+        country: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    }, {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    }>>;
+    licenseType: z.ZodDefault<z.ZodEnum<["individual", "team", "enterprise"]>>;
+    maxUsers: z.ZodDefault<z.ZodNumber>;
+}, "strip", z.ZodTypeAny, {
+    name: string;
+    licenseType: "individual" | "enterprise" | "team";
+    organizationType: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "business" | "ministry_network";
+    maxUsers: number;
+    description?: string | undefined;
+    website?: string | undefined;
+    sizeCategory?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
+    contactEmail?: string | undefined;
+    contactPhone?: string | undefined;
+    address?: {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    } | undefined;
+    billingEmail?: string | undefined;
+}, {
+    name: string;
+    organizationType: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "business" | "ministry_network";
+    description?: string | undefined;
+    licenseType?: "individual" | "enterprise" | "team" | undefined;
+    website?: string | undefined;
+    sizeCategory?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
+    contactEmail?: string | undefined;
+    contactPhone?: string | undefined;
+    address?: {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    } | undefined;
+    maxUsers?: number | undefined;
+    billingEmail?: string | undefined;
+}>;
+export declare const organizationInvitationSchema: z.ZodObject<{
+    email: z.ZodString;
+    role: z.ZodDefault<z.ZodEnum<["admin", "member", "viewer"]>>;
+    message: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    email: string;
+    role: "admin" | "member" | "viewer";
+    message?: string | undefined;
+}, {
+    email: string;
+    message?: string | undefined;
+    role?: "admin" | "member" | "viewer" | undefined;
+}>;
+export type OrganizationEntity = z.infer<typeof organizationEntitySchema>;
+export type OrganizationMembershipEntity = z.infer<typeof organizationMembershipEntitySchema>;
+export type OrganizationResponse = z.infer<typeof organizationResponseSchema>;
+export type OrganizationMembershipResponse = z.infer<typeof organizationMembershipResponseSchema>;
+export type CreateOrganization = z.infer<typeof createOrganizationSchema>;
+export type UpdateOrganization = z.infer<typeof updateOrganizationSchema>;
+export type CreateOrganizationMembership = z.infer<typeof createOrganizationMembershipSchema>;
+export type UpdateOrganizationMembership = z.infer<typeof updateOrganizationMembershipSchema>;
+export type OrganizationQuery = z.infer<typeof organizationQuerySchema>;
+export type OrganizationMembershipQuery = z.infer<typeof organizationMembershipQuerySchema>;
+export type OrganizationForm = z.infer<typeof organizationFormSchema>;
+export type OrganizationInvitation = z.infer<typeof organizationInvitationSchema>;
+export type Organization = OrganizationEntity;
+export type NewOrganization = CreateOrganization;
+export type OrganizationMembership = OrganizationMembershipEntity;
+export type NewOrganizationMembership = CreateOrganizationMembership;
+export declare const organizationSchema: z.ZodObject<{
     id: z.ZodString;
     name: z.ZodString;
     slug: z.ZodString;
     description: z.ZodOptional<z.ZodString>;
-    organization_type: z.ZodEnum<["church", "denomination", "seminary", "nonprofit", "ministry", "business", "other"]>;
-    organization_size: z.ZodOptional<z.ZodEnum<["startup", "small", "medium", "large", "enterprise"]>>;
-    website_url: z.ZodOptional<z.ZodString>;
-    email: z.ZodOptional<z.ZodString>;
-    phone: z.ZodOptional<z.ZodString>;
-    address_line1: z.ZodOptional<z.ZodString>;
-    address_line2: z.ZodOptional<z.ZodString>;
-    city: z.ZodOptional<z.ZodString>;
-    state_province: z.ZodOptional<z.ZodString>;
-    postal_code: z.ZodOptional<z.ZodString>;
-    country_code: z.ZodOptional<z.ZodString>;
-    founded_year: z.ZodOptional<z.ZodNumber>;
-    employee_count: z.ZodOptional<z.ZodNumber>;
-    annual_budget: z.ZodOptional<z.ZodNumber>;
-    subdomain: z.ZodOptional<z.ZodString>;
-    custom_domain: z.ZodOptional<z.ZodString>;
-    logo_url: z.ZodOptional<z.ZodString>;
-    brand_colors: z.ZodOptional<z.ZodObject<{
-        primary: z.ZodString;
-        secondary: z.ZodString;
-        accent: z.ZodString;
+    website: z.ZodOptional<z.ZodString>;
+    logoUrl: z.ZodOptional<z.ZodString>;
+    organizationType: z.ZodEnum<["church", "denomination", "seminary", "ministry_network", "nonprofit", "business", "other"]>;
+    sizeCategory: z.ZodOptional<z.ZodEnum<["startup", "small", "medium", "large", "enterprise"]>>;
+    contactEmail: z.ZodOptional<z.ZodString>;
+    contactPhone: z.ZodOptional<z.ZodString>;
+    address: z.ZodOptional<z.ZodObject<{
+        street: z.ZodOptional<z.ZodString>;
+        city: z.ZodOptional<z.ZodString>;
+        state: z.ZodOptional<z.ZodString>;
+        country: z.ZodOptional<z.ZodString>;
+        postalCode: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
-        primary: string;
-        secondary: string;
-        accent: string;
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
     }, {
-        primary: string;
-        secondary: string;
-        accent: string;
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
     }>>;
-    settings: z.ZodOptional<z.ZodObject<{
-        allow_public_membership: z.ZodDefault<z.ZodBoolean>;
-        require_approval_for_membership: z.ZodDefault<z.ZodBoolean>;
-        allow_member_invites: z.ZodDefault<z.ZodBoolean>;
-        default_member_role: z.ZodDefault<z.ZodEnum<["owner", "admin", "member", "viewer"]>>;
-        max_members: z.ZodOptional<z.ZodNumber>;
-    }, "strip", z.ZodTypeAny, {
-        allow_public_membership: boolean;
-        require_approval_for_membership: boolean;
-        allow_member_invites: boolean;
-        default_member_role: "owner" | "admin" | "member" | "viewer";
-        max_members?: number | undefined;
-    }, {
-        allow_public_membership?: boolean | undefined;
-        require_approval_for_membership?: boolean | undefined;
-        allow_member_invites?: boolean | undefined;
-        default_member_role?: "owner" | "admin" | "member" | "viewer" | undefined;
-        max_members?: number | undefined;
-    }>>;
-    status: z.ZodDefault<z.ZodEnum<["active", "inactive", "suspended", "pending_approval"]>>;
-    created_at: z.ZodString;
-    updated_at: z.ZodString;
-}, "id" | "created_at" | "updated_at"> & {
-    terms_accepted: z.ZodEffects<z.ZodBoolean, boolean, boolean>;
-    privacy_policy_accepted: z.ZodEffects<z.ZodBoolean, boolean, boolean>;
+    licenseType: z.ZodDefault<z.ZodEnum<["individual", "team", "enterprise"]>>;
+    maxUsers: z.ZodDefault<z.ZodNumber>;
+    billingEmail: z.ZodOptional<z.ZodString>;
+    accountOwnerId: z.ZodOptional<z.ZodString>;
+    stripeCustomerId: z.ZodOptional<z.ZodString>;
+    stripeProductId: z.ZodOptional<z.ZodString>;
+    status: z.ZodDefault<z.ZodEnum<["trial", "active", "suspended", "cancelled"]>>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    status: "active" | "inactive" | "suspended" | "pending_approval";
-    terms_accepted: boolean;
+    id: string;
+    status: "active" | "suspended" | "trial" | "cancelled";
+    createdAt: string;
+    updatedAt: string;
     name: string;
     slug: string;
-    organization_type: "other" | "church" | "denomination" | "seminary" | "nonprofit" | "ministry" | "business";
-    privacy_policy_accepted: boolean;
-    email?: string | undefined;
-    country_code?: string | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
+    licenseType: "individual" | "enterprise" | "team";
+    organizationType: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "business" | "ministry_network";
+    maxUsers: number;
     description?: string | undefined;
-    organization_size?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
-    website_url?: string | undefined;
-    phone?: string | undefined;
-    address_line1?: string | undefined;
-    address_line2?: string | undefined;
-    city?: string | undefined;
-    state_province?: string | undefined;
-    postal_code?: string | undefined;
-    founded_year?: number | undefined;
-    employee_count?: number | undefined;
-    annual_budget?: number | undefined;
-    logo_url?: string | undefined;
-    settings?: {
-        allow_public_membership: boolean;
-        require_approval_for_membership: boolean;
-        allow_member_invites: boolean;
-        default_member_role: "owner" | "admin" | "member" | "viewer";
-        max_members?: number | undefined;
+    website?: string | undefined;
+    logoUrl?: string | undefined;
+    sizeCategory?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
+    contactEmail?: string | undefined;
+    contactPhone?: string | undefined;
+    address?: {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
     } | undefined;
+    billingEmail?: string | undefined;
+    accountOwnerId?: string | undefined;
+    stripeCustomerId?: string | undefined;
+    stripeProductId?: string | undefined;
 }, {
-    terms_accepted: boolean;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
     name: string;
     slug: string;
-    organization_type: "other" | "church" | "denomination" | "seminary" | "nonprofit" | "ministry" | "business";
-    privacy_policy_accepted: boolean;
-    status?: "active" | "inactive" | "suspended" | "pending_approval" | undefined;
-    email?: string | undefined;
-    country_code?: string | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
+    organizationType: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "business" | "ministry_network";
+    status?: "active" | "suspended" | "trial" | "cancelled" | undefined;
     description?: string | undefined;
-    organization_size?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
-    website_url?: string | undefined;
-    phone?: string | undefined;
-    address_line1?: string | undefined;
-    address_line2?: string | undefined;
-    city?: string | undefined;
-    state_province?: string | undefined;
-    postal_code?: string | undefined;
-    founded_year?: number | undefined;
-    employee_count?: number | undefined;
-    annual_budget?: number | undefined;
-    logo_url?: string | undefined;
-    settings?: {
-        allow_public_membership?: boolean | undefined;
-        require_approval_for_membership?: boolean | undefined;
-        allow_member_invites?: boolean | undefined;
-        default_member_role?: "owner" | "admin" | "member" | "viewer" | undefined;
-        max_members?: number | undefined;
+    licenseType?: "individual" | "enterprise" | "team" | undefined;
+    website?: string | undefined;
+    logoUrl?: string | undefined;
+    sizeCategory?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
+    contactEmail?: string | undefined;
+    contactPhone?: string | undefined;
+    address?: {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
     } | undefined;
+    maxUsers?: number | undefined;
+    billingEmail?: string | undefined;
+    accountOwnerId?: string | undefined;
+    stripeCustomerId?: string | undefined;
+    stripeProductId?: string | undefined;
 }>;
-/**
- * Organization Invitation Schema - For inviting members
- * Extends membership schema with invitation-specific fields
- */
-export declare const OrganizationInvitationSchema: z.ZodObject<{
-    organization_id: z.ZodString;
-    email: z.ZodString;
+export declare const organizationMembershipSchema: z.ZodObject<{
+    id: z.ZodString;
+    userId: z.ZodString;
+    organizationId: z.ZodString;
     role: z.ZodEnum<["owner", "admin", "member", "viewer"]>;
-    message: z.ZodOptional<z.ZodString>;
-    expires_at: z.ZodOptional<z.ZodString>;
+    permissions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    status: z.ZodDefault<z.ZodEnum<["pending", "active", "inactive", "cancelled"]>>;
+    joinedAt: z.ZodOptional<z.ZodString>;
+    invitedAt: z.ZodOptional<z.ZodString>;
+    invitedBy: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    email: string;
-    organization_id: string;
+    id: string;
+    status: "active" | "inactive" | "pending" | "cancelled";
+    createdAt: string;
+    updatedAt: string;
+    organizationId: string;
     role: "owner" | "admin" | "member" | "viewer";
-    message?: string | undefined;
-    expires_at?: string | undefined;
+    userId: string;
+    permissions: string[];
+    joinedAt?: string | undefined;
+    invitedAt?: string | undefined;
+    invitedBy?: string | undefined;
 }, {
-    email: string;
-    organization_id: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    organizationId: string;
     role: "owner" | "admin" | "member" | "viewer";
-    message?: string | undefined;
-    expires_at?: string | undefined;
+    userId: string;
+    status?: "active" | "inactive" | "pending" | "cancelled" | undefined;
+    permissions?: string[] | undefined;
+    joinedAt?: string | undefined;
+    invitedAt?: string | undefined;
+    invitedBy?: string | undefined;
 }>;
-export type OrganizationEntity = z.infer<typeof OrganizationEntitySchema>;
-export type CreateOrganization = z.infer<typeof CreateOrganizationSchema>;
-export type UpdateOrganization = z.infer<typeof UpdateOrganizationSchema>;
-export type OrganizationQuery = z.infer<typeof OrganizationQuerySchema>;
-export type OrganizationForm = z.infer<typeof OrganizationFormSchema>;
-export type OrganizationInvitation = z.infer<typeof OrganizationInvitationSchema>;
-export type OrganizationMembershipEntity = z.infer<typeof OrganizationMembershipEntitySchema>;
-export type CreateOrganizationMembership = z.infer<typeof CreateOrganizationMembershipSchema>;
-export type UpdateOrganizationMembership = z.infer<typeof UpdateOrganizationMembershipSchema>;
-export type OrganizationMembershipQuery = z.infer<typeof OrganizationMembershipQuerySchema>;
-export type OrganizationStatus = z.infer<typeof organizationStatusSchema>;
-export type OrganizationSize = z.infer<typeof organizationSizeSchema>;
+export declare const databaseOrganizationSchema: z.ZodObject<{
+    id: z.ZodString;
+    name: z.ZodString;
+    slug: z.ZodString;
+    description: z.ZodOptional<z.ZodString>;
+    website: z.ZodOptional<z.ZodString>;
+    logoUrl: z.ZodOptional<z.ZodString>;
+    organizationType: z.ZodEnum<["church", "denomination", "seminary", "ministry_network", "nonprofit", "business", "other"]>;
+    sizeCategory: z.ZodOptional<z.ZodEnum<["startup", "small", "medium", "large", "enterprise"]>>;
+    contactEmail: z.ZodOptional<z.ZodString>;
+    contactPhone: z.ZodOptional<z.ZodString>;
+    address: z.ZodOptional<z.ZodObject<{
+        street: z.ZodOptional<z.ZodString>;
+        city: z.ZodOptional<z.ZodString>;
+        state: z.ZodOptional<z.ZodString>;
+        country: z.ZodOptional<z.ZodString>;
+        postalCode: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    }, {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    }>>;
+    licenseType: z.ZodDefault<z.ZodEnum<["individual", "team", "enterprise"]>>;
+    maxUsers: z.ZodDefault<z.ZodNumber>;
+    billingEmail: z.ZodOptional<z.ZodString>;
+    accountOwnerId: z.ZodOptional<z.ZodString>;
+    stripeCustomerId: z.ZodOptional<z.ZodString>;
+    stripeProductId: z.ZodOptional<z.ZodString>;
+    status: z.ZodDefault<z.ZodEnum<["trial", "active", "suspended", "cancelled"]>>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    status: "active" | "suspended" | "trial" | "cancelled";
+    createdAt: string;
+    updatedAt: string;
+    name: string;
+    slug: string;
+    licenseType: "individual" | "enterprise" | "team";
+    organizationType: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "business" | "ministry_network";
+    maxUsers: number;
+    description?: string | undefined;
+    website?: string | undefined;
+    logoUrl?: string | undefined;
+    sizeCategory?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
+    contactEmail?: string | undefined;
+    contactPhone?: string | undefined;
+    address?: {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    } | undefined;
+    billingEmail?: string | undefined;
+    accountOwnerId?: string | undefined;
+    stripeCustomerId?: string | undefined;
+    stripeProductId?: string | undefined;
+}, {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    name: string;
+    slug: string;
+    organizationType: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "business" | "ministry_network";
+    status?: "active" | "suspended" | "trial" | "cancelled" | undefined;
+    description?: string | undefined;
+    licenseType?: "individual" | "enterprise" | "team" | undefined;
+    website?: string | undefined;
+    logoUrl?: string | undefined;
+    sizeCategory?: "startup" | "small" | "medium" | "large" | "enterprise" | undefined;
+    contactEmail?: string | undefined;
+    contactPhone?: string | undefined;
+    address?: {
+        street?: string | undefined;
+        city?: string | undefined;
+        state?: string | undefined;
+        country?: string | undefined;
+        postalCode?: string | undefined;
+    } | undefined;
+    maxUsers?: number | undefined;
+    billingEmail?: string | undefined;
+    accountOwnerId?: string | undefined;
+    stripeCustomerId?: string | undefined;
+    stripeProductId?: string | undefined;
+}>;
 //# sourceMappingURL=organization.schema.d.ts.map

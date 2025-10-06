@@ -1,15 +1,15 @@
 'use client';
 
+import {
+  useAssessmentResponses,
+  useUserAssessment,
+} from '@/hooks/useAssessment';
 import { Alert, AlertDescription } from '@platform/ui/alert';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@platform/ui/card';
 import { Progress } from '@platform/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@platform/ui/tabs';
-import {
-  useAssessmentResponses,
-  useUserAssessment,
-} from '@/hooks/useAssessment';
 import {
   AlertCircle,
   ArrowLeft,
@@ -130,10 +130,10 @@ export default function AssessmentResultsPage() {
 
   if (isLoading) {
     return (
-      <div className='max-w-6xl mx-auto p-6'>
-        <div className='flex items-center justify-center h-64'>
-          <Loader2 className='h-8 w-8 animate-spin' />
-          <span className='ml-2'>Loading results...</span>
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="ml-2">Loading results...</span>
         </div>
       </div>
     );
@@ -141,9 +141,9 @@ export default function AssessmentResultsPage() {
 
   if (error || !userAssessment) {
     return (
-      <div className='max-w-6xl mx-auto p-6'>
-        <Alert variant='destructive'>
-          <AlertCircle className='h-4 w-4' />
+      <div className="max-w-6xl mx-auto p-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             Failed to load assessment results. Please try again.
           </AlertDescription>
@@ -154,15 +154,15 @@ export default function AssessmentResultsPage() {
 
   if (!userAssessment.completedAt) {
     return (
-      <div className='max-w-6xl mx-auto p-6'>
+      <div className="max-w-6xl mx-auto p-6">
         <Alert>
-          <Clock className='h-4 w-4' />
+          <Clock className="h-4 w-4" />
           <AlertDescription>
             This assessment is not yet completed. Please complete the assessment
             to view results.
           </AlertDescription>
         </Alert>
-        <div className='mt-4'>
+        <div className="mt-4">
           <Button
             onClick={() =>
               router.push(
@@ -203,88 +203,94 @@ export default function AssessmentResultsPage() {
     }));
 
   return (
-    <div className='max-w-6xl mx-auto p-6'>
+    <div className="max-w-6xl mx-auto p-6">
       {/* Header */}
-      <div className='mb-8'>
-        <div className='flex items-center justify-between mb-4'>
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
           <Button
-            variant='outline'
+            variant="outline"
             onClick={() => router.back()}
-            className='flex items-center'
+            className="flex items-center"
           >
-            <ArrowLeft className='h-4 w-4 mr-2' />
+            <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
-          <div className='flex gap-2'>
-            <Button variant='outline' onClick={handleShare}>
-              <Share2 className='h-4 w-4 mr-2' />
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handleShare}>
+              <Share2 className="h-4 w-4 mr-2" />
               Share
             </Button>
-            <Button variant='outline' onClick={handleDownload}>
-              <Download className='h-4 w-4 mr-2' />
+            <Button variant="outline" onClick={handleDownload}>
+              <Download className="h-4 w-4 mr-2" />
               Download
             </Button>
           </div>
         </div>
 
-        <div className='text-center'>
-          <h1 className='text-3xl font-bold text-gray-900 mb-2'>
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Assessment Results
           </h1>
-          <p className='text-gray-600 mb-4'>
+          <p className="text-gray-600 mb-4">
             Completed on{' '}
             {new Date(userAssessment.completedAt).toLocaleDateString()}
           </p>
-          <div className='flex items-center justify-center gap-4'>
+          <div className="flex items-center justify-center gap-4">
             <Badge className={`${leaderTier.bg} ${leaderTier.color} border-0`}>
-              <Trophy className='h-4 w-4 mr-1' />
+              <Trophy className="h-4 w-4 mr-1" />
               {leaderTier.tier} Leader
             </Badge>
-            <Badge variant='outline'>
-              <Clock className='h-4 w-4 mr-1' />
+            <Badge variant="outline">
+              <Clock className="h-4 w-4 mr-1" />
               {userAssessment.completionTime} minutes
             </Badge>
-            <Badge variant='outline'>
-              <CheckCircle className='h-4 w-4 mr-1' />
+            <Badge variant="outline">
+              <CheckCircle className="h-4 w-4 mr-1" />
               {userAssessment.totalScore}/{maxScore} points
             </Badge>
           </div>
         </div>
       </div>
 
-      <Tabs defaultValue='overview' className='space-y-6'>
-        <TabsList className='grid w-full grid-cols-4'>
-          <TabsTrigger value='overview'>Overview</TabsTrigger>
-          <TabsTrigger value='apest'>APEST Profile</TabsTrigger>
-          <TabsTrigger value='insights'>Insights</TabsTrigger>
-          <TabsTrigger value='recommendations'>Recommendations</TabsTrigger>
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="apest">APEST Profile</TabsTrigger>
+          <TabsTrigger value="insights">Insights</TabsTrigger>
+          <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
-        <TabsContent value='overview' className='space-y-6'>
+        <TabsContent value="overview" className="space-y-6">
           {/* Overall Score */}
           <Card>
             <CardHeader>
-              <CardTitle className='flex items-center'>
-                <BarChart3 className='h-5 w-5 mr-2' />
+              <CardTitle className="flex items-center">
+                <BarChart3 className="h-5 w-5 mr-2" />
                 Overall Assessment Score
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className='text-center space-y-4'>
-                <div className='text-4xl font-bold text-gray-900'>
+              <div className="text-center space-y-4">
+                <div className="text-4xl font-bold text-gray-900">
                   {userAssessment.totalScore}
                 </div>
-                <div className='text-lg text-gray-600'>
+                <div className="text-lg text-gray-600">
                   out of {maxScore} possible points
                 </div>
                 <Progress
-                  value={(userAssessment.totalScore / maxScore) * 100}
-                  className='w-full max-w-md mx-auto'
+                  value={
+                    userAssessment.totalScore
+                      ? (userAssessment.totalScore / maxScore) * 100
+                      : 0
+                  }
+                  className="w-full max-w-md mx-auto"
                 />
-                <div className='text-sm text-gray-500'>
-                  {Math.round((userAssessment.totalScore / maxScore) * 100)}% of
-                  maximum score
+                <div className="text-sm text-gray-500">
+                  {userAssessment.totalScore
+                    ? Math.round((userAssessment.totalScore / maxScore) * 100)
+                    : 0}
+                  % of maximum score
                 </div>
               </div>
             </CardContent>
@@ -296,24 +302,24 @@ export default function AssessmentResultsPage() {
               <CardTitle>Your APEST Profile</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className='grid grid-cols-1 md:grid-cols-5 gap-4'>
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 {sortedApestScores.map(({ dimension, score, percentage }) => {
                   const Icon = getApestIcon(dimension);
                   const color = getApestColor(dimension);
 
                   return (
-                    <div key={dimension} className='text-center space-y-2'>
+                    <div key={dimension} className="text-center space-y-2">
                       <div
                         className={`w-12 h-12 ${color} rounded-full flex items-center justify-center mx-auto`}
                       >
-                        <Icon className='h-6 w-6 text-white' />
+                        <Icon className="h-6 w-6 text-white" />
                       </div>
-                      <div className='text-sm font-medium capitalize'>
+                      <div className="text-sm font-medium capitalize">
                         {dimension}
                       </div>
-                      <div className='text-lg font-bold'>{score}</div>
-                      <Progress value={percentage} className='h-2' />
-                      <div className='text-xs text-gray-500'>
+                      <div className="text-lg font-bold">{score}</div>
+                      <Progress value={percentage} className="h-2" />
+                      <div className="text-xs text-gray-500">
                         {Math.round(percentage)}%
                       </div>
                     </div>
@@ -324,29 +330,29 @@ export default function AssessmentResultsPage() {
           </Card>
 
           {/* Primary Gifts */}
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle className='flex items-center'>
-                  <Star className='h-5 w-5 mr-2 text-yellow-500' />
+                <CardTitle className="flex items-center">
+                  <Star className="h-5 w-5 mr-2 text-yellow-500" />
                   Primary Gift
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {userAssessment.primaryGift && (
-                  <div className='text-center space-y-2'>
+                  <div className="text-center space-y-2">
                     <div
                       className={`w-16 h-16 ${getApestColor(userAssessment.primaryGift)} rounded-full flex items-center justify-center mx-auto`}
                     >
                       {(() => {
                         const Icon = getApestIcon(userAssessment.primaryGift);
-                        return <Icon className='h-8 w-8 text-white' />;
+                        return <Icon className="h-8 w-8 text-white" />;
                       })()}
                     </div>
-                    <div className='text-xl font-bold capitalize'>
+                    <div className="text-xl font-bold capitalize">
                       {userAssessment.primaryGift}
                     </div>
-                    <div className='text-sm text-gray-600'>
+                    <div className="text-sm text-gray-600">
                       {getApestDescription(userAssessment.primaryGift)}
                     </div>
                   </div>
@@ -356,26 +362,26 @@ export default function AssessmentResultsPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle className='flex items-center'>
-                  <TrendingUp className='h-5 w-5 mr-2 text-blue-500' />
+                <CardTitle className="flex items-center">
+                  <TrendingUp className="h-5 w-5 mr-2 text-blue-500" />
                   Secondary Gift
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {userAssessment.secondaryGift && (
-                  <div className='text-center space-y-2'>
+                  <div className="text-center space-y-2">
                     <div
                       className={`w-16 h-16 ${getApestColor(userAssessment.secondaryGift)} rounded-full flex items-center justify-center mx-auto`}
                     >
                       {(() => {
                         const Icon = getApestIcon(userAssessment.secondaryGift);
-                        return <Icon className='h-8 w-8 text-white' />;
+                        return <Icon className="h-8 w-8 text-white" />;
                       })()}
                     </div>
-                    <div className='text-xl font-bold capitalize'>
+                    <div className="text-xl font-bold capitalize">
                       {userAssessment.secondaryGift}
                     </div>
-                    <div className='text-sm text-gray-600'>
+                    <div className="text-sm text-gray-600">
                       {getApestDescription(userAssessment.secondaryGift)}
                     </div>
                   </div>
@@ -386,8 +392,8 @@ export default function AssessmentResultsPage() {
         </TabsContent>
 
         {/* APEST Profile Tab */}
-        <TabsContent value='apest' className='space-y-6'>
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+        <TabsContent value="apest" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sortedApestScores.map(({ dimension, score, percentage }) => {
               const Icon = getApestIcon(dimension);
               const color = getApestColor(dimension);
@@ -395,23 +401,23 @@ export default function AssessmentResultsPage() {
               return (
                 <Card key={dimension}>
                   <CardHeader>
-                    <CardTitle className='flex items-center'>
+                    <CardTitle className="flex items-center">
                       <div
                         className={`w-8 h-8 ${color} rounded-full flex items-center justify-center mr-3`}
                       >
-                        <Icon className='h-4 w-4 text-white' />
+                        <Icon className="h-4 w-4 text-white" />
                       </div>
-                      <span className='capitalize'>{dimension}</span>
+                      <span className="capitalize">{dimension}</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className='space-y-4'>
-                      <div className='text-center'>
-                        <div className='text-3xl font-bold'>{score}</div>
-                        <div className='text-sm text-gray-500'>Raw Score</div>
+                    <div className="space-y-4">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold">{score}</div>
+                        <div className="text-sm text-gray-500">Raw Score</div>
                       </div>
-                      <Progress value={percentage} className='h-3' />
-                      <div className='text-sm text-gray-600'>
+                      <Progress value={percentage} className="h-3" />
+                      <div className="text-sm text-gray-600">
                         {getApestDescription(dimension)}
                       </div>
                     </div>
@@ -423,21 +429,21 @@ export default function AssessmentResultsPage() {
         </TabsContent>
 
         {/* Insights Tab */}
-        <TabsContent value='insights' className='space-y-6'>
+        <TabsContent value="insights" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className='flex items-center'>
-                <Lightbulb className='h-5 w-5 mr-2' />
+              <CardTitle className="flex items-center">
+                <Lightbulb className="h-5 w-5 mr-2" />
                 AI Insights
               </CardTitle>
             </CardHeader>
             <CardContent>
               {userAssessment.aiInsights ? (
-                <div className='prose max-w-none'>
-                  <p className='text-gray-700'>{userAssessment.aiInsights}</p>
+                <div className="prose max-w-none">
+                  <p className="text-gray-700">{userAssessment.aiInsights}</p>
                 </div>
               ) : (
-                <p className='text-gray-500 italic'>
+                <p className="text-gray-500 italic">
                   No AI insights available for this assessment.
                 </p>
               )}
@@ -449,31 +455,31 @@ export default function AssessmentResultsPage() {
               <CardTitle>Assessment Statistics</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-                <div className='text-center'>
-                  <div className='text-2xl font-bold text-gray-900'>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">
                     {userAssessment.completionTime}
                   </div>
-                  <div className='text-sm text-gray-500'>
+                  <div className="text-sm text-gray-500">
                     Minutes to Complete
                   </div>
                 </div>
-                <div className='text-center'>
-                  <div className='text-2xl font-bold text-gray-900'>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">
                     {responses.length}
                   </div>
-                  <div className='text-sm text-gray-500'>
+                  <div className="text-sm text-gray-500">
                     Questions Answered
                   </div>
                 </div>
-                <div className='text-center'>
-                  <div className='text-2xl font-bold text-gray-900'>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">
                     {userAssessment.responseConsistency &&
                     typeof userAssessment.responseConsistency === 'number'
                       ? `${Math.round(userAssessment.responseConsistency * 100)}%`
                       : 'N/A'}
                   </div>
-                  <div className='text-sm text-gray-500'>
+                  <div className="text-sm text-gray-500">
                     Response Consistency
                   </div>
                 </div>
@@ -483,23 +489,23 @@ export default function AssessmentResultsPage() {
         </TabsContent>
 
         {/* Recommendations Tab */}
-        <TabsContent value='recommendations' className='space-y-6'>
+        <TabsContent value="recommendations" className="space-y-6">
           {userAssessment.personalizedRecommendations ? (
             <>
               <Card>
                 <CardHeader>
-                  <CardTitle className='flex items-center'>
-                    <Star className='h-5 w-5 mr-2 text-yellow-500' />
+                  <CardTitle className="flex items-center">
+                    <Star className="h-5 w-5 mr-2 text-yellow-500" />
                     Your Strengths
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className='space-y-2'>
+                  <ul className="space-y-2">
                     {userAssessment.personalizedRecommendations.strengths.map(
                       (strength: string, index: number) => (
-                        <li key={index} className='flex items-center'>
-                          <CheckCircle className='h-4 w-4 text-green-500 mr-2' />
-                          <span className='capitalize'>{strength}</span>
+                        <li key={index} className="flex items-center">
+                          <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                          <span className="capitalize">{strength}</span>
                         </li>
                       )
                     )}
@@ -509,18 +515,18 @@ export default function AssessmentResultsPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className='flex items-center'>
-                    <TrendingUp className='h-5 w-5 mr-2 text-blue-500' />
+                  <CardTitle className="flex items-center">
+                    <TrendingUp className="h-5 w-5 mr-2 text-blue-500" />
                     Growth Areas
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className='space-y-2'>
+                  <ul className="space-y-2">
                     {userAssessment.personalizedRecommendations.growthAreas.map(
                       (area: string, index: number) => (
-                        <li key={index} className='flex items-center'>
-                          <Target className='h-4 w-4 text-blue-500 mr-2' />
-                          <span className='capitalize'>{area}</span>
+                        <li key={index} className="flex items-center">
+                          <Target className="h-4 w-4 text-blue-500 mr-2" />
+                          <span className="capitalize">{area}</span>
                         </li>
                       )
                     )}
@@ -530,17 +536,17 @@ export default function AssessmentResultsPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className='flex items-center'>
-                    <Lightbulb className='h-5 w-5 mr-2 text-orange-500' />
+                  <CardTitle className="flex items-center">
+                    <Lightbulb className="h-5 w-5 mr-2 text-orange-500" />
                     Action Items
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className='space-y-2'>
+                  <ul className="space-y-2">
                     {userAssessment.personalizedRecommendations.actionItems.map(
                       (item: string, index: number) => (
-                        <li key={index} className='flex items-center'>
-                          <Zap className='h-4 w-4 text-orange-500 mr-2' />
+                        <li key={index} className="flex items-center">
+                          <Zap className="h-4 w-4 text-orange-500 mr-2" />
                           <span>{item}</span>
                         </li>
                       )
@@ -551,17 +557,17 @@ export default function AssessmentResultsPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className='flex items-center'>
-                    <BookOpen className='h-5 w-5 mr-2 text-green-500' />
+                  <CardTitle className="flex items-center">
+                    <BookOpen className="h-5 w-5 mr-2 text-green-500" />
                     Recommended Content
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className='space-y-2'>
+                  <ul className="space-y-2">
                     {userAssessment.personalizedRecommendations.contentRecommendations.map(
                       (content: string, index: number) => (
-                        <li key={index} className='flex items-center'>
-                          <BookOpen className='h-4 w-4 text-green-500 mr-2' />
+                        <li key={index} className="flex items-center">
+                          <BookOpen className="h-4 w-4 text-green-500 mr-2" />
                           <span>{content}</span>
                         </li>
                       )
@@ -572,12 +578,12 @@ export default function AssessmentResultsPage() {
             </>
           ) : (
             <Card>
-              <CardContent className='text-center py-8'>
-                <Lightbulb className='h-12 w-12 text-gray-400 mx-auto mb-4' />
-                <h3 className='text-lg font-medium text-gray-900 mb-2'>
+              <CardContent className="text-center py-8">
+                <Lightbulb className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
                   No Recommendations Available
                 </h3>
-                <p className='text-gray-600'>
+                <p className="text-gray-600">
                   Personalized recommendations are not available for this
                   assessment.
                 </p>
@@ -588,34 +594,34 @@ export default function AssessmentResultsPage() {
       </Tabs>
 
       {/* Next Steps */}
-      <Card className='mt-8'>
+      <Card className="mt-8">
         <CardHeader>
           <CardTitle>What's Next?</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Button
-              variant='outline'
+              variant="outline"
               onClick={() => router.push('/dashboard/assessment/select')}
-              className='h-auto p-4 flex flex-col items-center space-y-2'
+              className="h-auto p-4 flex flex-col items-center space-y-2"
             >
-              <BookOpen className='h-6 w-6' />
+              <BookOpen className="h-6 w-6" />
               <span>Take Another Assessment</span>
             </Button>
             <Button
-              variant='outline'
+              variant="outline"
               onClick={() => router.push('/dashboard/content')}
-              className='h-auto p-4 flex flex-col items-center space-y-2'
+              className="h-auto p-4 flex flex-col items-center space-y-2"
             >
-              <BookOpen className='h-6 w-6' />
+              <BookOpen className="h-6 w-6" />
               <span>Explore Content</span>
             </Button>
             <Button
-              variant='outline'
+              variant="outline"
               onClick={() => router.push('/dashboard/activity')}
-              className='h-auto p-4 flex flex-col items-center space-y-2'
+              className="h-auto p-4 flex flex-col items-center space-y-2"
             >
-              <TrendingUp className='h-6 w-6' />
+              <TrendingUp className="h-6 w-6" />
               <span>View Progress</span>
             </Button>
           </div>

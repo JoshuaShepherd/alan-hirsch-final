@@ -1,14 +1,9 @@
 import {
-  createPaginatedRouteHandler,
-  createQuerySchema,
-  createRouteHandler,
-} from '@platform/shared/api/route-handler';
-import {
   inviteOrganizationMemberRequestSchema,
   ministryUserProfileResponseSchema,
-} from '@platform/shared/contracts';
-import { organizationService } from '@platform/shared/services';
+} from '@platform/contracts';
 import { z } from 'zod';
+import { organizationService } from '../../../../../../../../lib/services';
 
 // ============================================================================
 // MINISTRY ORGANIZATION MEMBERS API ROUTES

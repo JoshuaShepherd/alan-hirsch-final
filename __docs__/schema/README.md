@@ -9,14 +9,16 @@ This directory contains comprehensive documentation for the Alan Hirsch platform
 - **[DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md)** - Main schema overview with ER diagram
 - **[RLS_POLICIES.md](./RLS_POLICIES.md)** - Detailed Row Level Security policies
 - **[TABLE_DETAILS.md](./TABLE_DETAILS.md)** - Comprehensive table documentation
+- **[SCHEMA_ALIGNMENT_CHANGES.md](./SCHEMA_ALIGNMENT_CHANGES.md)** - Recent schema alignment updates
 
 ### Quick Reference
 
-| File                 | Purpose                                     | Last Updated |
-| -------------------- | ------------------------------------------- | ------------ |
-| `DATABASE_SCHEMA.md` | Schema overview, statistics, and ER diagram | 2025-01-27   |
-| `RLS_POLICIES.md`    | All RLS policies with SQL and explanations  | 2025-01-27   |
-| `TABLE_DETAILS.md`   | Detailed column definitions and constraints | 2025-01-27   |
+| File                          | Purpose                                     | Last Updated |
+| ----------------------------- | ------------------------------------------- | ------------ |
+| `DATABASE_SCHEMA.md`          | Schema overview, statistics, and ER diagram | 2025-01-27   |
+| `RLS_POLICIES.md`             | All RLS policies with SQL and explanations  | 2025-01-27   |
+| `TABLE_DETAILS.md`            | Detailed column definitions and constraints | 2025-01-27   |
+| `SCHEMA_ALIGNMENT_CHANGES.md` | Recent schema alignment updates             | 2025-01-27   |
 
 ## Database Overview
 
@@ -96,6 +98,7 @@ Applied migrations:
 3. `20251002070403` - enable_rls_existing_tables
 4. `20251002090616` - create_assessment_system
 5. `20251003121947` - fix_missing_rls_policies
+6. `0004_schema_alignment_fixes` - Category A schema alignment updates
 
 ## Usage
 

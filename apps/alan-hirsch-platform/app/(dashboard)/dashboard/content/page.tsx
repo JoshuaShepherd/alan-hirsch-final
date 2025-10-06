@@ -5,7 +5,7 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 
 // Use DTO types from contracts instead of custom interface
-import type { ContentRowDTO } from '@platform/shared/contracts';
+import type { ContentRowDTO } from '@platform/contracts';
 
 export default async function ContentListPage() {
   const supabase = await createSupabaseServerClient();

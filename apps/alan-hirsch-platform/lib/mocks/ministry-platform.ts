@@ -1,19 +1,18 @@
 import { faker } from '@faker-js/faker';
 import {
-  ministryAssessmentSchema,
-  ministryMetricsSchema,
-  ministryOrganizationSchema,
-  ministrySearchSchema,
-  ministryUserProfileSchema,
-  organizationContextSchema,
-  organizationScopedRequestSchema,
-} from '@platform/shared/contracts';
-import {
+  // Ministry response schemas
   ministryAssessmentResponseSchema,
+  ministryAssessmentSchema,
   ministryDashboardResponseSchema,
+  ministryMetricsSchema,
   ministryOrganizationResponseSchema,
+  ministryOrganizationSchema,
   ministryUserProfileResponseSchema,
-} from '../contracts/ministry-platform.response';
+  // ministrySearchSchema, // TODO: Add this schema to contracts
+  ministryUserProfileSchema,
+  // organizationContextSchema, // TODO: Add this schema to contracts
+  organizationScopedRequestSchema,
+} from '@platform/contracts';
 
 // ============================================================================
 // MINISTRY PLATFORM MOCK DATA GENERATORS
@@ -446,7 +445,9 @@ export const generateMinistryAssessment = () => ({
 export const ministryPlatformFixtures = {
   // Organization Context
   validOrganizationContext: () =>
-    organizationContextSchema.parse(generateOrganizationContext()),
+    // TODO: Add organizationContextSchema to contracts
+    // organizationContextSchema.parse(generateOrganizationContext()),
+    generateOrganizationContext(), // Temporary fix
 
   // Ministry Metrics
   validMinistryMetrics: () =>
@@ -477,29 +478,28 @@ export const ministryPlatformFixtures = {
       ]),
     }),
 
-  validMinistrySearch: () =>
-    ministrySearchSchema.parse({
-      query: faker.lorem.words(2),
-      page: faker.number.int({ min: 1, max: 10 }),
-      limit: faker.number.int({ min: 1, max: 100 }),
-      ministryRoles: faker.helpers.arrayElements([
-        'senior_pastor',
-        'associate_pastor',
-        'church_planter',
-        'denominational_leader',
-      ]),
-      culturalContexts: faker.helpers.arrayElements([
-        'western',
-        'eastern',
-        'african',
-        'global',
-      ]),
-      theologicalThemes: faker.helpers.arrayElements([
-        'theology',
-        'missiology',
-        'ecclesiology',
-      ]),
-    }),
+  validMinistrySearch: () => ({
+    query: faker.lorem.words(2),
+    page: faker.number.int({ min: 1, max: 10 }),
+    limit: faker.number.int({ min: 1, max: 100 }),
+    ministryRoles: faker.helpers.arrayElements([
+      'senior_pastor',
+      'associate_pastor',
+      'church_planter',
+      'denominational_leader',
+    ]),
+    culturalContexts: faker.helpers.arrayElements([
+      'western',
+      'eastern',
+      'african',
+      'global',
+    ]),
+    theologicalThemes: faker.helpers.arrayElements([
+      'theology',
+      'missiology',
+      'ecclesiology',
+    ]),
+  }), // Temporary fix
 
   // Response Schemas
   validMinistryUserProfileResponse: () =>

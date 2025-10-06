@@ -1,4 +1,7 @@
-import type { Assessment, AssessmentQuestion, UserAssessment, AssessmentResponse } from '@/lib/contracts';
+type Assessment = any;
+type AssessmentQuestion = any;
+type AssessmentResponse = any;
+type UserAssessment = any;
 /**
  * Type guard to check if an array has at least one element
  */
@@ -47,4 +50,5 @@ export declare function safePropertyAccess<T, K extends keyof T>(obj: T | null |
  * Safe object property access with default value
  */
 export declare function safePropertyAccessWithDefault<T, K extends keyof T>(obj: T | null | undefined, key: K, defaultValue: T[K]): T[K];
+export {};
 //# sourceMappingURL=type-guards.d.ts.map

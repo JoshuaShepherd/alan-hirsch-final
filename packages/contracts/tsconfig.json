@@ -14,5 +14,13 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*"],
-  "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.spec.ts"]
+  "exclude": [
+    "dist",
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "../database/src/**/*",
+    "../shared/src/**/*",
+    "../ui/src/**/*"
+  ]
 }

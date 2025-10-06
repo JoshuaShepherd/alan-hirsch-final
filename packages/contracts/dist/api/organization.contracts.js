@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { OrganizationEntitySchema, OrganizationMembershipEntitySchema, } from '../entities/organization.schema';
+import { organizationEntitySchema as OrganizationEntitySchema, organizationMembershipEntitySchema as OrganizationMembershipEntitySchema, } from '../entities/organization.schema';
 import { AcceptOrganizationInvitationOperationSchema, CreateOrganizationMembershipOperationSchema, CreateOrganizationOperationSchema, GetOrganizationByIdOperationSchema, GetOrganizationBySubdomainOperationSchema, GetOrganizationDashboardOperationSchema, GetOrganizationMembersOperationSchema, GetOrganizationStatisticsOperationSchema, InviteUserToOrganizationOperationSchema, ListOrganizationMembershipsOperationSchema, ListOrganizationsOperationSchema, RejectOrganizationInvitationOperationSchema, RemoveUserFromOrganizationOperationSchema, SearchOrganizationsOperationSchema, UpdateOrganizationBrandingOperationSchema, UpdateOrganizationMembershipOperationSchema, UpdateOrganizationOperationSchema, UpdateOrganizationSettingsOperationSchema, } from '../operations/organization.operations';
 import { PaginatedResponseSchema } from './user.contracts';
 // ============================================================================

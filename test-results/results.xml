@@ -1,0 +1,188 @@
+<testsuites id="" name="" tests="5" failures="4" skipped="0" errors="0" time="8.392949">
+<testsuite name="example.spec.ts" timestamp="2025-10-04T13:22:33.186Z" hostname="chromium" tests="5" failures="4" skipped="0" time="25.005" errors="0">
+<testcase name="Homepage › should load the homepage" classname="example.spec.ts" time="6.106">
+<failure message="example.spec.ts:4:7 should load the homepage" type="FAILURE">
+<![CDATA[  [chromium] › example.spec.ts:4:7 › Homepage › should load the homepage ───────────────────────────
+
+    Error: expect(page).toHaveTitle(expected) failed
+
+    Expected pattern: /Alan Hirsch Digital Platform/
+    Received string:  "Academic Publishing Platform"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveTitle" with timeout 5000ms
+        9 × unexpected value "Academic Publishing Platform"
+
+
+       6 |     
+       7 |     // Check that the page loads successfully
+    >  8 |     await expect(page).toHaveTitle(/Alan Hirsch Digital Platform/);
+         |                        ^
+       9 |     
+      10 |     // Check for key elements
+      11 |     await expect(page.locator('h1')).toBeVisible();
+        at /Users/joshshepherd/Projects/alan-hirsch-final/tests/e2e/example.spec.ts:8:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/example-Homepage-should-load-the-homepage-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/example-Homepage-should-load-the-homepage-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/example-Homepage-should-load-the-homepage-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|example-Homepage-should-load-the-homepage-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|example-Homepage-should-load-the-homepage-chromium/video.webm]]
+
+[[ATTACHMENT|example-Homepage-should-load-the-homepage-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Homepage › should have working navigation" classname="example.spec.ts" time="0.735">
+</testcase>
+<testcase name="Authentication › should show login form" classname="example.spec.ts" time="6.06">
+<failure message="example.spec.ts:24:7 should show login form" type="FAILURE">
+<![CDATA[  [chromium] › example.spec.ts:24:7 › Authentication › should show login form ──────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  locator('input[type="email"]')
+    Expected: visible
+    Received: <element(s) not found>
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('input[type="email"]')
+
+
+      26 |     
+      27 |     // Check for login form elements
+    > 28 |     await expect(page.locator('input[type="email"]')).toBeVisible();
+         |                                                       ^
+      29 |     await expect(page.locator('input[type="password"]')).toBeVisible();
+      30 |     await expect(page.locator('button[type="submit"]')).toBeVisible();
+      31 |   });
+        at /Users/joshshepherd/Projects/alan-hirsch-final/tests/e2e/example.spec.ts:28:55
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/example-Authentication-should-show-login-form-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/example-Authentication-should-show-login-form-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/example-Authentication-should-show-login-form-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|example-Authentication-should-show-login-form-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|example-Authentication-should-show-login-form-chromium/video.webm]]
+
+[[ATTACHMENT|example-Authentication-should-show-login-form-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should show signup form" classname="example.spec.ts" time="6.043">
+<failure message="example.spec.ts:33:7 should show signup form" type="FAILURE">
+<![CDATA[  [chromium] › example.spec.ts:33:7 › Authentication › should show signup form ─────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  locator('input[type="email"]')
+    Expected: visible
+    Received: <element(s) not found>
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('input[type="email"]')
+
+
+      35 |     
+      36 |     // Check for signup form elements
+    > 37 |     await expect(page.locator('input[type="email"]')).toBeVisible();
+         |                                                       ^
+      38 |     await expect(page.locator('input[type="password"]')).toBeVisible();
+      39 |     await expect(page.locator('button[type="submit"]')).toBeVisible();
+      40 |   });
+        at /Users/joshshepherd/Projects/alan-hirsch-final/tests/e2e/example.spec.ts:37:55
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/example-Authentication-should-show-signup-form-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/example-Authentication-should-show-signup-form-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/example-Authentication-should-show-signup-form-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|example-Authentication-should-show-signup-form-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|example-Authentication-should-show-signup-form-chromium/video.webm]]
+
+[[ATTACHMENT|example-Authentication-should-show-signup-form-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Dashboard › should redirect to login when not authenticated" classname="example.spec.ts" time="6.061">
+<failure message="example.spec.ts:44:7 should redirect to login when not authenticated" type="FAILURE">
+<![CDATA[  [chromium] › example.spec.ts:44:7 › Dashboard › should redirect to login when not authenticated ──
+
+    Error: expect(page).toHaveURL(expected) failed
+
+    Expected pattern: /.*sign-in/
+    Received string:  "http://localhost:3002/dashboard"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveURL" with timeout 5000ms
+        9 × unexpected value "http://localhost:3002/dashboard"
+
+
+      46 |     
+      47 |     // Should redirect to login page
+    > 48 |     await expect(page).toHaveURL(/.*sign-in/);
+         |                        ^
+      49 |   });
+      50 | });
+      51 |
+        at /Users/joshshepherd/Projects/alan-hirsch-final/tests/e2e/example.spec.ts:48:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/example-Dashboard-should-r-86866-ogin-when-not-authenticated-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/example-Dashboard-should-r-86866-ogin-when-not-authenticated-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/example-Dashboard-should-r-86866-ogin-when-not-authenticated-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|example-Dashboard-should-r-86866-ogin-when-not-authenticated-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|example-Dashboard-should-r-86866-ogin-when-not-authenticated-chromium/video.webm]]
+
+[[ATTACHMENT|example-Dashboard-should-r-86866-ogin-when-not-authenticated-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

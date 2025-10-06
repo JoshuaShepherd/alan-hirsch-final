@@ -1,7 +1,7 @@
-import { db } from '@/lib/db/drizzle';
-import { NotFoundError, ValidationError } from '@/types';
+import { db } from '@platform/database';
 import { and, count, desc, eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
+import { ApiError, ErrorCode } from '../api/error-handler';
 // ============================================================================
 // BASE SERVICE CLASS
 // ============================================================================
@@ -24,7 +24,7 @@ export class BaseService {
         }
         catch (error) {
             if (error instanceof z.ZodError) {
-                throw new ValidationError(`Invalid ${this.entityName} data`, error.issues);
+                throw new ApiError(`Invalid ${this.entityName} data`, ErrorCode.VALIDATION_ERROR, 400);
             }
             throw this.handleDatabaseError(error, 'create');
         }
@@ -46,7 +46,7 @@ export class BaseService {
         }
         catch (error) {
             if (error instanceof z.ZodError) {
-                throw new ValidationError(`Invalid ${this.entityName} data from database`, error.issues);
+                throw new ApiError(`Invalid ${this.entityName} data from database`, ErrorCode.VALIDATION_ERROR, 400);
             }
             throw this.handleDatabaseError(error, 'findById');
         }
@@ -101,7 +101,7 @@ export class BaseService {
         }
         catch (error) {
             if (error instanceof z.ZodError) {
-                throw new ValidationError(`Invalid ${this.entityName} query or data`, error.issues);
+                throw new ApiError(`Invalid ${this.entityName} query or data`, ErrorCode.VALIDATION_ERROR, 400);
             }
             throw this.handleDatabaseError(error, 'findMany');
         }
@@ -116,7 +116,7 @@ export class BaseService {
             // Check if entity exists
             const existing = await this.findById(id);
             if (!existing) {
-                throw new NotFoundError(this.entityName, id);
+                throw new ApiError(`${this.entityName} not found`, ErrorCode.NOT_FOUND, 404);
             }
             // Update in database
             const [result] = await db
@@ -128,11 +128,11 @@ export class BaseService {
             return this.outputSchema.parse(result);
         }
         catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error instanceof ApiError) {
                 throw error;
             }
             if (error instanceof z.ZodError) {
-                throw new ValidationError(`Invalid ${this.entityName} update data`, error.issues);
+                throw new ApiError(`Invalid ${this.entityName} update data`, ErrorCode.VALIDATION_ERROR, 400);
             }
             throw this.handleDatabaseError(error, 'update');
         }
@@ -145,7 +145,7 @@ export class BaseService {
             // Check if entity exists
             const existing = await this.findById(id);
             if (!existing) {
-                throw new NotFoundError(this.entityName, id);
+                throw new ApiError(`${this.entityName} not found`, ErrorCode.NOT_FOUND, 404);
             }
             // Delete from database
             const result = await db
@@ -154,7 +154,7 @@ export class BaseService {
             return true;
         }
         catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error instanceof ApiError) {
                 throw error;
             }
             throw this.handleDatabaseError(error, 'delete');
@@ -168,7 +168,7 @@ export class BaseService {
             // Check if entity exists
             const existing = await this.findById(id);
             if (!existing) {
-                throw new NotFoundError(this.entityName, id);
+                throw new ApiError(`${this.entityName} not found`, ErrorCode.NOT_FOUND, 404);
             }
             // Check if table supports soft delete
             const tableColumns = Object.keys(this.table._.columns);
@@ -192,7 +192,7 @@ export class BaseService {
             return this.outputSchema.parse(result);
         }
         catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error instanceof ApiError) {
                 throw error;
             }
             throw this.handleDatabaseError(error, 'softDelete');
@@ -309,16 +309,16 @@ export class BaseService {
         if (error instanceof Error) {
             // Check for common database errors
             if (error.message.includes('duplicate key')) {
-                return new ValidationError(`${this.entityName} already exists`);
+                return new ApiError(`${this.entityName} already exists`, ErrorCode.CONFLICT, 409);
             }
             if (error.message.includes('foreign key')) {
-                return new ValidationError(`Invalid reference in ${this.entityName}`);
+                return new ApiError(`Invalid reference in ${this.entityName}`, ErrorCode.VALIDATION_ERROR, 400);
             }
             if (error.message.includes('not null')) {
-                return new ValidationError(`Required field missing in ${this.entityName}`);
+                return new ApiError(`Required field missing in ${this.entityName}`, ErrorCode.VALIDATION_ERROR, 400);
             }
         }
-        return new ValidationError(message);
+        return new ApiError(message, ErrorCode.INTERNAL_SERVER_ERROR, 500);
     }
     /**
      * Execute operations within a transaction
@@ -362,4 +362,8 @@ export const QueryFiltersSchema = z.object({
     offset: z.number().int().nonnegative().default(0),
     include: z.array(z.string()).optional(),
 });
+// ============================================================================
+// EXPORTS
+// ============================================================================
+// Export types - these are already defined above, no need to re-export
 //# sourceMappingURL=base.service.js.map

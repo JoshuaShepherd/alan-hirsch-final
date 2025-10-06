@@ -13,7 +13,7 @@ import {
 import { notFound } from 'next/navigation';
 
 // Use DTO types from contracts instead of custom interface
-import type { ContentRowDTO } from '@platform/shared/contracts';
+import type { ContentRowDTO } from '@platform/contracts';
 
 export default async function ContentViewPage({
   params,

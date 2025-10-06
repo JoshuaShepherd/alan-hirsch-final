@@ -5,22 +5,40 @@
 
 import { NextResponse } from 'next/server';
 import { ZodError } from 'zod';
-import {
-  ApiError,
-  AuthenticationError,
-  AuthorizationError,
-  NotFoundError,
-  ValidationError,
-} from './route-handler';
+import { ApiError } from './route-handler';
 
 // ============================================================================
 // ERROR TYPES
 // ============================================================================
 
+export class NotFoundError extends Error {
+  constructor(entityName: string, id?: string) {
+    super(`${entityName}${id ? ` with ID ${id}` : ''} not found`);
+    this.name = 'NotFoundError';
+  }
+}
+
+export class ValidationError extends Error {
+  constructor(message: string = 'Validation failed', details?: unknown[]) {
+    super(message);
+    this.name = 'ValidationError';
+    this.details = details;
+  }
+
+  details?: unknown[];
+}
+
+export class DatabaseError extends Error {
+  constructor(message: string = 'Database operation failed') {
+    super(message);
+    this.name = 'DatabaseError';
+  }
+}
+
 export interface ApiErrorResponse {
   error: string;
   code?: string;
-  details?: any;
+  details?: unknown;
   timestamp: string;
   path?: string;
 }
@@ -36,15 +54,17 @@ export interface ValidationErrorDetails {
 // ============================================================================
 
 export function handleApiError(
-  error: any,
+  error: unknown,
   request?: Request
 ): NextResponse<ApiErrorResponse> {
-  console.error('API Error:', {
-    message: error.message,
-    stack: error.stack,
-    url: request?.url,
-    method: request?.method,
-  });
+  if (process.env['NODE_ENV'] === 'development') {
+    console.error('API Error:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      url: request?.url,
+      method: request?.method,
+    });
+  }
 
   // Handle known API errors
   if (error instanceof ApiError) {
@@ -54,7 +74,9 @@ export function handleApiError(
         code: error.code,
         timestamp: new Date().toISOString(),
         path: request?.url,
-        ...(error instanceof ValidationError && { details: error.errors }),
+        ...(error instanceof ValidationError && {
+          details: (error as any).errors,
+        }),
       },
       { status: error.statusCode }
     );
@@ -69,7 +91,7 @@ export function handleApiError(
     return NextResponse.json(
       {
         error: validationError.message,
-        code: validationError.code,
+        code: 'VALIDATION_ERROR',
         details: formatValidationErrors(error.errors),
         timestamp: new Date().toISOString(),
         path: request?.url,
@@ -79,8 +101,9 @@ export function handleApiError(
   }
 
   // Handle database errors
-  if (error.code) {
-    switch (error.code) {
+  if (error && typeof error === 'object' && 'code' in error) {
+    const dbError = error as { code: string };
+    switch (dbError.code) {
       case '23505': // Unique constraint violation
         return NextResponse.json(
           {
@@ -139,7 +162,10 @@ export function handleApiError(
   }
 
   // Handle authentication errors
-  if (error.message?.includes('JWT') || error.message?.includes('token')) {
+  if (
+    error instanceof Error &&
+    (error.message.includes('JWT') || error.message.includes('token'))
+  ) {
     return NextResponse.json(
       {
         error: 'Authentication failed',
@@ -153,8 +179,9 @@ export function handleApiError(
 
   // Handle permission errors
   if (
-    error.message?.includes('permission') ||
-    error.message?.includes('unauthorized')
+    error instanceof Error &&
+    (error.message.includes('permission') ||
+      error.message.includes('unauthorized'))
   ) {
     return NextResponse.json(
       {
@@ -169,8 +196,9 @@ export function handleApiError(
 
   // Handle not found errors
   if (
-    error.message?.includes('not found') ||
-    error.message?.includes('does not exist')
+    error instanceof Error &&
+    (error.message.includes('not found') ||
+      error.message.includes('does not exist'))
   ) {
     return NextResponse.json(
       {
@@ -185,8 +213,9 @@ export function handleApiError(
 
   // Handle rate limiting errors
   if (
-    error.message?.includes('rate limit') ||
-    error.message?.includes('too many requests')
+    error instanceof Error &&
+    (error.message.includes('rate limit') ||
+      error.message.includes('too many requests'))
   ) {
     return NextResponse.json(
       {
@@ -201,8 +230,8 @@ export function handleApiError(
 
   // Handle timeout errors
   if (
-    error.message?.includes('timeout') ||
-    error.message?.includes('timed out')
+    error instanceof Error &&
+    (error.message.includes('timeout') || error.message.includes('timed out'))
   ) {
     return NextResponse.json(
       {
@@ -217,8 +246,8 @@ export function handleApiError(
 
   // Handle network errors
   if (
-    error.message?.includes('network') ||
-    error.message?.includes('connection')
+    error instanceof Error &&
+    (error.message.includes('network') || error.message.includes('connection'))
   ) {
     return NextResponse.json(
       {
@@ -261,7 +290,7 @@ function formatValidationErrors(
 // ERROR BOUNDARY WRAPPER
 // ============================================================================
 
-export function withErrorHandling<T extends any[], R>(
+export function withErrorHandling<T extends unknown[], R>(
   handler: (...args: T) => Promise<R>
 ) {
   return async (...args: T): Promise<R> => {
@@ -274,45 +303,35 @@ export function withErrorHandling<T extends any[], R>(
 }
 
 // ============================================================================
-// CUSTOM ERROR CLASSES
+// ADDITIONAL ERROR CLASSES
 // ============================================================================
 
-export class DatabaseError extends ApiError {
+export class BusinessLogicError extends Error {
   constructor(
     message: string,
-    public query?: string
+    public context?: unknown
   ) {
-    super(message, 500, 'DATABASE_ERROR');
-    this.name = 'DatabaseError';
-  }
-}
-
-export class BusinessLogicError extends ApiError {
-  constructor(
-    message: string,
-    public context?: any
-  ) {
-    super(message, 400, 'BUSINESS_LOGIC_ERROR');
+    super(message);
     this.name = 'BusinessLogicError';
   }
 }
 
-export class ExternalServiceError extends ApiError {
+export class ExternalServiceError extends Error {
   constructor(
     message: string,
     public service?: string
   ) {
-    super(message, 502, 'EXTERNAL_SERVICE_ERROR');
+    super(message);
     this.name = 'ExternalServiceError';
   }
 }
 
-export class RateLimitError extends ApiError {
+export class RateLimitError extends Error {
   constructor(
     message: string = 'Rate limit exceeded',
     public retryAfter?: number
   ) {
-    super(message, 429, 'RATE_LIMIT_ERROR');
+    super(message);
     this.name = 'RateLimitError';
   }
 }
@@ -321,24 +340,30 @@ export class RateLimitError extends ApiError {
 // ERROR LOGGING
 // ============================================================================
 
-export function logError(error: any, context?: any): void {
+export function logError(error: unknown, context?: unknown): void {
   const errorInfo = {
-    message: error.message,
-    stack: error.stack,
-    code: error.code,
-    statusCode: error.statusCode,
+    message: error instanceof Error ? error.message : 'Unknown error',
+    stack: error instanceof Error ? error.stack : undefined,
+    code:
+      error && typeof error === 'object' && 'code' in error
+        ? (error as { code: string }).code
+        : undefined,
+    statusCode:
+      error && typeof error === 'object' && 'statusCode' in error
+        ? (error as { statusCode: number }).statusCode
+        : undefined,
     context,
     timestamp: new Date().toISOString(),
   };
 
   // Log to console in development
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env['NODE_ENV'] === 'development') {
     console.error('Error Details:', errorInfo);
   }
 
   // In production, you might want to send to an error tracking service
   // like Sentry, LogRocket, or DataDog
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env['NODE_ENV'] === 'production') {
     // Example: Sentry.captureException(error, { extra: context });
     console.error('Production Error:', errorInfo);
   }
@@ -348,14 +373,4 @@ export function logError(error: any, context?: any): void {
 // EXPORTS
 // ============================================================================
 
-export {
-  ApiError,
-  AuthenticationError,
-  AuthorizationError,
-  BusinessLogicError,
-  DatabaseError,
-  ExternalServiceError,
-  NotFoundError,
-  RateLimitError,
-  ValidationError,
-};
+// All error classes are exported inline above

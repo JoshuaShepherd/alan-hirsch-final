@@ -1,9 +1,44 @@
-import { db } from '@/lib/db/drizzle';
-import { communities } from '@/lib/db/schema';
-import { newCommunitySchema, queryCommunitySchema, updateCommunitySchema, } from '@/src/lib/schemas/crud.schemas';
-import { databaseCommunitySchema } from '@/src/lib/schemas/database.schemas';
+// TODO: Implement community schemas in contracts package
+// import {
+//   createCommunitySchema as newCommunitySchema,
+//   communityQuerySchema as queryCommunitySchema,
+//   updateCommunitySchema,
+// } from '@platform/contracts/operations/community.operations';
+// import { communityEntitySchema as databaseCommunitySchema } from '@platform/contracts/entities/community.schema';
+// Temporary: Using basic Zod schemas until community schemas are implemented
+import { communities, db } from '@platform/database';
 import { and, desc, eq, sql } from 'drizzle-orm';
+import { z } from 'zod';
 import { BaseService } from './base.service';
+// Temporary schemas - replace with proper contracts when available
+const newCommunitySchema = z.object({
+    name: z.string().min(1).max(200),
+    description: z.string().max(1000).optional(),
+    slug: z.string().min(1).max(100),
+    organizationId: z.string().uuid(),
+    visibility: z.enum(['public', 'private', 'restricted']).default('public'),
+    settings: z.record(z.any()).optional(),
+});
+const queryCommunitySchema = z.object({
+    id: z.string().uuid().optional(),
+    slug: z.string().optional(),
+    organizationId: z.string().uuid().optional(),
+    visibility: z.enum(['public', 'private', 'restricted']).optional(),
+    limit: z.number().int().min(1).max(100).default(20),
+    offset: z.number().int().min(0).default(0),
+});
+const updateCommunitySchema = newCommunitySchema.partial();
+const databaseCommunitySchema = z.object({
+    id: z.string().uuid(),
+    name: z.string(),
+    description: z.string().nullable(),
+    slug: z.string(),
+    organizationId: z.string().uuid(),
+    visibility: z.enum(['public', 'private', 'restricted']),
+    settings: z.record(z.any()).nullable(),
+    createdAt: z.string().datetime(),
+    updatedAt: z.string().datetime(),
+});
 // ============================================================================
 // COMMUNITY SERVICE
 // ============================================================================
@@ -42,7 +77,7 @@ export class CommunityService extends BaseService {
                 .from(communities)
                 .where(eq(communities.status, 'active'))
                 .orderBy(communities.name);
-            return results.map(result => this.outputSchema.parse(result));
+            return results.map((result) => this.outputSchema.parse(result));
         }
         catch (error) {
             throw this.handleDatabaseError(error, 'findActive');
@@ -58,7 +93,7 @@ export class CommunityService extends BaseService {
                 .from(communities)
                 .where(and(eq(communities.visibility, 'public'), eq(communities.status, 'active')))
                 .orderBy(desc(communities.memberCount));
-            return results.map(result => this.outputSchema.parse(result));
+            return results.map((result) => this.outputSchema.parse(result));
         }
         catch (error) {
             throw this.handleDatabaseError(error, 'findPublic');
@@ -74,7 +109,7 @@ export class CommunityService extends BaseService {
                 .from(communities)
                 .where(and(eq(communities.communityType, communityType), eq(communities.status, 'active')))
                 .orderBy(communities.name);
-            return results.map(result => this.outputSchema.parse(result));
+            return results.map((result) => this.outputSchema.parse(result));
         }
         catch (error) {
             throw this.handleDatabaseError(error, 'findByType');
@@ -90,7 +125,7 @@ export class CommunityService extends BaseService {
                 .from(communities)
                 .where(and(eq(communities.focus, focus), eq(communities.status, 'active')))
                 .orderBy(desc(communities.memberCount));
-            return results.map(result => this.outputSchema.parse(result));
+            return results.map((result) => this.outputSchema.parse(result));
         }
         catch (error) {
             throw this.handleDatabaseError(error, 'findByFocus');
@@ -111,7 +146,7 @@ export class CommunityService extends BaseService {
             )`))
                 .orderBy(desc(communities.memberCount))
                 .limit(limit);
-            return results.map(result => this.outputSchema.parse(result));
+            return results.map((result) => this.outputSchema.parse(result));
         }
         catch (error) {
             throw this.handleDatabaseError(error, 'searchCommunities');
@@ -224,7 +259,7 @@ export class CommunityService extends BaseService {
                 .from(communities)
                 .groupBy(communities.visibility);
             const byVisibility = visibilityStats.reduce((acc, stat) => {
-                acc[stat.visibility] = stat.count;
+                acc[stat.visibility || 'unknown'] = stat.count;
                 return acc;
             }, {});
             return {
@@ -254,7 +289,7 @@ export class CommunityService extends BaseService {
                 .where(and(eq(communities.status, 'active'), eq(communities.visibility, 'public')))
                 .orderBy(desc(communities.memberCount))
                 .limit(limit);
-            return results.map(result => this.outputSchema.parse(result));
+            return results.map((result) => this.outputSchema.parse(result));
         }
         catch (error) {
             throw this.handleDatabaseError(error, 'getTrendingCommunities');

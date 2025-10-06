@@ -18,7 +18,7 @@ import {
   createPutHandler,
   validatePathParams,
 } from '../../../../../lib/api/route-handlers';
-import { toContentItemResponseDTO } from '../../../../../lib/mappers/content';
+import { toContentItemEntity } from '../../../../../lib/mappers/content';
 import { contentService } from '../../../../../lib/services';
 
 // ============================================================================
@@ -49,12 +49,12 @@ export const GET = createGetHandler({
     // Call service layer with validated input and tenant-scoped context
     const result = await contentService.findById(pathParams.id, context);
 
-    if (!result) {
+    if (!result.success || !result.data) {
       throw new NotFoundError('Content');
     }
 
     // Transform DB row to response DTO using mappers (egress validation)
-    return toContentItemResponseDTO(result);
+    return toContentItemEntity(result.data);
   },
 });
 
@@ -82,12 +82,12 @@ export const PUT = createPutHandler({
       context
     );
 
-    if (!result) {
+    if (!result.success || !result.data) {
       throw new NotFoundError('Content');
     }
 
     // Transform DB row to response DTO using mappers (egress validation)
-    return toContentItemResponseDTO(result);
+    return toContentItemEntity(result.data);
   },
 });
 
@@ -111,12 +111,12 @@ export const PATCH = createPatchHandler({
     // Call service layer with validated input and tenant-scoped context
     const result = await contentService.publish(pathParams.id, context);
 
-    if (!result) {
+    if (!result.success || !result.data) {
       throw new NotFoundError('Content');
     }
 
     // Transform DB row to response DTO using mappers (egress validation)
-    return toContentItemResponseDTO(result);
+    return toContentItemEntity(result.data);
   },
 });
 
@@ -141,9 +141,9 @@ export const DELETE = createDeleteHandler({
     );
 
     // Call service layer with validated input and tenant-scoped context
-    const success = await contentService.delete(pathParams.id, context);
+    const result = await contentService.delete(pathParams.id, context);
 
-    if (!success) {
+    if (!result.success) {
       throw new NotFoundError('Content');
     }
 

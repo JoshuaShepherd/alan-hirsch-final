@@ -1,128 +1,84 @@
-import { toContentCategoryResponseDTO } from '@/lib/mappers/content';
-import { contentCategories, hasResults, isDefined } from '@platform/database';
+// ============================================================================
+// CONTENT CATEGORIES API ROUTES
+// ============================================================================
+// Type-safe API endpoints for content category management with proper validation
+// Uses standardized route handlers with ingress/egress validation per alignment reference
+
 import {
-  createApiRoute,
-  createPaginatedApiRoute,
-  paginationInputSchema,
-} from '@platform/shared/api/utils';
+  ContentCategoryApiResponseSchema,
+  CreateContentCategoryApiRequestSchema,
+  ListContentCategoriesApiQuerySchema,
+} from '@platform/contracts';
 import {
-  contentCategoryResponseSchema,
-  newContentCategorySchema,
-  paginatedContentCategoryListResponseSchema,
-} from '@platform/shared/contracts';
-import { and, desc, eq, like, or, sql } from 'drizzle-orm';
-import { z } from 'zod';
+  createGetListHandler,
+  createPostHandler,
+} from '../../../../lib/api/route-handlers';
+import { toContentCategoryEntity } from '../../../../lib/mappers/content';
+import { contentCategoryService } from '../../../../lib/services';
 
-// Input schema for category search
-const categorySearchInputSchema = paginationInputSchema.extend({
-  search: z.string().optional(),
-  theologicalDiscipline: z
-    .enum([
-      'systematic',
-      'biblical',
-      'practical',
-      'historical',
-      'philosophical',
-      'missional',
-      'pastoral',
-    ])
-    .optional(),
-  parentId: z.string().uuid().optional(),
-  isActive: z.boolean().optional(),
-});
+// ============================================================================
+// GET /api/content/categories - List content categories with pagination and filtering
+// ============================================================================
 
-// GET /api/content/categories - Get content categories
-export const GET = createPaginatedApiRoute(
-  categorySearchInputSchema,
-  paginatedContentCategoryListResponseSchema,
-  async (input, { user, db }) => {
-    const { page, limit, search, theologicalDiscipline, parentId, isActive } =
-      input;
-    const offset = ((page || 1) - 1) * (limit || 20);
+export const GET = createGetListHandler({
+  inputSchema: ListContentCategoriesApiQuerySchema,
+  outputSchema: ContentCategoryApiResponseSchema,
+  requireAuth: true,
+  requirePermissions: ['read:content'],
+  handler: async (validatedQuery, context) => {
+    // Call service layer with validated input and tenant-scoped context
+    const result = await contentCategoryService.findMany(
+      validatedQuery,
+      context
+    );
 
-    // Build where conditions
-    const conditions = [];
-
-    // Add search condition
-    if (search) {
-      conditions.push(
-        or(
-          like(contentCategories.name, `%${search}%`),
-          like(contentCategories.description, `%${search}%`)
-        )!
+    // Check if service call was successful
+    if (!result.success || !result.data) {
+      throw new Error(
+        result.error?.message || 'Failed to fetch content categories'
       );
     }
 
-    // Add filter conditions
-    if (theologicalDiscipline) {
-      conditions.push(
-        eq(contentCategories.theologicalDiscipline, theologicalDiscipline)
-      );
-    }
-    if (parentId) {
-      conditions.push(eq(contentCategories.parentId, parentId));
-    }
-    if (isActive !== undefined) {
-      conditions.push(eq(contentCategories.isActive, isActive));
-    }
-
-    // Get categories
-    const categories = await db
-      .select()
-      .from(contentCategories)
-      .where(conditions.length > 0 ? and(...conditions) : undefined)
-      .orderBy(desc(contentCategories.createdAt))
-      .limit(limit || 20)
-      .offset(offset);
-
-    // Get total count
-    const countResult = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(contentCategories)
-      .where(conditions.length > 0 ? and(...conditions) : undefined);
-
-    const mappedCategories = categories.map(toContentCategoryResponseDTO);
-    const total = countResult[0]?.count ?? 0;
+    // Transform DB rows to response DTOs using mappers (egress validation)
+    const transformedData = result.data.map(category =>
+      toContentCategoryEntity(category)
+    );
 
     return {
-      items: mappedCategories,
+      data: transformedData,
       pagination: {
-        page: page || 1,
-        limit: limit || 20,
-        total,
-        totalPages: Math.ceil(total / (limit || 20)),
-        hasNext: (page || 1) < Math.ceil(total / (limit || 20)),
-        hasPrev: (page || 1) > 1,
+        page: result.pagination?.page || 1,
+        limit: result.pagination?.limit || 10,
+        total: result.pagination?.total || 0,
+        totalPages: result.pagination?.totalPages || 0,
+        hasNext: result.pagination?.hasMore || false,
+        hasPrev: (result.pagination?.page || 1) > 1,
       },
-      success: true,
     };
-  }
-);
+  },
+});
 
+// ============================================================================
 // POST /api/content/categories - Create new content category
-export const POST = createApiRoute(
-  newContentCategorySchema,
-  contentCategoryResponseSchema,
-  async (input, { user, db }) => {
-    const insertedCategories = await db
-      .insert(contentCategories)
-      .values({
-        ...input,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-      .returning();
+// ============================================================================
 
-    // Ensure we have a valid category
-    if (!hasResults(insertedCategories)) {
-      throw new Error('Failed to create content category');
+export const POST = createPostHandler({
+  inputSchema: CreateContentCategoryApiRequestSchema,
+  outputSchema: ContentCategoryApiResponseSchema,
+  requireAuth: true,
+  requirePermissions: ['create:content'],
+  handler: async (validatedData, context) => {
+    // Call service layer with validated input and tenant-scoped context
+    const result = await contentCategoryService.create(validatedData, context);
+
+    // Check if service call was successful
+    if (!result.success || !result.data) {
+      throw new Error(
+        result.error?.message || 'Failed to create content category'
+      );
     }
 
-    const newCategory = insertedCategories[0];
-    if (!isDefined(newCategory)) {
-      throw new Error('Failed to create content category');
-    }
-
-    return toContentCategoryResponseDTO(newCategory);
-  }
-);
+    // Transform DB row to response DTO using mappers (egress validation)
+    return toContentCategoryEntity(result.data);
+  },
+});

@@ -68,11 +68,11 @@ export declare function validateProps<T extends Record<string, any>>(schema: z.Z
     fallback?: React.ComponentType<{
         error: z.ZodError;
     }>;
-}): <P extends T>(Component: React.ComponentType<P>) => (props: T) => React.JSX.Element;
+}): <P extends T>(Component: React.ComponentType<T>) => (props: T) => React.JSX.Element;
 /**
  * Decorator for functional components with props validation
  */
-export declare function validateComponentProps<T extends Record<string, any>>(schema: z.ZodSchema<T>): <P extends T>(Component: React.ComponentType<P>) => (props: T) => React.JSX.Element;
+export declare function validateComponentProps<T extends Record<string, any>>(schema: z.ZodSchema<T>): <P extends T>(Component: React.ComponentType<T>) => (props: T) => React.JSX.Element;
 /**
  * Type-safe props builder utility
  */
@@ -85,17 +85,29 @@ export declare function createPropsBuilder<T extends Record<string, any>>(schema
         success: false;
         error: z.ZodError;
     };
-    extend: <U extends Record<string, any>>(extension: z.ZodSchema<U>) => {
-        build: (props: Partial<Record<string, any>>) => Record<string, any>;
-        safeBuild: (props: Partial<Record<string, any>>) => {
+    extend: <U extends Record<string, any>>(extension: z.ZodRawShape) => {
+        build: (props: Partial<{
+            [x: string]: any;
+        }>) => {
+            [x: string]: any;
+        };
+        safeBuild: (props: Partial<{
+            [x: string]: any;
+        }>) => {
             success: true;
-            data: Record<string, any>;
+            data: {
+                [x: string]: any;
+            };
         } | {
             success: false;
             error: z.ZodError;
         };
-        extend: <U_1 extends Record<string, any>>(extension: z.ZodType<U_1, z.ZodTypeDef, U_1>) => /*elided*/ any;
-        schema: z.ZodType<Record<string, any>, z.ZodTypeDef, Record<string, any>>;
+        extend: <U_1 extends Record<string, any>>(extension: z.ZodRawShape) => /*elided*/ any;
+        schema: z.ZodType<{
+            [x: string]: any;
+        }, z.ZodTypeDef, {
+            [x: string]: any;
+        }>;
     };
     schema: z.ZodType<T, z.ZodTypeDef, T>;
 };

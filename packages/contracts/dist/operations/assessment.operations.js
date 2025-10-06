@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AssessmentQuerySchema, CreateAssessmentQuestionSchema, CreateAssessmentResponseSchema, CreateAssessmentSchema, UpdateAssessmentQuestionSchema, UpdateAssessmentResponseSchema, UpdateAssessmentSchema, UserAssessmentQuerySchema, } from '../entities/assessment.schema';
+import { assessmentQuerySchema as AssessmentQuerySchema, createAssessmentQuestionSchema as CreateAssessmentQuestionSchema, createAssessmentResponseSchema as CreateAssessmentResponseSchema, createAssessmentSchema as CreateAssessmentSchema, updateAssessmentQuestionSchema as UpdateAssessmentQuestionSchema, updateAssessmentResponseSchema as UpdateAssessmentResponseSchema, updateAssessmentSchema as UpdateAssessmentSchema, userAssessmentQuerySchema as UserAssessmentQuerySchema, } from '../entities/assessment.schema';
 // ============================================================================
 // ASSESSMENT OPERATIONS - DERIVED FROM ENTITY SCHEMAS
 // ============================================================================
@@ -297,4 +297,15 @@ export const GetUserAssessmentInsightsOperationSchema = z.object({
     include_comparisons: z.boolean().default(false),
     include_trends: z.boolean().default(false),
 });
+// ============================================================================
+// SCHEMA ALIASES FOR BACKWARD COMPATIBILITY
+// ============================================================================
+// Export the schemas that the shared package is looking for
+export const createAssessmentQuestionSchema = CreateAssessmentQuestionOperationSchema;
+export const createAssessmentResponseSchema = CreateAssessmentResponseOperationSchema;
+export const createAssessmentSchema = CreateAssessmentOperationSchema;
+export const createUserAssessmentSchema = StartUserAssessmentOperationSchema;
+export const assessmentQuestionQuerySchema = GetAssessmentByIdOperationSchema;
+export const assessmentResponseQuerySchema = GetUserAssessmentOperationSchema;
+export const assessmentQuerySchema = ListAssessmentsOperationSchema;
 //# sourceMappingURL=assessment.operations.js.map

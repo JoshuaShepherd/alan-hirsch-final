@@ -122,7 +122,7 @@ export const GET = createGetHandler({
         metrics: {
           responseTime,
           uptime: process.uptime(),
-          version: process.env.npm_package_version || '1.0.0',
+          version: process.env['npm_package_version'] || '1.0.0',
         },
       };
     } catch (error) {
@@ -156,7 +156,7 @@ export const GET = createGetHandler({
         metrics: {
           responseTime,
           uptime: process.uptime(),
-          version: process.env.npm_package_version || '1.0.0',
+          version: process.env['npm_package_version'] || '1.0.0',
         },
       };
     }
@@ -203,8 +203,8 @@ async function checkCache(): Promise<z.infer<typeof ServiceHealthSchema>> {
 
   try {
     const cacheService = new CacheService(
-      process.env.UPSTASH_REDIS_REST_URL || '',
-      process.env.UPSTASH_REDIS_REST_TOKEN || ''
+      process.env['UPSTASH_REDIS_REST_URL'] || '',
+      process.env['UPSTASH_REDIS_REST_TOKEN'] || ''
     );
 
     const health = await cacheService.getHealth();
@@ -238,8 +238,8 @@ async function checkAuth(): Promise<z.infer<typeof ServiceHealthSchema>> {
 
   try {
     // Check if Supabase auth service is accessible
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseUrl = process.env['NEXT_PUBLIC_SUPABASE_URL'];
+    const supabaseKey = process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'];
 
     if (!supabaseUrl || !supabaseKey) {
       throw new Error('Supabase configuration missing');
@@ -295,8 +295,8 @@ async function checkStorage(): Promise<z.infer<typeof ServiceHealthSchema>> {
 
   try {
     // Check if Supabase storage is accessible
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseUrl = process.env['NEXT_PUBLIC_SUPABASE_URL'];
+    const supabaseKey = process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'];
 
     if (!supabaseUrl || !supabaseKey) {
       throw new Error('Supabase configuration missing');

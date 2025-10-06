@@ -1,3 +1,4 @@
+import { aiContentJobResponseSchema, aiConversationResponseSchema, aiCrossReferenceSuggestionResponseSchema, aiMessageResponseSchema, paginatedAiContentJobListResponseSchema, paginatedAiConversationListResponseSchema, paginatedAiCrossReferenceSuggestionListResponseSchema, paginatedAiMessageListResponseSchema, paginatedTheologicalConceptListResponseSchema, theologicalConceptResponseSchema, } from '../contracts/ai.response';
 /**
  * AI System Mappers - Convert Drizzle rows to UI-friendly DTOs
  *
@@ -78,7 +79,7 @@ function formatApestRelevance(apestRelevance) {
  * Map AiConversationRow to AiConversationResponse
  */
 export function toAiConversationResponseDTO(row) {
-    return {
+    const response = {
         id: row.id,
         userId: row.userId,
         // Conversation Classification
@@ -119,12 +120,19 @@ export function toAiConversationResponseDTO(row) {
         updatedAt: row.updatedAt.toISOString(),
         completedAt: row.completedAt?.toISOString() ?? null,
     };
+    // Validate with safeParse
+    const validation = aiConversationResponseSchema.safeParse(response);
+    if (!validation.success) {
+        console.error('AI conversation response validation failed:', validation.error);
+        throw new Error('Invalid AI conversation response data');
+    }
+    return validation.data;
 }
 /**
  * Map AiMessageRow to AiMessageResponse
  */
 export function toAiMessageResponseDTO(row) {
-    return {
+    const response = {
         id: row.id,
         conversationId: row.conversationId,
         // Message Content
@@ -158,12 +166,19 @@ export function toAiMessageResponseDTO(row) {
         createdAt: row.createdAt.toISOString(),
         updatedAt: row.updatedAt.toISOString(),
     };
+    // Validate with safeParse
+    const validation = aiMessageResponseSchema.safeParse(response);
+    if (!validation.success) {
+        console.error('AI message response validation failed:', validation.error);
+        throw new Error('Invalid AI message response data');
+    }
+    return validation.data;
 }
 /**
  * Map AiContentJobRow to AiContentJobResponse
  */
 export function toAiContentJobResponseDTO(row) {
-    return {
+    const response = {
         id: row.id,
         contentId: row.contentId,
         userId: row.userId,
@@ -205,12 +220,19 @@ export function toAiContentJobResponseDTO(row) {
         completedAt: row.completedAt?.toISOString() ?? null,
         updatedAt: row.updatedAt.toISOString(),
     };
+    // Validate with safeParse
+    const validation = aiContentJobResponseSchema.safeParse(response);
+    if (!validation.success) {
+        console.error('AI content job response validation failed:', validation.error);
+        throw new Error('Invalid AI content job response data');
+    }
+    return validation.data;
 }
 /**
  * Map AiCrossReferenceSuggestionRow to AiCrossReferenceSuggestionResponse
  */
 export function toAiCrossReferenceSuggestionResponseDTO(row, sourceContent, targetContent) {
-    return {
+    const response = {
         id: row.id,
         sourceContentId: row.sourceContentId,
         targetContentId: row.targetContentId,
@@ -261,12 +283,19 @@ export function toAiCrossReferenceSuggestionResponseDTO(row, sourceContent, targ
         reviewedAt: row.reviewedAt?.toISOString() ?? null,
         implementedAt: row.implementedAt?.toISOString() ?? null,
     };
+    // Validate with safeParse
+    const validation = aiCrossReferenceSuggestionResponseSchema.safeParse(response);
+    if (!validation.success) {
+        console.error('AI cross-reference suggestion response validation failed:', validation.error);
+        throw new Error('Invalid AI cross-reference suggestion response data');
+    }
+    return validation.data;
 }
 /**
  * Map TheologicalConceptRow to TheologicalConceptResponse
  */
 export function toTheologicalConceptResponseDTO(row) {
-    return {
+    const response = {
         id: row.id,
         name: row.name,
         slug: row.slug,
@@ -315,13 +344,20 @@ export function toTheologicalConceptResponseDTO(row) {
         createdAt: row.createdAt.toISOString(),
         updatedAt: row.updatedAt.toISOString(),
     };
+    // Validate with safeParse
+    const validation = theologicalConceptResponseSchema.safeParse(response);
+    if (!validation.success) {
+        console.error('Theological concept response validation failed:', validation.error);
+        throw new Error('Invalid theological concept response data');
+    }
+    return validation.data;
 }
 /**
  * Map array of AiConversationRow to PaginatedAiConversationListResponse
  */
 export function toPaginatedAiConversationListResponseDTO(conversations, pagination) {
     const totalPages = Math.ceil(pagination.total / pagination.limit);
-    return {
+    const response = {
         items: conversations.map(toAiConversationResponseDTO),
         pagination: {
             page: pagination.page,
@@ -334,13 +370,20 @@ export function toPaginatedAiConversationListResponseDTO(conversations, paginati
         success: true,
         message: undefined,
     };
+    // Validate with safeParse
+    const validation = paginatedAiConversationListResponseSchema.safeParse(response);
+    if (!validation.success) {
+        console.error('Paginated AI conversation list response validation failed:', validation.error);
+        throw new Error('Invalid paginated AI conversation list response data');
+    }
+    return validation.data;
 }
 /**
  * Map array of AiMessageRow to PaginatedAiMessageListResponse
  */
 export function toPaginatedAiMessageListResponseDTO(messages, pagination) {
     const totalPages = Math.ceil(pagination.total / pagination.limit);
-    return {
+    const response = {
         items: messages.map(toAiMessageResponseDTO),
         pagination: {
             page: pagination.page,
@@ -353,13 +396,20 @@ export function toPaginatedAiMessageListResponseDTO(messages, pagination) {
         success: true,
         message: undefined,
     };
+    // Validate with safeParse
+    const validation = paginatedAiMessageListResponseSchema.safeParse(response);
+    if (!validation.success) {
+        console.error('Paginated AI message list response validation failed:', validation.error);
+        throw new Error('Invalid paginated AI message list response data');
+    }
+    return validation.data;
 }
 /**
  * Map array of AiContentJobRow to PaginatedAiContentJobListResponse
  */
 export function toPaginatedAiContentJobListResponseDTO(jobs, pagination) {
     const totalPages = Math.ceil(pagination.total / pagination.limit);
-    return {
+    const response = {
         items: jobs.map(toAiContentJobResponseDTO),
         pagination: {
             page: pagination.page,
@@ -372,13 +422,20 @@ export function toPaginatedAiContentJobListResponseDTO(jobs, pagination) {
         success: true,
         message: undefined,
     };
+    // Validate with safeParse
+    const validation = paginatedAiContentJobListResponseSchema.safeParse(response);
+    if (!validation.success) {
+        console.error('Paginated AI content job list response validation failed:', validation.error);
+        throw new Error('Invalid paginated AI content job list response data');
+    }
+    return validation.data;
 }
 /**
  * Map array of AiCrossReferenceSuggestionRow to PaginatedAiCrossReferenceSuggestionListResponse
  */
 export function toPaginatedAiCrossReferenceSuggestionListResponseDTO(suggestions, pagination) {
     const totalPages = Math.ceil(pagination.total / pagination.limit);
-    return {
+    const response = {
         items: suggestions.map(({ suggestion, sourceContent, targetContent }) => toAiCrossReferenceSuggestionResponseDTO(suggestion, sourceContent, targetContent)),
         pagination: {
             page: pagination.page,
@@ -391,13 +448,20 @@ export function toPaginatedAiCrossReferenceSuggestionListResponseDTO(suggestions
         success: true,
         message: undefined,
     };
+    // Validate with safeParse
+    const validation = paginatedAiCrossReferenceSuggestionListResponseSchema.safeParse(response);
+    if (!validation.success) {
+        console.error('Paginated AI cross-reference suggestion list response validation failed:', validation.error);
+        throw new Error('Invalid paginated AI cross-reference suggestion list response data');
+    }
+    return validation.data;
 }
 /**
  * Map array of TheologicalConceptRow to PaginatedTheologicalConceptListResponse
  */
 export function toPaginatedTheologicalConceptListResponseDTO(concepts, pagination) {
     const totalPages = Math.ceil(pagination.total / pagination.limit);
-    return {
+    const response = {
         items: concepts.map(toTheologicalConceptResponseDTO),
         pagination: {
             page: pagination.page,
@@ -410,5 +474,12 @@ export function toPaginatedTheologicalConceptListResponseDTO(concepts, paginatio
         success: true,
         message: undefined,
     };
+    // Validate with safeParse
+    const validation = paginatedTheologicalConceptListResponseSchema.safeParse(response);
+    if (!validation.success) {
+        console.error('Paginated theological concept list response validation failed:', validation.error);
+        throw new Error('Invalid paginated theological concept list response data');
+    }
+    return validation.data;
 }
 //# sourceMappingURL=ai.js.map

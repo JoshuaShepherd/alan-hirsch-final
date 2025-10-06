@@ -14,12 +14,17 @@ export async function getCommunityById(communityId, context) {
     const conditions = [eq(communities.id, communityId)];
     // Add context-based filtering for private communities
     if (context.userId && context.role !== 'admin') {
-        conditions.push(or(eq(communities.visibility, 'public'), sql `EXISTS (
-          SELECT 1 FROM community_memberships
-          WHERE community_id = ${communityId}
-          AND user_id = ${context.userId}
-          AND status = 'active'
-        )`));
+        const publicCondition = eq(communities.visibility, 'public');
+        const memberCondition = sql `EXISTS (
+      SELECT 1 FROM community_memberships
+      WHERE community_id = ${communityId}
+      AND user_id = ${context.userId}
+      AND status = 'active'
+    )`;
+        const combinedCondition = or(publicCondition, memberCondition);
+        if (combinedCondition) {
+            conditions.push(combinedCondition);
+        }
     }
     const result = await db
         .select()
@@ -35,12 +40,17 @@ export async function getCommunityBySlug(slug, context) {
     const conditions = [eq(communities.slug, slug)];
     // Add context-based filtering for private communities
     if (context.userId && context.role !== 'admin') {
-        conditions.push(or(eq(communities.visibility, 'public'), sql `EXISTS (
-          SELECT 1 FROM community_memberships
-          WHERE community_id = communities.id
-          AND user_id = ${context.userId}
-          AND status = 'active'
-        )`));
+        const publicCondition = eq(communities.visibility, 'public');
+        const memberCondition = sql `EXISTS (
+      SELECT 1 FROM community_memberships
+      WHERE community_id = communities.id
+      AND user_id = ${context.userId}
+      AND status = 'active'
+    )`;
+        const combinedCondition = or(publicCondition, memberCondition);
+        if (combinedCondition) {
+            conditions.push(combinedCondition);
+        }
     }
     const result = await db
         .select()
@@ -282,10 +292,7 @@ export async function getCommunityMembers(communityId, context, options = {}) {
         conditions.push(eq(communityMemberships.role, role));
     }
     const results = await db
-        .select({
-        ...userProfiles,
-        membership: communityMemberships,
-    })
+        .select()
         .from(userProfiles)
         .innerJoin(communityMemberships, eq(userProfiles.id, communityMemberships.userId))
         .where(and(...conditions))
@@ -522,10 +529,11 @@ export async function updateCommunityPost(postId, updates, context) {
         throw new Error('Post not found');
     }
     // Check if user is the author or has admin permissions
-    if (existingPost[0].authorId !== context.userId && context.role !== 'admin') {
-        const community = await getCommunityById(existingPost[0].communityId, context);
+    if (existingPost[0]['authorId'] !== context.userId &&
+        context.role !== 'admin') {
+        const community = await getCommunityById(existingPost[0]['communityId'], context);
         if (community?.createdBy !== context.userId) {
-            const membership = await getCommunityMembership(existingPost[0].communityId, context.userId, context);
+            const membership = await getCommunityMembership(existingPost[0]['communityId'], context.userId, context);
             if (!membership || membership.role !== 'admin') {
                 throw new Error('Insufficient permissions to update post');
             }
@@ -554,10 +562,11 @@ export async function deleteCommunityPost(postId, context) {
         throw new Error('Post not found');
     }
     // Check if user is the author or has admin permissions
-    if (existingPost[0].authorId !== context.userId && context.role !== 'admin') {
-        const community = await getCommunityById(existingPost[0].communityId, context);
+    if (existingPost[0]['authorId'] !== context.userId &&
+        context.role !== 'admin') {
+        const community = await getCommunityById(existingPost[0]['communityId'], context);
         if (community?.createdBy !== context.userId) {
-            const membership = await getCommunityMembership(existingPost[0].communityId, context.userId, context);
+            const membership = await getCommunityMembership(existingPost[0]['communityId'], context.userId, context);
             if (!membership || membership.role !== 'admin') {
                 throw new Error('Insufficient permissions to delete post');
             }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useUserAssessments } from '@/hooks/useAssessment';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@platform/ui/card';
@@ -11,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@platform/ui/select';
-import { useUserAssessments } from '@/hooks/useAssessment';
 import {
   AlertCircle,
   BarChart3,
@@ -51,7 +51,7 @@ export default function AssessmentResultsPage() {
     isLoading,
     error,
   } = useUserAssessments(filters);
-  const userAssessments = userAssessmentsResponse?.items?.data || [];
+  const userAssessments = userAssessmentsResponse || [];
 
   const getAssessmentTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
@@ -99,7 +99,7 @@ export default function AssessmentResultsPage() {
   };
 
   // Filter assessments by search term
-  const filteredAssessments = userAssessments.filter(assessment => {
+  const filteredAssessments = userAssessments.filter((assessment: any) => {
     if (!searchTerm) return true;
     const searchLower = searchTerm.toLowerCase();
     return (
@@ -113,17 +113,19 @@ export default function AssessmentResultsPage() {
   });
 
   // Separate completed and incomplete assessments
-  const completedAssessments = filteredAssessments.filter(ua => ua.completedAt);
+  const completedAssessments = filteredAssessments.filter(
+    (ua: any) => ua.completedAt
+  );
   const incompleteAssessments = filteredAssessments.filter(
-    ua => !ua.completedAt
+    (ua: any) => !ua.completedAt
   );
 
   if (isLoading) {
     return (
-      <div className='max-w-6xl mx-auto p-6'>
-        <div className='flex items-center justify-center h-64'>
-          <Loader2 className='h-8 w-8 animate-spin' />
-          <span className='ml-2'>Loading your assessments...</span>
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="ml-2">Loading your assessments...</span>
         </div>
       </div>
     );
@@ -131,90 +133,90 @@ export default function AssessmentResultsPage() {
 
   if (error) {
     return (
-      <div className='max-w-6xl mx-auto p-6'>
-        <div className='flex items-center justify-center h-64'>
-          <AlertCircle className='h-8 w-8 text-red-500' />
-          <span className='ml-2 text-red-500'>Failed to load assessments</span>
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="flex items-center justify-center h-64">
+          <AlertCircle className="h-8 w-8 text-red-500" />
+          <span className="ml-2 text-red-500">Failed to load assessments</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className='max-w-6xl mx-auto p-6'>
+    <div className="max-w-6xl mx-auto p-6">
       {/* Header */}
-      <div className='mb-8'>
-        <h1 className='text-3xl font-bold text-gray-900 mb-2'>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
           Your Assessment Results
         </h1>
-        <p className='text-gray-600'>
+        <p className="text-gray-600">
           Review your completed assessments and track your development progress.
         </p>
       </div>
 
       {/* Filters */}
-      <Card className='mb-6'>
+      <Card className="mb-6">
         <CardHeader>
-          <CardTitle className='flex items-center'>
-            <Filter className='mr-2 h-5 w-5' />
+          <CardTitle className="flex items-center">
+            <Filter className="mr-2 h-5 w-5" />
             Filter Results
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Search */}
-            <div className='space-y-2'>
-              <label className='text-sm font-medium'>Search</label>
-              <div className='relative'>
-                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Search</label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
-                  placeholder='Search assessments...'
+                  placeholder="Search assessments..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  className='pl-10'
+                  className="pl-10"
                 />
               </div>
             </div>
 
             {/* Assessment Type */}
-            <div className='space-y-2'>
-              <label className='text-sm font-medium'>Type</label>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Type</label>
               <Select value={selectedType} onValueChange={setSelectedType}>
                 <SelectTrigger>
-                  <SelectValue placeholder='All types' />
+                  <SelectValue placeholder="All types" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value=''>All types</SelectItem>
-                  <SelectItem value='apest'>APEST</SelectItem>
-                  <SelectItem value='mdna'>MDNA</SelectItem>
-                  <SelectItem value='cultural_intelligence'>
+                  <SelectItem value="">All types</SelectItem>
+                  <SelectItem value="apest">APEST</SelectItem>
+                  <SelectItem value="mdna">MDNA</SelectItem>
+                  <SelectItem value="cultural_intelligence">
                     Cultural Intelligence
                   </SelectItem>
-                  <SelectItem value='leadership_style'>
+                  <SelectItem value="leadership_style">
                     Leadership Style
                   </SelectItem>
-                  <SelectItem value='spiritual_gifts'>
+                  <SelectItem value="spiritual_gifts">
                     Spiritual Gifts
                   </SelectItem>
-                  <SelectItem value='other'>Other</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {/* Completion Status */}
-            <div className='space-y-2'>
-              <label className='text-sm font-medium'>Status</label>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Status</label>
               <Select
                 value={completedFilter}
                 onValueChange={setCompletedFilter}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder='All assessments' />
+                  <SelectValue placeholder="All assessments" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='all'>All assessments</SelectItem>
-                  <SelectItem value='completed'>Completed only</SelectItem>
-                  <SelectItem value='incomplete'>Incomplete only</SelectItem>
+                  <SelectItem value="all">All assessments</SelectItem>
+                  <SelectItem value="completed">Completed only</SelectItem>
+                  <SelectItem value="incomplete">Incomplete only</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -224,68 +226,70 @@ export default function AssessmentResultsPage() {
 
       {/* Statistics */}
       {completedAssessments.length > 0 && (
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-4 mb-8'>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <Card>
-            <CardContent className='p-4'>
-              <div className='flex items-center'>
-                <CheckCircle className='h-8 w-8 text-green-500 mr-3' />
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <CheckCircle className="h-8 w-8 text-green-500 mr-3" />
                 <div>
-                  <div className='text-2xl font-bold'>
+                  <div className="text-2xl font-bold">
                     {completedAssessments.length}
                   </div>
-                  <div className='text-sm text-gray-500'>Completed</div>
+                  <div className="text-sm text-gray-500">Completed</div>
                 </div>
               </div>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className='p-4'>
-              <div className='flex items-center'>
-                <Clock className='h-8 w-8 text-orange-500 mr-3' />
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <Clock className="h-8 w-8 text-orange-500 mr-3" />
                 <div>
-                  <div className='text-2xl font-bold'>
+                  <div className="text-2xl font-bold">
                     {incompleteAssessments.length}
                   </div>
-                  <div className='text-sm text-gray-500'>In Progress</div>
+                  <div className="text-sm text-gray-500">In Progress</div>
                 </div>
               </div>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className='p-4'>
-              <div className='flex items-center'>
-                <Trophy className='h-8 w-8 text-yellow-500 mr-3' />
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <Trophy className="h-8 w-8 text-yellow-500 mr-3" />
                 <div>
-                  <div className='text-2xl font-bold'>
+                  <div className="text-2xl font-bold">
                     {completedAssessments.length > 0
                       ? getLeaderTier(
                           Math.max(
-                            ...completedAssessments.map(a => a.totalScore || 0)
+                            ...completedAssessments.map(
+                              (a: any) => a.totalScore || 0
+                            )
                           )
                         ).tier
                       : 'N/A'}
                   </div>
-                  <div className='text-sm text-gray-500'>Highest Tier</div>
+                  <div className="text-sm text-gray-500">Highest Tier</div>
                 </div>
               </div>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className='p-4'>
-              <div className='flex items-center'>
-                <BarChart3 className='h-8 w-8 text-blue-500 mr-3' />
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <BarChart3 className="h-8 w-8 text-blue-500 mr-3" />
                 <div>
-                  <div className='text-2xl font-bold'>
+                  <div className="text-2xl font-bold">
                     {completedAssessments.length > 0
                       ? Math.round(
                           completedAssessments.reduce(
-                            (sum, a) => sum + (a.totalScore || 0),
+                            (sum: number, a: any) => sum + (a.totalScore || 0),
                             0
                           ) / completedAssessments.length
                         )
                       : 0}
                   </div>
-                  <div className='text-sm text-gray-500'>Average Score</div>
+                  <div className="text-sm text-gray-500">Average Score</div>
                 </div>
               </div>
             </CardContent>
@@ -295,19 +299,19 @@ export default function AssessmentResultsPage() {
 
       {/* Completed Assessments */}
       {completedAssessments.length > 0 && (
-        <div className='mb-8'>
-          <h2 className='text-xl font-semibold text-gray-900 mb-4 flex items-center'>
-            <CheckCircle className='h-5 w-5 text-green-500 mr-2' />
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+            <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
             Completed Assessments
           </h2>
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {completedAssessments.map(userAssessment => {
               const leaderTier = getLeaderTier(userAssessment.totalScore || 0);
 
               return (
                 <Card
                   key={userAssessment.id}
-                  className='hover:shadow-lg transition-shadow cursor-pointer'
+                  className="hover:shadow-lg transition-shadow cursor-pointer"
                   onClick={() =>
                     router.push(
                       `/dashboard/assessment/results/${userAssessment.id}`
@@ -315,14 +319,14 @@ export default function AssessmentResultsPage() {
                   }
                 >
                   <CardHeader>
-                    <div className='flex items-start justify-between'>
-                      <div className='flex-1'>
-                        <CardTitle className='text-lg mb-2'>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <CardTitle className="text-lg mb-2">
                           {userAssessment.assessment?.name ||
                             'Unknown Assessment'}
                         </CardTitle>
-                        <div className='flex flex-wrap gap-2 mb-2'>
-                          <Badge variant='secondary'>
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          <Badge variant="secondary">
                             {getAssessmentTypeLabel(
                               userAssessment.assessment?.assessmentType || ''
                             )}
@@ -330,39 +334,39 @@ export default function AssessmentResultsPage() {
                           <Badge
                             className={`${leaderTier.bg} ${leaderTier.color} border-0`}
                           >
-                            <Trophy className='h-3 w-3 mr-1' />
+                            <Trophy className="h-3 w-3 mr-1" />
                             {leaderTier.tier}
                           </Badge>
                         </div>
                       </div>
-                      <CheckCircle className='h-6 w-6 text-green-500' />
+                      <CheckCircle className="h-6 w-6 text-green-500" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className='space-y-3'>
+                    <div className="space-y-3">
                       {/* Score */}
-                      <div className='text-center'>
-                        <div className='text-2xl font-bold text-gray-900'>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-gray-900">
                           {userAssessment.totalScore}
                         </div>
-                        <div className='text-sm text-gray-500'>
+                        <div className="text-sm text-gray-500">
                           out of {userAssessment.maxPossibleScore} points
                         </div>
                       </div>
 
                       {/* Primary Gifts */}
                       {userAssessment.primaryGift && (
-                        <div className='flex items-center justify-center space-x-2'>
+                        <div className="flex items-center justify-center space-x-2">
                           <div
                             className={`w-6 h-6 ${getPrimaryGiftColor(userAssessment.primaryGift)} rounded-full`}
                           />
-                          <span className='text-sm font-medium capitalize'>
+                          <span className="text-sm font-medium capitalize">
                             {userAssessment.primaryGift}
                           </span>
                           {userAssessment.secondaryGift && (
                             <>
-                              <span className='text-gray-400'>+</span>
-                              <span className='text-sm text-gray-600 capitalize'>
+                              <span className="text-gray-400">+</span>
+                              <span className="text-sm text-gray-600 capitalize">
                                 {userAssessment.secondaryGift}
                               </span>
                             </>
@@ -371,7 +375,7 @@ export default function AssessmentResultsPage() {
                       )}
 
                       {/* Completion Info */}
-                      <div className='text-center text-sm text-gray-500'>
+                      <div className="text-center text-sm text-gray-500">
                         Completed{' '}
                         {new Date(
                           userAssessment.completedAt!
@@ -384,7 +388,7 @@ export default function AssessmentResultsPage() {
                         )}
                       </div>
 
-                      <Button className='w-full' variant='outline'>
+                      <Button className="w-full" variant="outline">
                         View Results
                       </Button>
                     </div>
@@ -398,51 +402,51 @@ export default function AssessmentResultsPage() {
 
       {/* Incomplete Assessments */}
       {incompleteAssessments.length > 0 && (
-        <div className='mb-8'>
-          <h2 className='text-xl font-semibold text-gray-900 mb-4 flex items-center'>
-            <Clock className='h-5 w-5 text-orange-500 mr-2' />
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+            <Clock className="h-5 w-5 text-orange-500 mr-2" />
             In Progress
           </h2>
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {incompleteAssessments.map(userAssessment => (
               <Card
                 key={userAssessment.id}
-                className='hover:shadow-lg transition-shadow'
+                className="hover:shadow-lg transition-shadow"
               >
                 <CardHeader>
-                  <div className='flex items-start justify-between'>
-                    <div className='flex-1'>
-                      <CardTitle className='text-lg mb-2'>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <CardTitle className="text-lg mb-2">
                         {userAssessment.assessment?.name ||
                           'Unknown Assessment'}
                       </CardTitle>
-                      <Badge variant='secondary'>
+                      <Badge variant="secondary">
                         {getAssessmentTypeLabel(
                           userAssessment.assessment?.assessmentType || ''
                         )}
                       </Badge>
                     </div>
-                    <Clock className='h-6 w-6 text-orange-500' />
+                    <Clock className="h-6 w-6 text-orange-500" />
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className='space-y-3'>
+                  <div className="space-y-3">
                     {/* Progress */}
-                    <div className='text-center'>
-                      <div className='text-lg font-bold text-gray-900'>
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-gray-900">
                         {userAssessment.completionPercentage || 0}%
                       </div>
-                      <div className='text-sm text-gray-500'>Complete</div>
+                      <div className="text-sm text-gray-500">Complete</div>
                     </div>
 
                     {/* Started Info */}
-                    <div className='text-center text-sm text-gray-500'>
+                    <div className="text-center text-sm text-gray-500">
                       Started{' '}
                       {new Date(userAssessment.startedAt).toLocaleDateString()}
                     </div>
 
                     <Button
-                      className='w-full'
+                      className="w-full"
                       onClick={() =>
                         router.push(
                           `/dashboard/assessment/take/${userAssessment.assessmentId}`
@@ -461,21 +465,21 @@ export default function AssessmentResultsPage() {
 
       {/* Empty State */}
       {filteredAssessments.length === 0 && (
-        <Card className='text-center py-12'>
+        <Card className="text-center py-12">
           <CardContent>
-            <BarChart3 className='h-12 w-12 text-gray-400 mx-auto mb-4' />
-            <h3 className='text-lg font-medium text-gray-900 mb-2'>
+            <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
               No assessments found
             </h3>
-            <p className='text-gray-600 mb-4'>
+            <p className="text-gray-600 mb-4">
               {searchTerm || selectedType || completedFilter !== 'all'
                 ? 'Try adjusting your filters to find assessments.'
                 : "You haven't taken any assessments yet. Start your journey by taking an assessment."}
             </p>
-            <div className='flex gap-2 justify-center'>
+            <div className="flex gap-2 justify-center">
               {searchTerm || selectedType || completedFilter !== 'all' ? (
                 <Button
-                  variant='outline'
+                  variant="outline"
                   onClick={() => {
                     setSearchTerm('');
                     setSelectedType('');
@@ -498,34 +502,34 @@ export default function AssessmentResultsPage() {
 
       {/* Quick Actions */}
       {userAssessments.length > 0 && (
-        <Card className='mt-8'>
+        <Card className="mt-8">
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Button
-                variant='outline'
+                variant="outline"
                 onClick={() => router.push('/dashboard/assessment/select')}
-                className='h-auto p-4 flex flex-col items-center space-y-2'
+                className="h-auto p-4 flex flex-col items-center space-y-2"
               >
-                <BookOpen className='h-6 w-6' />
+                <BookOpen className="h-6 w-6" />
                 <span>Take Another Assessment</span>
               </Button>
               <Button
-                variant='outline'
+                variant="outline"
                 onClick={() => router.push('/dashboard/content')}
-                className='h-auto p-4 flex flex-col items-center space-y-2'
+                className="h-auto p-4 flex flex-col items-center space-y-2"
               >
-                <TrendingUp className='h-6 w-6' />
+                <TrendingUp className="h-6 w-6" />
                 <span>Explore Content</span>
               </Button>
               <Button
-                variant='outline'
+                variant="outline"
                 onClick={() => router.push('/dashboard/activity')}
-                className='h-auto p-4 flex flex-col items-center space-y-2'
+                className="h-auto p-4 flex flex-col items-center space-y-2"
               >
-                <BarChart3 className='h-6 w-6' />
+                <BarChart3 className="h-6 w-6" />
                 <span>View Progress</span>
               </Button>
             </div>

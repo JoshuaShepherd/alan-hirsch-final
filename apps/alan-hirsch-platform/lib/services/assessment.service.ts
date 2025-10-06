@@ -5,7 +5,6 @@
 // Following alignment reference patterns for business logic and authorization
 
 import type {
-  AssessmentQueryFilters,
   AssessmentQuestionResponse,
   AssessmentResponse,
   AssessmentResponseResponse,
@@ -92,7 +91,7 @@ export class AssessmentService extends BaseService<
   AssessmentResponse,
   CreateAssessment,
   UpdateAssessment,
-  AssessmentQueryFilters
+  Record<string, unknown>
 > {
   protected entityName = 'Assessment';
   protected createSchema = createAssessmentSchema;
@@ -139,15 +138,24 @@ export class AssessmentService extends BaseService<
   }
 
   protected async executeFindMany(
-    query: AssessmentQueryFilters,
+    query: Record<string, unknown>,
     context: ServiceContext
-  ): Promise<{ data: unknown[]; pagination: unknown }> {
+  ): Promise<{
+    data: unknown[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasMore: boolean;
+    };
+  }> {
     const results = await getAssessments({
-      assessmentType: query.assessmentType as any,
-      status: query.status as any,
-      language: query.language,
-      culturalAdaptation: query.culturalAdaptation as any,
-      researchBacked: query.researchBacked,
+      assessmentType: query['assessmentType'] as any,
+      status: query['status'] as any,
+      language: query['language'] as string | undefined,
+      culturalAdaptation: query['culturalAdaptation'] as any,
+      researchBacked: query['researchBacked'] as boolean | undefined,
     });
 
     return {
@@ -253,6 +261,95 @@ export class AssessmentService extends BaseService<
   }
 
   /**
+   * Unpublish assessment
+   */
+  async unpublish(
+    assessmentId: string,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentResponse>> {
+    try {
+      // Business rule: Only admins can unpublish assessments
+      if (!AuthHelpers.isOwnerOrAdmin(context)) {
+        throw new ForbiddenError(
+          'Only administrators can unpublish assessments'
+        );
+      }
+
+      const updateData: UpdateAssessment = {
+        status: 'draft',
+      };
+
+      return this.update(assessmentId, updateData, context);
+    } catch (error) {
+      return this.handleError(error, 'unpublish');
+    }
+  }
+
+  /**
+   * Search assessments
+   */
+  async search(
+    query: {
+      query: string;
+      assessmentType?: string[];
+      status?: string[];
+      language?: string[];
+      researchBacked?: boolean;
+      page?: number;
+      limit?: number;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
+    },
+    context: ServiceContext
+  ): Promise<ServiceResult<PaginatedServiceResult<AssessmentResponse>>> {
+    try {
+      // For now, implement basic search using existing getAssessments
+      // In a real implementation, this would use a dedicated search function
+      const results = await getAssessments({
+        assessmentType: query.assessmentType?.[0] as any,
+        status: query.status?.[0] as any,
+        language: query.language?.[0],
+        culturalAdaptation: undefined,
+        researchBacked: query.researchBacked,
+      });
+
+      const filteredResults = results.filter(
+        assessment =>
+          assessment.name.toLowerCase().includes(query.query.toLowerCase()) ||
+          assessment.description
+            ?.toLowerCase()
+            .includes(query.query.toLowerCase())
+      );
+
+      const entities = filteredResults.map(result =>
+        this.mapDbToEntity(result, context)
+      );
+
+      const page = query.page || 1;
+      const limit = query.limit || 20;
+      const offset = (page - 1) * limit;
+      const paginatedResults = entities.slice(offset, offset + limit);
+
+      return {
+        success: true,
+        data: {
+          success: true,
+          data: paginatedResults,
+          pagination: {
+            page,
+            limit,
+            total: entities.length,
+            totalPages: Math.ceil(entities.length / limit),
+            hasMore: offset + limit < entities.length,
+          },
+        },
+      };
+    } catch (error) {
+      return this.handleError(error, 'search');
+    }
+  }
+
+  /**
    * Get assessment statistics
    */
   async getAssessmentStats(
@@ -306,18 +403,221 @@ export class AssessmentService extends BaseService<
   }
 
   // ============================================================================
+  // MISSING SERVICE METHODS (from ALIGNMENT_REFERENCE.md)
+  // ============================================================================
+
+  /**
+   * Get assessment questions
+   */
+  async getQuestions(
+    assessmentId: string,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentQuestionResponse[]>> {
+    try {
+      // Business rule: Only authenticated users can view assessment questions
+      if (!AuthHelpers.hasRole(context, 'viewer')) {
+        throw new ForbiddenError(
+          'Must be authenticated to view assessment questions'
+        );
+      }
+
+      const results = await getAssessmentQuestions(assessmentId);
+      const entities = results.map(result =>
+        toAssessmentQuestionResponseDTO(result)
+      );
+
+      return {
+        success: true,
+        data: entities,
+      };
+    } catch (error) {
+      return this.handleError(error, 'getQuestions');
+    }
+  }
+
+  /**
+   * Add question to assessment
+   */
+  async addQuestion(
+    assessmentId: string,
+    question: CreateAssessmentQuestion,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentQuestionResponse>> {
+    try {
+      // Business rule: Only admins can add questions to assessments
+      if (!AuthHelpers.hasRole(context, 'admin')) {
+        throw new ForbiddenError(
+          'Only administrators can add questions to assessments'
+        );
+      }
+
+      const questionData = fromCreateAssessmentQuestion(question);
+      const result = await createAssessmentQuestion(questionData as any);
+
+      if (!result) {
+        throw new NotFoundError(this.entityName, assessmentId);
+      }
+
+      const entity = toAssessmentQuestionResponseDTO(result);
+      return {
+        success: true,
+        data: entity,
+      };
+    } catch (error) {
+      return this.handleError(error, 'addQuestion');
+    }
+  }
+
+  /**
+   * Get assessment responses
+   */
+  async getAssessmentResponses(
+    assessmentId: string,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentResponseResponse[]>> {
+    try {
+      // Business rule: Only authenticated users can view assessment responses
+      if (!AuthHelpers.hasRole(context, 'viewer')) {
+        throw new ForbiddenError(
+          'Must be authenticated to view assessment responses'
+        );
+      }
+
+      const results = await getAssessmentResponses(assessmentId);
+      const entities = results.map((result: any) =>
+        toAssessmentResponseResponseDTO(result)
+      );
+
+      return {
+        success: true,
+        data: entities,
+      };
+    } catch (error) {
+      return this.handleError(error, 'getAssessmentResponses');
+    }
+  }
+
+  /**
+   * Submit assessment response
+   */
+  async submitResponse(
+    assessmentId: string,
+    response: CreateAssessmentResponse,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentResponseResponse>> {
+    try {
+      // Business rule: Only authenticated users can submit responses
+      if (!context.userId) {
+        throw new ForbiddenError(
+          'User must be authenticated to submit assessment response'
+        );
+      }
+
+      const responseData = fromCreateAssessmentResponse(response);
+      const result = await createAssessmentResponse(responseData as any);
+
+      if (!result) {
+        throw new NotFoundError(this.entityName, assessmentId);
+      }
+
+      const entity = toAssessmentResponseResponseDTO(result);
+      return {
+        success: true,
+        data: entity,
+      };
+    } catch (error) {
+      return this.handleError(error, 'submitResponse');
+    }
+  }
+
+  /**
+   * Get ministry assessment by ID
+   */
+  async getMinistryAssessmentById(
+    id: string,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentResponse>> {
+    try {
+      // Business rule: Only authenticated users can view ministry assessments
+      if (!AuthHelpers.hasRole(context, 'viewer')) {
+        throw new ForbiddenError(
+          'Must be authenticated to view ministry assessments'
+        );
+      }
+
+      const result = await getAssessmentById(id);
+      if (!result) {
+        throw new NotFoundError(this.entityName, id);
+      }
+
+      const entity = this.mapDbToEntity(result, context);
+      return {
+        success: true,
+        data: entity,
+      };
+    } catch (error) {
+      return this.handleError(error, 'getMinistryAssessmentById');
+    }
+  }
+
+  /**
+   * Update ministry assessment
+   */
+  async updateMinistryAssessment(
+    id: string,
+    data: UpdateAssessment,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentResponse>> {
+    try {
+      // Business rule: Only admins can update ministry assessments
+      if (!AuthHelpers.hasRole(context, 'admin')) {
+        throw new ForbiddenError(
+          'Only administrators can update ministry assessments'
+        );
+      }
+
+      return this.update(id, data, context);
+    } catch (error) {
+      return this.handleError(error, 'updateMinistryAssessment');
+    }
+  }
+
+  /**
+   * Delete ministry assessment
+   */
+  async deleteMinistryAssessment(
+    id: string,
+    context: ServiceContext
+  ): Promise<ServiceResult<boolean>> {
+    try {
+      // Business rule: Only owners can delete ministry assessments
+      if (!AuthHelpers.hasRole(context, 'owner')) {
+        throw new ForbiddenError('Only owners can delete ministry assessments');
+      }
+
+      await this.delete(id, context);
+      return {
+        success: true,
+        data: true,
+      };
+    } catch (error) {
+      return this.handleError(error, 'deleteMinistryAssessment');
+    }
+  }
+
+  // ============================================================================
   // AUTHORIZATION OVERRIDES
   // ============================================================================
 
-  canCreate(context: ServiceContext): boolean {
+  override canCreate(context: ServiceContext): boolean {
     return AuthHelpers.hasRole(context, 'admin');
   }
 
-  canUpdate(context: ServiceContext, resourceId?: string): boolean {
+  override canUpdate(context: ServiceContext, resourceId?: string): boolean {
     return AuthHelpers.hasRole(context, 'admin');
   }
 
-  canDelete(context: ServiceContext, resourceId?: string): boolean {
+  override canDelete(context: ServiceContext, resourceId?: string): boolean {
     return AuthHelpers.hasRole(context, 'owner');
   }
 }
@@ -329,11 +629,13 @@ export class AssessmentService extends BaseService<
 export class AssessmentQuestionService extends BaseService<
   AssessmentQuestionResponse,
   CreateAssessmentQuestion,
-  UpdateAssessmentQuestion
+  UpdateAssessmentQuestion,
+  Record<string, unknown>
 > {
   protected entityName = 'AssessmentQuestion';
   protected createSchema = createAssessmentQuestionSchema;
   protected updateSchema = updateAssessmentQuestionSchema;
+  protected querySchema = {} as any; // Placeholder schema
 
   protected mapDbToEntity(
     dbResult: unknown,
@@ -373,8 +675,17 @@ export class AssessmentQuestionService extends BaseService<
   protected async executeFindMany(
     query: Record<string, unknown>,
     context: ServiceContext
-  ): Promise<{ data: unknown[]; pagination: unknown }> {
-    const assessmentId = query.assessmentId as string;
+  ): Promise<{
+    data: unknown[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasMore: boolean;
+    };
+  }> {
+    const assessmentId = query['assessmentId'] as string;
     if (!assessmentId) {
       throw new Error('Assessment ID is required to fetch questions');
     }
@@ -408,15 +719,15 @@ export class AssessmentQuestionService extends BaseService<
     await deleteAssessmentQuestion(id);
   }
 
-  canCreate(context: ServiceContext): boolean {
+  override canCreate(context: ServiceContext): boolean {
     return AuthHelpers.hasRole(context, 'admin');
   }
 
-  canUpdate(context: ServiceContext, resourceId?: string): boolean {
+  override canUpdate(context: ServiceContext, resourceId?: string): boolean {
     return AuthHelpers.hasRole(context, 'admin');
   }
 
-  canDelete(context: ServiceContext, resourceId?: string): boolean {
+  override canDelete(context: ServiceContext, resourceId?: string): boolean {
     return AuthHelpers.hasRole(context, 'admin');
   }
 }
@@ -428,11 +739,13 @@ export class AssessmentQuestionService extends BaseService<
 export class UserAssessmentService extends BaseService<
   UserAssessmentResponse,
   CreateUserAssessment,
-  UpdateUserAssessment
+  UpdateUserAssessment,
+  Record<string, unknown>
 > {
   protected entityName = 'UserAssessment';
   protected createSchema = createUserAssessmentSchema;
   protected updateSchema = updateUserAssessmentSchema;
+  protected querySchema = {} as any; // Placeholder schema
 
   protected mapDbToEntity(
     dbResult: unknown,
@@ -472,8 +785,17 @@ export class UserAssessmentService extends BaseService<
   protected async executeFindMany(
     query: Record<string, unknown>,
     context: ServiceContext
-  ): Promise<{ data: unknown[]; pagination: unknown }> {
-    const userId = (query.userId as string) || context.userId;
+  ): Promise<{
+    data: unknown[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasMore: boolean;
+    };
+  }> {
+    const userId = (query['userId'] as string) || context.userId;
     const results = await getUserAssessmentsWithDetails(userId);
 
     return {
@@ -534,8 +856,10 @@ export class UserAssessmentService extends BaseService<
       const createData: CreateUserAssessment = {
         userId: context.userId,
         assessmentId,
-        status: 'in_progress',
         startedAt: new Date().toISOString(),
+        culturalAdjustmentApplied: false,
+        suggestedPeers: [],
+        complementaryGifts: [],
       };
 
       return this.create(createData, context);
@@ -685,21 +1009,21 @@ export class UserAssessmentService extends BaseService<
     }
   }
 
-  canCreate(context: ServiceContext): boolean {
+  override canCreate(context: ServiceContext): boolean {
     return AuthHelpers.hasRole(context, 'member');
   }
 
-  canRead(context: ServiceContext, resourceId?: string): boolean {
+  override canRead(context: ServiceContext, resourceId?: string): boolean {
     // Users can read their own assessments, admins can read any
     return AuthHelpers.hasRole(context, 'viewer');
   }
 
-  canUpdate(context: ServiceContext, resourceId?: string): boolean {
+  override canUpdate(context: ServiceContext, resourceId?: string): boolean {
     // Users can update their own assessments, admins can update any
     return AuthHelpers.hasRole(context, 'member');
   }
 
-  canDelete(context: ServiceContext, resourceId?: string): boolean {
+  override canDelete(context: ServiceContext, resourceId?: string): boolean {
     // Users can delete their own assessments, admins can delete any
     return AuthHelpers.hasRole(context, 'member');
   }
@@ -712,11 +1036,13 @@ export class UserAssessmentService extends BaseService<
 export class AssessmentResponseService extends BaseService<
   AssessmentResponseResponse,
   CreateAssessmentResponse,
-  UpdateAssessmentResponse
+  UpdateAssessmentResponse,
+  Record<string, unknown>
 > {
   protected entityName = 'AssessmentResponse';
   protected createSchema = createAssessmentResponseSchema;
   protected updateSchema = updateAssessmentResponseSchema;
+  protected querySchema = {} as any; // Placeholder schema
 
   protected mapDbToEntity(
     dbResult: unknown,
@@ -756,8 +1082,17 @@ export class AssessmentResponseService extends BaseService<
   protected async executeFindMany(
     query: Record<string, unknown>,
     context: ServiceContext
-  ): Promise<{ data: unknown[]; pagination: unknown }> {
-    const userAssessmentId = query.userAssessmentId as string;
+  ): Promise<{
+    data: unknown[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasMore: boolean;
+    };
+  }> {
+    const userAssessmentId = query['userAssessmentId'] as string;
     if (!userAssessmentId) {
       throw new Error('User Assessment ID is required to fetch responses');
     }
@@ -836,20 +1171,253 @@ export class AssessmentResponseService extends BaseService<
     }
   }
 
-  canCreate(context: ServiceContext): boolean {
+  override canCreate(context: ServiceContext): boolean {
     return AuthHelpers.hasRole(context, 'member');
   }
 
-  canRead(context: ServiceContext, resourceId?: string): boolean {
+  override canRead(context: ServiceContext, resourceId?: string): boolean {
     return AuthHelpers.hasRole(context, 'viewer');
   }
 
-  canUpdate(context: ServiceContext, resourceId?: string): boolean {
+  override canUpdate(context: ServiceContext, resourceId?: string): boolean {
     return AuthHelpers.hasRole(context, 'member');
   }
 
-  canDelete(context: ServiceContext, resourceId?: string): boolean {
+  override canDelete(context: ServiceContext, resourceId?: string): boolean {
     return AuthHelpers.hasRole(context, 'member');
+  }
+
+  // ============================================================================
+  // MISSING API METHODS - Added for Phase 2 Error Resolution
+  // ============================================================================
+
+  /**
+   * Get questions for an assessment
+   */
+  async getQuestions(
+    assessmentId: string,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentQuestionResponse[]>> {
+    try {
+      this.enforceReadAccess(assessmentId, context);
+
+      const questions = await getAssessmentQuestions(assessmentId);
+      const entities = questions.map(question =>
+        toAssessmentQuestionResponseDTO(question)
+      );
+
+      return {
+        success: true,
+        data: entities,
+      };
+    } catch (error) {
+      return this.handleError(error, 'getQuestions');
+    }
+  }
+
+  /**
+   * Add a question to an assessment
+   */
+  async addQuestion(
+    assessmentId: string,
+    questionData: CreateAssessmentQuestion,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentQuestionResponse>> {
+    try {
+      this.enforceUpdateAccess(assessmentId, context);
+
+      const validatedData = createAssessmentQuestionSchema.parse(questionData);
+      const dbData = fromCreateAssessmentQuestion(validatedData);
+
+      const result = await createAssessmentQuestion(dbData as any);
+      const entity = toAssessmentQuestionResponseDTO(result);
+
+      return {
+        success: true,
+        data: entity,
+      };
+    } catch (error) {
+      return this.handleError(error, 'addQuestion');
+    }
+  }
+
+  /**
+   * Get assessment responses
+   */
+  async getAssessmentResponses(
+    assessmentId: string,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentResponseResponse[]>> {
+    try {
+      this.enforceReadAccess(assessmentId, context);
+
+      const responses = await getAssessmentResponses(assessmentId);
+      const entities = responses.map((response: any) =>
+        toAssessmentResponseResponseDTO(response)
+      );
+
+      return {
+        success: true,
+        data: entities,
+      };
+    } catch (error) {
+      return this.handleError(error, 'getAssessmentResponses');
+    }
+  }
+
+  /**
+   * Submit assessment response
+   */
+  async submitResponse(
+    assessmentId: string,
+    responseData: CreateAssessmentResponse,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentResponseResponse>> {
+    try {
+      this.enforceCreateRules(responseData, context);
+
+      const validatedData = createAssessmentResponseSchema.parse(responseData);
+      const dbData = fromCreateAssessmentResponse(validatedData);
+
+      const result = await createAssessmentResponse(dbData as any);
+      const entity = toAssessmentResponseResponseDTO(result);
+
+      return {
+        success: true,
+        data: entity,
+      };
+    } catch (error) {
+      return this.handleError(error, 'submitResponse');
+    }
+  }
+
+  /**
+   * Publish an assessment
+   */
+  async publish(
+    id: string,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentResponseResponse>> {
+    try {
+      this.enforceUpdateAccess(id, context);
+
+      const result = await updateAssessment(id, { status: 'active' });
+      if (!result) {
+        throw new NotFoundError(this.entityName, id);
+      }
+
+      const entity = this.mapDbToEntity(result, context);
+      return {
+        success: true,
+        data: entity,
+      };
+    } catch (error) {
+      return this.handleError(error, 'publish');
+    }
+  }
+
+  /**
+   * Unpublish an assessment
+   */
+  async unpublish(
+    id: string,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentResponseResponse>> {
+    try {
+      this.enforceUpdateAccess(id, context);
+
+      const result = await updateAssessment(id, { status: 'draft' });
+      if (!result) {
+        throw new NotFoundError(this.entityName, id);
+      }
+
+      const entity = this.mapDbToEntity(result, context);
+      return {
+        success: true,
+        data: entity,
+      };
+    } catch (error) {
+      return this.handleError(error, 'unpublish');
+    }
+  }
+
+  /**
+   * Archive an assessment
+   */
+  async archive(
+    id: string,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentResponseResponse>> {
+    try {
+      this.enforceUpdateAccess(id, context);
+
+      const result = await updateAssessment(id, { status: 'archived' });
+      if (!result) {
+        throw new NotFoundError(this.entityName, id);
+      }
+
+      const entity = this.mapDbToEntity(result, context);
+      return {
+        success: true,
+        data: entity,
+      };
+    } catch (error) {
+      return this.handleError(error, 'archive');
+    }
+  }
+
+  /**
+   * Get ministry assessment by ID
+   */
+  async getMinistryAssessmentById(
+    id: string,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentResponseResponse>> {
+    try {
+      this.enforceReadAccess(id, context);
+
+      const result = await getAssessmentById(id);
+      if (!result) {
+        throw new NotFoundError(this.entityName, id);
+      }
+
+      const entity = this.mapDbToEntity(result, context);
+      return {
+        success: true,
+        data: entity,
+      };
+    } catch (error) {
+      return this.handleError(error, 'getMinistryAssessmentById');
+    }
+  }
+
+  /**
+   * Update ministry assessment
+   */
+  async updateMinistryAssessment(
+    id: string,
+    data: UpdateAssessmentResponse,
+    context: ServiceContext
+  ): Promise<ServiceResult<AssessmentResponseResponse>> {
+    try {
+      return this.update(id, data, context);
+    } catch (error) {
+      return this.handleError(error, 'updateMinistryAssessment');
+    }
+  }
+
+  /**
+   * Delete ministry assessment
+   */
+  async deleteMinistryAssessment(
+    id: string,
+    context: ServiceContext
+  ): Promise<ServiceResult<boolean>> {
+    try {
+      return this.delete(id, context);
+    } catch (error) {
+      return this.handleError(error, 'deleteMinistryAssessment');
+    }
   }
 }
 
@@ -861,7 +1429,7 @@ export type CreateAssessmentInput = CreateAssessment;
 export type CreateAssessmentOutput = AssessmentResponse;
 export type UpdateAssessmentInput = UpdateAssessment;
 export type UpdateAssessmentOutput = AssessmentResponse;
-export type AssessmentQueryInput = AssessmentQueryFilters;
+export type AssessmentQueryInput = Record<string, unknown>;
 export type AssessmentListOutput = PaginatedServiceResult<AssessmentResponse>;
 
 export type CreateAssessmentQuestionInput = CreateAssessmentQuestion;

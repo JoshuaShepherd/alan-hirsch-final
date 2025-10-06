@@ -4,11 +4,9 @@
 export * from './services';
 // Export mappers
 export * from './mappers';
-// Export API utilities
-export * from './api';
-// Export contracts
-export * from './contracts';
-// Export utilities
+// Export API utilities (avoid duplicate exports)
+export { apiHelpers, commonSchemas, defaultConfig, middleware, withCORS, withErrorHandling, withInputOutputValidation, withPaginationValidation, withRateLimit, withValidation, } from './api';
+// Export utilities (avoid duplicate exports)
 export * from './utils';
 // Export forms
 export * from './forms';

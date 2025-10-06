@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   SaveResponsesInput,
   saveResponsesInputSchema,
-} from '@platform/shared/contracts';
+} from '@platform/contracts';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import {

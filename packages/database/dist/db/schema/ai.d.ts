@@ -830,7 +830,7 @@ export declare const aiContentJobs: import("drizzle-orm/pg-core").PgTableWithCol
             tableName: "ai_content_jobs";
             dataType: "string";
             columnType: "PgText";
-            data: "pending" | "completed" | "processing" | "failed" | "cancelled";
+            data: "cancelled" | "pending" | "completed" | "processing" | "failed";
             driverParam: string;
             notNull: false;
             hasDefault: true;

@@ -5,8 +5,12 @@ import type {
   ContentItemResponse,
   ContentSeriesEntity,
   ContentSeriesResponse,
+  CreateContentCategory,
   CreateContentItem,
+  CreateContentSeries,
+  UpdateContentCategory,
   UpdateContentItem,
+  UpdateContentSeries,
 } from '@platform/contracts';
 import {
   contentCategoryEntitySchema,
@@ -44,72 +48,74 @@ export function toContentItemEntity(row: ContentItem): ContentItemEntity {
       content: row.content ?? undefined,
 
       // Author Information
-      authorId: row.author_id,
-      coAuthors: Array.isArray(row.co_authors) ? row.co_authors : [],
+      authorId: row.authorId,
+      coAuthors: Array.isArray(row.coAuthors) ? row.coAuthors : [],
 
       // Content Classification
-      contentType: row.content_type,
+      contentType: row.contentType,
       format: row.format ?? 'text',
 
       // Content Metrics
-      wordCount: row.word_count ?? undefined,
-      estimatedReadingTime: row.estimated_reading_time ?? undefined,
+      wordCount: row.wordCount ?? undefined,
+      estimatedReadingTime: row.estimatedReadingTime ?? undefined,
 
       // Engagement Metrics
-      viewCount: row.view_count ?? 0,
-      likeCount: row.like_count ?? 0,
-      shareCount: row.share_count ?? 0,
-      commentCount: row.comment_count ?? 0,
-      bookmarkCount: row.bookmark_count ?? 0,
+      viewCount: row.viewCount ?? 0,
+      likeCount: row.likeCount ?? 0,
+      shareCount: row.shareCount ?? 0,
+      commentCount: row.commentCount ?? 0,
+      bookmarkCount: row.bookmarkCount ?? 0,
 
       // Categorization
-      primaryCategoryId: row.primary_category_id ?? undefined,
-      secondaryCategories: Array.isArray(row.secondary_categories)
-        ? row.secondary_categories
+      primaryCategoryId: row.primaryCategoryId ?? undefined,
+      secondaryCategories: Array.isArray(row.secondaryCategories)
+        ? row.secondaryCategories
         : [],
       tags: Array.isArray(row.tags) ? row.tags : [],
-      theologicalThemes: Array.isArray(row.theological_themes)
-        ? row.theological_themes
+      theologicalThemes: Array.isArray(row.theologicalThemes)
+        ? row.theologicalThemes
         : [],
 
       // Series Information
-      seriesId: row.series_id ?? undefined,
-      seriesOrder: row.series_order ?? undefined,
+      seriesId: row.seriesId ?? undefined,
+      seriesOrder: row.seriesOrder ?? undefined,
 
       // Visibility & Status
       visibility: row.visibility ?? 'public',
       status: row.status ?? 'draft',
 
       // AI Enhancement
-      networkAmplificationScore: row.network_amplification_score ?? 0,
-      crossReferenceCount: row.cross_reference_count ?? 0,
-      aiEnhanced: row.ai_enhanced ?? false,
-      aiSummary: row.ai_summary ?? undefined,
-      aiKeyPoints: Array.isArray(row.ai_key_points) ? row.ai_key_points : [],
+      networkAmplificationScore: row.networkAmplificationScore
+        ? Number(row.networkAmplificationScore)
+        : 0,
+      crossReferenceCount: row.crossReferenceCount ?? 0,
+      aiEnhanced: row.aiEnhanced === true,
+      aiSummary: row.aiSummary ?? undefined,
+      aiKeyPoints: Array.isArray(row.aiKeyPoints) ? row.aiKeyPoints : [],
 
       // Media & Attachments
-      featuredImageUrl: row.featured_image_url ?? undefined,
-      videoUrl: row.video_url ?? undefined,
-      audioUrl: row.audio_url ?? undefined,
+      featuredImageUrl: row.featuredImageUrl ?? undefined,
+      videoUrl: row.videoUrl ?? undefined,
+      audioUrl: row.audioUrl ?? undefined,
       attachments: Array.isArray(row.attachments) ? row.attachments : [],
 
       // SEO & Metadata
-      metaTitle: row.meta_title ?? undefined,
-      metaDescription: row.meta_description ?? undefined,
-      canonicalUrl: row.canonical_url ?? undefined,
-      originalSource: row.original_source ?? undefined,
+      metaTitle: row.metaTitle ?? undefined,
+      metaDescription: row.metaDescription ?? undefined,
+      canonicalUrl: row.canonicalUrl ?? undefined,
+      originalSource: row.originalSource ?? undefined,
 
       // Publication & Scheduling
-      publishedAt: row.published_at?.toISOString() ?? undefined,
-      scheduledAt: row.scheduled_at?.toISOString() ?? undefined,
+      publishedAt: row.publishedAt?.toISOString() ?? undefined,
+      scheduledAt: row.scheduledAt?.toISOString() ?? undefined,
 
       // Licensing
-      licenseType: row.license_type ?? 'all_rights_reserved',
-      attributionRequired: row.attribution_required ?? true,
+      licenseType: row.licenseType ?? 'all_rights_reserved',
+      attributionRequired: row.attributionRequired !== false,
 
       // Timestamps
-      createdAt: row.created_at.toISOString(),
-      updatedAt: row.updated_at.toISOString(),
+      createdAt: row.createdAt.toISOString(),
+      updatedAt: row.updatedAt.toISOString(),
     };
 
     // Validate the result against the schema
@@ -169,32 +175,32 @@ export function toContentItemResponseDTO(
   const isDraft = row.status === 'draft';
   const isScheduled =
     row.status === 'scheduled' &&
-    row.scheduled_at &&
-    new Date(row.scheduled_at) > new Date();
+    !!row.scheduledAt &&
+    new Date(row.scheduledAt) > new Date();
   const isArchived = row.status === 'archived';
-  const hasFeaturedImage = !!row.featured_image_url;
-  const hasVideo = !!row.video_url;
-  const hasAudio = !!row.audio_url;
+  const hasFeaturedImage = !!row.featuredImageUrl;
+  const hasVideo = !!row.videoUrl;
+  const hasAudio = !!row.audioUrl;
   const hasAttachments =
     Array.isArray(row.attachments) && row.attachments.length > 0;
-  const isAiEnhanced = row.ai_enhanced ?? false;
+  const isAiEnhanced = row.aiEnhanced === true;
 
   // Format text fields
-  const readingTimeText = row.estimated_reading_time
-    ? `${row.estimated_reading_time} min read`
-    : row.word_count
-      ? `${Math.ceil((row.word_count ?? 0) / 200)} min read`
+  const readingTimeText = row.estimatedReadingTime
+    ? `${row.estimatedReadingTime} min read`
+    : row.wordCount
+      ? `${Math.ceil((row.wordCount ?? 0) / 200)} min read`
       : 'Unknown';
 
-  const viewCountText = formatCount(row.view_count ?? 0);
+  const viewCountText = formatCount(row.viewCount ?? 0);
 
   // Calculate engagement score (0-10)
   const engagementScore = calculateEngagementScore({
-    views: row.view_count ?? 0,
-    likes: row.like_count ?? 0,
-    shares: row.share_count ?? 0,
-    comments: row.comment_count ?? 0,
-    bookmarks: row.bookmark_count ?? 0,
+    views: row.viewCount ?? 0,
+    likes: row.likeCount ?? 0,
+    shares: row.shareCount ?? 0,
+    comments: row.commentCount ?? 0,
+    bookmarks: row.bookmarkCount ?? 0,
   });
 
   const result = {
@@ -253,16 +259,16 @@ export function toContentCategoryEntity(
       description: row.description ?? undefined,
 
       // Hierarchy
-      parentId: row.parent_id ?? undefined,
-      orderIndex: row.order_index ?? 0,
+      parentId: row.parentId ?? undefined,
+      orderIndex: row.orderIndex ?? 0,
 
       // Content Classification
-      theologicalDiscipline: row.theological_discipline ?? undefined,
-      metaDescription: row.meta_description ?? undefined,
-      movementRelevanceScore: row.movement_relevance_score ?? 5,
+      theologicalDiscipline: row.theologicalDiscipline ?? undefined,
+      metaDescription: row.metaDescription ?? undefined,
+      movementRelevanceScore: row.movementRelevanceScore ?? 5,
 
       // APEST Integration
-      apestRelevance: row.apest_relevance || {
+      apestRelevance: row.apestRelevance || {
         teaching: 5,
         apostolic: 5,
         prophetic: 5,
@@ -272,11 +278,11 @@ export function toContentCategoryEntity(
 
       // SEO & Discovery
       keywords: Array.isArray(row.keywords) ? row.keywords : [],
-      isActive: row.is_active ?? true,
+      isActive: row.isActive ?? true,
 
       // Timestamps
-      createdAt: row.created_at.toISOString(),
-      updatedAt: row.updated_at.toISOString(),
+      createdAt: row.createdAt.toISOString(),
+      updatedAt: row.updatedAt.toISOString(),
     };
 
     // Validate the result against the schema
@@ -320,8 +326,8 @@ export function toContentCategoryResponseDTO(
   const entity = toContentCategoryEntity(row);
 
   // Compute derived fields
-  const isActive = row.is_active || true;
-  const hasParent = !!row.parent_id;
+  const isActive = row.isActive || true;
+  const hasParent = !!row.parentId;
   const hasChildren = Array.isArray(row.children) && row.children.length > 0;
   const childCount = row.children?.length || 0;
   const contentCount = row.contentCount || 0;
@@ -377,31 +383,29 @@ export function toContentSeriesEntity(row: ContentSeries): ContentSeriesEntity {
       description: row.description ?? undefined,
 
       // Series Details
-      authorId: row.author_id,
-      categoryId: row.category_id ?? undefined,
+      authorId: row.authorId,
+      primaryCategoryId: row.primaryCategoryId ?? undefined,
 
       // Series Configuration
-      totalEpisodes: row.total_episodes ?? 0,
-      publishedEpisodes: row.published_episodes ?? 0,
-      estimatedDuration: row.estimated_duration ?? undefined,
+      totalItems: row.totalItems ?? 0,
+      estimatedDuration: row.estimatedDuration ?? undefined,
 
       // Visibility & Status
       visibility: row.visibility ?? 'public',
       status: row.status ?? 'draft',
 
       // Media
-      featuredImageUrl: row.featured_image_url ?? undefined,
+      featuredImageUrl: row.featuredImageUrl ?? undefined,
 
       // SEO
-      metaTitle: row.meta_title ?? undefined,
-      metaDescription: row.meta_description ?? undefined,
+      metaDescription: row.metaDescription ?? undefined,
 
       // Publication
-      publishedAt: row.published_at?.toISOString() ?? undefined,
+      publishedAt: row.publishedAt?.toISOString() ?? undefined,
 
       // Timestamps
-      createdAt: row.created_at.toISOString(),
-      updatedAt: row.updated_at.toISOString(),
+      createdAt: row.createdAt.toISOString(),
+      updatedAt: row.updatedAt.toISOString(),
     };
 
     // Validate the result against the schema
@@ -454,13 +458,10 @@ export function toContentSeriesResponseDTO(
   // Compute derived fields
   const isPublished = row.status === 'published';
   const isDraft = row.status === 'draft';
-  const hasFeaturedImage = !!row.featured_image_url;
-  const completionPercentage =
-    row.total_episodes > 0
-      ? Math.round(((row.published_episodes || 0) / row.total_episodes) * 100)
-      : 0;
-  const estimatedDurationText = row.estimated_duration
-    ? `${row.estimated_duration} min total`
+  const hasFeaturedImage = !!row.featuredImageUrl;
+  const completionPercentage = 0; // TODO: Calculate based on actual completed items vs totalItems
+  const estimatedDurationText = row.estimatedDuration
+    ? `${row.estimatedDuration} min total`
     : undefined;
 
   const result = {
@@ -503,32 +504,32 @@ export function fromCreateContentItem(
     slug: data.slug,
     excerpt: data.excerpt ?? null,
     content: data.content ?? null,
-    author_id: data.authorId,
-    co_authors: data.coAuthors ?? [],
-    content_type: data.contentType,
+    authorId: data.authorId,
+    coAuthors: data.coAuthors ?? [],
+    contentType: data.contentType,
     format: data.format ?? 'text',
-    word_count: data.wordCount ?? null,
-    estimated_reading_time: data.estimatedReadingTime ?? null,
-    primary_category_id: data.primaryCategoryId ?? null,
-    secondary_categories: data.secondaryCategories ?? [],
+    wordCount: data.wordCount ?? null,
+    estimatedReadingTime: data.estimatedReadingTime ?? null,
+    primaryCategoryId: data.primaryCategoryId ?? null,
+    secondaryCategories: data.secondaryCategories ?? [],
     tags: data.tags ?? [],
-    theological_themes: data.theologicalThemes ?? [],
-    series_id: data.seriesId ?? null,
-    series_order: data.seriesOrder ?? null,
+    theologicalThemes: data.theologicalThemes ?? [],
+    seriesId: data.seriesId ?? null,
+    seriesOrder: data.seriesOrder ?? null,
     visibility: data.visibility ?? 'public',
     status: data.status ?? 'draft',
-    featured_image_url: data.featuredImageUrl ?? null,
-    video_url: data.videoUrl ?? null,
-    audio_url: data.audioUrl ?? null,
+    featuredImageUrl: data.featuredImageUrl ?? null,
+    videoUrl: data.videoUrl ?? null,
+    audioUrl: data.audioUrl ?? null,
     attachments: data.attachments ?? [],
-    meta_title: data.metaTitle ?? null,
-    meta_description: data.metaDescription ?? null,
-    canonical_url: data.canonicalUrl ?? null,
-    original_source: data.originalSource ?? null,
-    published_at: data.publishedAt ? new Date(data.publishedAt) : null,
-    scheduled_at: data.scheduledAt ? new Date(data.scheduledAt) : null,
-    license_type: data.licenseType ?? 'all_rights_reserved',
-    attribution_required: data.attributionRequired ?? true,
+    metaTitle: data.metaTitle ?? null,
+    metaDescription: data.metaDescription ?? null,
+    canonicalUrl: data.canonicalUrl ?? null,
+    originalSource: data.originalSource ?? null,
+    publishedAt: data.publishedAt ? new Date(data.publishedAt) : null,
+    scheduledAt: data.scheduledAt ? new Date(data.scheduledAt) : null,
+    licenseType: data.licenseType ?? 'all_rights_reserved',
+    attributionRequired: data.attributionRequired ?? true,
   };
 }
 
@@ -543,53 +544,51 @@ export function fromUpdateContentItem(
   if (data.title !== undefined) updateData.title = data.title;
   if (data.excerpt !== undefined) updateData.excerpt = data.excerpt ?? null;
   if (data.content !== undefined) updateData.content = data.content ?? null;
-  if (data.contentType !== undefined)
-    updateData.content_type = data.contentType;
+  if (data.contentType !== undefined) updateData.contentType = data.contentType;
   if (data.format !== undefined) updateData.format = data.format;
   if (data.wordCount !== undefined)
-    updateData.word_count = data.wordCount ?? null;
+    updateData.wordCount = data.wordCount ?? null;
   if (data.estimatedReadingTime !== undefined)
-    updateData.estimated_reading_time = data.estimatedReadingTime ?? null;
+    updateData.estimatedReadingTime = data.estimatedReadingTime ?? null;
   if (data.primaryCategoryId !== undefined)
-    updateData.primary_category_id = data.primaryCategoryId ?? null;
+    updateData.primaryCategoryId = data.primaryCategoryId ?? null;
   if (data.secondaryCategories !== undefined)
-    updateData.secondary_categories = data.secondaryCategories;
+    updateData.secondaryCategories = data.secondaryCategories;
   if (data.tags !== undefined) updateData.tags = data.tags;
   if (data.theologicalThemes !== undefined)
-    updateData.theological_themes = data.theologicalThemes;
-  if (data.seriesId !== undefined) updateData.series_id = data.seriesId ?? null;
+    updateData.theologicalThemes = data.theologicalThemes;
+  if (data.seriesId !== undefined) updateData.seriesId = data.seriesId ?? null;
   if (data.seriesOrder !== undefined)
-    updateData.series_order = data.seriesOrder ?? null;
+    updateData.seriesOrder = data.seriesOrder ?? null;
   if (data.visibility !== undefined) updateData.visibility = data.visibility;
   if (data.status !== undefined) updateData.status = data.status;
   if (data.featuredImageUrl !== undefined)
-    updateData.featured_image_url = data.featuredImageUrl ?? null;
-  if (data.videoUrl !== undefined) updateData.video_url = data.videoUrl ?? null;
-  if (data.audioUrl !== undefined) updateData.audio_url = data.audioUrl ?? null;
+    updateData.featuredImageUrl = data.featuredImageUrl ?? null;
+  if (data.videoUrl !== undefined) updateData.videoUrl = data.videoUrl ?? null;
+  if (data.audioUrl !== undefined) updateData.audioUrl = data.audioUrl ?? null;
   if (data.attachments !== undefined) updateData.attachments = data.attachments;
   if (data.metaTitle !== undefined)
-    updateData.meta_title = data.metaTitle ?? null;
+    updateData.metaTitle = data.metaTitle ?? null;
   if (data.metaDescription !== undefined)
-    updateData.meta_description = data.metaDescription ?? null;
+    updateData.metaDescription = data.metaDescription ?? null;
   if (data.canonicalUrl !== undefined)
-    updateData.canonical_url = data.canonicalUrl ?? null;
+    updateData.canonicalUrl = data.canonicalUrl ?? null;
   if (data.originalSource !== undefined)
-    updateData.original_source = data.originalSource ?? null;
+    updateData.originalSource = data.originalSource ?? null;
   if (data.publishedAt !== undefined)
-    updateData.published_at = data.publishedAt
+    updateData.publishedAt = data.publishedAt
       ? new Date(data.publishedAt)
       : null;
   if (data.scheduledAt !== undefined)
-    updateData.scheduled_at = data.scheduledAt
+    updateData.scheduledAt = data.scheduledAt
       ? new Date(data.scheduledAt)
       : null;
-  if (data.licenseType !== undefined)
-    updateData.license_type = data.licenseType;
+  if (data.licenseType !== undefined) updateData.licenseType = data.licenseType;
   if (data.attributionRequired !== undefined)
-    updateData.attribution_required = data.attributionRequired;
+    updateData.attributionRequired = data.attributionRequired;
 
-  // Always update the updated_at timestamp
-  updateData.updated_at = new Date();
+  // Always update the updatedAt timestamp
+  updateData['updatedAt'] = new Date();
 
   return updateData;
 }
@@ -690,7 +689,7 @@ export function toContentSeriesResponseArray(
 /**
  * Format count numbers for display
  */
-function formatCount(count: number): string {
+export function formatCount(count: number): string {
   if (count >= 1000000) {
     return `${(count / 1000000).toFixed(1)}M`;
   } else if (count >= 1000) {
@@ -702,7 +701,7 @@ function formatCount(count: number): string {
 /**
  * Calculate engagement score (0-10)
  */
-function calculateEngagementScore(metrics: {
+export function calculateEngagementScore(metrics: {
   views: number;
   likes: number;
   shares: number;
@@ -724,7 +723,7 @@ function calculateEngagementScore(metrics: {
 /**
  * Build breadcrumb for category hierarchy
  */
-function buildBreadcrumb(
+export function buildBreadcrumb(
   category: ContentCategory,
   parent?: { id: string; name: string; slug: string }
 ): Array<{ id: string; name: string; slug: string }> {
@@ -798,4 +797,171 @@ export function getReadingTimeEstimate(content: ContentItemResponse): string {
   }
 
   return 'Unknown';
+}
+
+// ============================================================================
+// MISSING MAPPER FUNCTIONS FOR SERVICE IMPORTS
+// ============================================================================
+
+/**
+ * Transform CreateContentCategory to database insert format
+ */
+export function fromCreateContentCategory(
+  data: CreateContentCategory
+): Partial<ContentCategory> {
+  try {
+    const result = {
+      name: data.name,
+      slug: data.slug,
+      description: data.description ?? null,
+      parentId: data.parentId ?? null,
+      orderIndex: data.orderIndex ?? 0,
+      theologicalDiscipline: data.theologicalDiscipline ?? null,
+      metaDescription: data.metaDescription ?? null,
+      movementRelevanceScore: data.movementRelevanceScore ?? 5,
+      apestRelevance: data.apestRelevance || {
+        teaching: 5,
+        apostolic: 5,
+        prophetic: 5,
+        shepherding: 5,
+        evangelistic: 5,
+      },
+      keywords: data.keywords ?? [],
+      isActive: data.isActive ?? true,
+    };
+
+    return result;
+  } catch (error) {
+    console.error('Error in fromCreateContentCategory:', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      dataName: data?.name,
+    });
+    throw new Error(
+      `Failed to transform CreateContentCategory to database format: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
+  }
+}
+
+/**
+ * Transform CreateContentSeries to database insert format
+ */
+export function fromCreateContentSeries(
+  data: CreateContentSeries
+): Partial<ContentSeries> {
+  try {
+    const result = {
+      title: data.title,
+      slug: data.slug,
+      description: data.description ?? null,
+      authorId: data.authorId,
+      primaryCategoryId: data.primaryCategoryId ?? null,
+      seriesType: data.seriesType,
+      difficulty: data.difficulty ?? 'intermediate',
+      estimatedDuration: data.estimatedDuration ?? null,
+      tags: data.tags ?? [],
+      visibility: data.visibility ?? 'public',
+      status: data.status ?? 'draft',
+      featuredImageUrl: data.featuredImageUrl ?? null,
+      metaDescription: data.metaDescription ?? null,
+      publishedAt: data.publishedAt ? new Date(data.publishedAt) : null,
+    };
+
+    return result;
+  } catch (error) {
+    console.error('Error in fromCreateContentSeries:', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      dataTitle: data?.title,
+    });
+    throw new Error(
+      `Failed to transform CreateContentSeries to database format: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
+  }
+}
+
+/**
+ * Transform UpdateContentCategory to database update format
+ */
+export function fromUpdateContentCategory(
+  data: UpdateContentCategory
+): Partial<ContentCategory> {
+  try {
+    const updateData: Partial<ContentCategory> = {};
+
+    if (data.name !== undefined) updateData['name'] = data.name;
+    if (data.description !== undefined)
+      updateData['description'] = data.description ?? null;
+    if (data.parentId !== undefined)
+      updateData['parentId'] = data.parentId ?? null;
+    if (data.orderIndex !== undefined)
+      updateData['orderIndex'] = data.orderIndex;
+    if (data.theologicalDiscipline !== undefined)
+      updateData['theologicalDiscipline'] = data.theologicalDiscipline ?? null;
+    if (data.metaDescription !== undefined)
+      updateData['metaDescription'] = data.metaDescription ?? null;
+    if (data.movementRelevanceScore !== undefined)
+      updateData['movementRelevanceScore'] = data.movementRelevanceScore;
+    if (data.apestRelevance !== undefined)
+      updateData['apestRelevance'] = data.apestRelevance;
+    if (data.keywords !== undefined) updateData['keywords'] = data.keywords;
+    if (data.isActive !== undefined) updateData['isActive'] = data.isActive;
+
+    // Always update the updatedAt timestamp
+    updateData['updatedAt'] = new Date();
+
+    return updateData;
+  } catch (error) {
+    console.error('Error in fromUpdateContentCategory:', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      dataName: data?.name,
+    });
+    throw new Error(
+      `Failed to transform UpdateContentCategory to database format: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
+  }
+}
+
+/**
+ * Transform UpdateContentSeries to database update format
+ */
+export function fromUpdateContentSeries(
+  data: UpdateContentSeries
+): Partial<ContentSeries> {
+  try {
+    const updateData: Partial<ContentSeries> = {};
+
+    if (data.title !== undefined) updateData.title = data.title;
+    if (data.description !== undefined)
+      updateData.description = data.description ?? null;
+    if (data.authorId !== undefined) updateData.authorId = data.authorId;
+    if (data.primaryCategoryId !== undefined)
+      updateData.primaryCategoryId = data.primaryCategoryId ?? null;
+    if (data.seriesType !== undefined) updateData.seriesType = data.seriesType;
+    if (data.difficulty !== undefined) updateData.difficulty = data.difficulty;
+    if (data.estimatedDuration !== undefined)
+      updateData.estimatedDuration = data.estimatedDuration ?? null;
+    if (data.tags !== undefined) updateData.tags = data.tags;
+    if (data.visibility !== undefined) updateData.visibility = data.visibility;
+    if (data.status !== undefined) updateData.status = data.status;
+    if (data.featuredImageUrl !== undefined)
+      updateData.featuredImageUrl = data.featuredImageUrl ?? null;
+    if (data.metaDescription !== undefined)
+      updateData.metaDescription = data.metaDescription ?? null;
+    if (data.publishedAt !== undefined)
+      updateData.publishedAt = data.publishedAt
+        ? new Date(data.publishedAt)
+        : null;
+
+    // Always update the updatedAt timestamp
+    updateData['updatedAt'] = new Date();
+
+    return updateData;
+  } catch (error) {
+    console.error('Error in fromUpdateContentSeries:', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      dataTitle: data?.title,
+    });
+    throw new Error(
+      `Failed to transform UpdateContentSeries to database format: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
+  }
 }

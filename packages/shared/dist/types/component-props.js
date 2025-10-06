@@ -1,6 +1,6 @@
 // Component Props Types - Alan Hirsch Digital Platform
 // This file provides type-safe component prop interfaces derived from Zod schemas
-import { assessmentSchema, communitySchema, contentItemSchema, subscriptionPlanSchema, userProfileSchema, } from '@/validations';
+import { assessmentSchema, contentItemSchema, userProfileSchema, } from '@platform/contracts';
 import { z } from 'zod';
 // ============================================================================
 // Runtime Validation Schemas for Component Props
@@ -40,33 +40,8 @@ export const contentItemCardPropsSchema = z.object({
     showCategory: z.boolean().optional(),
     className: z.string().optional(),
 });
-// Community Display Schema
-export const communityCardPropsSchema = z.object({
-    item: communitySchema,
-    variant: z.enum(['default', 'compact', 'detailed', 'minimal']).optional(),
-    showActions: z.boolean().optional(),
-    showStats: z.boolean().optional(),
-    showMemberCount: z.boolean().optional(),
-    showPostCount: z.boolean().optional(),
-    showModerationLevel: z.boolean().optional(),
-    showJoinStatus: z.boolean().optional(),
-    className: z.string().optional(),
-});
-// Subscription Plan Display Schema
-export const subscriptionPlanCardPropsSchema = z.object({
-    item: subscriptionPlanSchema,
-    variant: z.enum(['default', 'compact', 'detailed', 'minimal']).optional(),
-    showActions: z.boolean().optional(),
-    showStats: z.boolean().optional(),
-    showPricing: z.boolean().optional(),
-    showFeatures: z.boolean().optional(),
-    showPopular: z.boolean().optional(),
-    showTrialInfo: z.boolean().optional(),
-    currentPlan: z.boolean().optional(),
-    className: z.string().optional(),
-});
 // Component prop validation helper
-export function validateComponentProps(props, schema) {
+export function validateComponentPropsSchema(props, schema) {
     const result = schema.safeParse(props);
     if (!result.success) {
         console.error('Component props validation failed:', result.error);

@@ -143,3 +143,123 @@ export type MinistryMetrics = z.infer<typeof movementMetricEntitySchema>;
 export type MinistryOrganization = z.infer<typeof organizationEntitySchema>;
 export type MinistryUserProfile = z.infer<typeof userProfileEntitySchema>;
 export type OrganizationContext = z.infer<typeof organizationEntitySchema>;
+
+// ============================================================================
+// MINISTRY RESPONSE SCHEMAS
+// ============================================================================
+// Response schemas for ministry platform API endpoints
+
+// Ministry user profile response schema
+export const ministryUserProfileResponseSchema = z.object({
+  data: ministryUserProfileSchema,
+  success: z.boolean(),
+  message: z.string(),
+  ministryContext: z.object({
+    userMinistryRole: z.string(),
+    organizationContext: z.object({
+      organizationId: z.string().uuid(),
+      userRole: z.string(),
+      permissions: z.array(z.string()),
+      isOwner: z.boolean(),
+      isAdmin: z.boolean(),
+      canManageUsers: z.boolean(),
+      canManageContent: z.boolean(),
+      canViewAnalytics: z.boolean(),
+      canManageSubscriptions: z.boolean(),
+    }),
+    culturalContext: z.string(),
+    permissions: z.array(z.string()),
+  }),
+  metadata: z.object({
+    requestId: z.string().uuid(),
+    timestamp: z.string().datetime(),
+    version: z.string(),
+    processingTime: z.number().optional(),
+  }),
+});
+
+// Ministry organization response schema
+export const ministryOrganizationResponseSchema = z.object({
+  data: ministryOrganizationSchema,
+  success: z.boolean(),
+  message: z.string(),
+  metadata: z.object({
+    requestId: z.string().uuid(),
+    timestamp: z.string().datetime(),
+    version: z.string(),
+  }),
+});
+
+// Ministry assessment response schema
+export const ministryAssessmentResponseSchema = z.object({
+  data: ministryAssessmentSchema,
+  success: z.boolean(),
+  message: z.string(),
+  metadata: z.object({
+    requestId: z.string().uuid(),
+    timestamp: z.string().datetime(),
+    version: z.string(),
+  }),
+});
+
+// Ministry dashboard response schema
+export const ministryDashboardResponseSchema = z.object({
+  data: z.object({
+    userMetrics: ministryMetricsSchema,
+    organizationMetrics: z.object({
+      totalMembers: z.number().int().min(0),
+      activeMembers: z.number().int().min(0),
+      totalContent: z.number().int().min(0),
+      totalAssessments: z.number().int().min(0),
+      averageEngagement: z.number().min(0).max(1),
+      growthRate: z.number().min(-1).max(1),
+    }),
+    recentActivity: z.array(
+      z.object({
+        id: z.string().uuid(),
+        type: z.string(),
+        title: z.string(),
+        description: z.string(),
+        timestamp: z.string().datetime(),
+        user: z.object({
+          id: z.string().uuid(),
+          firstName: z.string(),
+          lastName: z.string(),
+          displayName: z.string(),
+          avatarUrl: z.string().url().optional(),
+        }),
+      })
+    ),
+    recommendations: z.array(
+      z.object({
+        type: z.string(),
+        title: z.string(),
+        description: z.string(),
+        reason: z.string(),
+        priority: z.enum(['low', 'medium', 'high']),
+        actionUrl: z.string().url(),
+      })
+    ),
+  }),
+  success: z.boolean(),
+  message: z.string(),
+  metadata: z.object({
+    requestId: z.string().uuid(),
+    timestamp: z.string().datetime(),
+    version: z.string(),
+  }),
+});
+
+// Type exports for response schemas
+export type MinistryUserProfileResponse = z.infer<
+  typeof ministryUserProfileResponseSchema
+>;
+export type MinistryOrganizationResponse = z.infer<
+  typeof ministryOrganizationResponseSchema
+>;
+export type MinistryAssessmentResponse = z.infer<
+  typeof ministryAssessmentResponseSchema
+>;
+export type MinistryDashboardResponse = z.infer<
+  typeof ministryDashboardResponseSchema
+>;

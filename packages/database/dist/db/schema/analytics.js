@@ -1,15 +1,28 @@
-import { pgTable, uuid, text, timestamp, integer, jsonb, boolean, decimal, } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import { boolean, decimal, integer, jsonb, pgTable, text, timestamp, uuid, } from 'drizzle-orm/pg-core';
 import { userProfiles } from './auth';
+import { communities } from './community';
 import { contentItems } from './content';
 // User Analytics Events - Detailed user behavior tracking
 export const userAnalyticsEvents = pgTable('user_analytics_events', {
     id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').references(() => userProfiles.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id').references(() => userProfiles.id, {
+        onDelete: 'cascade',
+    }),
     // Event Classification
     eventType: text('event_type', {
-        enum: ['page_view', 'content_view', 'content_interaction', 'search', 'assessment_start',
-            'assessment_complete', 'ai_conversation', 'community_post', 'subscription_event', 'error']
+        enum: [
+            'page_view',
+            'content_view',
+            'content_interaction',
+            'search',
+            'assessment_start',
+            'assessment_complete',
+            'ai_conversation',
+            'community_post',
+            'subscription_event',
+            'error',
+        ],
     }).notNull(),
     eventCategory: text('event_category'),
     eventAction: text('event_action').notNull(),
@@ -24,6 +37,8 @@ export const userAnalyticsEvents = pgTable('user_analytics_events', {
     contentType: text('content_type'),
     // Network Attribution
     leaderProfileId: uuid('leader_profile_id').references(() => userProfiles.id),
+    organizationId: uuid('organization_id'),
+    communityId: uuid('community_id').references(() => communities.id),
     // Session Information
     sessionId: text('session_id'),
     sessionDuration: integer('session_duration'), // seconds
@@ -42,7 +57,7 @@ export const userAnalyticsEvents = pgTable('user_analytics_events', {
     utmContent: text('utm_content'),
     // Device & Technical
     deviceType: text('device_type', {
-        enum: ['desktop', 'tablet', 'mobile', 'other']
+        enum: ['desktop', 'tablet', 'mobile', 'other'],
     }),
     browserName: text('browser_name'),
     operatingSystem: text('operating_system'),
@@ -60,22 +75,43 @@ export const userAnalyticsEvents = pgTable('user_analytics_events', {
 // User Content Interactions - Track user engagement and learning progress
 export const userContentInteractions = pgTable('user_content_interactions', {
     id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').notNull().references(() => userProfiles.id, { onDelete: 'cascade' }),
-    contentId: uuid('content_id').notNull().references(() => contentItems.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+        .notNull()
+        .references(() => userProfiles.id, { onDelete: 'cascade' }),
+    contentId: uuid('content_id')
+        .notNull()
+        .references(() => contentItems.id, { onDelete: 'cascade' }),
+    communityId: uuid('community_id').references(() => communities.id, {
+        onDelete: 'cascade',
+    }),
     // Interaction Type
     interactionType: text('interaction_type', {
-        enum: ['view', 'like', 'bookmark', 'share', 'comment', 'download', 'complete']
+        enum: [
+            'view',
+            'like',
+            'bookmark',
+            'share',
+            'comment',
+            'download',
+            'complete',
+        ],
     }).notNull(),
     // Progress Tracking
     progressPercentage: integer('progress_percentage').default(0),
     timeSpentMinutes: integer('time_spent_minutes').default(0),
     // Learning Status
     status: text('status', {
-        enum: ['not_started', 'in_progress', 'completed', 'bookmarked', 'skipped']
+        enum: ['not_started', 'in_progress', 'completed', 'bookmarked', 'skipped'],
     }).default('not_started'),
     // Implementation Tracking
     implementationStatus: text('implementation_status', {
-        enum: ['not_applicable', 'planning', 'implementing', 'implemented', 'abandoned']
+        enum: [
+            'not_applicable',
+            'planning',
+            'implementing',
+            'implemented',
+            'abandoned',
+        ],
     }),
     implementationNotes: text('implementation_notes'),
     // Quality & Feedback
@@ -92,25 +128,41 @@ export const userContentInteractions = pgTable('user_content_interactions', {
 // Learning Outcomes - Measure actual ministry impact and behavior change
 export const learningOutcomes = pgTable('learning_outcomes', {
     id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').notNull().references(() => userProfiles.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+        .notNull()
+        .references(() => userProfiles.id, { onDelete: 'cascade' }),
     contentId: uuid('content_id').references(() => contentItems.id),
     // Outcome Classification
     outcomeType: text('outcome_type', {
-        enum: ['knowledge_gain', 'skill_development', 'behavior_change', 'ministry_impact',
-            'leadership_growth', 'theological_understanding']
+        enum: [
+            'knowledge_gain',
+            'skill_development',
+            'behavior_change',
+            'ministry_impact',
+            'leadership_growth',
+            'theological_understanding',
+        ],
     }).notNull(),
     // Measurement
     outcomeDescription: text('outcome_description').notNull(),
     measurementMethod: text('measurement_method', {
-        enum: ['self_reported', 'peer_observed', 'supervisor_confirmed', 'objective_metric']
+        enum: [
+            'self_reported',
+            'peer_observed',
+            'supervisor_confirmed',
+            'objective_metric',
+        ],
     }).notNull(),
     // Quantitative Measures
     baselineScore: integer('baseline_score'),
     currentScore: integer('current_score'),
-    improvementPercentage: decimal('improvement_percentage', { precision: 5, scale: 2 }),
+    improvementPercentage: decimal('improvement_percentage', {
+        precision: 5,
+        scale: 2,
+    }),
     // Verification
     verifiedBy: text('verified_by', {
-        enum: ['self', 'peer', 'supervisor', 'third_party']
+        enum: ['self', 'peer', 'supervisor', 'third_party'],
     }).default('self'),
     verificationNotes: text('verification_notes'),
     // Context
@@ -130,12 +182,19 @@ export const movementMetrics = pgTable('movement_metrics', {
     subregion: text('subregion'),
     // Metric Classification
     metricType: text('metric_type', {
-        enum: ['user_growth', 'content_engagement', 'assessment_completion', 'community_activity',
-            'leader_development', 'network_expansion', 'revenue_growth']
+        enum: [
+            'user_growth',
+            'content_engagement',
+            'assessment_completion',
+            'community_activity',
+            'leader_development',
+            'network_expansion',
+            'revenue_growth',
+        ],
     }).notNull(),
     // Measurement Period
     periodType: text('period_type', {
-        enum: ['daily', 'weekly', 'monthly', 'quarterly', 'annual']
+        enum: ['daily', 'weekly', 'monthly', 'quarterly', 'annual'],
     }).notNull(),
     periodStart: timestamp('period_start').notNull(),
     periodEnd: timestamp('period_end').notNull(),
@@ -152,11 +211,19 @@ export const movementMetrics = pgTable('movement_metrics', {
 // Performance Reports - Leader dashboard data and network analytics
 export const performanceReports = pgTable('performance_reports', {
     id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').references(() => userProfiles.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id').references(() => userProfiles.id, {
+        onDelete: 'cascade',
+    }),
     // Report Configuration
     reportType: text('report_type', {
-        enum: ['leader_dashboard', 'content_performance', 'network_analytics', 'revenue_summary',
-            'engagement_report', 'assessment_insights']
+        enum: [
+            'leader_dashboard',
+            'content_performance',
+            'network_analytics',
+            'revenue_summary',
+            'engagement_report',
+            'assessment_insights',
+        ],
     }).notNull(),
     // Time Period
     periodStart: timestamp('period_start').notNull(),
@@ -170,7 +237,7 @@ export const performanceReports = pgTable('performance_reports', {
     recommendations: jsonb('recommendations').$type().default([]),
     // Status
     status: text('status', {
-        enum: ['generating', 'completed', 'failed']
+        enum: ['generating', 'completed', 'failed'],
     }).default('generating'),
     // Timestamps
     generatedAt: timestamp('generated_at').notNull().defaultNow(),

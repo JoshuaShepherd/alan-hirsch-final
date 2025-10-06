@@ -1,8 +1,5 @@
-import type { UserProfile } from '@platform/shared/contracts';
-import {
-  newUserProfileSchema,
-  userProfileSchema,
-} from '@platform/shared/contracts';
+import type { UserProfile } from '@platform/contracts';
+import { newUserProfileSchema, userProfileSchema } from '@platform/contracts';
 import { useTypedForm } from '@platform/shared/forms/hooks';
 import type { UserFormProps } from '@platform/shared/types';
 import {
@@ -15,6 +12,7 @@ import {
   SelectValue,
   Textarea,
 } from '@platform/ui';
+import { z } from 'zod';
 import { BaseForm, FormField, FormGrid, FormSection } from './base-form';
 
 // ============================================================================
@@ -36,7 +34,7 @@ export function UserForm({
   const form = useTypedForm({
     schema,
     defaultValues: user || {},
-    onSubmit: async data => {
+    onSubmit: async (data: z.infer<typeof schema>) => {
       await onSubmit(data);
     },
     resetOnSuccess: mode === 'create',
@@ -242,12 +240,13 @@ export function UserFormWithAPI({
 }) {
   const endpoint = mode === 'create' ? '/api/users' : `/api/users/${user?.id}`;
   const method = mode === 'create' ? 'POST' : 'PUT';
+  const schema =
+    mode === 'create' ? newUserProfileSchema : userProfileSchema.partial();
 
   const form = useTypedForm({
-    schema:
-      mode === 'create' ? newUserProfileSchema : userProfileSchema.partial(),
+    schema,
     defaultValues: user || {},
-    onSubmit: async data => {
+    onSubmit: async (data: z.infer<typeof schema>) => {
       const response = await fetch(endpoint, {
         method,
         headers: {
@@ -266,7 +265,7 @@ export function UserFormWithAPI({
       const result = await response.json();
       onSuccess?.(result.data);
     },
-    onSuccess: data => {
+    onSuccess: (data: z.infer<typeof schema>) => {
       onSuccess?.(data as UserProfile);
     },
     resetOnSuccess: mode === 'create',

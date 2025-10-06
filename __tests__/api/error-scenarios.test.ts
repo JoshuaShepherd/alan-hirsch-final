@@ -1,491 +1,568 @@
-import {
-  contractValidators,
-  createMockDatabase,
-  enhancedTestDataFactories,
-} from '@/lib/mocks';
-import { NextRequest } from 'next/server';
+/**
+ * API Error Scenarios Tests
+ *
+ * Tests for various error scenarios and edge cases across
+ * the API endpoints to ensure robust error handling.
+ */
+
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createMockDatabase, testDataFactories } from '../utils/test-imports';
 
 // Mock the database module
-vi.mock('@/lib/db/drizzle', () => ({
+vi.mock('@platform/database/drizzle', () => ({
   db: createMockDatabase(),
 }));
 
 // Import the mocked database
-import { db } from '@/lib/db/drizzle';
+import { db } from '@platform/database/drizzle';
 
-// Mock the mappers
-vi.mock('@/lib/mappers/assessments', () => ({
-  toAssessmentResponseDTO: vi.fn(assessment => assessment),
-  toAssessmentWithQuestionsResponseDTO: vi.fn((assessment, questions) => ({
-    ...assessment,
-    questions,
-  })),
-}));
+// Mock route handlers
+import { NextRequest } from 'next/server';
+import { GET as getAssessments } from '../../apps/alan-hirsch-platform/app/api/assessments/route';
 
-// Mock the contracts
-vi.mock('@/lib/contracts', () => ({
-  createAssessmentRequestSchema: {
-    parse: vi.fn(data => data),
-  },
-  assessmentListResponseSchema: {
-    parse: vi.fn(data => data),
-  },
-  assessmentResponseDTOSchema: {
-    parse: vi.fn(data => data),
-  },
-  assessmentWithQuestionsResponseSchema: {
-    parse: vi.fn(data => data),
-  },
-  paginatedAssessmentListResponseSchema: {
-    parse: vi.fn(data => data),
-  },
-}));
-
-// Import the route handlers after mocking
-import { GET as getAssessmentById } from '@/app/api/assessments/[id]/route';
-import { GET as getAssessments } from '@/app/api/assessments/route';
-
-describe('API Error Scenarios - Comprehensive Testing', () => {
+describe('API Error Scenarios', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   describe('Database Connection Errors', () => {
-    it('should handle database connection failures', async () => {
-      // Mock database connection error
-      vi.mocked(db).select.mockImplementationOnce(() => {
-        throw new Error('Connection failed');
-      });
-
-      const request = new NextRequest('http://localhost:3000/api/assessments');
-      const response = await getAssessments(request);
-
-      expect(response.status).toBe(500);
-
-      const data = await response.json();
-      expect(data).toHaveProperty('error');
-      expect(data).toHaveProperty('message');
-      expect(data.message).toContain('Connection failed');
-    });
-
-    it('should handle database timeout errors', async () => {
+    it('should handle database connection timeouts', async () => {
       // Mock database timeout error
-      vi.mocked(db).select.mockImplementationOnce(() => {
-        throw new Error('Query timeout');
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockRejectedValue(new Error('Connection timeout')),
+          }),
+        }),
       });
 
       const request = new NextRequest('http://localhost:3000/api/assessments');
       const response = await getAssessments(request);
+      const data = await response.json();
 
       expect(response.status).toBe(500);
-
-      const data = await response.json();
-      expect(data).toHaveProperty('error');
-      expect(data).toHaveProperty('message');
-      expect(data.message).toContain('timeout');
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Connection timeout');
     });
 
-    it('should handle generic database errors', async () => {
-      // Mock generic database error
-      vi.mocked(db).select.mockImplementationOnce(() => {
-        throw new Error('Unexpected database error');
+    it('should handle database connection refused', async () => {
+      // Mock database connection refused error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockRejectedValue(new Error('Connection refused')),
+          }),
+        }),
       });
 
       const request = new NextRequest('http://localhost:3000/api/assessments');
       const response = await getAssessments(request);
+      const data = await response.json();
 
       expect(response.status).toBe(500);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Connection refused');
+    });
 
+    it('should handle database query syntax errors', async () => {
+      // Mock database syntax error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi
+              .fn()
+              .mockRejectedValue(new Error('Syntax error in query')),
+          }),
+        }),
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
       const data = await response.json();
-      expect(data).toHaveProperty('error');
-      expect(data).toHaveProperty('message');
-      expect(data.message).toContain('Unexpected database error');
+
+      expect(response.status).toBe(500);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Syntax error in query');
     });
   });
 
-  describe('Input Validation Errors', () => {
-    it('should handle invalid UUID format in assessment ID', async () => {
-      const invalidId = 'not-a-uuid';
+  describe('Authentication Errors', () => {
+    it('should handle missing authentication token', async () => {
+      // Mock authentication error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi
+              .fn()
+              .mockRejectedValue(new Error('Authentication required')),
+          }),
+        }),
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(401);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Authentication required');
+    });
+
+    it('should handle expired authentication token', async () => {
+      // Mock expired token error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockRejectedValue(new Error('Token expired')),
+          }),
+        }),
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(401);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Token expired');
+    });
+
+    it('should handle invalid authentication token', async () => {
+      // Mock invalid token error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockRejectedValue(new Error('Invalid token')),
+          }),
+        }),
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(401);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Invalid token');
+    });
+  });
+
+  describe('Authorization Errors', () => {
+    it('should handle insufficient permissions', async () => {
+      // Mock insufficient permissions error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi
+              .fn()
+              .mockRejectedValue(new Error('Insufficient permissions')),
+          }),
+        }),
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(403);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Insufficient permissions');
+    });
+
+    it('should handle organization access denied', async () => {
+      // Mock organization access denied error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi
+              .fn()
+              .mockRejectedValue(new Error('Organization access denied')),
+          }),
+        }),
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(403);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Organization access denied');
+    });
+  });
+
+  describe('Validation Errors', () => {
+    it('should handle invalid request parameters', async () => {
+      // Mock validation error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockRejectedValue(new Error('Invalid parameters')),
+          }),
+        }),
+      });
 
       const request = new NextRequest(
-        `http://localhost:3000/api/assessments/${invalidId}`
+        'http://localhost:3000/api/assessments?page=invalid'
       );
-      const response = await getAssessmentById(request, {
-        params: Promise.resolve({ id: invalidId }),
-      });
+      const response = await getAssessments(request);
+      const data = await response.json();
 
       expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Invalid parameters');
+    });
 
+    it('should handle missing required fields', async () => {
+      // Mock missing fields error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi
+              .fn()
+              .mockRejectedValue(new Error('Missing required fields')),
+          }),
+        }),
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
       const data = await response.json();
-      expect(data).toHaveProperty('error');
-      expect(data).toHaveProperty('message');
+
+      expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Missing required fields');
     });
 
-    it('should handle invalid pagination parameters', async () => {
-      const request = new NextRequest(
-        'http://localhost:3000/api/assessments?page=-1&limit=0'
-      );
+    it('should handle data type validation errors', async () => {
+      // Mock data type validation error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockRejectedValue(new Error('Invalid data type')),
+          }),
+        }),
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/assessments');
       const response = await getAssessments(request);
+      const data = await response.json();
 
-      // Should either return 400 for invalid params or handle gracefully
-      expect([200, 400]).toContain(response.status);
-    });
-
-    it('should handle non-numeric pagination parameters', async () => {
-      const request = new NextRequest(
-        'http://localhost:3000/api/assessments?page=abc&limit=xyz'
-      );
-      const response = await getAssessments(request);
-
-      // Should either return 400 for invalid params or handle gracefully
-      expect([200, 400]).toContain(response.status);
-    });
-
-    it('should handle invalid assessment type filter', async () => {
-      const request = new NextRequest(
-        'http://localhost:3000/api/assessments?assessmentType=invalid_type'
-      );
-      const response = await getAssessments(request);
-
-      // Should either return 400 for invalid type or return empty results
-      expect([200, 400]).toContain(response.status);
-    });
-
-    it('should handle invalid status filter', async () => {
-      const request = new NextRequest(
-        'http://localhost:3000/api/assessments?status=invalid_status'
-      );
-      const response = await getAssessments(request);
-
-      // Should either return 400 for invalid status or return empty results
-      expect([200, 400]).toContain(response.status);
+      expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Invalid data type');
     });
   });
 
-  describe('Resource Not Found Errors', () => {
-    it('should handle non-existent assessment ID', async () => {
-      const nonExistentId = '550e8400-e29b-41d4-a716-999999999999';
-
-      // Mock empty assessment result
-      vi.mocked(db).select.mockImplementationOnce(() => ({
-        from: vi.fn().mockReturnThis(),
-        where: vi.fn().mockReturnThis(),
-        limit: vi.fn().mockResolvedValue([]),
-      }));
-
-      const request = new NextRequest(
-        `http://localhost:3000/api/assessments/${nonExistentId}`
-      );
-      const response = await getAssessmentById(request, {
-        params: Promise.resolve({ id: nonExistentId }),
+  describe('Rate Limiting Errors', () => {
+    it('should handle rate limit exceeded', async () => {
+      // Mock rate limit error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockRejectedValue(new Error('Rate limit exceeded')),
+          }),
+        }),
       });
 
-      expect(response.status).toBe(404);
-
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
       const data = await response.json();
-      expect(data).toHaveProperty('error');
-      expect(data).toHaveProperty('message');
+
+      expect(response.status).toBe(429);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Rate limit exceeded');
     });
 
-    it('should handle empty assessment list gracefully', async () => {
-      // Mock empty results
-      vi.mocked(db)
-        .select.mockImplementationOnce(() => ({
-          from: vi.fn().mockReturnThis(),
-          where: vi.fn().mockReturnThis(),
-          orderBy: vi.fn().mockReturnThis(),
-          limit: vi.fn().mockReturnThis(),
-          offset: vi.fn().mockResolvedValue([]),
-        }))
-        .mockImplementationOnce(() => ({
-          from: vi.fn().mockReturnThis(),
-          where: vi.fn().mockResolvedValue([{ count: 0 }]),
-        }));
+    it('should handle too many requests', async () => {
+      // Mock too many requests error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockRejectedValue(new Error('Too many requests')),
+          }),
+        }),
+      });
 
-      const request = new NextRequest(
-        'http://localhost:3000/api/assessments?status=archived'
-      );
+      const request = new NextRequest('http://localhost:3000/api/assessments');
       const response = await getAssessments(request);
-
-      expect(response.status).toBe(200);
-
       const data = await response.json();
-      expect(data.success).toBe(true);
-      expect(data.items.data).toEqual([]);
-      expect(data.items.pagination.total).toBe(0);
 
-      // Should still be contract-compliant
-      contractValidators.validatePaginatedAssessmentListResponse(data);
+      expect(response.status).toBe(429);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Too many requests');
+    });
+  });
+
+  describe('External Service Errors', () => {
+    it('should handle Stripe API errors', async () => {
+      // Mock Stripe API error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockRejectedValue(new Error('Stripe API error')),
+          }),
+        }),
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Stripe API error');
+    });
+
+    it('should handle email service errors', async () => {
+      // Mock email service error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi
+              .fn()
+              .mockRejectedValue(new Error('Email service unavailable')),
+          }),
+        }),
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Email service unavailable');
+    });
+
+    it('should handle file upload service errors', async () => {
+      // Mock file upload service error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi
+              .fn()
+              .mockRejectedValue(new Error('File upload service error')),
+          }),
+        }),
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('File upload service error');
     });
   });
 
   describe('Data Integrity Errors', () => {
-    it('should handle malformed assessment data from database', async () => {
-      // Mock database returning malformed data
-      const malformedAssessment = {
-        id: 'valid-uuid',
-        name: null, // Missing required field
-        assessmentType: 'invalid_type',
-        // Missing other required fields
-      };
-
-      vi.mocked(db).select.mockImplementationOnce(() => ({
-        from: vi.fn().mockReturnThis(),
-        where: vi.fn().mockReturnThis(),
-        limit: vi.fn().mockResolvedValue([malformedAssessment]),
-      }));
-
-      const request = new NextRequest(
-        'http://localhost:3000/api/assessments/valid-uuid'
-      );
-      const response = await getAssessmentById(request, {
-        params: Promise.resolve({ id: 'valid-uuid' }),
+    it('should handle duplicate key violations', async () => {
+      // Mock duplicate key error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi
+              .fn()
+              .mockRejectedValue(new Error('Duplicate key violation')),
+          }),
+        }),
       });
 
-      // Should handle gracefully - either return 500 or fix the data
-      expect([200, 500]).toContain(response.status);
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(409);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Duplicate key violation');
     });
 
-    it('should handle corrupted question data', async () => {
-      const assessment = enhancedTestDataFactories.assessmentResponse();
-      const corruptedQuestions = [
-        {
-          id: 'valid-uuid',
-          assessmentId: assessment.id,
-          questionText: null, // Corrupted data
-          questionType: 'invalid_type',
-          // Missing required fields
-        },
-      ];
-
-      vi.mocked(db)
-        .select.mockImplementationOnce(() => ({
-          from: vi.fn().mockReturnThis(),
-          where: vi.fn().mockReturnThis(),
-          limit: vi.fn().mockResolvedValue([assessment]),
-        }))
-        .mockImplementationOnce(() => ({
-          from: vi.fn().mockReturnThis(),
-          where: vi.fn().mockReturnThis(),
-          orderBy: vi.fn().mockResolvedValue(corruptedQuestions),
-        }));
-
-      const request = new NextRequest(
-        `http://localhost:3000/api/assessments/${assessment.id}`
-      );
-      const response = await getAssessmentById(request, {
-        params: Promise.resolve({ id: assessment.id }),
+    it('should handle foreign key constraint violations', async () => {
+      // Mock foreign key constraint error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi
+              .fn()
+              .mockRejectedValue(new Error('Foreign key constraint violation')),
+          }),
+        }),
       });
 
-      // Should handle gracefully
-      expect([200, 500]).toContain(response.status);
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Foreign key constraint violation');
+    });
+
+    it('should handle check constraint violations', async () => {
+      // Mock check constraint error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi
+              .fn()
+              .mockRejectedValue(new Error('Check constraint violation')),
+          }),
+        }),
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Check constraint violation');
     });
   });
 
   describe('Network and Infrastructure Errors', () => {
-    it('should handle request timeout', async () => {
-      // Simulate a slow database response
-      vi.mocked(db).select.mockImplementationOnce(() => {
-        return new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('Request timeout')), 10000);
-        });
+    it('should handle network timeout errors', async () => {
+      // Mock network timeout error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockRejectedValue(new Error('Network timeout')),
+          }),
+        }),
       });
 
       const request = new NextRequest('http://localhost:3000/api/assessments');
       const response = await getAssessments(request);
+      const data = await response.json();
 
-      expect(response.status).toBe(500);
+      expect(response.status).toBe(504);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Network timeout');
     });
 
-    it('should handle memory pressure scenarios', async () => {
-      // Mock returning a very large dataset
-      const largeDataset =
-        enhancedTestDataFactories.generateMultipleAssessments(10000);
+    it('should handle service unavailable errors', async () => {
+      // Mock service unavailable error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockRejectedValue(new Error('Service unavailable')),
+          }),
+        }),
+      });
 
-      vi.mocked(db)
-        .select.mockImplementationOnce(() => ({
-          from: vi.fn().mockReturnThis(),
-          where: vi.fn().mockReturnThis(),
-          orderBy: vi.fn().mockReturnThis(),
-          limit: vi.fn().mockReturnThis(),
-          offset: vi.fn().mockResolvedValue(largeDataset.slice(0, 10)),
-        }))
-        .mockImplementationOnce(() => ({
-          from: vi.fn().mockReturnThis(),
-          where: vi.fn().mockResolvedValue([{ count: 10000 }]),
-        }));
-
-      const request = new NextRequest(
-        'http://localhost:3000/api/assessments?page=1&limit=10'
-      );
+      const request = new NextRequest('http://localhost:3000/api/assessments');
       const response = await getAssessments(request);
+      const data = await response.json();
 
-      // Should handle large datasets gracefully
+      expect(response.status).toBe(503);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Service unavailable');
+    });
+
+    it('should handle internal server errors', async () => {
+      // Mock internal server error
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi
+              .fn()
+              .mockRejectedValue(new Error('Internal server error')),
+          }),
+        }),
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Internal server error');
+    });
+  });
+
+  describe('Edge Cases', () => {
+    it('should handle empty result sets gracefully', async () => {
+      // Mock empty result set
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue([]),
+          }),
+        }),
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/assessments');
+      const response = await getAssessments(request);
+      const data = await response.json();
+
       expect(response.status).toBe(200);
-
-      const data = await response.json();
-      expect(data.items.data.length).toBe(10);
-      expect(data.items.pagination.total).toBe(10000);
+      expect(data.success).toBe(true);
+      expect(Array.isArray(data.items.data)).toBe(true);
+      expect(data.items.data).toHaveLength(0);
     });
-  });
 
-  describe('Concurrent Access Errors', () => {
-    it('should handle concurrent database access', async () => {
-      // Mock database returning different results on subsequent calls
-      let callCount = 0;
-      vi.mocked(db).select.mockImplementation(() => {
-        callCount++;
-        if (callCount === 1) {
-          return Promise.resolve([]); // First call returns empty
-        } else {
-          return Promise.resolve([
-            enhancedTestDataFactories.assessmentResponse(),
-          ]); // Second call returns data
-        }
+    it('should handle very large result sets', async () => {
+      // Mock large result set
+      const largeDataSet = Array.from({ length: 1000 }, (_, i) =>
+        testDataFactories.assessment({
+          id: `assessment-${i}`,
+          name: `Assessment ${i}`,
+        })
+      );
+
+      vi.mocked(db).select.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue(largeDataSet),
+          }),
+        }),
       });
-
-      const request = new NextRequest('http://localhost:3000/api/assessments');
-      const response = await getAssessments(request);
-
-      // Should handle race conditions gracefully
-      expect([200, 500]).toContain(response.status);
-    });
-  });
-
-  describe('Authentication and Authorization Errors', () => {
-    it('should handle missing authentication token', async () => {
-      // This would typically be handled by middleware, but we can test the endpoint behavior
-      const request = new NextRequest('http://localhost:3000/api/assessments');
-
-      // Remove any auth headers if they exist
-      request.headers.delete('Authorization');
-
-      const response = await getAssessments(request);
-
-      // Should either return 401 or handle gracefully if endpoint is public
-      expect([200, 401]).toContain(response.status);
-    });
-
-    it('should handle expired authentication token', async () => {
-      const request = new NextRequest('http://localhost:3000/api/assessments');
-      request.headers.set('Authorization', 'Bearer expired-token');
-
-      const response = await getAssessments(request);
-
-      // Should either return 401 or handle gracefully
-      expect([200, 401]).toContain(response.status);
-    });
-
-    it('should handle invalid authentication token format', async () => {
-      const request = new NextRequest('http://localhost:3000/api/assessments');
-      request.headers.set('Authorization', 'InvalidFormat token');
-
-      const response = await getAssessments(request);
-
-      // Should either return 401 or handle gracefully
-      expect([200, 401]).toContain(response.status);
-    });
-  });
-
-  describe('Rate Limiting and Throttling', () => {
-    it('should handle rate limiting scenarios', async () => {
-      // Mock rate limiting response
-      vi.mocked(db).select.mockImplementationOnce(() => {
-        throw new Error('Rate limit exceeded');
-      });
-
-      const request = new NextRequest('http://localhost:3000/api/assessments');
-      const response = await getAssessments(request);
-
-      expect(response.status).toBe(500);
-
-      const data = await response.json();
-      expect(data.message).toContain('Rate limit exceeded');
-    });
-  });
-
-  describe('Contract Validation Errors', () => {
-    it('should handle contract validation failures gracefully', async () => {
-      // Mock data that fails contract validation
-      const invalidAssessment = {
-        id: 'valid-uuid',
-        name: 'Test Assessment',
-        // Missing required fields that would fail contract validation
-      };
-
-      vi.mocked(db).select.mockImplementationOnce(() => ({
-        from: vi.fn().mockReturnThis(),
-        where: vi.fn().mockReturnThis(),
-        limit: vi.fn().mockResolvedValue([invalidAssessment]),
-      }));
 
       const request = new NextRequest(
-        'http://localhost:3000/api/assessments/valid-uuid'
+        'http://localhost:3000/api/assessments?limit=1000'
       );
-      const response = await getAssessmentById(request, {
-        params: Promise.resolve({ id: 'valid-uuid' }),
-      });
-
-      // Should handle contract validation failures gracefully
-      expect([200, 500]).toContain(response.status);
-    });
-  });
-
-  describe('Error Response Contract Compliance', () => {
-    it('should return contract-compliant error responses', async () => {
-      // Mock database connection error
-      vi.mocked(db).select.mockImplementationOnce(() => {
-        throw new Error('Connection failed');
-      });
-
-      const request = new NextRequest('http://localhost:3000/api/assessments');
       const response = await getAssessments(request);
       const data = await response.json();
 
-      expect(response.status).toBe(500);
-
-      // Validate error response structure
-      expect(data).toHaveProperty('error');
-      expect(data).toHaveProperty('message');
-      expect(typeof data.message).toBe('string');
-      expect(data.message.length).toBeGreaterThan(0);
+      expect(response.status).toBe(200);
+      expect(data.success).toBe(true);
+      expect(Array.isArray(data.items.data)).toBe(true);
+      expect(data.items.data).toHaveLength(1000);
     });
 
-    it('should return consistent error response format', async () => {
-      const errorScenarios = [
-        () => {
-          vi.mocked(db).select.mockImplementationOnce(() => {
-            throw new Error('Connection failed');
-          });
+    it('should handle malformed JSON requests', async () => {
+      const request = new NextRequest('http://localhost:3000/api/assessments', {
+        method: 'POST',
+        body: 'invalid json',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        () => {
-          vi.mocked(db).select.mockImplementationOnce(() => {
-            throw new Error('Query timeout');
-          });
-        },
-        () => {
-          vi.mocked(db).select.mockImplementationOnce(() => {
-            throw new Error('Custom error');
-          });
-        },
-      ];
+      });
 
-      for (const setupError of errorScenarios) {
-        vi.clearAllMocks();
-        setupError();
+      const response = await getAssessments(request);
+      const data = await response.json();
 
-        const request = new NextRequest(
-          'http://localhost:3000/api/assessments'
-        );
-        const response = await getAssessments(request);
-        const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Invalid JSON');
+    });
 
-        expect(response.status).toBe(500);
-        expect(data).toHaveProperty('error');
-        expect(data).toHaveProperty('message');
-        expect(typeof data.message).toBe('string');
-      }
+    it('should handle missing content-type headers', async () => {
+      const request = new NextRequest('http://localhost:3000/api/assessments', {
+        method: 'POST',
+        body: JSON.stringify({}),
+        // Missing Content-Type header
+      });
+
+      const response = await getAssessments(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('Content-Type');
     });
   });
 });

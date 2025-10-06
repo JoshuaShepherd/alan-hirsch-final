@@ -4,7 +4,7 @@
 // Type-safe API endpoint for inviting users to organizations
 
 import { z } from 'zod';
-import { createPostHandler } from '../../../../../../lib/api/route-handler';
+import { createPostHandler } from '../../../../../../lib/api/route-handlers';
 import { organizationService } from '../../../../../../lib/services';
 
 // ============================================================================

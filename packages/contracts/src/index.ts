@@ -47,6 +47,9 @@ export {
   userProfileResponseSchema,
 } from './entities/user.schema';
 
+// Export aliases for backward compatibility
+export { updateUserProfileSchema as userProfileUpdateSchema } from './entities/user.schema';
+
 export type {
   // Legacy aliases for backward compatibility
   Assessment,
@@ -94,6 +97,7 @@ export {
   assessmentQuestionQuerySchema,
   assessmentResponseEntitySchema,
   assessmentResponseQuerySchema,
+  assessmentResponseSchema,
   createAssessmentQuestionSchema,
   createAssessmentResponseSchema,
   createAssessmentSchema,
@@ -192,13 +196,17 @@ export {
 export type {
   AiContentJob,
   AiContentJobEntity,
+  AiContentJobResponse,
   // Legacy aliases for backward compatibility
   AiConversation,
   AiConversationEntity,
+  AiConversationResponse,
   AiCrossReferenceSuggestion,
   AiCrossReferenceSuggestionEntity,
+  AiCrossReferenceSuggestionResponse,
   AiMessage,
   AiMessageEntity,
+  AiMessageResponse,
   // New create/update types
   CreateAiContentJob,
   CreateAiConversation,
@@ -212,6 +220,7 @@ export type {
   NewTheologicalConcept,
   TheologicalConcept,
   TheologicalConceptEntity,
+  TheologicalConceptResponse,
   UpdateAiContentJob,
   UpdateAiConversation,
   UpdateAiCrossReferenceSuggestion,
@@ -222,15 +231,20 @@ export type {
 // Re-export AI entity schemas for services
 export {
   aiContentJobEntitySchema,
+  aiContentJobResponseSchema,
   aiConversationEntitySchema,
+  aiConversationResponseSchema,
   aiCrossReferenceSuggestionEntitySchema,
+  aiCrossReferenceSuggestionResponseSchema,
   aiMessageEntitySchema,
+  aiMessageResponseSchema,
   createAiContentJobSchema,
   createAiConversationSchema,
   createAiCrossReferenceSuggestionSchema,
   createAiMessageSchema,
   createTheologicalConceptSchema,
   theologicalConceptEntitySchema,
+  theologicalConceptResponseSchema,
   updateAiContentJobSchema,
   updateAiConversationSchema,
   updateAiCrossReferenceSuggestionSchema,
@@ -240,9 +254,14 @@ export {
 
 export type {
   CrossEntityValidation,
+  MinistryAssessmentResponse,
+  MinistryDashboardResponse,
+  MinistryOrganizationResponse,
   MinistryPaginatedResponse,
   MinistryPlatformError,
   MinistryPlatformResponse,
+  // Ministry response types
+  MinistryUserProfileResponse,
   OrganizationScopedRequest,
   RoleBasedValidation,
 } from './entities/ministry-platform.schema';
@@ -250,9 +269,14 @@ export type {
 // Re-export ministry platform schemas
 export {
   crossEntityValidationSchema,
+  ministryAssessmentResponseSchema,
+  ministryDashboardResponseSchema,
+  ministryOrganizationResponseSchema,
   ministryPaginatedResponseSchema,
   ministryPlatformErrorSchema,
   ministryPlatformResponseSchema,
+  // Ministry response schemas
+  ministryUserProfileResponseSchema,
   organizationScopedRequestSchema,
   roleBasedValidationSchema,
 } from './entities/ministry-platform.schema';
@@ -289,6 +313,52 @@ export {
   // User schemas
   userProfileEntitySchema as userProfileSchema,
 } from './entities';
+
+// ============================================================================
+// MISSING API REQUEST/RESPONSE SCHEMA ALIASES
+// ============================================================================
+// These are commonly used aliases that are missing from the main exports
+
+// Assessment API Request Schema Aliases
+export {
+  AssessmentResponseApiResponseSchema as AssessmentResponseEntitySchema,
+  CreateAssessmentApiRequestSchema as CreateAssessmentRequestSchema,
+  CreateAssessmentResponseApiRequestSchema as CreateAssessmentResponseSchema,
+  AssessmentResponseApiResponseSchema as assessmentResponseDTOSchema,
+  CreateAssessmentApiRequestSchema as createAssessmentRequestSchema,
+  UpdateAssessmentApiRequestSchema as updateAssessmentRequestSchema,
+} from './api/assessment.contracts';
+
+// Content API Request Schema Aliases
+export {
+  ContentItemApiResponseSchema as ContentItemResponseSchema,
+  ContentItemApiResponseSchema as ContentRowDTO,
+  CreateContentItemApiRequestSchema as CreateContentItemRequestSchema,
+  UpdateContentItemApiRequestSchema as UpdateContentItemRequestSchema,
+  CreateContentItemApiRequestSchema as createContentItemRequestSchema,
+  UpdateContentItemApiRequestSchema as updateContentItemRequestSchema,
+} from './api/content.contracts';
+
+// Assessment Search Request Alias
+export type { SearchAssessmentsApiRequest as AssessmentSearchRequest } from './api/assessment.contracts';
+
+// Ministry Analytics Schema Aliases
+export {
+  movementMetricEntitySchema as ministryAnalyticsRequestSchema,
+  movementMetricEntitySchema as ministryMetricsResponseSchema,
+} from './entities/analytics.schema';
+
+// Paginated Response Schema Aliases
+export {
+  ContentCategoryListApiResponseSchema as paginatedContentCategoryListResponseSchema,
+  ContentSeriesListApiResponseSchema as paginatedContentSeriesListResponseSchema,
+} from './api/content.contracts';
+
+// Community Schema Aliases
+export {
+  communityEntitySchema as communityResponseSchema,
+  updateCommunitySchema as updateCommunityRequestSchema,
+} from './entities/community.schema';
 
 // ============================================================================
 // OPERATION EXPORTS

@@ -13,7 +13,6 @@ import {
   createGetListHandler,
   createPostHandler,
 } from '../../../../lib/api/route-handlers';
-import { toAssessmentResponseDTO } from '../../../../lib/mappers/assessment';
 import { assessmentService } from '../../../../lib/services';
 
 // ============================================================================
@@ -29,14 +28,22 @@ export const GET = createGetListHandler({
     // Call service layer with validated input and tenant-scoped context
     const result = await assessmentService.findMany(validatedQuery, context);
 
-    // Transform DB rows to response DTOs using mappers (egress validation)
-    const transformedData = result.data.map(assessment =>
-      toAssessmentResponseDTO(assessment)
-    );
+    // Check if service call was successful
+    if (!result.success || !result.data) {
+      throw new Error(result.error?.message || 'Failed to fetch assessments');
+    }
 
+    // Service already returns properly formatted entities
     return {
-      data: transformedData,
-      pagination: result.pagination,
+      data: result.data,
+      pagination: {
+        page: result.pagination?.page || 1,
+        limit: result.pagination?.limit || 10,
+        total: result.pagination?.total || 0,
+        totalPages: result.pagination?.totalPages || 0,
+        hasNext: result.pagination?.hasMore || false,
+        hasPrev: (result.pagination?.page || 1) > 1,
+      },
     };
   },
 });
@@ -51,10 +58,26 @@ export const POST = createPostHandler({
   requireAuth: true,
   requirePermissions: ['create:assessments'],
   handler: async (validatedData, context) => {
-    // Call service layer with validated input and tenant-scoped context
-    const result = await assessmentService.create(validatedData, context);
+    // Ensure required fields have default values
+    const dataWithDefaults = {
+      ...validatedData,
+      status: validatedData.status || 'draft',
+      language: validatedData.language || 'en',
+      culturalAdaptation: validatedData.culturalAdaptation || 'universal',
+      researchBacked: validatedData.researchBacked || false,
+      version: validatedData.version || '1.0',
+      scoringMethod: validatedData.scoringMethod || 'likert_5',
+    };
 
-    // Transform DB row to response DTO using mappers (egress validation)
-    return toAssessmentResponseDTO(result);
+    // Call service layer with validated input and tenant-scoped context
+    const result = await assessmentService.create(dataWithDefaults, context);
+
+    // Check if service call was successful
+    if (!result.success || !result.data) {
+      throw new Error(result.error?.message || 'Failed to create assessment');
+    }
+
+    // Service already returns properly formatted entity
+    return result.data;
   },
 });

@@ -1,5 +1,4 @@
 import { vi } from 'vitest';
-import type { testDataFactories } from '@/lib/test-utils';
 
 /**
  * Centralized Database Mock Utilities

@@ -11,4 +11,6 @@ export * from './assessment.operations';
 export * from './organization.operations';
 // Content Operations
 export * from './content.operations';
+// AI Operations
+export * from './ai.operations';
 //# sourceMappingURL=index.js.map

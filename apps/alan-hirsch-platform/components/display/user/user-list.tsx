@@ -1,30 +1,23 @@
 'use client';
 
-import { Badge } from '@platform/ui/badge';
 import { UserListProps } from '@/lib/types/component-props';
 import { cn } from '@platform/shared/utils';
+import { Badge } from '@platform/ui/badge';
 import { MapPin, Users } from 'lucide-react';
-import {
-  EntityGrid,
-  EntityListWithFilters,
-  EntityTable,
-} from '../base/entity-list';
+import { EntityGrid } from '../base/entity-list';
 import { LoadingSkeleton } from '../base/loading-skeleton';
 import { UserAvatar } from './user-avatar';
 import { UserCard } from './user-card';
 
 export function UserList({
-  items: users,
+  data: users,
   isLoading = false,
   error = null,
-  emptyMessage = 'No users found',
-  view = 'grid',
-  showFilters = true,
-  filters = {},
-  onFilterChange,
-  onItemClick,
-  onItemEdit,
-  onItemDelete,
+  pagination,
+  onPageChange,
+  onEdit,
+  onDelete,
+  onView,
   className,
 }: UserListProps) {
   // Render user card
@@ -32,12 +25,12 @@ export function UserList({
     <UserCard
       key={user.id}
       item={user}
-      variant={view === 'table' ? 'compact' : 'default'}
+      variant="default"
       showActions={true}
       showMinistryInfo={true}
-      onEdit={onItemEdit}
-      onDelete={onItemDelete}
-      onView={onItemClick}
+      onEdit={onEdit}
+      onDelete={onDelete}
+      onView={onView}
     />
   );
 
@@ -46,9 +39,9 @@ export function UserList({
     <div
       key={user.id}
       className="flex items-center space-x-4 p-4 border-b hover:bg-muted/50 cursor-pointer"
-      onClick={() => onItemClick?.(user)}
+      onClick={() => onView?.(user)}
     >
-      <UserAvatar user={user} size="md" showOnlineStatus={true} />
+      <UserAvatar user={user} size="md" showStatus={true} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center space-x-2">
           <h3 className="font-medium truncate">
@@ -190,11 +183,7 @@ export function UserList({
   if (isLoading) {
     return (
       <div className={className}>
-        {view === 'grid' && <LoadingSkeleton type="card" count={6} />}
-        {view === 'list' && <LoadingSkeleton type="list" count={6} />}
-        {view === 'table' && (
-          <LoadingSkeleton type="table" rows={6} columns={7} />
-        )}
+        <LoadingSkeleton type="card" count={6} />
       </div>
     );
   }
@@ -211,7 +200,7 @@ export function UserList({
         <Users className="h-12 w-12 text-muted-foreground mb-4" />
         <div className="text-muted-foreground">
           <h3 className="text-lg font-semibold">No users found</h3>
-          <p className="text-sm">{emptyMessage}</p>
+          <p className="text-sm">No users are available at this time.</p>
         </div>
       </div>
     );
@@ -266,48 +255,12 @@ export function UserList({
     },
   ];
 
-  // Render based on view type
-  if (view === 'grid') {
-    return (
-      <EntityGrid
-        items={users}
-        renderItem={renderUserCard}
-        columns={3}
-        className={className}
-      />
-    );
-  }
-
-  if (view === 'table') {
-    return (
-      <div className={className}>
-        <EntityTable
-          items={users}
-          columns={tableColumns}
-          renderItem={renderUserListItem}
-        />
-      </div>
-    );
-  }
-
-  // Default list view
+  // Render user list
   return (
-    <EntityListWithFilters
+    <EntityGrid
       items={users}
-      renderItem={renderUserListItem}
-      isLoading={isLoading}
-      error={error}
-      emptyMessage={emptyMessage}
-      emptyIcon={<Users className="h-12 w-12 text-muted-foreground" />}
-      view={view}
-      showSearch={true}
-      showFilters={showFilters}
-      searchPlaceholder="Search users..."
-      filters={filterOptions}
-      onFilterChange={onFilterChange}
-      onItemClick={onItemClick}
-      onItemEdit={onItemEdit}
-      onItemDelete={onItemDelete}
+      renderItem={renderUserCard}
+      columns={3}
       className={className}
     />
   );

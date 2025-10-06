@@ -1,89 +1,150 @@
-import {
-  getAssessmentResponses,
-  getUserAssessmentById,
-  saveAssessmentResponses,
-} from '@platform/database';
-import { createApiRoute, idInputSchema } from '@platform/shared/api/utils';
-import { assessmentResponseResponseSchema } from '@platform/shared/contracts';
-import { apiResponseSchema } from '@platform/shared/contracts/api-responses';
-import { z } from 'zod';
+// ============================================================================
+// USER ASSESSMENT RESPONSES API ROUTES
+// ============================================================================
+// Type-safe API endpoints for user assessment responses with proper validation
+// Uses standardized route handlers with ingress/egress validation per alignment reference
 
-// Input schema for saving responses
-const saveResponsesInputSchema = z.object({
-  responses: z.array(
-    z.object({
-      questionId: z.string().uuid(),
-      responseValue: z.number().int().optional(),
-      responseText: z.string().optional(),
-      responseTime: z.number().int().min(0).optional(),
-      confidence: z.number().int().min(1).max(5).optional(),
-      skipped: z.boolean().default(false),
-    })
-  ),
+import {
+  AssessmentResponseResponseSchema,
+  GetAssessmentResponsesApiQuerySchema,
+  SaveAssessmentResponsesApiRequestSchema,
+} from '@platform/contracts';
+import { z } from 'zod';
+import {
+  AuthenticationError,
+  NotFoundError,
+} from '../../../../../../lib/api/error-handler';
+import {
+  createGetHandler,
+  createPostHandler,
+  validatePathParams,
+} from '../../../../../../lib/api/route-handlers';
+import { toAssessmentResponseResponseDTO } from '../../../../../../lib/mappers/assessment';
+import {
+  assessmentResponseService,
+  userAssessmentService,
+} from '../../../../../../lib/services';
+
+// ============================================================================
+// PATH PARAMETER VALIDATION SCHEMAS
+// ============================================================================
+
+const UserAssessmentIdPathSchema = z.object({
+  id: z.string().uuid('Invalid user assessment ID format'),
 });
 
+// ============================================================================
 // GET /api/user/assessments/[id]/responses - Get assessment responses
-export const GET = createApiRoute(
-  idInputSchema,
-  apiResponseSchema(z.array(assessmentResponseResponseSchema)),
-  async (input, { user }) => {
-    if (!user) {
-      throw new Error('Authentication required');
+// ============================================================================
+
+export const GET = createGetHandler({
+  inputSchema: GetAssessmentResponsesApiQuerySchema,
+  outputSchema: z.array(AssessmentResponseResponseSchema),
+  requireAuth: true,
+  handler: async (validatedQuery, context, routeParams) => {
+    if (!context.userId) {
+      throw new AuthenticationError('User ID not found in context');
     }
+
+    // Validate path parameters (ingress validation)
+    const pathParams = validatePathParams(
+      context.request,
+      UserAssessmentIdPathSchema,
+      routeParams?.params || {}
+    );
 
     // Verify user owns this assessment
-    const userAssessment = await getUserAssessmentById(input.id);
-    if (!userAssessment) {
-      throw new Error('Assessment not found');
+    const userAssessmentResult = await userAssessmentService.findById(
+      pathParams.id,
+      context
+    );
+    if (!userAssessmentResult.success || !userAssessmentResult.data) {
+      throw new NotFoundError('User assessment');
     }
 
-    if (userAssessment.userId !== user.id) {
-      throw new Error('Access denied');
+    if (userAssessmentResult.data.userId !== context.userId) {
+      throw new AuthenticationError('Access denied');
     }
 
-    const responses = await getAssessmentResponses(input.id);
+    // Call service layer with validated input and tenant-scoped context
+    const result = await assessmentResponseService.findMany(
+      { userAssessmentId: pathParams.id, ...validatedQuery },
+      context
+    );
 
-    return {
-      data: responses,
-      success: true,
-    };
-  }
-);
+    if (!result.success || !result.data) {
+      throw new Error(
+        result.error?.message || 'Failed to fetch assessment responses'
+      );
+    }
 
+    // Transform DB rows to response DTOs using mappers (egress validation)
+    const transformedData = result.data.map(response =>
+      toAssessmentResponseResponseDTO(response)
+    );
+
+    return transformedData;
+  },
+});
+
+// ============================================================================
 // POST /api/user/assessments/[id]/responses - Save assessment responses
-export const POST = createApiRoute(
-  idInputSchema.extend({
-    data: saveResponsesInputSchema,
-  }),
-  apiResponseSchema(z.array(assessmentResponseResponseSchema)),
-  async (input, { user }) => {
-    if (!user) {
-      throw new Error('Authentication required');
+// ============================================================================
+
+export const POST = createPostHandler({
+  inputSchema: SaveAssessmentResponsesApiRequestSchema,
+  outputSchema: z.array(AssessmentResponseResponseSchema),
+  requireAuth: true,
+  handler: async (validatedData, context, routeParams) => {
+    if (!context.userId) {
+      throw new AuthenticationError('User ID not found in context');
     }
+
+    // Validate path parameters (ingress validation)
+    const pathParams = validatePathParams(
+      context.request,
+      UserAssessmentIdPathSchema,
+      routeParams?.params || {}
+    );
 
     // Verify user owns this assessment
-    const userAssessment = await getUserAssessmentById(input.id);
-    if (!userAssessment) {
-      throw new Error('Assessment not found');
+    const userAssessmentResult = await userAssessmentService.findById(
+      pathParams.id,
+      context
+    );
+    if (!userAssessmentResult.success || !userAssessmentResult.data) {
+      throw new NotFoundError('User assessment');
     }
 
-    if (userAssessment.userId !== user.id) {
-      throw new Error('Access denied');
+    if (userAssessmentResult.data.userId !== context.userId) {
+      throw new AuthenticationError('Access denied');
     }
 
     // Check if assessment is already completed
-    if (userAssessment.completedAt) {
+    if (userAssessmentResult.data.completedAt) {
       throw new Error('Cannot modify responses for completed assessment');
     }
 
-    const savedResponses = await saveAssessmentResponses(
-      input.id,
-      input.data.responses
+    // Call service layer with validated input and tenant-scoped context
+    const result = await assessmentResponseService.createMany(
+      validatedData.responses.map(response => ({
+        ...response,
+        userAssessmentId: pathParams.id,
+      })),
+      context
     );
 
-    return {
-      data: savedResponses,
-      success: true,
-    };
-  }
-);
+    if (!result.success || !result.data) {
+      throw new Error(
+        result.error?.message || 'Failed to save assessment responses'
+      );
+    }
+
+    // Transform DB rows to response DTOs using mappers (egress validation)
+    const transformedData = result.data.map(response =>
+      toAssessmentResponseResponseDTO(response)
+    );
+
+    return transformedData;
+  },
+});

@@ -1,13 +1,16 @@
-import { createMockDatabase, testDataFactories } from '@/lib/mocks';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  createMockDatabase,
+  testDataFactories,
+} from '../../utils/test-imports';
 
 // Mock the database module
-vi.mock('@/lib/db/drizzle', () => ({
+vi.mock('@platform/database/drizzle', () => ({
   db: createMockDatabase(),
 }));
 
 // Import the mocked database
-import { db } from '@/lib/db/drizzle';
+import { db } from '@platform/database/drizzle';
 
 // Mock API route handlers
 const mockHandler = vi.fn();

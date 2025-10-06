@@ -1,5 +1,5 @@
-import { pgTable, uuid, text, timestamp, integer, jsonb, boolean, } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import { boolean, integer, jsonb, pgTable, text, timestamp, uuid, } from 'drizzle-orm/pg-core';
 import { userProfiles } from './auth';
 // Communities - Discussion groups and networking spaces
 export const communities = pgTable('communities', {
@@ -9,39 +9,64 @@ export const communities = pgTable('communities', {
     description: text('description'),
     // Community Classification
     communityType: text('community_type', {
-        enum: ['general_discussion', 'church_planting_cohort', 'leadership_development',
-            'theological_study', 'regional_network', 'ministry_focus', 'apest_group']
+        enum: [
+            'general_discussion',
+            'church_planting_cohort',
+            'leadership_development',
+            'theological_study',
+            'regional_network',
+            'ministry_focus',
+            'apest_group',
+        ],
     }).notNull(),
     // Geographic & Cultural Focus
     geographicFocus: jsonb('geographic_focus').$type().default([]), // Country codes
     culturalContext: text('cultural_context', {
-        enum: ['western', 'eastern', 'african', 'latin_american', 'middle_eastern', 'oceanic', 'global']
+        enum: [
+            'western',
+            'eastern',
+            'african',
+            'latin_american',
+            'middle_eastern',
+            'oceanic',
+            'global',
+        ],
     }).default('global'),
     // Language & Localization
     languagePrimary: text('language_primary').default('en'),
-    languagesSupported: jsonb('languages_supported').$type().default(['en']),
+    languagesSupported: jsonb('languages_supported')
+        .$type()
+        .default(['en']),
     // Access Control
     visibility: text('visibility', {
-        enum: ['public', 'private', 'invite_only', 'organization']
+        enum: ['public', 'private', 'invite_only', 'organization'],
     }).default('public'),
     joinApprovalRequired: boolean('join_approval_required').default(false),
     // Community Configuration
     maxMembers: integer('max_members'),
     allowGuestPosts: boolean('allow_guest_posts').default(false),
     moderationLevel: text('moderation_level', {
-        enum: ['open', 'moderated', 'strict']
+        enum: ['open', 'moderated', 'strict'],
     }).default('moderated'),
     // Membership Statistics
     currentMemberCount: integer('current_member_count').default(0),
+    memberCount: integer('member_count').default(0),
     totalPostsCount: integer('total_posts_count').default(0),
     // Community Guidelines
     guidelines: text('guidelines'),
     rules: jsonb('rules').$type().default([]),
     // Leadership
-    createdBy: uuid('created_by').notNull().references(() => userProfiles.id),
+    createdBy: uuid('created_by')
+        .notNull()
+        .references(() => userProfiles.id),
     moderators: jsonb('moderators').$type().default([]), // User IDs
     // Status
     isActive: boolean('is_active').default(true),
+    status: text('status', {
+        enum: ['active', 'inactive', 'archived'],
+    }).default('active'),
+    // Focus area for the community
+    focus: text('focus'),
     // Timestamps
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
@@ -49,15 +74,19 @@ export const communities = pgTable('communities', {
 // Community Memberships - User participation in communities
 export const communityMemberships = pgTable('community_memberships', {
     id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').notNull().references(() => userProfiles.id, { onDelete: 'cascade' }),
-    communityId: uuid('community_id').notNull().references(() => communities.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+        .notNull()
+        .references(() => userProfiles.id, { onDelete: 'cascade' }),
+    communityId: uuid('community_id')
+        .notNull()
+        .references(() => communities.id, { onDelete: 'cascade' }),
     // Membership Role
     role: text('role', {
-        enum: ['member', 'moderator', 'admin', 'owner']
+        enum: ['member', 'moderator', 'admin', 'owner'],
     }).default('member'),
     // Status
     status: text('status', {
-        enum: ['active', 'inactive', 'pending', 'banned', 'left']
+        enum: ['active', 'inactive', 'pending', 'banned', 'left'],
     }).default('pending'),
     // Engagement Metrics
     postsCount: integer('posts_count').default(0),
@@ -76,14 +105,25 @@ export const communityMemberships = pgTable('community_memberships', {
 // Community Posts - Discussions and content sharing
 export const communityPosts = pgTable('community_posts', {
     id: uuid('id').primaryKey().defaultRandom(),
-    communityId: uuid('community_id').notNull().references(() => communities.id, { onDelete: 'cascade' }),
-    authorId: uuid('author_id').notNull().references(() => userProfiles.id, { onDelete: 'cascade' }),
+    communityId: uuid('community_id')
+        .notNull()
+        .references(() => communities.id, { onDelete: 'cascade' }),
+    authorId: uuid('author_id')
+        .notNull()
+        .references(() => userProfiles.id, { onDelete: 'cascade' }),
     // Post Content
     title: text('title'),
     content: text('content').notNull(),
     // Post Classification
     postType: text('post_type', {
-        enum: ['discussion', 'question', 'announcement', 'resource_share', 'prayer_request', 'testimony']
+        enum: [
+            'discussion',
+            'question',
+            'announcement',
+            'resource_share',
+            'prayer_request',
+            'testimony',
+        ],
     }).default('discussion'),
     // Threading
     parentPostId: uuid('parent_post_id').references(() => communityPosts.id),
@@ -96,12 +136,14 @@ export const communityPosts = pgTable('community_posts', {
     tags: jsonb('tags').$type().default([]),
     // Moderation
     status: text('status', {
-        enum: ['published', 'draft', 'pending_review', 'flagged', 'removed']
+        enum: ['published', 'draft', 'pending_review', 'flagged', 'removed'],
     }).default('published'),
     flaggedCount: integer('flagged_count').default(0),
     moderationNotes: text('moderation_notes'),
     // Media Attachments
-    attachments: jsonb('attachments').$type().default([]),
+    attachments: jsonb('attachments')
+        .$type()
+        .default([]),
     // Timestamps
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
@@ -110,11 +152,15 @@ export const communityPosts = pgTable('community_posts', {
 // Community Post Votes - User voting on posts
 export const communityPostVotes = pgTable('community_post_votes', {
     id: uuid('id').primaryKey().defaultRandom(),
-    postId: uuid('post_id').notNull().references(() => communityPosts.id, { onDelete: 'cascade' }),
-    userId: uuid('user_id').notNull().references(() => userProfiles.id, { onDelete: 'cascade' }),
+    postId: uuid('post_id')
+        .notNull()
+        .references(() => communityPosts.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+        .notNull()
+        .references(() => userProfiles.id, { onDelete: 'cascade' }),
     // Vote Type
     voteType: text('vote_type', {
-        enum: ['upvote', 'downvote']
+        enum: ['upvote', 'downvote'],
     }).notNull(),
     // Timestamps
     createdAt: timestamp('created_at').notNull().defaultNow(),
@@ -127,31 +173,45 @@ export const collaborations = pgTable('collaborations', {
     description: text('description'),
     // Collaboration Type
     collaborationType: text('collaboration_type', {
-        enum: ['content_creation', 'research_project', 'course_development', 'book_writing', 'event_planning']
+        enum: [
+            'content_creation',
+            'research_project',
+            'course_development',
+            'book_writing',
+            'event_planning',
+        ],
     }).notNull(),
     // Leadership
-    leadAuthorId: uuid('lead_author_id').notNull().references(() => userProfiles.id),
-    collaborators: jsonb('collaborators').$type().default([]),
+    leadAuthorId: uuid('lead_author_id')
+        .notNull()
+        .references(() => userProfiles.id),
+    collaborators: jsonb('collaborators')
+        .$type()
+        .default([]),
     // Revenue Configuration
     revenueShareModel: text('revenue_share_model', {
-        enum: ['equal', 'weighted', 'lead_majority', 'custom']
+        enum: ['equal', 'weighted', 'lead_majority', 'custom'],
     }).default('equal'),
     totalRevenueShare: integer('total_revenue_share').default(100), // Should sum to 100%
     // Project Management
     status: text('status', {
-        enum: ['planning', 'active', 'review', 'completed', 'cancelled']
+        enum: ['planning', 'active', 'review', 'completed', 'cancelled'],
     }).default('planning'),
     // Timeline
     startDate: timestamp('start_date'),
     targetCompletionDate: timestamp('target_completion_date'),
     actualCompletionDate: timestamp('actual_completion_date'),
     // Deliverables
-    expectedDeliverables: jsonb('expected_deliverables').$type().default([]),
+    expectedDeliverables: jsonb('expected_deliverables')
+        .$type()
+        .default([]),
     // Network Impact
     networkAmplificationGoal: integer('network_amplification_goal'), // Target score
     actualNetworkImpact: integer('actual_network_impact'),
     // Communication
-    communicationChannels: jsonb('communication_channels').$type().default([]),
+    communicationChannels: jsonb('communication_channels')
+        .$type()
+        .default([]),
     // Timestamps
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),

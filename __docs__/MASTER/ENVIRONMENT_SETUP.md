@@ -295,7 +295,7 @@ pnpm dev
 ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE organizations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE content_items ENABLE ROW LEVEL SECURITY;
--- ... (see RLS_PLAYBOOK.md for complete policies)
+-- ... (see schema/RLS_POLICIES.md for complete policies)
 ```
 
 ### 3. Database Migration

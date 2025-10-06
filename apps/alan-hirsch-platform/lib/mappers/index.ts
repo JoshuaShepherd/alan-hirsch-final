@@ -20,8 +20,15 @@ export {
 
 // Content Mappers
 export {
+  buildBreadcrumb,
+  calculateEngagementScore,
+  formatCount,
+  fromCreateContentCategory,
   fromCreateContentItem,
+  fromCreateContentSeries,
+  fromUpdateContentCategory,
   fromUpdateContentItem,
+  fromUpdateContentSeries,
   getContentDisplayInfo,
   getReadingTimeEstimate,
   isContentPublic,
@@ -40,14 +47,25 @@ export {
 // Assessment Mappers
 export {
   calculateCompletionPercentage,
+  calculateScorePercentage,
   formatDuration,
+  formatResponseTime,
   fromCreateAssessment,
+  fromCreateAssessmentQuestion,
+  fromCreateAssessmentResponse,
+  fromCreateUserAssessment,
   fromUpdateAssessment,
+  fromUpdateAssessmentQuestion,
+  fromUpdateAssessmentResponse,
+  fromUpdateUserAssessment,
   getAssessmentDisplayInfo,
   isAssessmentPublic,
   toAssessmentEntity,
+  toAssessmentQuestionResponseDTO,
   toAssessmentResponseArray,
   toAssessmentResponseDTO,
+  toAssessmentResponseResponseDTO,
+  toUserAssessmentResponseDTO,
 } from './assessment';
 
 // Organization Mappers

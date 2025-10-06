@@ -12,7 +12,7 @@ export function withPropsValidation(Component, schema, options = {}) {
         const result = schema.safeParse(props);
         if (!result.success) {
             // Log error in development
-            if (process.env.NODE_ENV === 'development') {
+            if (process.env['NODE_ENV'] === 'development') {
                 console.error('Props validation failed:', {
                     component: Component.name || 'Anonymous',
                     error: result.error,
@@ -34,7 +34,7 @@ export function withPropsValidation(Component, schema, options = {}) {
             Component Props Validation Error
           </h3>
           <p className="text-sm text-red-600 mt-1">{result.error.message}</p>
-          {process.env.NODE_ENV === 'development' && (<details className="mt-2">
+          {process.env['NODE_ENV'] === 'development' && (<details className="mt-2">
               <summary className="text-xs text-red-600 cursor-pointer">
                 Show validation details
               </summary>
@@ -68,7 +68,7 @@ export function PropsValidationError({ error, componentName = 'Component', class
         {componentName} Props Validation Error
       </h3>
       <p className="text-sm text-red-600 mt-1">{error.message}</p>
-      {process.env.NODE_ENV === 'development' && (<details className="mt-2">
+      {process.env['NODE_ENV'] === 'development' && (<details className="mt-2">
           <summary className="text-xs text-red-600 cursor-pointer">
             Show validation details
           </summary>
@@ -109,7 +109,7 @@ export function validateCriticalProps(props, schema, componentName) {
     if (!result.success) {
         const errorMessage = `Critical props validation failed for ${componentName}: ${result.error.message}`;
         // In development, log detailed error
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env['NODE_ENV'] === 'development') {
             console.error(errorMessage, {
                 component: componentName,
                 error: result.error,
@@ -127,7 +127,7 @@ export function validateCriticalProps(props, schema, componentName) {
 export function safeValidateProps(props, schema, defaultProps) {
     const result = schema.safeParse(props);
     if (!result.success) {
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env['NODE_ENV'] === 'development') {
             console.warn('Props validation failed, using defaults:', {
                 error: result.error,
                 defaultProps,
@@ -141,9 +141,9 @@ export function safeValidateProps(props, schema, defaultProps) {
  * Partial props validation for optional fields
  */
 export function validatePartialProps(props, schema, defaultProps) {
-    const result = schema.partial().safeParse(props);
+    const result = schema.safeParse(props);
     if (!result.success) {
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env['NODE_ENV'] === 'development') {
             console.warn('Partial props validation failed, using defaults:', {
                 error: result.error,
                 defaultProps,
@@ -170,7 +170,7 @@ export function validateProps(schema, options = {}) {
 export function validateComponentProps(schema) {
     return function (Component) {
         return withPropsValidation(Component, schema, {
-            strict: process.env.NODE_ENV === 'development',
+            strict: process.env['NODE_ENV'] === 'development',
         });
     };
 }
@@ -196,7 +196,7 @@ export function createPropsBuilder(schema) {
                 : { success: false, error: result.error };
         },
         extend: (extension) => {
-            return createPropsBuilder(schema.extend(extension.shape));
+            return createPropsBuilder(schema.extend(extension));
         },
         schema,
     };

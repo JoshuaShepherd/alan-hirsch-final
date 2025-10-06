@@ -13,7 +13,6 @@ import {
   createGetListHandler,
   createPostHandler,
 } from '../../../../lib/api/route-handlers';
-import { toContentItemResponseDTO } from '../../../../lib/mappers/content';
 import { contentService } from '../../../../lib/services';
 
 // ============================================================================
@@ -29,14 +28,22 @@ export const GET = createGetListHandler({
     // Call service layer with validated input and tenant-scoped context
     const result = await contentService.findMany(validatedQuery, context);
 
-    // Transform DB rows to response DTOs using mappers (egress validation)
-    const transformedData = result.data.map(content =>
-      toContentItemResponseDTO(content)
-    );
+    // Check if service call was successful
+    if (!result.success || !result.data) {
+      throw new Error(result.error?.message || 'Failed to fetch content items');
+    }
 
+    // Service already returns properly formatted entities
     return {
-      data: transformedData,
-      pagination: result.pagination,
+      data: result.data,
+      pagination: {
+        page: result.pagination?.page || 1,
+        limit: result.pagination?.limit || 10,
+        total: result.pagination?.total || 0,
+        totalPages: result.pagination?.totalPages || 0,
+        hasNext: result.pagination?.hasMore || false,
+        hasPrev: (result.pagination?.page || 1) > 1,
+      },
     };
   },
 });
@@ -54,7 +61,12 @@ export const POST = createPostHandler({
     // Call service layer with validated input and tenant-scoped context
     const result = await contentService.create(validatedData, context);
 
-    // Transform DB row to response DTO using mappers (egress validation)
-    return toContentItemResponseDTO(result);
+    // Check if service call was successful
+    if (!result.success || !result.data) {
+      throw new Error(result.error?.message || 'Failed to create content item');
+    }
+
+    // Service already returns properly formatted entity
+    return result.data;
   },
 });

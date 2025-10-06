@@ -104,9 +104,9 @@ export async function getContentPerformanceAnalytics(authorId, context, options 
             .select({
             id: contentItems.id,
             title: contentItems.title,
-            views: contentItems.viewCount,
-            likes: contentItems.likeCount,
-            shares: contentItems.shareCount,
+            views: sql `COALESCE(${contentItems.viewCount}, 0)`,
+            likes: sql `COALESCE(${contentItems.likeCount}, 0)`,
+            shares: sql `COALESCE(${contentItems.shareCount}, 0)`,
         })
             .from(contentItems)
             .where(and(...conditions))
@@ -163,7 +163,7 @@ export async function getCommunityEngagementAnalytics(communityId, context, opti
         db
             .select({
             userId: userContentInteractions.userId,
-            displayName: userProfiles.displayName,
+            displayName: sql `COALESCE(${userProfiles.displayName}, ${userProfiles.firstName} || ' ' || ${userProfiles.lastName})`,
             postCount: count(sql `CASE WHEN ${userContentInteractions.interactionType} = 'post' THEN 1 END`),
             commentCount: count(sql `CASE WHEN ${userContentInteractions.interactionType} = 'comment' THEN 1 END`),
         })
@@ -224,7 +224,7 @@ export async function getOrganizationAnalytics(organizationId, context, options 
         db
             .select({
             userId: userProfiles.id,
-            displayName: userProfiles.displayName,
+            displayName: sql `COALESCE(${userProfiles.displayName}, ${userProfiles.firstName} || ' ' || ${userProfiles.lastName})`,
             contentCount: count(contentItems.id),
             engagementScore: sql `COALESCE(SUM(${userAnalyticsEvents.id}), 0)`,
         })
@@ -319,7 +319,7 @@ export async function getPlatformAnalytics(context, options = {}) {
             .select({
             communityId: communities.id,
             communityName: communities.name,
-            memberCount: communities.currentMemberCount,
+            memberCount: sql `COALESCE(${communities.currentMemberCount}, 0)`,
         })
             .from(communities)
             .where(eq(communities.isActive, true))

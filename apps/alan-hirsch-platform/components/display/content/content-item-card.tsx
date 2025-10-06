@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@platform/ui/dropdown-menu';
 import {
+  BookOpen,
   Bookmark,
   Calendar,
   Clock,
@@ -42,7 +43,6 @@ export function ContentItemCard({
   showAuthor = true,
   showExcerpt = true,
   showTags = true,
-  showCategory = true,
   onEdit,
   onDelete,
   onView,
@@ -180,39 +180,20 @@ export function ContentItemCard({
     );
   }
 
-  // Render minimal variant
-  if (variant === 'minimal') {
-    return (
-      <div
-        className={cn(
-          'p-2 border rounded flex items-center justify-between',
-          className
-        )}
-      >
-        <div className="flex items-center space-x-2">
-          {contentTypeIcon}
-          <span className="text-sm font-medium">{content.title}</span>
-        </div>
-        <Badge className={getStatusColor(content.status)}>
-          {content.status.replace('_', ' ')}
-        </Badge>
-      </div>
-    );
-  }
-
   // Render default and detailed variants
   return (
     <Card className={cn('h-full', className)}>
       {/* Featured Image */}
-      {content.featuredImageUrl && variant !== 'compact' && (
-        <div className="aspect-video w-full overflow-hidden rounded-t-lg">
-          <img
-            src={content.featuredImageUrl}
-            alt={content.title}
-            className="h-full w-full object-cover"
-          />
-        </div>
-      )}
+      {content.featuredImageUrl &&
+        (variant === 'default' || variant === 'detailed') && (
+          <div className="aspect-video w-full overflow-hidden rounded-t-lg">
+            <img
+              src={content.featuredImageUrl}
+              alt={content.title}
+              className="h-full w-full object-cover"
+            />
+          </div>
+        )}
 
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
@@ -361,7 +342,7 @@ export function ContentItemCard({
         )}
 
         {/* Category */}
-        {showCategory && content.primaryCategoryId && (
+        {content.primaryCategoryId && (
           <div className="flex items-center space-x-1 mb-3">
             <Tag className="h-3 w-3 text-muted-foreground" />
             <span className="text-xs text-muted-foreground">

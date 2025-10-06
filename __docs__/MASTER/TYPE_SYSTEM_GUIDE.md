@@ -26,76 +26,67 @@ The Alan Hirsch Digital Platform uses a **contract-first type system** that ensu
 
 ## Core Components
 
-### 1. Database Schemas (`lib/db/schema/`)
+### 1. Database Schemas (`packages/database/`)
 
 Database schemas define the structure of our data at the lowest level:
 
 ```typescript
-// lib/db/schema/content.ts
+// packages/database/schema/content.ts
 export const contentItems = pgTable('content_items', {
   id: uuid('id').primaryKey().defaultRandom(),
   title: text('title').notNull(),
   slug: text('slug').notNull(),
   excerpt: text('excerpt'),
   content: text('content'),
-  authorId: uuid('author_id')
+  author_id: uuid('author_id')
     .notNull()
     .references(() => userProfiles.id),
-  coAuthors: jsonb('co_authors').$type<string[]>().default([]),
-  contentType: text('content_type', {
-    enum: [
-      'article',
-      'video',
-      'podcast',
-      'framework',
-      'tool',
-      'case_study',
-      'interview',
-      'course_lesson',
-    ],
+  co_authors: jsonb('co_authors').$type<string[]>().default([]),
+  content_type: text('content_type', {
+    enum: ['article', 'video', 'audio', 'podcast', 'course', 'book'],
   }).notNull(),
   format: text('format', {
-    enum: ['text', 'video', 'audio', 'interactive', 'pdf', 'presentation'],
+    enum: ['text', 'markdown', 'html', 'video', 'audio'],
   }).default('text'),
-  wordCount: integer('word_count'),
-  estimatedReadingTime: integer('estimated_reading_time'),
-  viewCount: integer('view_count').default(0),
-  likeCount: integer('like_count').default(0),
-  shareCount: integer('share_count').default(0),
-  commentCount: integer('comment_count').default(0),
-  bookmarkCount: integer('bookmark_count').default(0),
-  primaryCategoryId: uuid('primary_category_id').references(
+  word_count: integer('word_count'),
+  estimated_reading_time: integer('estimated_reading_time'),
+  view_count: integer('view_count').default(0),
+  like_count: integer('like_count').default(0),
+  share_count: integer('share_count').default(0),
+  comment_count: integer('comment_count').default(0),
+  bookmark_count: integer('bookmark_count').default(0),
+  primary_category_id: uuid('primary_category_id').references(
     () => contentCategories.id
   ),
-  secondaryCategories: jsonb('secondary_categories')
+  secondary_categories: jsonb('secondary_categories')
     .$type<string[]>()
     .default([]),
   tags: jsonb('tags').$type<string[]>().default([]),
-  theologicalThemes: jsonb('theological_themes').$type<string[]>().default([]),
-  seriesId: uuid('series_id').references(() => contentSeries.id),
-  seriesOrder: integer('series_order'),
+  theological_themes: jsonb('theological_themes').$type<string[]>().default([]),
+  series_id: uuid('series_id').references(() => contentSeries.id),
+  series_order: integer('series_order'),
   visibility: text('visibility', {
-    enum: ['public', 'premium', 'vip', 'private', 'organization'],
+    enum: ['public', 'private', 'unlisted'],
   }).default('public'),
   status: text('status', {
-    enum: ['draft', 'published', 'archived', 'under_review', 'scheduled'],
+    enum: ['draft', 'published', 'scheduled', 'archived'],
   }).default('draft'),
-  networkAmplificationScore: text('network_amplification_score'),
-  crossReferenceCount: integer('cross_reference_count').default(0),
-  aiEnhanced: boolean('ai_enhanced').default(false),
-  aiSummary: text('ai_summary'),
-  aiKeyPoints: jsonb('ai_key_points').$type<string[]>().default([]),
-  featuredImageUrl: text('featured_image_url'),
-  videoUrl: text('video_url'),
-  audioUrl: text('audio_url'),
+  network_amplification_score: numeric('network_amplification_score'),
+  cross_reference_count: integer('cross_reference_count').default(0),
+  ai_enhanced: boolean('ai_enhanced').default(false),
+  ai_summary: text('ai_summary'),
+  ai_key_points: jsonb('ai_key_points').$type<string[]>().default([]),
+  featured_image_url: text('featured_image_url'),
+  video_url: text('video_url'),
+  audio_url: text('audio_url'),
   attachments: jsonb('attachments')
     .$type<Array<{ name: string; url: string; type: string; size: number }>>()
     .default([]),
-  metaTitle: text('meta_title'),
-  metaDescription: text('meta_description'),
-  canonicalUrl: text('canonical_url'),
-  originalSource: text('original_source'),
-  licenseType: text('license_type', {
+  meta_title: text('meta_title'),
+  meta_description: text('meta_description'),
+  canonical_url: text('canonical_url'),
+  original_source: text('original_source'),
+  license_type: text('license_type', {
     enum: [
       'all_rights_reserved',
       'creative_commons',
@@ -121,37 +112,83 @@ export type ContentItemInsert = typeof contentItems.$inferInsert;
 - Defines database constraints and relationships
 - Raw data types (not suitable for API responses)
 
-### 2. Mappers (`lib/mappers/`)
+### 2. Mappers (`apps/alan-hirsch-platform/lib/mappers/`)
 
 Mappers transform database rows into contract-compliant response objects:
 
 ```typescript
-// lib/mappers/content.ts
-import type { contentItems } from '../db/schema';
-import type { ContentItemResponse } from '../contracts';
+// apps/alan-hirsch-platform/lib/mappers/content.ts
+import type { ContentItemRow } from '@platform/database';
+import type {
+  ContentItemEntity,
+  ContentItemResponse,
+} from '@platform/shared/contracts';
 
-type ContentItemRow = typeof contentItems.$inferSelect;
-
-export function toContentItemResponseDTO(
-  row: ContentItemRow
-): ContentItemResponse {
+export function toContentItemEntity(row: ContentItemRow): ContentItemEntity {
   return {
-    // Map all required fields
+    // Core Identity
     id: row.id,
     title: row.title,
-    content: row.content,
+    slug: row.slug,
+    excerpt: row.excerpt || undefined,
+    content: row.content || undefined,
 
-    // Add computed fields
-    isPublished: row.status === 'published',
-    isDraft: row.status === 'draft',
-    wordCount: row.content?.split(' ').length || 0,
+    // Author Information
+    authorId: row.author_id,
+    coAuthors: Array.isArray(row.co_authors) ? row.co_authors : [],
 
-    // Format dates as ISO strings
-    createdAt: row.createdAt.toISOString(),
-    updatedAt: row.updatedAt.toISOString(),
+    // Content Classification
+    contentType: row.content_type as any,
+    format: (row.format as any) || 'text',
 
-    // Handle optional fields
-    publishedAt: row.publishedAt?.toISOString(),
+    // Content Metrics
+    wordCount: row.word_count || undefined,
+    estimatedReadingTime: row.estimated_reading_time || undefined,
+
+    // Engagement Metrics
+    viewCount: row.view_count || 0,
+    likeCount: row.like_count || 0,
+    shareCount: row.share_count || 0,
+    commentCount: row.comment_count || 0,
+    bookmarkCount: row.bookmark_count || 0,
+
+    // Timestamps
+    createdAt: row.created_at.toISOString(),
+    updatedAt: row.updated_at.toISOString(),
+  };
+}
+
+export function toContentItemResponseDTO(
+  row: ContentItemRow & {
+    author?: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      displayName?: string;
+      avatarUrl?: string;
+    };
+  }
+): ContentItemResponse {
+  const entity = toContentItemEntity(row);
+
+  // Compute derived fields
+  const isPublished = row.status === 'published';
+  const isDraft = row.status === 'draft';
+  const isScheduled =
+    row.status === 'scheduled' &&
+    row.scheduled_at &&
+    new Date(row.scheduled_at) > new Date();
+
+  return {
+    ...entity,
+
+    // Computed fields
+    isPublished,
+    isDraft,
+    isScheduled,
+
+    // Related data
+    author: row.author,
   };
 }
 ```
@@ -164,41 +201,43 @@ export function toContentItemResponseDTO(
 - Handle null/undefined values properly
 - Ensure contract compliance
 
-### 3. Contracts (`lib/contracts/`)
+### 3. Contracts (`packages/contracts/`)
 
 Contracts define API response schemas using Zod for validation:
 
 ```typescript
-// lib/contracts/content.response.ts
+// packages/contracts/src/entities/content.schema.ts
 import { z } from 'zod';
 
-export const contentItemResponseSchema = z.object({
+export const ContentItemEntitySchema = z.object({
   id: z.string().uuid(),
-  title: z.string().min(1),
-  slug: z.string().regex(/^[a-z0-9-]+$/),
-  excerpt: z.string(),
-  content: z.string(),
+  title: z.string(),
+  slug: z.string(),
+  excerpt: z.string().optional(),
+  content: z.string().optional(),
   authorId: z.string().uuid(),
-  coAuthors: z.array(z.string()),
+  coAuthors: z
+    .array(
+      z.object({
+        id: z.string().uuid(),
+        firstName: z.string(),
+        lastName: z.string(),
+        displayName: z.string().optional(),
+      })
+    )
+    .default([]),
   contentType: z.enum([
     'article',
     'video',
-    'podcast',
-    'framework',
-    'tool',
-    'case_study',
-    'interview',
-    'course_lesson',
-  ]),
-  format: z.enum([
-    'text',
-    'video',
     'audio',
-    'interactive',
-    'pdf',
-    'presentation',
+    'podcast',
+    'course',
+    'book',
   ]),
-  wordCount: z.number().int().min(0),
+  format: z
+    .enum(['text', 'markdown', 'html', 'video', 'audio'])
+    .default('text'),
+  wordCount: z.number().int().positive().optional(),
   estimatedReadingTime: z.number().int().min(0),
   viewCount: z.number().int().min(0),
   likeCount: z.number().int().min(0),

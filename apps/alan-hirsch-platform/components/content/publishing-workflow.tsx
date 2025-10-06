@@ -1,7 +1,7 @@
 'use client';
 
+import type { ContentItemResponse } from '@platform/contracts';
 import { createSupabaseClient } from '@platform/database';
-import type { ContentItemResponse } from '@platform/shared/contracts';
 import { cn } from '@platform/shared/utils';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';

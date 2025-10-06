@@ -1,5 +1,5 @@
-import type { NewCommunity, NewCommunityMembership, NewCommunityPost } from '@/lib/contracts';
 import { communities, communityMemberships, communityPosts, userProfiles } from '../schema';
+import type { NewCommunity, NewCommunityMembership, NewCommunityPost } from '../schema/community';
 export interface QueryContext {
     organizationId?: string;
     userId?: string;

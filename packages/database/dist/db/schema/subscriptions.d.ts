@@ -679,6 +679,23 @@ export declare const userSubscriptions: import("drizzle-orm/pg-core").PgTableWit
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
+        cancellationReason: import("drizzle-orm/pg-core").PgColumn<{
+            name: "cancellation_reason";
+            tableName: "user_subscriptions";
+            dataType: "string";
+            columnType: "PgText";
+            data: string;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
         cancelAtPeriodEnd: import("drizzle-orm/pg-core").PgColumn<{
             name: "cancel_at_period_end";
             tableName: "user_subscriptions";
@@ -1009,12 +1026,29 @@ export declare const transactions: import("drizzle-orm/pg-core").PgTableWithColu
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
+        status: import("drizzle-orm/pg-core").PgColumn<{
+            name: "status";
+            tableName: "transactions";
+            dataType: "string";
+            columnType: "PgText";
+            data: "cancelled" | "pending" | "failed" | "succeeded" | "refunded";
+            driverParam: string;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: ["pending", "succeeded", "failed", "cancelled", "refunded"];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
         paymentStatus: import("drizzle-orm/pg-core").PgColumn<{
             name: "payment_status";
             tableName: "transactions";
             dataType: "string";
             columnType: "PgText";
-            data: "pending" | "failed" | "cancelled" | "succeeded" | "refunded";
+            data: "cancelled" | "pending" | "failed" | "succeeded" | "refunded";
             driverParam: string;
             notNull: true;
             hasDefault: false;
@@ -1132,6 +1166,23 @@ export declare const transactions: import("drizzle-orm/pg-core").PgTableWithColu
         }, {}, {}>;
         createdAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
+            tableName: "transactions";
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
+            driverParam: string;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        updatedAt: import("drizzle-orm/pg-core").PgColumn<{
+            name: "updated_at";
             tableName: "transactions";
             dataType: "date";
             columnType: "PgTimestamp";

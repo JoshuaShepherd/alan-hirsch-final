@@ -1,5 +1,5 @@
-import type { NewOrganization, NewOrganizationMembership } from '@/lib/contracts';
 import { organizationMemberships, organizations, userProfiles } from '../schema';
+import type { NewOrganization, NewOrganizationMembership } from '../schema/auth';
 export interface QueryContext {
     organizationId?: string;
     userId?: string;

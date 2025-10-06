@@ -66,17 +66,23 @@ export default function AssessmentManagePage() {
   const filters = {
     page: 1,
     limit: 50,
-    search: searchTerm || undefined,
-    assessmentType: selectedType
-      ? (selectedType as
-          | 'apest'
-          | 'mdna'
-          | 'cultural_intelligence'
-          | 'leadership_style'
-          | 'spiritual_gifts'
-          | 'other')
+    query: searchTerm || '',
+    assessment_type: selectedType
+      ? [
+          selectedType as
+            | 'apest'
+            | 'mdna'
+            | 'cultural_intelligence'
+            | 'leadership_style'
+            | 'spiritual_gifts'
+            | 'other',
+        ]
       : undefined,
-    status: selectedStatus as 'draft' | 'active' | 'archived' | 'under_review',
+    status: [
+      selectedStatus as 'draft' | 'active' | 'archived' | 'under_review',
+    ],
+    sort_by: 'created_at' as const,
+    sort_order: 'desc' as const,
   };
 
   const {

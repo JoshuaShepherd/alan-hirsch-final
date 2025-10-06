@@ -378,7 +378,12 @@ export async function searchContentByTheologicalThemes(themes, context, filters 
     ];
     // Add context-based filtering for draft content
     if (context.userId && context.role !== 'admin') {
-        conditions.push(or(eq(contentItems.status, 'published'), and(eq(contentItems.status, 'draft'), eq(contentItems.authorId, context.userId))));
+        const publishedCondition = eq(contentItems.status, 'published');
+        const draftCondition = and(eq(contentItems.status, 'draft'), eq(contentItems.authorId, context.userId));
+        const combinedCondition = or(publishedCondition, draftCondition);
+        if (combinedCondition) {
+            conditions.push(combinedCondition);
+        }
     }
     const [results, totalCount] = await Promise.all([
         db

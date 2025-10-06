@@ -407,11 +407,7 @@ export async function getDefaultPaymentMethod(userId, context) {
 export async function createPaymentMethod(paymentMethodData, context) {
     const result = await db
         .insert(paymentMethods)
-        .values({
-        ...paymentMethodData,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    })
+        .values(paymentMethodData)
         .returning();
     if (!hasResults(result)) {
         throw new Error('Failed to create payment method');

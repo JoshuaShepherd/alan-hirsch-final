@@ -1,14 +1,13 @@
 import {
-  createPaginatedRouteHandler,
+  AssessmentApiResponseSchema,
+  CreateAssessmentApiRequestSchema,
+} from '@platform/contracts';
+import { z } from 'zod';
+import {
   createQuerySchema,
   createRouteHandler,
-} from '@platform/shared/api/route-handler';
-import {
-  createMinistryAssessmentRequestSchema,
-  ministryAssessmentResponseSchema,
-} from '@platform/shared/contracts';
-import { assessmentService } from '@platform/shared/services';
-import { z } from 'zod';
+} from '../../../../../lib/api/route-handlers';
+import { assessmentService } from '../../../../../lib/services';
 
 // ============================================================================
 // MINISTRY ASSESSMENTS API ROUTES
@@ -47,47 +46,37 @@ const ministryAssessmentQuerySchema = createQuerySchema({
 });
 
 // GET /api/ministry/assessments - List ministry assessments with enhanced filtering
-export const GET = createPaginatedRouteHandler({
+export const GET = createRouteHandler({
   inputSchema: ministryAssessmentQuerySchema,
-  outputSchema: ministryAssessmentResponseSchema,
+  outputSchema: AssessmentApiResponseSchema.array(),
   method: 'GET',
   handler: async (query, context) => {
-    // Add ministry-specific filtering and context
-    const ministryQuery = {
-      ...query,
-      ministryContext: {
-        userMinistryRole: context.user.ministryRole,
-        organizationId: context.user.organizationId,
-        culturalContext: context.user.culturalContext,
-      },
-    };
+    const result = await assessmentService.findMany(query, context);
 
-    return await assessmentService.searchMinistryAssessments(
-      ministryQuery,
-      context
-    );
+    if (!result.success || !result.data) {
+      throw new Error(
+        result.error?.message || 'Failed to fetch ministry assessments'
+      );
+    }
+
+    return result.data;
   },
 });
 
 // POST /api/ministry/assessments - Create new ministry assessment
 export const POST = createRouteHandler({
-  inputSchema: createMinistryAssessmentRequestSchema,
-  outputSchema: ministryAssessmentResponseSchema,
+  inputSchema: CreateAssessmentApiRequestSchema,
+  outputSchema: AssessmentApiResponseSchema,
   method: 'POST',
   handler: async (data, context) => {
-    // Add ministry context to creation data
-    const ministryData = {
-      ...data,
-      ministryContext: {
-        createdBy: context.user.id,
-        organizationId: context.user.organizationId,
-        userMinistryRole: context.user.ministryRole,
-      },
-    };
+    const result = await assessmentService.create(data, context);
 
-    return await assessmentService.createMinistryAssessment(
-      ministryData,
-      context
-    );
+    if (!result.success || !result.data) {
+      throw new Error(
+        result.error?.message || 'Failed to create ministry assessment'
+      );
+    }
+
+    return result.data;
   },
 });

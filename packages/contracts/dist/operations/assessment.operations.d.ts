@@ -6,153 +6,149 @@ import { z } from 'zod';
 export declare const CreateAssessmentOperationSchema: z.ZodObject<{
     status: z.ZodDefault<z.ZodEnum<["draft", "active", "archived", "under_review"]>>;
     description: z.ZodOptional<z.ZodString>;
-    assessment_type: z.ZodEnum<["apest", "mdna", "cultural_intelligence", "leadership_style", "spiritual_gifts", "other"]>;
-    questions_count: z.ZodNumber;
-    estimated_duration: z.ZodOptional<z.ZodNumber>;
-    passing_score: z.ZodOptional<z.ZodNumber>;
+    publishedAt: z.ZodOptional<z.ZodString>;
+    estimatedDuration: z.ZodOptional<z.ZodNumber>;
     version: z.ZodDefault<z.ZodString>;
-    language: z.ZodDefault<z.ZodString>;
-    cultural_adaptation: z.ZodDefault<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "universal", "global"]>>;
-    research_backed: z.ZodDefault<z.ZodBoolean>;
-    validity_score: z.ZodOptional<z.ZodNumber>;
-    reliability_score: z.ZodOptional<z.ZodNumber>;
+    passingScore: z.ZodOptional<z.ZodNumber>;
+    validityScore: z.ZodOptional<z.ZodNumber>;
+    reliabilityScore: z.ZodOptional<z.ZodNumber>;
     instructions: z.ZodOptional<z.ZodString>;
-    scoring_method: z.ZodDefault<z.ZodEnum<["likert_5", "likert_7", "binary", "ranking", "weighted"]>>;
-    published_at: z.ZodOptional<z.ZodString>;
+    language: z.ZodDefault<z.ZodString>;
+    culturalAdaptation: z.ZodDefault<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "universal", "global"]>>;
+    researchBacked: z.ZodDefault<z.ZodBoolean>;
+    scoringMethod: z.ZodDefault<z.ZodEnum<["likert_5", "likert_7", "binary", "ranking", "weighted"]>>;
+    assessmentType: z.ZodEnum<["apest", "mdna", "cultural_intelligence", "leadership_style", "spiritual_gifts", "other"]>;
+    questionsCount: z.ZodNumber;
 } & {
     name: z.ZodEffects<z.ZodString, string, string>;
     slug: z.ZodEffects<z.ZodString, string, string>;
 }, "strip", z.ZodTypeAny, {
-    status: "active" | "draft" | "archived" | "under_review";
     name: string;
+    status: "active" | "draft" | "archived" | "under_review";
     slug: string;
-    assessment_type: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts";
-    questions_count: number;
     version: string;
+    assessmentType: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts";
+    questionsCount: number;
     language: string;
-    cultural_adaptation: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global";
-    research_backed: boolean;
-    scoring_method: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted";
+    culturalAdaptation: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "global" | "universal";
+    researchBacked: boolean;
+    scoringMethod: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted";
     description?: string | undefined;
-    estimated_duration?: number | undefined;
-    passing_score?: number | undefined;
-    validity_score?: number | undefined;
-    reliability_score?: number | undefined;
+    publishedAt?: string | undefined;
+    estimatedDuration?: number | undefined;
+    passingScore?: number | undefined;
+    validityScore?: number | undefined;
+    reliabilityScore?: number | undefined;
     instructions?: string | undefined;
-    published_at?: string | undefined;
 }, {
     name: string;
     slug: string;
-    assessment_type: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts";
-    questions_count: number;
+    assessmentType: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts";
+    questionsCount: number;
     status?: "active" | "draft" | "archived" | "under_review" | undefined;
     description?: string | undefined;
-    estimated_duration?: number | undefined;
-    passing_score?: number | undefined;
+    publishedAt?: string | undefined;
+    estimatedDuration?: number | undefined;
     version?: string | undefined;
-    language?: string | undefined;
-    cultural_adaptation?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    research_backed?: boolean | undefined;
-    validity_score?: number | undefined;
-    reliability_score?: number | undefined;
+    passingScore?: number | undefined;
+    validityScore?: number | undefined;
+    reliabilityScore?: number | undefined;
     instructions?: string | undefined;
-    scoring_method?: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted" | undefined;
-    published_at?: string | undefined;
+    language?: string | undefined;
+    culturalAdaptation?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "global" | "universal" | undefined;
+    researchBacked?: boolean | undefined;
+    scoringMethod?: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted" | undefined;
 }>;
 /**
  * Update Assessment Operation Schema
  * Derived from UpdateAssessmentSchema with operation-specific validation
  */
-export declare const UpdateAssessmentOperationSchema: z.ZodEffects<z.ZodObject<{
+export declare const UpdateAssessmentOperationSchema: z.ZodEffects<z.ZodObject<Omit<{
     status: z.ZodOptional<z.ZodDefault<z.ZodEnum<["draft", "active", "archived", "under_review"]>>>;
+    description: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    publishedAt: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    estimatedDuration: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    version: z.ZodOptional<z.ZodDefault<z.ZodString>>;
+    passingScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    validityScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    reliabilityScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    instructions: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    language: z.ZodOptional<z.ZodDefault<z.ZodString>>;
+    culturalAdaptation: z.ZodOptional<z.ZodDefault<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "universal", "global"]>>>;
+    researchBacked: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+    scoringMethod: z.ZodOptional<z.ZodDefault<z.ZodEnum<["likert_5", "likert_7", "binary", "ranking", "weighted"]>>>;
     name: z.ZodOptional<z.ZodString>;
     slug: z.ZodOptional<z.ZodString>;
-    description: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    assessment_type: z.ZodOptional<z.ZodEnum<["apest", "mdna", "cultural_intelligence", "leadership_style", "spiritual_gifts", "other"]>>;
-    questions_count: z.ZodOptional<z.ZodNumber>;
-    estimated_duration: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    passing_score: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    version: z.ZodOptional<z.ZodDefault<z.ZodString>>;
-    language: z.ZodOptional<z.ZodDefault<z.ZodString>>;
-    cultural_adaptation: z.ZodOptional<z.ZodDefault<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "universal", "global"]>>>;
-    research_backed: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
-    validity_score: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    reliability_score: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    instructions: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    scoring_method: z.ZodOptional<z.ZodDefault<z.ZodEnum<["likert_5", "likert_7", "binary", "ranking", "weighted"]>>>;
-    published_at: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-}, "strip", z.ZodTypeAny, {
-    status?: "active" | "draft" | "archived" | "under_review" | undefined;
+    assessmentType: z.ZodOptional<z.ZodEnum<["apest", "mdna", "cultural_intelligence", "leadership_style", "spiritual_gifts", "other"]>>;
+    questionsCount: z.ZodOptional<z.ZodNumber>;
+}, "slug">, "strip", z.ZodTypeAny, {
     name?: string | undefined;
-    slug?: string | undefined;
+    status?: "active" | "draft" | "archived" | "under_review" | undefined;
     description?: string | undefined;
-    assessment_type?: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts" | undefined;
-    questions_count?: number | undefined;
-    estimated_duration?: number | undefined;
-    passing_score?: number | undefined;
+    publishedAt?: string | undefined;
+    estimatedDuration?: number | undefined;
     version?: string | undefined;
-    language?: string | undefined;
-    cultural_adaptation?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    research_backed?: boolean | undefined;
-    validity_score?: number | undefined;
-    reliability_score?: number | undefined;
+    assessmentType?: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts" | undefined;
+    questionsCount?: number | undefined;
+    passingScore?: number | undefined;
+    validityScore?: number | undefined;
+    reliabilityScore?: number | undefined;
     instructions?: string | undefined;
-    scoring_method?: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted" | undefined;
-    published_at?: string | undefined;
+    language?: string | undefined;
+    culturalAdaptation?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "global" | "universal" | undefined;
+    researchBacked?: boolean | undefined;
+    scoringMethod?: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted" | undefined;
 }, {
-    status?: "active" | "draft" | "archived" | "under_review" | undefined;
     name?: string | undefined;
-    slug?: string | undefined;
+    status?: "active" | "draft" | "archived" | "under_review" | undefined;
     description?: string | undefined;
-    assessment_type?: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts" | undefined;
-    questions_count?: number | undefined;
-    estimated_duration?: number | undefined;
-    passing_score?: number | undefined;
+    publishedAt?: string | undefined;
+    estimatedDuration?: number | undefined;
     version?: string | undefined;
-    language?: string | undefined;
-    cultural_adaptation?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    research_backed?: boolean | undefined;
-    validity_score?: number | undefined;
-    reliability_score?: number | undefined;
+    assessmentType?: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts" | undefined;
+    questionsCount?: number | undefined;
+    passingScore?: number | undefined;
+    validityScore?: number | undefined;
+    reliabilityScore?: number | undefined;
     instructions?: string | undefined;
-    scoring_method?: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted" | undefined;
-    published_at?: string | undefined;
+    language?: string | undefined;
+    culturalAdaptation?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "global" | "universal" | undefined;
+    researchBacked?: boolean | undefined;
+    scoringMethod?: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted" | undefined;
 }>, {
-    status?: "active" | "draft" | "archived" | "under_review" | undefined;
     name?: string | undefined;
-    slug?: string | undefined;
+    status?: "active" | "draft" | "archived" | "under_review" | undefined;
     description?: string | undefined;
-    assessment_type?: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts" | undefined;
-    questions_count?: number | undefined;
-    estimated_duration?: number | undefined;
-    passing_score?: number | undefined;
+    publishedAt?: string | undefined;
+    estimatedDuration?: number | undefined;
     version?: string | undefined;
-    language?: string | undefined;
-    cultural_adaptation?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    research_backed?: boolean | undefined;
-    validity_score?: number | undefined;
-    reliability_score?: number | undefined;
+    assessmentType?: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts" | undefined;
+    questionsCount?: number | undefined;
+    passingScore?: number | undefined;
+    validityScore?: number | undefined;
+    reliabilityScore?: number | undefined;
     instructions?: string | undefined;
-    scoring_method?: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted" | undefined;
-    published_at?: string | undefined;
+    language?: string | undefined;
+    culturalAdaptation?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "global" | "universal" | undefined;
+    researchBacked?: boolean | undefined;
+    scoringMethod?: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted" | undefined;
 }, {
-    status?: "active" | "draft" | "archived" | "under_review" | undefined;
     name?: string | undefined;
-    slug?: string | undefined;
+    status?: "active" | "draft" | "archived" | "under_review" | undefined;
     description?: string | undefined;
-    assessment_type?: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts" | undefined;
-    questions_count?: number | undefined;
-    estimated_duration?: number | undefined;
-    passing_score?: number | undefined;
+    publishedAt?: string | undefined;
+    estimatedDuration?: number | undefined;
     version?: string | undefined;
-    language?: string | undefined;
-    cultural_adaptation?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    research_backed?: boolean | undefined;
-    validity_score?: number | undefined;
-    reliability_score?: number | undefined;
+    assessmentType?: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts" | undefined;
+    questionsCount?: number | undefined;
+    passingScore?: number | undefined;
+    validityScore?: number | undefined;
+    reliabilityScore?: number | undefined;
     instructions?: string | undefined;
-    scoring_method?: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted" | undefined;
-    published_at?: string | undefined;
+    language?: string | undefined;
+    culturalAdaptation?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "global" | "universal" | undefined;
+    researchBacked?: boolean | undefined;
+    scoringMethod?: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted" | undefined;
 }>;
 /**
  * Get Assessment by ID Operation Schema
@@ -179,32 +175,16 @@ export declare const GetAssessmentByIdOperationSchema: z.ZodObject<{
  * Paginated assessment listing with filters
  */
 export declare const ListAssessmentsOperationSchema: z.ZodObject<{
-    id: z.ZodOptional<z.ZodString>;
-    name: z.ZodOptional<z.ZodString>;
-    slug: z.ZodOptional<z.ZodString>;
-    description: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    questions_count: z.ZodOptional<z.ZodNumber>;
-    estimated_duration: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    passing_score: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    version: z.ZodOptional<z.ZodDefault<z.ZodString>>;
-    validity_score: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    reliability_score: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    instructions: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    scoring_method: z.ZodOptional<z.ZodDefault<z.ZodEnum<["likert_5", "likert_7", "binary", "ranking", "weighted"]>>>;
-    created_at: z.ZodOptional<z.ZodString>;
-    updated_at: z.ZodOptional<z.ZodString>;
-    published_at: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-} & {
     search: z.ZodOptional<z.ZodString>;
-    assessment_type: z.ZodOptional<z.ZodArray<z.ZodEnum<["apest", "mdna", "cultural_intelligence", "leadership_style", "spiritual_gifts", "other"]>, "many">>;
-    status: z.ZodOptional<z.ZodArray<z.ZodEnum<["draft", "active", "archived", "under_review"]>, "many">>;
-    language: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-    cultural_adaptation: z.ZodOptional<z.ZodArray<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "universal", "global"]>, "many">>;
-    research_backed: z.ZodOptional<z.ZodBoolean>;
-    created_after: z.ZodOptional<z.ZodString>;
-    created_before: z.ZodOptional<z.ZodString>;
-    published_after: z.ZodOptional<z.ZodString>;
-    published_before: z.ZodOptional<z.ZodString>;
+    assessmentType: z.ZodOptional<z.ZodString>;
+    status: z.ZodOptional<z.ZodString>;
+    language: z.ZodOptional<z.ZodString>;
+    culturalAdaptation: z.ZodOptional<z.ZodString>;
+    researchBacked: z.ZodOptional<z.ZodBoolean>;
+    sortBy: z.ZodDefault<z.ZodEnum<["createdAt", "updatedAt", "publishedAt", "name", "questionsCount", "estimatedDuration"]>>;
+    sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
+    includeQuestions: z.ZodDefault<z.ZodBoolean>;
+    includeStatistics: z.ZodDefault<z.ZodBoolean>;
 } & {
     page: z.ZodDefault<z.ZodNumber>;
     limit: z.ZodDefault<z.ZodNumber>;
@@ -216,69 +196,39 @@ export declare const ListAssessmentsOperationSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     page: number;
     limit: number;
-    offset: number;
-    sort_by: "created_at" | "updated_at" | "name" | "questions_count" | "published_at";
+    sortBy: "name" | "createdAt" | "updatedAt" | "publishedAt" | "estimatedDuration" | "questionsCount";
+    sortOrder: "asc" | "desc";
+    sort_by: "name" | "published_at" | "created_at" | "updated_at" | "questions_count";
     sort_order: "asc" | "desc";
+    offset: number;
     include_questions: boolean;
     include_statistics: boolean;
-    status?: ("active" | "draft" | "archived" | "under_review")[] | undefined;
-    id?: string | undefined;
-    created_at?: string | undefined;
-    updated_at?: string | undefined;
+    includeQuestions: boolean;
+    includeStatistics: boolean;
+    status?: string | undefined;
     search?: string | undefined;
-    created_after?: string | undefined;
-    created_before?: string | undefined;
-    name?: string | undefined;
-    slug?: string | undefined;
-    description?: string | undefined;
-    assessment_type?: ("other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts")[] | undefined;
-    questions_count?: number | undefined;
-    estimated_duration?: number | undefined;
-    passing_score?: number | undefined;
-    version?: string | undefined;
-    language?: string[] | undefined;
-    cultural_adaptation?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global")[] | undefined;
-    research_backed?: boolean | undefined;
-    validity_score?: number | undefined;
-    reliability_score?: number | undefined;
-    instructions?: string | undefined;
-    scoring_method?: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted" | undefined;
-    published_at?: string | undefined;
-    published_after?: string | undefined;
-    published_before?: string | undefined;
+    assessmentType?: string | undefined;
+    language?: string | undefined;
+    culturalAdaptation?: string | undefined;
+    researchBacked?: boolean | undefined;
 }, {
-    status?: ("active" | "draft" | "archived" | "under_review")[] | undefined;
-    id?: string | undefined;
-    created_at?: string | undefined;
-    updated_at?: string | undefined;
-    search?: string | undefined;
-    created_after?: string | undefined;
-    created_before?: string | undefined;
-    name?: string | undefined;
-    slug?: string | undefined;
-    description?: string | undefined;
-    assessment_type?: ("other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts")[] | undefined;
-    questions_count?: number | undefined;
-    estimated_duration?: number | undefined;
-    passing_score?: number | undefined;
-    version?: string | undefined;
-    language?: string[] | undefined;
-    cultural_adaptation?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global")[] | undefined;
-    research_backed?: boolean | undefined;
-    validity_score?: number | undefined;
-    reliability_score?: number | undefined;
-    instructions?: string | undefined;
-    scoring_method?: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted" | undefined;
-    published_at?: string | undefined;
-    published_after?: string | undefined;
-    published_before?: string | undefined;
+    status?: string | undefined;
     page?: number | undefined;
     limit?: number | undefined;
-    offset?: number | undefined;
-    sort_by?: "created_at" | "updated_at" | "name" | "questions_count" | "published_at" | undefined;
+    search?: string | undefined;
+    sortBy?: "name" | "createdAt" | "updatedAt" | "publishedAt" | "estimatedDuration" | "questionsCount" | undefined;
+    sortOrder?: "asc" | "desc" | undefined;
+    sort_by?: "name" | "published_at" | "created_at" | "updated_at" | "questions_count" | undefined;
     sort_order?: "asc" | "desc" | undefined;
+    offset?: number | undefined;
+    assessmentType?: string | undefined;
+    language?: string | undefined;
+    culturalAdaptation?: string | undefined;
+    researchBacked?: boolean | undefined;
     include_questions?: boolean | undefined;
     include_statistics?: boolean | undefined;
+    includeQuestions?: boolean | undefined;
+    includeStatistics?: boolean | undefined;
 }>;
 /**
  * Search Assessments Operation Schema
@@ -297,122 +247,177 @@ export declare const SearchAssessmentsOperationSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     page: number;
     limit: number;
-    sort_by: "created_at" | "name" | "published_at" | "relevance";
-    sort_order: "asc" | "desc";
     query: string;
+    sort_by: "name" | "published_at" | "relevance" | "created_at";
+    sort_order: "asc" | "desc";
     status?: ("active" | "draft" | "archived" | "under_review")[] | undefined;
-    assessment_type?: ("other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts")[] | undefined;
     language?: string[] | undefined;
+    assessment_type?: ("other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts")[] | undefined;
     research_backed?: boolean | undefined;
 }, {
     query: string;
     status?: ("active" | "draft" | "archived" | "under_review")[] | undefined;
-    assessment_type?: ("other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts")[] | undefined;
-    language?: string[] | undefined;
-    research_backed?: boolean | undefined;
     page?: number | undefined;
     limit?: number | undefined;
-    sort_by?: "created_at" | "name" | "published_at" | "relevance" | undefined;
+    sort_by?: "name" | "published_at" | "relevance" | "created_at" | undefined;
     sort_order?: "asc" | "desc" | undefined;
+    language?: string[] | undefined;
+    assessment_type?: ("other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts")[] | undefined;
+    research_backed?: boolean | undefined;
 }>;
 /**
  * Create Assessment Question Operation Schema
  * Derived from CreateAssessmentQuestionSchema with operation-specific validation
  */
 export declare const CreateAssessmentQuestionOperationSchema: z.ZodObject<{
-    assessment_id: z.ZodString;
-    question_type: z.ZodEnum<["likert", "multiple_choice", "binary", "ranking", "text"]>;
     category: z.ZodOptional<z.ZodString>;
-    apest_dimension: z.ZodOptional<z.ZodEnum<["apostolic", "prophetic", "evangelistic", "shepherding", "teaching"]>>;
-    answer_options: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
-    is_required: z.ZodDefault<z.ZodBoolean>;
+    apestDimension: z.ZodOptional<z.ZodEnum<["apostolic", "prophetic", "evangelistic", "shepherding", "teaching"]>>;
+    answerOptions: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        value: z.ZodNumber;
+        label: z.ZodString;
+        description: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        value: number;
+        label: string;
+        description?: string | undefined;
+    }, {
+        value: number;
+        label: string;
+        description?: string | undefined;
+    }>, "many">>;
+    isRequired: z.ZodDefault<z.ZodBoolean>;
     weight: z.ZodDefault<z.ZodNumber>;
-    reverse_scored: z.ZodDefault<z.ZodBoolean>;
+    reverseScored: z.ZodDefault<z.ZodBoolean>;
+} & {
+    assessmentId: z.ZodString;
+    questionText: z.ZodString;
+    questionType: z.ZodEnum<["likert", "multiple_choice", "binary", "ranking", "text"]>;
+    orderIndex: z.ZodNumber;
 } & {
     question_text: z.ZodEffects<z.ZodString, string, string>;
     order_index: z.ZodEffects<z.ZodNumber, number, number>;
 }, "strip", z.ZodTypeAny, {
-    assessment_id: string;
-    question_text: string;
-    question_type: "binary" | "ranking" | "likert" | "multiple_choice" | "text";
+    orderIndex: number;
     order_index: number;
-    is_required: boolean;
+    assessmentId: string;
+    questionText: string;
+    questionType: "text" | "binary" | "ranking" | "likert" | "multiple_choice";
+    isRequired: boolean;
     weight: number;
-    reverse_scored: boolean;
-    category?: string | undefined;
-    apest_dimension?: "apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching" | undefined;
-    answer_options?: Record<string, unknown> | undefined;
-}, {
-    assessment_id: string;
+    reverseScored: boolean;
     question_text: string;
-    question_type: "binary" | "ranking" | "likert" | "multiple_choice" | "text";
-    order_index: number;
     category?: string | undefined;
-    apest_dimension?: "apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching" | undefined;
-    answer_options?: Record<string, unknown> | undefined;
-    is_required?: boolean | undefined;
+    apestDimension?: "apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching" | undefined;
+    answerOptions?: {
+        value: number;
+        label: string;
+        description?: string | undefined;
+    }[] | undefined;
+}, {
+    orderIndex: number;
+    order_index: number;
+    assessmentId: string;
+    questionText: string;
+    questionType: "text" | "binary" | "ranking" | "likert" | "multiple_choice";
+    question_text: string;
+    category?: string | undefined;
+    apestDimension?: "apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching" | undefined;
+    answerOptions?: {
+        value: number;
+        label: string;
+        description?: string | undefined;
+    }[] | undefined;
+    isRequired?: boolean | undefined;
     weight?: number | undefined;
-    reverse_scored?: boolean | undefined;
+    reverseScored?: boolean | undefined;
 }>;
 /**
  * Update Assessment Question Operation Schema
  * Derived from UpdateAssessmentQuestionSchema with operation-specific validation
  */
 export declare const UpdateAssessmentQuestionOperationSchema: z.ZodEffects<z.ZodObject<{
-    assessment_id: z.ZodOptional<z.ZodString>;
-    question_text: z.ZodOptional<z.ZodString>;
-    question_type: z.ZodOptional<z.ZodEnum<["likert", "multiple_choice", "binary", "ranking", "text"]>>;
-    order_index: z.ZodOptional<z.ZodNumber>;
     category: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    apest_dimension: z.ZodOptional<z.ZodOptional<z.ZodEnum<["apostolic", "prophetic", "evangelistic", "shepherding", "teaching"]>>>;
-    answer_options: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
-    is_required: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+    apestDimension: z.ZodOptional<z.ZodOptional<z.ZodEnum<["apostolic", "prophetic", "evangelistic", "shepherding", "teaching"]>>>;
+    answerOptions: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+        value: z.ZodNumber;
+        label: z.ZodString;
+        description: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        value: number;
+        label: string;
+        description?: string | undefined;
+    }, {
+        value: number;
+        label: string;
+        description?: string | undefined;
+    }>, "many">>>;
+    isRequired: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
     weight: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
-    reverse_scored: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+    reverseScored: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+    assessmentId: z.ZodOptional<z.ZodString>;
+    questionText: z.ZodOptional<z.ZodString>;
+    questionType: z.ZodOptional<z.ZodEnum<["likert", "multiple_choice", "binary", "ranking", "text"]>>;
+    orderIndex: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    assessment_id?: string | undefined;
-    question_text?: string | undefined;
-    question_type?: "binary" | "ranking" | "likert" | "multiple_choice" | "text" | undefined;
-    order_index?: number | undefined;
+    orderIndex?: number | undefined;
     category?: string | undefined;
-    apest_dimension?: "apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching" | undefined;
-    answer_options?: Record<string, unknown> | undefined;
-    is_required?: boolean | undefined;
+    assessmentId?: string | undefined;
+    questionText?: string | undefined;
+    questionType?: "text" | "binary" | "ranking" | "likert" | "multiple_choice" | undefined;
+    apestDimension?: "apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching" | undefined;
+    answerOptions?: {
+        value: number;
+        label: string;
+        description?: string | undefined;
+    }[] | undefined;
+    isRequired?: boolean | undefined;
     weight?: number | undefined;
-    reverse_scored?: boolean | undefined;
+    reverseScored?: boolean | undefined;
 }, {
-    assessment_id?: string | undefined;
-    question_text?: string | undefined;
-    question_type?: "binary" | "ranking" | "likert" | "multiple_choice" | "text" | undefined;
-    order_index?: number | undefined;
+    orderIndex?: number | undefined;
     category?: string | undefined;
-    apest_dimension?: "apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching" | undefined;
-    answer_options?: Record<string, unknown> | undefined;
-    is_required?: boolean | undefined;
+    assessmentId?: string | undefined;
+    questionText?: string | undefined;
+    questionType?: "text" | "binary" | "ranking" | "likert" | "multiple_choice" | undefined;
+    apestDimension?: "apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching" | undefined;
+    answerOptions?: {
+        value: number;
+        label: string;
+        description?: string | undefined;
+    }[] | undefined;
+    isRequired?: boolean | undefined;
     weight?: number | undefined;
-    reverse_scored?: boolean | undefined;
+    reverseScored?: boolean | undefined;
 }>, {
-    assessment_id?: string | undefined;
-    question_text?: string | undefined;
-    question_type?: "binary" | "ranking" | "likert" | "multiple_choice" | "text" | undefined;
-    order_index?: number | undefined;
+    orderIndex?: number | undefined;
     category?: string | undefined;
-    apest_dimension?: "apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching" | undefined;
-    answer_options?: Record<string, unknown> | undefined;
-    is_required?: boolean | undefined;
+    assessmentId?: string | undefined;
+    questionText?: string | undefined;
+    questionType?: "text" | "binary" | "ranking" | "likert" | "multiple_choice" | undefined;
+    apestDimension?: "apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching" | undefined;
+    answerOptions?: {
+        value: number;
+        label: string;
+        description?: string | undefined;
+    }[] | undefined;
+    isRequired?: boolean | undefined;
     weight?: number | undefined;
-    reverse_scored?: boolean | undefined;
+    reverseScored?: boolean | undefined;
 }, {
-    assessment_id?: string | undefined;
-    question_text?: string | undefined;
-    question_type?: "binary" | "ranking" | "likert" | "multiple_choice" | "text" | undefined;
-    order_index?: number | undefined;
+    orderIndex?: number | undefined;
     category?: string | undefined;
-    apest_dimension?: "apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching" | undefined;
-    answer_options?: Record<string, unknown> | undefined;
-    is_required?: boolean | undefined;
+    assessmentId?: string | undefined;
+    questionText?: string | undefined;
+    questionType?: "text" | "binary" | "ranking" | "likert" | "multiple_choice" | undefined;
+    apestDimension?: "apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching" | undefined;
+    answerOptions?: {
+        value: number;
+        label: string;
+        description?: string | undefined;
+    }[] | undefined;
+    isRequired?: boolean | undefined;
     weight?: number | undefined;
-    reverse_scored?: boolean | undefined;
+    reverseScored?: boolean | undefined;
 }>;
 /**
  * Reorder Assessment Questions Operation Schema
@@ -501,16 +506,16 @@ export declare const SaveAssessmentResponsesOperationSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         question_id: string;
         skipped: boolean;
+        confidence?: number | undefined;
         response_value?: number | undefined;
         response_text?: string | undefined;
         response_time?: number | undefined;
-        confidence?: number | undefined;
     }, {
         question_id: string;
+        confidence?: number | undefined;
         response_value?: number | undefined;
         response_text?: string | undefined;
         response_time?: number | undefined;
-        confidence?: number | undefined;
         skipped?: boolean | undefined;
     }>, "many">;
     is_complete: z.ZodDefault<z.ZodBoolean>;
@@ -519,20 +524,20 @@ export declare const SaveAssessmentResponsesOperationSchema: z.ZodObject<{
     responses: {
         question_id: string;
         skipped: boolean;
+        confidence?: number | undefined;
         response_value?: number | undefined;
         response_text?: string | undefined;
         response_time?: number | undefined;
-        confidence?: number | undefined;
     }[];
     is_complete: boolean;
 }, {
     user_assessment_id: string;
     responses: {
         question_id: string;
+        confidence?: number | undefined;
         response_value?: number | undefined;
         response_text?: string | undefined;
         response_time?: number | undefined;
-        confidence?: number | undefined;
         skipped?: boolean | undefined;
     }[];
     is_complete?: boolean | undefined;
@@ -553,43 +558,43 @@ export declare const CompleteUserAssessmentOperationSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         question_id: string;
         skipped: boolean;
+        confidence?: number | undefined;
         response_value?: number | undefined;
         response_text?: string | undefined;
         response_time?: number | undefined;
-        confidence?: number | undefined;
     }, {
         question_id: string;
+        confidence?: number | undefined;
         response_value?: number | undefined;
         response_text?: string | undefined;
         response_time?: number | undefined;
-        confidence?: number | undefined;
         skipped?: boolean | undefined;
     }>, "many">;
     completion_time: z.ZodNumber;
     cultural_adjustment_applied: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
-    completion_time: number;
-    cultural_adjustment_applied: boolean;
     user_assessment_id: string;
     final_responses: {
         question_id: string;
         skipped: boolean;
+        confidence?: number | undefined;
         response_value?: number | undefined;
         response_text?: string | undefined;
         response_time?: number | undefined;
-        confidence?: number | undefined;
     }[];
-}, {
     completion_time: number;
+    cultural_adjustment_applied: boolean;
+}, {
     user_assessment_id: string;
     final_responses: {
         question_id: string;
+        confidence?: number | undefined;
         response_value?: number | undefined;
         response_text?: string | undefined;
         response_time?: number | undefined;
-        confidence?: number | undefined;
         skipped?: boolean | undefined;
     }[];
+    completion_time: number;
     cultural_adjustment_applied?: boolean | undefined;
 }>;
 /**
@@ -602,8 +607,8 @@ export declare const GetUserAssessmentOperationSchema: z.ZodObject<{
     include_responses: z.ZodDefault<z.ZodBoolean>;
     include_insights: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
-    user_assessment_id: string;
     include_responses: boolean;
+    user_assessment_id: string;
     include_assessment: boolean;
     include_insights: boolean;
 }, {
@@ -617,39 +622,20 @@ export declare const GetUserAssessmentOperationSchema: z.ZodObject<{
  * Paginated user assessment listing
  */
 export declare const ListUserAssessmentsOperationSchema: z.ZodObject<{
-    id: z.ZodOptional<z.ZodString>;
-    started_at: z.ZodOptional<z.ZodString>;
-    completed_at: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    completion_percentage: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
-    total_score: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    max_possible_score: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    apostolic_score: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    prophetic_score: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    evangelistic_score: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    shepherding_score: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    teaching_score: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    normalized_scores: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodNumber>>>;
-    completion_time: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    confidence_level: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    cultural_adjustment_applied: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
-    ai_insights: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    personalized_recommendations: z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodString, "many">>>;
-    complementary_gifts: z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodEnum<["apostolic", "prophetic", "evangelistic", "shepherding", "teaching"]>, "many">>>;
-    created_at: z.ZodOptional<z.ZodString>;
-    updated_at: z.ZodOptional<z.ZodString>;
-} & {
-    search: z.ZodOptional<z.ZodString>;
-    user_id: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-    assessment_id: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-    primary_gift: z.ZodOptional<z.ZodArray<z.ZodEnum<["apostolic", "prophetic", "evangelistic", "shepherding", "teaching"]>, "many">>;
-    secondary_gift: z.ZodOptional<z.ZodArray<z.ZodEnum<["apostolic", "prophetic", "evangelistic", "shepherding", "teaching"]>, "many">>;
-    is_completed: z.ZodOptional<z.ZodBoolean>;
-    completion_percentage_min: z.ZodOptional<z.ZodNumber>;
-    completion_percentage_max: z.ZodOptional<z.ZodNumber>;
-    started_after: z.ZodOptional<z.ZodString>;
-    started_before: z.ZodOptional<z.ZodString>;
-    completed_after: z.ZodOptional<z.ZodString>;
-    completed_before: z.ZodOptional<z.ZodString>;
+    userId: z.ZodOptional<z.ZodString>;
+    assessmentId: z.ZodOptional<z.ZodString>;
+    isCompleted: z.ZodOptional<z.ZodBoolean>;
+    primaryGift: z.ZodOptional<z.ZodString>;
+    secondaryGift: z.ZodOptional<z.ZodString>;
+    startedAfter: z.ZodOptional<z.ZodString>;
+    startedBefore: z.ZodOptional<z.ZodString>;
+    completedAfter: z.ZodOptional<z.ZodString>;
+    completedBefore: z.ZodOptional<z.ZodString>;
+    sortBy: z.ZodDefault<z.ZodEnum<["createdAt", "updatedAt", "startedAt", "completedAt", "totalScore", "completionPercentage"]>>;
+    sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
+    includeUser: z.ZodDefault<z.ZodBoolean>;
+    includeAssessment: z.ZodDefault<z.ZodBoolean>;
+    includeResponses: z.ZodDefault<z.ZodBoolean>;
 } & {
     page: z.ZodDefault<z.ZodNumber>;
     limit: z.ZodDefault<z.ZodNumber>;
@@ -661,82 +647,46 @@ export declare const ListUserAssessmentsOperationSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     page: number;
     limit: number;
-    offset: number;
+    sortBy: "createdAt" | "updatedAt" | "completionPercentage" | "startedAt" | "completedAt" | "totalScore";
+    sortOrder: "asc" | "desc";
     sort_by: "created_at" | "started_at" | "completed_at" | "total_score";
     sort_order: "asc" | "desc";
+    offset: number;
     include_assessment: boolean;
+    includeUser: boolean;
+    includeAssessment: boolean;
+    includeResponses: boolean;
     include_user: boolean;
-    id?: string | undefined;
-    created_at?: string | undefined;
-    updated_at?: string | undefined;
-    search?: string | undefined;
-    assessment_id?: string[] | undefined;
-    user_id?: string[] | undefined;
-    started_at?: string | undefined;
-    completed_at?: string | undefined;
-    completion_percentage?: number | undefined;
-    total_score?: number | undefined;
-    max_possible_score?: number | undefined;
-    apostolic_score?: number | undefined;
-    prophetic_score?: number | undefined;
-    evangelistic_score?: number | undefined;
-    shepherding_score?: number | undefined;
-    teaching_score?: number | undefined;
-    normalized_scores?: Record<string, number> | undefined;
-    primary_gift?: ("apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching")[] | undefined;
-    secondary_gift?: ("apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching")[] | undefined;
-    completion_time?: number | undefined;
-    confidence_level?: number | undefined;
-    cultural_adjustment_applied?: boolean | undefined;
-    ai_insights?: string | undefined;
-    personalized_recommendations?: string[] | undefined;
-    complementary_gifts?: ("apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching")[] | undefined;
-    is_completed?: boolean | undefined;
-    completion_percentage_min?: number | undefined;
-    completion_percentage_max?: number | undefined;
-    started_after?: string | undefined;
-    started_before?: string | undefined;
-    completed_after?: string | undefined;
-    completed_before?: string | undefined;
+    userId?: string | undefined;
+    assessmentId?: string | undefined;
+    primaryGift?: string | undefined;
+    secondaryGift?: string | undefined;
+    isCompleted?: boolean | undefined;
+    startedAfter?: string | undefined;
+    startedBefore?: string | undefined;
+    completedAfter?: string | undefined;
+    completedBefore?: string | undefined;
 }, {
-    id?: string | undefined;
-    created_at?: string | undefined;
-    updated_at?: string | undefined;
-    search?: string | undefined;
-    assessment_id?: string[] | undefined;
-    user_id?: string[] | undefined;
-    started_at?: string | undefined;
-    completed_at?: string | undefined;
-    completion_percentage?: number | undefined;
-    total_score?: number | undefined;
-    max_possible_score?: number | undefined;
-    apostolic_score?: number | undefined;
-    prophetic_score?: number | undefined;
-    evangelistic_score?: number | undefined;
-    shepherding_score?: number | undefined;
-    teaching_score?: number | undefined;
-    normalized_scores?: Record<string, number> | undefined;
-    primary_gift?: ("apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching")[] | undefined;
-    secondary_gift?: ("apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching")[] | undefined;
-    completion_time?: number | undefined;
-    confidence_level?: number | undefined;
-    cultural_adjustment_applied?: boolean | undefined;
-    ai_insights?: string | undefined;
-    personalized_recommendations?: string[] | undefined;
-    complementary_gifts?: ("apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching")[] | undefined;
-    is_completed?: boolean | undefined;
-    completion_percentage_min?: number | undefined;
-    completion_percentage_max?: number | undefined;
-    started_after?: string | undefined;
-    started_before?: string | undefined;
-    completed_after?: string | undefined;
-    completed_before?: string | undefined;
     page?: number | undefined;
     limit?: number | undefined;
-    offset?: number | undefined;
+    sortBy?: "createdAt" | "updatedAt" | "completionPercentage" | "startedAt" | "completedAt" | "totalScore" | undefined;
+    sortOrder?: "asc" | "desc" | undefined;
     sort_by?: "created_at" | "started_at" | "completed_at" | "total_score" | undefined;
     sort_order?: "asc" | "desc" | undefined;
+    offset?: number | undefined;
+    userId?: string | undefined;
+    assessmentId?: string | undefined;
+    primaryGift?: string | undefined;
+    secondaryGift?: string | undefined;
     include_assessment?: boolean | undefined;
+    isCompleted?: boolean | undefined;
+    startedAfter?: string | undefined;
+    startedBefore?: string | undefined;
+    completedAfter?: string | undefined;
+    completedBefore?: string | undefined;
+    includeUser?: boolean | undefined;
+    includeAssessment?: boolean | undefined;
+    includeResponses?: boolean | undefined;
     include_user?: boolean | undefined;
 }>;
 /**
@@ -744,91 +694,94 @@ export declare const ListUserAssessmentsOperationSchema: z.ZodObject<{
  * Derived from CreateAssessmentResponseSchema with operation-specific validation
  */
 export declare const CreateAssessmentResponseOperationSchema: z.ZodEffects<z.ZodObject<{
-    user_assessment_id: z.ZodString;
-    question_id: z.ZodString;
-    response_time: z.ZodOptional<z.ZodNumber>;
     confidence: z.ZodOptional<z.ZodNumber>;
     skipped: z.ZodDefault<z.ZodBoolean>;
+    responseValue: z.ZodOptional<z.ZodNumber>;
+    responseText: z.ZodOptional<z.ZodString>;
+    responseTime: z.ZodOptional<z.ZodNumber>;
+} & {
+    userAssessmentId: z.ZodString;
+    questionId: z.ZodString;
 } & {
     response_value: z.ZodOptional<z.ZodNumber>;
     response_text: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    user_assessment_id: string;
-    question_id: string;
     skipped: boolean;
+    userAssessmentId: string;
+    questionId: string;
+    confidence?: number | undefined;
     response_value?: number | undefined;
     response_text?: string | undefined;
-    response_time?: number | undefined;
-    confidence?: number | undefined;
+    responseValue?: number | undefined;
+    responseText?: string | undefined;
+    responseTime?: number | undefined;
 }, {
-    user_assessment_id: string;
-    question_id: string;
+    userAssessmentId: string;
+    questionId: string;
+    confidence?: number | undefined;
     response_value?: number | undefined;
     response_text?: string | undefined;
-    response_time?: number | undefined;
-    confidence?: number | undefined;
     skipped?: boolean | undefined;
+    responseValue?: number | undefined;
+    responseText?: string | undefined;
+    responseTime?: number | undefined;
 }>, {
-    user_assessment_id: string;
-    question_id: string;
     skipped: boolean;
+    userAssessmentId: string;
+    questionId: string;
+    confidence?: number | undefined;
     response_value?: number | undefined;
     response_text?: string | undefined;
-    response_time?: number | undefined;
-    confidence?: number | undefined;
+    responseValue?: number | undefined;
+    responseText?: string | undefined;
+    responseTime?: number | undefined;
 }, {
-    user_assessment_id: string;
-    question_id: string;
+    userAssessmentId: string;
+    questionId: string;
+    confidence?: number | undefined;
     response_value?: number | undefined;
     response_text?: string | undefined;
-    response_time?: number | undefined;
-    confidence?: number | undefined;
     skipped?: boolean | undefined;
+    responseValue?: number | undefined;
+    responseText?: string | undefined;
+    responseTime?: number | undefined;
 }>;
 /**
  * Update Assessment Response Operation Schema
  * Derived from UpdateAssessmentResponseSchema with operation-specific validation
  */
-export declare const UpdateAssessmentResponseOperationSchema: z.ZodEffects<z.ZodObject<{
-    user_assessment_id: z.ZodOptional<z.ZodString>;
-    question_id: z.ZodOptional<z.ZodString>;
-    response_value: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    response_text: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    response_time: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+export declare const UpdateAssessmentResponseOperationSchema: z.ZodEffects<z.ZodObject<Omit<{
     confidence: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
     skipped: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
-}, "strip", z.ZodTypeAny, {
-    user_assessment_id?: string | undefined;
-    question_id?: string | undefined;
-    response_value?: number | undefined;
-    response_text?: string | undefined;
-    response_time?: number | undefined;
+    responseValue: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    responseText: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    responseTime: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    userAssessmentId: z.ZodOptional<z.ZodString>;
+    questionId: z.ZodOptional<z.ZodString>;
+}, "userAssessmentId" | "questionId">, "strip", z.ZodTypeAny, {
     confidence?: number | undefined;
     skipped?: boolean | undefined;
+    responseValue?: number | undefined;
+    responseText?: string | undefined;
+    responseTime?: number | undefined;
 }, {
-    user_assessment_id?: string | undefined;
-    question_id?: string | undefined;
-    response_value?: number | undefined;
-    response_text?: string | undefined;
-    response_time?: number | undefined;
     confidence?: number | undefined;
     skipped?: boolean | undefined;
+    responseValue?: number | undefined;
+    responseText?: string | undefined;
+    responseTime?: number | undefined;
 }>, {
-    user_assessment_id?: string | undefined;
-    question_id?: string | undefined;
-    response_value?: number | undefined;
-    response_text?: string | undefined;
-    response_time?: number | undefined;
     confidence?: number | undefined;
     skipped?: boolean | undefined;
+    responseValue?: number | undefined;
+    responseText?: string | undefined;
+    responseTime?: number | undefined;
 }, {
-    user_assessment_id?: string | undefined;
-    question_id?: string | undefined;
-    response_value?: number | undefined;
-    response_text?: string | undefined;
-    response_time?: number | undefined;
     confidence?: number | undefined;
     skipped?: boolean | undefined;
+    responseValue?: number | undefined;
+    responseText?: string | undefined;
+    responseTime?: number | undefined;
 }>;
 /**
  * Bulk Update Assessment Responses Operation Schema
@@ -846,16 +799,16 @@ export declare const BulkUpdateAssessmentResponsesOperationSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         question_id: string;
         skipped: boolean;
+        confidence?: number | undefined;
         response_value?: number | undefined;
         response_text?: string | undefined;
         response_time?: number | undefined;
-        confidence?: number | undefined;
     }, {
         question_id: string;
+        confidence?: number | undefined;
         response_value?: number | undefined;
         response_text?: string | undefined;
         response_time?: number | undefined;
-        confidence?: number | undefined;
         skipped?: boolean | undefined;
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
@@ -863,19 +816,19 @@ export declare const BulkUpdateAssessmentResponsesOperationSchema: z.ZodObject<{
     responses: {
         question_id: string;
         skipped: boolean;
+        confidence?: number | undefined;
         response_value?: number | undefined;
         response_text?: string | undefined;
         response_time?: number | undefined;
-        confidence?: number | undefined;
     }[];
 }, {
     user_assessment_id: string;
     responses: {
         question_id: string;
+        confidence?: number | undefined;
         response_value?: number | undefined;
         response_text?: string | undefined;
         response_time?: number | undefined;
-        confidence?: number | undefined;
         skipped?: boolean | undefined;
     }[];
 }>;
@@ -921,15 +874,15 @@ export declare const GetUserAssessmentInsightsOperationSchema: z.ZodObject<{
     include_comparisons: z.ZodDefault<z.ZodBoolean>;
     include_trends: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
-    user_assessment_id: string;
-    include_recommendations: boolean;
     include_comparisons: boolean;
     include_trends: boolean;
+    user_assessment_id: string;
+    include_recommendations: boolean;
 }, {
     user_assessment_id: string;
-    include_recommendations?: boolean | undefined;
     include_comparisons?: boolean | undefined;
     include_trends?: boolean | undefined;
+    include_recommendations?: boolean | undefined;
 }>;
 export type CreateAssessmentOperation = z.infer<typeof CreateAssessmentOperationSchema>;
 export type UpdateAssessmentOperation = z.infer<typeof UpdateAssessmentOperationSchema>;
@@ -949,4 +902,301 @@ export type UpdateAssessmentResponseOperation = z.infer<typeof UpdateAssessmentR
 export type BulkUpdateAssessmentResponsesOperation = z.infer<typeof BulkUpdateAssessmentResponsesOperationSchema>;
 export type GetAssessmentStatisticsOperation = z.infer<typeof GetAssessmentStatisticsOperationSchema>;
 export type GetUserAssessmentInsightsOperation = z.infer<typeof GetUserAssessmentInsightsOperationSchema>;
+export declare const createAssessmentQuestionSchema: z.ZodObject<{
+    category: z.ZodOptional<z.ZodString>;
+    apestDimension: z.ZodOptional<z.ZodEnum<["apostolic", "prophetic", "evangelistic", "shepherding", "teaching"]>>;
+    answerOptions: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        value: z.ZodNumber;
+        label: z.ZodString;
+        description: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        value: number;
+        label: string;
+        description?: string | undefined;
+    }, {
+        value: number;
+        label: string;
+        description?: string | undefined;
+    }>, "many">>;
+    isRequired: z.ZodDefault<z.ZodBoolean>;
+    weight: z.ZodDefault<z.ZodNumber>;
+    reverseScored: z.ZodDefault<z.ZodBoolean>;
+} & {
+    assessmentId: z.ZodString;
+    questionText: z.ZodString;
+    questionType: z.ZodEnum<["likert", "multiple_choice", "binary", "ranking", "text"]>;
+    orderIndex: z.ZodNumber;
+} & {
+    question_text: z.ZodEffects<z.ZodString, string, string>;
+    order_index: z.ZodEffects<z.ZodNumber, number, number>;
+}, "strip", z.ZodTypeAny, {
+    orderIndex: number;
+    order_index: number;
+    assessmentId: string;
+    questionText: string;
+    questionType: "text" | "binary" | "ranking" | "likert" | "multiple_choice";
+    isRequired: boolean;
+    weight: number;
+    reverseScored: boolean;
+    question_text: string;
+    category?: string | undefined;
+    apestDimension?: "apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching" | undefined;
+    answerOptions?: {
+        value: number;
+        label: string;
+        description?: string | undefined;
+    }[] | undefined;
+}, {
+    orderIndex: number;
+    order_index: number;
+    assessmentId: string;
+    questionText: string;
+    questionType: "text" | "binary" | "ranking" | "likert" | "multiple_choice";
+    question_text: string;
+    category?: string | undefined;
+    apestDimension?: "apostolic" | "prophetic" | "evangelistic" | "shepherding" | "teaching" | undefined;
+    answerOptions?: {
+        value: number;
+        label: string;
+        description?: string | undefined;
+    }[] | undefined;
+    isRequired?: boolean | undefined;
+    weight?: number | undefined;
+    reverseScored?: boolean | undefined;
+}>;
+export declare const createAssessmentResponseSchema: z.ZodEffects<z.ZodObject<{
+    confidence: z.ZodOptional<z.ZodNumber>;
+    skipped: z.ZodDefault<z.ZodBoolean>;
+    responseValue: z.ZodOptional<z.ZodNumber>;
+    responseText: z.ZodOptional<z.ZodString>;
+    responseTime: z.ZodOptional<z.ZodNumber>;
+} & {
+    userAssessmentId: z.ZodString;
+    questionId: z.ZodString;
+} & {
+    response_value: z.ZodOptional<z.ZodNumber>;
+    response_text: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    skipped: boolean;
+    userAssessmentId: string;
+    questionId: string;
+    confidence?: number | undefined;
+    response_value?: number | undefined;
+    response_text?: string | undefined;
+    responseValue?: number | undefined;
+    responseText?: string | undefined;
+    responseTime?: number | undefined;
+}, {
+    userAssessmentId: string;
+    questionId: string;
+    confidence?: number | undefined;
+    response_value?: number | undefined;
+    response_text?: string | undefined;
+    skipped?: boolean | undefined;
+    responseValue?: number | undefined;
+    responseText?: string | undefined;
+    responseTime?: number | undefined;
+}>, {
+    skipped: boolean;
+    userAssessmentId: string;
+    questionId: string;
+    confidence?: number | undefined;
+    response_value?: number | undefined;
+    response_text?: string | undefined;
+    responseValue?: number | undefined;
+    responseText?: string | undefined;
+    responseTime?: number | undefined;
+}, {
+    userAssessmentId: string;
+    questionId: string;
+    confidence?: number | undefined;
+    response_value?: number | undefined;
+    response_text?: string | undefined;
+    skipped?: boolean | undefined;
+    responseValue?: number | undefined;
+    responseText?: string | undefined;
+    responseTime?: number | undefined;
+}>;
+export declare const createAssessmentSchema: z.ZodObject<{
+    status: z.ZodDefault<z.ZodEnum<["draft", "active", "archived", "under_review"]>>;
+    description: z.ZodOptional<z.ZodString>;
+    publishedAt: z.ZodOptional<z.ZodString>;
+    estimatedDuration: z.ZodOptional<z.ZodNumber>;
+    version: z.ZodDefault<z.ZodString>;
+    passingScore: z.ZodOptional<z.ZodNumber>;
+    validityScore: z.ZodOptional<z.ZodNumber>;
+    reliabilityScore: z.ZodOptional<z.ZodNumber>;
+    instructions: z.ZodOptional<z.ZodString>;
+    language: z.ZodDefault<z.ZodString>;
+    culturalAdaptation: z.ZodDefault<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "universal", "global"]>>;
+    researchBacked: z.ZodDefault<z.ZodBoolean>;
+    scoringMethod: z.ZodDefault<z.ZodEnum<["likert_5", "likert_7", "binary", "ranking", "weighted"]>>;
+    assessmentType: z.ZodEnum<["apest", "mdna", "cultural_intelligence", "leadership_style", "spiritual_gifts", "other"]>;
+    questionsCount: z.ZodNumber;
+} & {
+    name: z.ZodEffects<z.ZodString, string, string>;
+    slug: z.ZodEffects<z.ZodString, string, string>;
+}, "strip", z.ZodTypeAny, {
+    name: string;
+    status: "active" | "draft" | "archived" | "under_review";
+    slug: string;
+    version: string;
+    assessmentType: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts";
+    questionsCount: number;
+    language: string;
+    culturalAdaptation: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "global" | "universal";
+    researchBacked: boolean;
+    scoringMethod: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted";
+    description?: string | undefined;
+    publishedAt?: string | undefined;
+    estimatedDuration?: number | undefined;
+    passingScore?: number | undefined;
+    validityScore?: number | undefined;
+    reliabilityScore?: number | undefined;
+    instructions?: string | undefined;
+}, {
+    name: string;
+    slug: string;
+    assessmentType: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts";
+    questionsCount: number;
+    status?: "active" | "draft" | "archived" | "under_review" | undefined;
+    description?: string | undefined;
+    publishedAt?: string | undefined;
+    estimatedDuration?: number | undefined;
+    version?: string | undefined;
+    passingScore?: number | undefined;
+    validityScore?: number | undefined;
+    reliabilityScore?: number | undefined;
+    instructions?: string | undefined;
+    language?: string | undefined;
+    culturalAdaptation?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "global" | "universal" | undefined;
+    researchBacked?: boolean | undefined;
+    scoringMethod?: "likert_5" | "likert_7" | "binary" | "ranking" | "weighted" | undefined;
+}>;
+export declare const createUserAssessmentSchema: z.ZodObject<{
+    user_id: z.ZodString;
+    assessment_id: z.ZodString;
+    context: z.ZodOptional<z.ZodObject<{
+        organization_id: z.ZodOptional<z.ZodString>;
+        session_id: z.ZodOptional<z.ZodString>;
+        user_agent: z.ZodOptional<z.ZodString>;
+        ip_address: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        organization_id?: string | undefined;
+        session_id?: string | undefined;
+        user_agent?: string | undefined;
+        ip_address?: string | undefined;
+    }, {
+        organization_id?: string | undefined;
+        session_id?: string | undefined;
+        user_agent?: string | undefined;
+        ip_address?: string | undefined;
+    }>>;
+}, "strip", z.ZodTypeAny, {
+    assessment_id: string;
+    user_id: string;
+    context?: {
+        organization_id?: string | undefined;
+        session_id?: string | undefined;
+        user_agent?: string | undefined;
+        ip_address?: string | undefined;
+    } | undefined;
+}, {
+    assessment_id: string;
+    user_id: string;
+    context?: {
+        organization_id?: string | undefined;
+        session_id?: string | undefined;
+        user_agent?: string | undefined;
+        ip_address?: string | undefined;
+    } | undefined;
+}>;
+export declare const assessmentQuestionQuerySchema: z.ZodObject<{
+    id: z.ZodString;
+    include_questions: z.ZodDefault<z.ZodBoolean>;
+    include_responses: z.ZodDefault<z.ZodBoolean>;
+    include_statistics: z.ZodDefault<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    include_questions: boolean;
+    include_responses: boolean;
+    include_statistics: boolean;
+}, {
+    id: string;
+    include_questions?: boolean | undefined;
+    include_responses?: boolean | undefined;
+    include_statistics?: boolean | undefined;
+}>;
+export declare const assessmentResponseQuerySchema: z.ZodObject<{
+    user_assessment_id: z.ZodString;
+    include_assessment: z.ZodDefault<z.ZodBoolean>;
+    include_responses: z.ZodDefault<z.ZodBoolean>;
+    include_insights: z.ZodDefault<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    include_responses: boolean;
+    user_assessment_id: string;
+    include_assessment: boolean;
+    include_insights: boolean;
+}, {
+    user_assessment_id: string;
+    include_responses?: boolean | undefined;
+    include_assessment?: boolean | undefined;
+    include_insights?: boolean | undefined;
+}>;
+export declare const assessmentQuerySchema: z.ZodObject<{
+    search: z.ZodOptional<z.ZodString>;
+    assessmentType: z.ZodOptional<z.ZodString>;
+    status: z.ZodOptional<z.ZodString>;
+    language: z.ZodOptional<z.ZodString>;
+    culturalAdaptation: z.ZodOptional<z.ZodString>;
+    researchBacked: z.ZodOptional<z.ZodBoolean>;
+    sortBy: z.ZodDefault<z.ZodEnum<["createdAt", "updatedAt", "publishedAt", "name", "questionsCount", "estimatedDuration"]>>;
+    sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
+    includeQuestions: z.ZodDefault<z.ZodBoolean>;
+    includeStatistics: z.ZodDefault<z.ZodBoolean>;
+} & {
+    page: z.ZodDefault<z.ZodNumber>;
+    limit: z.ZodDefault<z.ZodNumber>;
+    offset: z.ZodDefault<z.ZodNumber>;
+    sort_by: z.ZodDefault<z.ZodEnum<["created_at", "updated_at", "published_at", "name", "questions_count"]>>;
+    sort_order: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
+    include_questions: z.ZodDefault<z.ZodBoolean>;
+    include_statistics: z.ZodDefault<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    page: number;
+    limit: number;
+    sortBy: "name" | "createdAt" | "updatedAt" | "publishedAt" | "estimatedDuration" | "questionsCount";
+    sortOrder: "asc" | "desc";
+    sort_by: "name" | "published_at" | "created_at" | "updated_at" | "questions_count";
+    sort_order: "asc" | "desc";
+    offset: number;
+    include_questions: boolean;
+    include_statistics: boolean;
+    includeQuestions: boolean;
+    includeStatistics: boolean;
+    status?: string | undefined;
+    search?: string | undefined;
+    assessmentType?: string | undefined;
+    language?: string | undefined;
+    culturalAdaptation?: string | undefined;
+    researchBacked?: boolean | undefined;
+}, {
+    status?: string | undefined;
+    page?: number | undefined;
+    limit?: number | undefined;
+    search?: string | undefined;
+    sortBy?: "name" | "createdAt" | "updatedAt" | "publishedAt" | "estimatedDuration" | "questionsCount" | undefined;
+    sortOrder?: "asc" | "desc" | undefined;
+    sort_by?: "name" | "published_at" | "created_at" | "updated_at" | "questions_count" | undefined;
+    sort_order?: "asc" | "desc" | undefined;
+    offset?: number | undefined;
+    assessmentType?: string | undefined;
+    language?: string | undefined;
+    culturalAdaptation?: string | undefined;
+    researchBacked?: boolean | undefined;
+    include_questions?: boolean | undefined;
+    include_statistics?: boolean | undefined;
+    includeQuestions?: boolean | undefined;
+    includeStatistics?: boolean | undefined;
+}>;
 //# sourceMappingURL=assessment.operations.d.ts.map

@@ -427,10 +427,11 @@ export class ApiClient {
     schema: z.ZodSchema<T>
   ): T {
     if (!response.success) {
-      throw new ValidationError(
-        response.error || 'API request failed',
-        response.details
-      );
+      const errorMessage =
+        typeof response.error === 'string'
+          ? response.error
+          : 'API request failed';
+      throw new ValidationError(errorMessage);
     }
 
     if (!response.data) {
@@ -496,17 +497,17 @@ export function buildPaginationParams(
 ): Record<string, string> {
   const result: Record<string, string> = {};
 
-  if (params.page !== undefined) {
-    result.page = params.page.toString();
+  if (params['page'] !== undefined) {
+    result['page'] = params['page'].toString();
   }
-  if (params.limit !== undefined) {
-    result.limit = params.limit.toString();
+  if (params['limit'] !== undefined) {
+    result['limit'] = params['limit'].toString();
   }
-  if (params.sortBy) {
-    result.sortBy = params.sortBy;
+  if (params['sortBy']) {
+    result['sortBy'] = params['sortBy'];
   }
-  if (params.sortOrder) {
-    result.sortOrder = params.sortOrder;
+  if (params['sortOrder']) {
+    result['sortOrder'] = params['sortOrder'];
   }
 
   return result;

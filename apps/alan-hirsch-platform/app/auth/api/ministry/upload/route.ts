@@ -1,6 +1,5 @@
-import { createRouteHandler } from '@platform/shared/api/route-handler';
-import { uploadService } from '@platform/shared/services';
 import { z } from 'zod';
+import { uploadService } from '../../../../../lib/services';
 
 // ============================================================================
 // MINISTRY FILE UPLOAD API ROUTES

@@ -1,6 +1,6 @@
-import { type AppError } from '@/types';
 import { type SQL } from 'drizzle-orm';
 import { z } from 'zod';
+import { ApiError } from '../api/error-handler';
 export interface QueryFilters {
     where?: Record<string, any>;
     orderBy?: {
@@ -21,19 +21,21 @@ export interface PaginatedResult<T> {
         hasMore: boolean;
     };
 }
-export interface ServiceError extends AppError {
+export interface ServiceError {
+    message: string;
+    code: string;
     type: 'VALIDATION' | 'NOT_FOUND' | 'DATABASE' | 'BUSINESS_RULE';
 }
 export interface TransactionContext {
     executeInTransaction<T>(operations: (tx: any) => Promise<T>): Promise<T>;
 }
-export declare abstract class BaseService<TEntity, TCreateInput, TUpdateInput, TQueryInput = any, TTable = any> {
+export declare abstract class BaseService<TEntity, TCreateInput extends Record<string, any>, TUpdateInput extends Record<string, any>, TQueryInput extends QueryFilters = QueryFilters, TTable = any> {
     protected abstract table: TTable;
     protected abstract entityName: string;
-    protected abstract createSchema: z.ZodSchema<TCreateInput>;
-    protected abstract updateSchema: z.ZodSchema<TUpdateInput>;
-    protected abstract querySchema?: z.ZodSchema<TQueryInput>;
-    protected abstract outputSchema: z.ZodSchema<TEntity>;
+    protected abstract createSchema: z.ZodSchema<any>;
+    protected abstract updateSchema: z.ZodSchema<any>;
+    protected abstract querySchema?: z.ZodSchema<any>;
+    protected abstract outputSchema: z.ZodSchema<any>;
     /**
      * Create a new entity with validation
      */
@@ -80,7 +82,7 @@ export declare abstract class BaseService<TEntity, TCreateInput, TUpdateInput, T
     /**
      * Handle database errors consistently
      */
-    protected handleDatabaseError(error: unknown, operation: string): ServiceError;
+    protected handleDatabaseError(error: unknown, operation: string): ApiError;
     /**
      * Execute operations within a transaction
      */
@@ -121,15 +123,14 @@ export declare const QueryFiltersSchema: z.ZodObject<{
     }[] | undefined;
     include?: string[] | undefined;
 }, {
+    limit?: number | undefined;
+    offset?: number | undefined;
     where?: Record<string, any> | undefined;
     orderBy?: {
         field: string;
         direction: "asc" | "desc";
     }[] | undefined;
-    limit?: number | undefined;
-    offset?: number | undefined;
     include?: string[] | undefined;
 }>;
 export type QueryFiltersType = z.infer<typeof QueryFiltersSchema>;
-export type { PaginatedResult, QueryFilters, ServiceError, TransactionContext };
 //# sourceMappingURL=base.service.d.ts.map

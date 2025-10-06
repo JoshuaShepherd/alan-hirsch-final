@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { cn } from './utils';
+import { cn } from '../utils';
 export function ConditionalRender({ condition, children, fallback, className, }) {
     if (!condition) {
         return fallback ? <div className={className}>{fallback}</div> : null;
@@ -38,9 +38,9 @@ export function ConditionalRenderWithFeature({ featureEnabled, children, fallbac
     return <div className={className}>{children}</div>;
 }
 export function ConditionalRenderWithEnvironment({ environment, children, fallback, className, }) {
-    const currentEnv = process.env.NODE_ENV;
+    const currentEnv = process.env['NODE_ENV'];
     const allowedEnvs = Array.isArray(environment) ? environment : [environment];
-    if (!allowedEnvs.includes(currentEnv)) {
+    if (!allowedEnvs.includes(currentEnv || 'development')) {
         return fallback ? <div className={className}>{fallback}</div> : null;
     }
     return <div className={className}>{children}</div>;
@@ -144,7 +144,7 @@ export function conditionalStyles(baseStyles, conditionalStyles) {
 export function withConditionalRender(Component, condition, fallback) {
     return function ConditionalComponent(props) {
         if (!condition(props)) {
-            return fallback ? <fallback {...props}/> : null;
+            return fallback ? React.createElement(fallback, props) : null;
         }
         return <Component {...props}/>;
     };
@@ -157,7 +157,7 @@ export function withPermission(Component, permission, fallback) {
         // This would integrate with your permission system
         const hasPermission = true; // Replace with actual permission check
         if (!hasPermission) {
-            return fallback ? <fallback {...props}/> : null;
+            return fallback ? React.createElement(fallback, props) : null;
         }
         return <Component {...props}/>;
     };
@@ -170,7 +170,7 @@ export function withFeatureFlag(Component, featureFlag, fallback) {
         // This would integrate with your feature flag system
         const featureEnabled = true; // Replace with actual feature flag check
         if (!featureEnabled) {
-            return fallback ? <fallback {...props}/> : null;
+            return fallback ? React.createElement(fallback, props) : null;
         }
         return <Component {...props}/>;
     };

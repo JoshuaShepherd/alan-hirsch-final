@@ -192,35 +192,36 @@ export const assessmentResponseEntitySchema = z.object({
 // ASSESSMENT RESPONSE SCHEMAS (with computed fields)
 // ============================================================================
 
-export const assessmentResponseSchema = assessmentResponseEntitySchema.extend({
-  // Computed fields
-  isSkipped: z.boolean(),
-  hasResponse: z.boolean(),
-  responseTimeText: z.string().optional(),
-  confidenceLevel: z.string().optional(),
+export const assessmentResponseResponseSchema =
+  assessmentResponseEntitySchema.extend({
+    // Computed fields
+    isSkipped: z.boolean(),
+    hasResponse: z.boolean(),
+    responseTimeText: z.string().optional(),
+    confidenceLevel: z.string().optional(),
 
-  // Related data
-  question: z
-    .object({
-      id: z.string().uuid(),
-      questionText: z.string(),
-      questionType: z.string(),
-      orderIndex: z.number().int().min(0),
-      category: z.string().optional(),
-      apestDimension: z.string().optional(),
-      isRequired: z.boolean(),
-    })
-    .optional(),
+    // Related data
+    question: z
+      .object({
+        id: z.string().uuid(),
+        questionText: z.string(),
+        questionType: z.string(),
+        orderIndex: z.number().int().min(0),
+        category: z.string().optional(),
+        apestDimension: z.string().optional(),
+        isRequired: z.boolean(),
+      })
+      .optional(),
 
-  userAssessment: z
-    .object({
-      id: z.string().uuid(),
-      userId: z.string().uuid(),
-      assessmentId: z.string().uuid(),
-      status: z.string(),
-    })
-    .optional(),
-});
+    userAssessment: z
+      .object({
+        id: z.string().uuid(),
+        userId: z.string().uuid(),
+        assessmentId: z.string().uuid(),
+        status: z.string(),
+      })
+      .optional(),
+  });
 
 export const assessmentQuestionResponseSchema =
   assessmentQuestionEntitySchema.extend({
@@ -294,31 +295,34 @@ export const userAssessmentResponseSchema = userAssessmentEntitySchema.extend({
     .optional(),
 });
 
-export const assessmentResponseResponseSchema =
-  assessmentResponseEntitySchema.extend({
-    // Computed fields
-    isSkipped: z.boolean(),
-    hasValue: z.boolean(),
-    hasText: z.boolean(),
-    responseTimeText: z.string().optional(),
-    confidenceDisplay: z.string().optional(),
+// ============================================================================
+// MAIN ASSESSMENT RESPONSE SCHEMA (with computed fields)
+// ============================================================================
 
-    // Related data
-    question: z.object({
-      id: z.string().uuid(),
-      questionText: z.string(),
-      questionType: z.string(),
-      orderIndex: z.number().int().min(0),
-      apestDimension: z.string().optional(),
-    }),
+export const assessmentResponseSchema = assessmentEntitySchema.extend({
+  // Computed fields
+  isPublished: z.boolean(),
+  isDraft: z.boolean(),
+  isActive: z.boolean(),
+  isArchived: z.boolean(),
+  hasQuestions: z.boolean(),
+  questionCount: z.number().int().min(0),
+  estimatedDurationText: z.string().optional(),
+  completionRate: z.number().int().min(0).max(100),
+  averageScore: z.number().min(0).optional(),
 
-    userAssessment: z.object({
-      id: z.string().uuid(),
-      userId: z.string().uuid(),
-      assessmentId: z.string().uuid(),
-      completedAt: z.string().datetime().optional(),
-    }),
-  });
+  // Related data
+  questions: z
+    .array(
+      z.object({
+        id: z.string().uuid(),
+        text: z.string(),
+        type: z.string(),
+        order: z.number().int().min(0),
+      })
+    )
+    .default([]),
+});
 
 // ============================================================================
 // ASSESSMENT CREATE SCHEMAS

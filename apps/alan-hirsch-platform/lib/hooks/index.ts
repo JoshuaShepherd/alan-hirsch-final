@@ -96,9 +96,12 @@ export function createEntityHook<T>(
   responseSchema: z.ZodSchema<T>
 ) {
   return function useEntity(id: string) {
-    return useSWRApiResponse<T>(id ? endpointBuilder(id) : null, async url => {
-      return apiClient.getWithValidation(url, responseSchema);
-    });
+    return useSWRApiResponse<T>(
+      id ? endpointBuilder(id) : null,
+      async (url: string) => {
+        return apiClient.getWithValidation(url, responseSchema);
+      }
+    );
   };
 }
 
@@ -120,7 +123,7 @@ export function createEntityListHook<T>(
 
     const url = queryString ? `${endpoint}?${queryString}` : endpoint;
 
-    return useSWRApiResponse<T[]>(url, async url => {
+    return useSWRApiResponse<T[]>(url, async (url: string) => {
       return apiClient.getWithValidation(url, responseSchema);
     });
   };
@@ -135,7 +138,7 @@ export function createCreateEntityHook<TData, TVariables>(
   responseSchema: z.ZodSchema<TData>
 ) {
   return function useCreateEntity() {
-    return useMutation<TData, TVariables>(async variables => {
+    return useMutation<TData, TVariables>(async (variables: TVariables) => {
       const validatedData = requestSchema.parse(variables);
       return apiClient.postWithValidation(
         endpoint,
@@ -155,15 +158,17 @@ export function createUpdateEntityHook<TData, TVariables>(
   responseSchema: z.ZodSchema<TData>
 ) {
   return function useUpdateEntity() {
-    return useMutation<TData, TVariables & { id: string }>(async variables => {
-      const { id, ...data } = variables;
-      const validatedData = requestSchema.parse(data);
-      return apiClient.patchWithValidation(
-        endpointBuilder(id),
-        validatedData,
-        responseSchema
-      );
-    });
+    return useMutation<TData, TVariables & { id: string }>(
+      async (variables: TVariables & { id: string }) => {
+        const { id, ...data } = variables;
+        const validatedData = requestSchema.parse(data);
+        return apiClient.patchWithValidation(
+          endpointBuilder(id),
+          validatedData,
+          responseSchema
+        );
+      }
+    );
   };
 }
 
@@ -175,7 +180,7 @@ export function createDeleteEntityHook<TData>(
   responseSchema: z.ZodSchema<TData>
 ) {
   return function useDeleteEntity() {
-    return useMutation<TData, string>(async id => {
+    return useMutation<TData, string>(async (id: string) => {
       return apiClient.deleteWithValidation(
         endpointBuilder(id),
         responseSchema

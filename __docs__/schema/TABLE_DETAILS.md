@@ -27,6 +27,7 @@
 | -------------------------------- | --------- | -------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------- |
 | `id`                             | uuid      | NO       | -                                                                                                           | Primary key, user identifier     |
 | `email`                          | text      | NO       | -                                                                                                           | User email address (unique)      |
+| `password_hash`                  | text      | YES      | -                                                                                                           | Password hash for local auth     |
 | `first_name`                     | text      | NO       | -                                                                                                           | User's first name                |
 | `last_name`                      | text      | NO       | -                                                                                                           | User's last name                 |
 | `display_name`                   | text      | YES      | -                                                                                                           | Public display name              |
@@ -481,31 +482,33 @@
 
 #### Columns
 
-| Column                   | Type      | Nullable | Default           | Description                           |
-| ------------------------ | --------- | -------- | ----------------- | ------------------------------------- |
-| `id`                     | uuid      | NO       | gen_random_uuid() | Primary key                           |
-| `name`                   | text      | NO       | -                 | Community name                        |
-| `slug`                   | text      | NO       | -                 | URL-friendly identifier (unique)      |
-| `description`            | text      | YES      | -                 | Community description                 |
-| `community_type`         | text      | NO       | -                 | Type of community                     |
-| `max_members`            | integer   | YES      | -                 | Maximum members                       |
-| `guidelines`             | text      | YES      | -                 | Community guidelines                  |
-| `created_by`             | uuid      | NO       | -                 | Creator user ID (FK to user_profiles) |
-| `geographic_focus`       | jsonb     | YES      | '[]'              | Geographic focus areas                |
-| `cultural_context`       | text      | YES      | 'global'          | Cultural context                      |
-| `language_primary`       | text      | YES      | 'en'              | Primary language                      |
-| `languages_supported`    | jsonb     | YES      | '["en"]'          | Supported languages                   |
-| `visibility`             | text      | YES      | 'public'          | Community visibility                  |
-| `join_approval_required` | boolean   | YES      | false             | Join approval required flag           |
-| `allow_guest_posts`      | boolean   | YES      | false             | Allow guest posts flag                |
-| `moderation_level`       | text      | YES      | 'moderated'       | Moderation level                      |
-| `current_member_count`   | integer   | YES      | 0                 | Current member count                  |
-| `total_posts_count`      | integer   | YES      | 0                 | Total posts count                     |
-| `rules`                  | jsonb     | YES      | '[]'              | Community rules                       |
-| `moderators`             | jsonb     | YES      | '[]'              | Moderator information                 |
-| `is_active`              | boolean   | YES      | true              | Active status                         |
-| `created_at`             | timestamp | NO       | now()             | Record creation timestamp             |
-| `updated_at`             | timestamp | NO       | now()             | Record update timestamp               |
+| Column                   | Type      | Nullable | Default           | Description                                 |
+| ------------------------ | --------- | -------- | ----------------- | ------------------------------------------- |
+| `id`                     | uuid      | NO       | gen_random_uuid() | Primary key                                 |
+| `name`                   | text      | NO       | -                 | Community name                              |
+| `slug`                   | text      | NO       | -                 | URL-friendly identifier (unique)            |
+| `description`            | text      | YES      | -                 | Community description                       |
+| `community_type`         | text      | NO       | -                 | Type of community                           |
+| `max_members`            | integer   | YES      | -                 | Maximum members                             |
+| `guidelines`             | text      | YES      | -                 | Community guidelines                        |
+| `created_by`             | uuid      | NO       | -                 | Creator user ID (FK to user_profiles)       |
+| `geographic_focus`       | jsonb     | YES      | '[]'              | Geographic focus areas                      |
+| `cultural_context`       | text      | YES      | 'global'          | Cultural context                            |
+| `language_primary`       | text      | YES      | 'en'              | Primary language                            |
+| `languages_supported`    | jsonb     | YES      | '["en"]'          | Supported languages                         |
+| `visibility`             | text      | YES      | 'public'          | Community visibility                        |
+| `join_approval_required` | boolean   | YES      | false             | Join approval required flag                 |
+| `allow_guest_posts`      | boolean   | YES      | false             | Allow guest posts flag                      |
+| `moderation_level`       | text      | YES      | 'moderated'       | Moderation level                            |
+| `current_member_count`   | integer   | YES      | 0                 | Current member count                        |
+| `total_posts_count`      | integer   | YES      | 0                 | Total posts count                           |
+| `rules`                  | jsonb     | YES      | '[]'              | Community rules                             |
+| `moderators`             | jsonb     | YES      | '[]'              | Moderator information                       |
+| `is_active`              | boolean   | YES      | true              | Active status                               |
+| `status`                 | text      | YES      | 'active'          | Community status (active/inactive/archived) |
+| `focus`                  | text      | YES      | -                 | Community focus area                        |
+| `created_at`             | timestamp | NO       | now()             | Record creation timestamp                   |
+| `updated_at`             | timestamp | NO       | now()             | Record update timestamp                     |
 
 #### Indexes
 

@@ -1,5 +1,6 @@
 # Deployment Guide
-*Alan Hirsch Digital Platform - Production Deployment Instructions*
+
+_Alan Hirsch Digital Platform - Production Deployment Instructions_
 
 ## Overview
 
@@ -10,12 +11,14 @@ This guide provides step-by-step instructions for deploying the Alan Hirsch Digi
 ## Prerequisites
 
 ### Required Accounts
+
 - **Vercel**: Hosting and deployment platform
 - **Supabase**: Database and authentication backend
 - **Stripe**: Payment processing
 - **Domain Provider**: For custom domain setup
 
 ### Required Tools
+
 - **Git**: Version control
 - **Vercel CLI**: For local deployment testing
 - **Supabase CLI**: For database management
@@ -25,6 +28,7 @@ This guide provides step-by-step instructions for deploying the Alan Hirsch Digi
 ## Pre-Deployment Checklist
 
 ### Code Quality
+
 - [ ] All tests pass (`pnpm test`)
 - [ ] TypeScript compilation succeeds (`pnpm type-check`)
 - [ ] Linting passes (`pnpm lint`)
@@ -33,6 +37,7 @@ This guide provides step-by-step instructions for deploying the Alan Hirsch Digi
 - [ ] Database migrations are up to date
 
 ### Security Review
+
 - [ ] No hardcoded secrets in code
 - [ ] All API routes have proper authentication
 - [ ] Row Level Security policies are enabled
@@ -40,6 +45,7 @@ This guide provides step-by-step instructions for deploying the Alan Hirsch Digi
 - [ ] Rate limiting is configured
 
 ### Performance
+
 - [ ] Images are optimized
 - [ ] Database queries are efficient
 - [ ] API responses are cached where appropriate
@@ -101,7 +107,7 @@ ALTER TABLE subscription_plans ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_subscriptions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE communities ENABLE ROW LEVEL SECURITY;
 
--- Apply policies (see RLS_PLAYBOOK.md for complete policies)
+-- Apply policies (see schema/RLS_POLICIES.md for complete policies)
 -- User profiles policies
 CREATE POLICY "Users can view own profile" ON user_profiles
   FOR SELECT USING (auth.uid() = id);
@@ -259,6 +265,7 @@ Value: cname.vercel-dns.com
 ### 4.3 SSL Certificate
 
 Vercel automatically provisions SSL certificates. Verify HTTPS is working:
+
 - Visit `https://alanhirsch.com`
 - Check certificate validity in browser
 
@@ -304,11 +311,13 @@ curl -X POST https://alanhirsch.com/api/stripe/webhook \
 ### 6.1 Set Up Monitoring
 
 #### Vercel Analytics
+
 - Enable in project settings
 - Monitor Core Web Vitals
 - Track user engagement
 
 #### Error Tracking
+
 ```bash
 # Install Sentry (optional)
 npm install @sentry/nextjs
@@ -319,6 +328,7 @@ module.exports = withSentry(nextConfig);
 ```
 
 #### Uptime Monitoring
+
 - Set up UptimeRobot or similar service
 - Monitor critical endpoints:
   - `https://alanhirsch.com`
@@ -329,9 +339,9 @@ module.exports = withSentry(nextConfig);
 
 ```sql
 -- Monitor query performance
-SELECT query, mean_time, calls 
-FROM pg_stat_statements 
-ORDER BY mean_time DESC 
+SELECT query, mean_time, calls
+FROM pg_stat_statements
+ORDER BY mean_time DESC
 LIMIT 10;
 
 -- Check connection count
@@ -349,18 +359,21 @@ ORDER BY size DESC;
 ### 6.3 Regular Maintenance Tasks
 
 #### Weekly
+
 - [ ] Review error logs
 - [ ] Check database performance
 - [ ] Monitor API response times
 - [ ] Review security alerts
 
 #### Monthly
+
 - [ ] Update dependencies
 - [ ] Review and rotate secrets
 - [ ] Analyze usage patterns
 - [ ] Check storage usage
 
 #### Quarterly
+
 - [ ] Security audit
 - [ ] Performance optimization
 - [ ] Backup verification
@@ -373,6 +386,7 @@ ORDER BY size DESC;
 ### Common Deployment Issues
 
 #### Build Failures
+
 ```bash
 # Check build logs in Vercel dashboard
 # Common fixes:
@@ -382,6 +396,7 @@ pnpm lint  # Fix linting issues
 ```
 
 #### Environment Variable Issues
+
 ```bash
 # Verify all required variables are set
 vercel env ls
@@ -391,11 +406,13 @@ vercel env add VARIABLE_NAME
 ```
 
 #### Database Connection Issues
+
 - Verify `POSTGRES_URL` is correct
 - Check Supabase project status
 - Ensure RLS policies are not blocking connections
 
 #### Authentication Issues
+
 - Verify Supabase URL and keys
 - Check site URL configuration in Supabase
 - Ensure redirect URLs are correct
@@ -414,6 +431,7 @@ git push origin main --force
 ### Emergency Procedures
 
 #### Database Recovery
+
 ```bash
 # Restore from backup
 supabase db reset --db-url your-backup-url
@@ -423,6 +441,7 @@ pg_restore --dbname=your-db --table=user_profiles backup.sql
 ```
 
 #### Application Recovery
+
 ```bash
 # Deploy stable version
 git checkout stable-release
@@ -455,28 +474,28 @@ Add to `next.config.js`:
 const securityHeaders = [
   {
     key: 'X-DNS-Prefetch-Control',
-    value: 'on'
+    value: 'on',
   },
   {
     key: 'Strict-Transport-Security',
-    value: 'max-age=63072000; includeSubDomains; preload'
+    value: 'max-age=63072000; includeSubDomains; preload',
   },
   {
     key: 'X-XSS-Protection',
-    value: '1; mode=block'
+    value: '1; mode=block',
   },
   {
     key: 'X-Frame-Options',
-    value: 'SAMEORIGIN'
+    value: 'SAMEORIGIN',
   },
   {
     key: 'X-Content-Type-Options',
-    value: 'nosniff'
+    value: 'nosniff',
   },
   {
     key: 'Referrer-Policy',
-    value: 'origin-when-cross-origin'
-  }
+    value: 'origin-when-cross-origin',
+  },
 ];
 
 module.exports = {
@@ -505,8 +524,8 @@ CREATE INDEX idx_user_profiles_email ON user_profiles(email);
 CREATE INDEX idx_organizations_type ON organizations(type);
 
 -- Monitor slow queries
-SELECT query, mean_time, calls 
-FROM pg_stat_statements 
+SELECT query, mean_time, calls
+FROM pg_stat_statements
 WHERE mean_time > 1000  -- queries taking > 1 second
 ORDER BY mean_time DESC;
 ```
@@ -519,7 +538,10 @@ import { unstable_cache } from 'next/cache';
 
 const getCachedContent = unstable_cache(
   async (categoryId: string) => {
-    return db.select().from(contentItems).where(eq(contentItems.categoryId, categoryId));
+    return db
+      .select()
+      .from(contentItems)
+      .where(eq(contentItems.categoryId, categoryId));
   },
   ['content-by-category'],
   { revalidate: 3600 } // Cache for 1 hour

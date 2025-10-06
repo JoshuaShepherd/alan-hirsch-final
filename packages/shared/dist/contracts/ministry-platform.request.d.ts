@@ -5,10 +5,10 @@ export declare const ministryPlatformSearchRequestSchema: z.ZodObject<{
     limit: z.ZodDefault<z.ZodNumber>;
     sortBy: z.ZodOptional<z.ZodString>;
     sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
-    ministryRoles: z.ZodOptional<z.ZodArray<any, "many">>;
-    culturalContexts: z.ZodOptional<z.ZodArray<any, "many">>;
+    ministryRoles: z.ZodOptional<z.ZodArray<z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>, "many">>;
+    culturalContexts: z.ZodOptional<z.ZodArray<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "mixed", "global"]>, "many">>;
     theologicalThemes: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-    organizationTypes: z.ZodOptional<z.ZodArray<any, "many">>;
+    organizationTypes: z.ZodOptional<z.ZodArray<z.ZodEnum<["church", "denomination", "seminary", "ministry_network", "nonprofit", "business", "other"]>, "many">>;
     contentTypes: z.ZodOptional<z.ZodArray<z.ZodEnum<["article", "video", "podcast", "framework", "tool", "case_study"]>, "many">>;
     difficultyLevels: z.ZodOptional<z.ZodArray<z.ZodEnum<["beginner", "intermediate", "advanced", "expert"]>, "many">>;
     assessmentTypes: z.ZodOptional<z.ZodArray<z.ZodEnum<["apest", "mdna", "cultural_intelligence", "leadership_style", "spiritual_gifts", "other"]>, "many">>;
@@ -20,64 +20,60 @@ export declare const ministryPlatformSearchRequestSchema: z.ZodObject<{
     hasCollaborations: z.ZodOptional<z.ZodBoolean>;
     organizationContext: z.ZodOptional<z.ZodObject<{
         organizationId: z.ZodString;
-        userRole: any;
+        userRole: z.ZodEnum<["owner", "admin", "member", "viewer"]>;
         permissions: z.ZodArray<z.ZodString, "many">;
     }, "strip", z.ZodTypeAny, {
-        [x: string]: any;
-        organizationId?: unknown;
-        userRole?: unknown;
-        permissions?: unknown;
+        organizationId: string;
+        permissions: string[];
+        userRole: "owner" | "admin" | "member" | "viewer";
     }, {
-        [x: string]: any;
-        organizationId?: unknown;
-        userRole?: unknown;
-        permissions?: unknown;
+        organizationId: string;
+        permissions: string[];
+        userRole: "owner" | "admin" | "member" | "viewer";
     }>>;
 }, "strip", z.ZodTypeAny, {
-    limit: number;
     page: number;
+    limit: number;
     sortOrder: "asc" | "desc";
-    query?: string | undefined;
     theologicalThemes?: string[] | undefined;
+    query?: string | undefined;
     organizationContext?: {
-        [x: string]: any;
-        organizationId?: unknown;
-        userRole?: unknown;
-        permissions?: unknown;
+        organizationId: string;
+        permissions: string[];
+        userRole: "owner" | "admin" | "member" | "viewer";
     } | undefined;
     sortBy?: string | undefined;
-    ministryRoles?: any[] | undefined;
-    culturalContexts?: any[] | undefined;
-    organizationTypes?: any[] | undefined;
-    contentTypes?: ("article" | "video" | "podcast" | "framework" | "tool" | "case_study")[] | undefined;
-    difficultyLevels?: ("intermediate" | "beginner" | "advanced" | "expert")[] | undefined;
+    ministryRoles?: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[] | undefined;
+    culturalContexts?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[] | undefined;
+    organizationTypes?: ("church" | "denomination" | "seminary" | "ministry_network" | "nonprofit" | "business" | "other")[] | undefined;
+    contentTypes?: ("video" | "article" | "podcast" | "framework" | "tool" | "case_study")[] | undefined;
+    difficultyLevels?: ("beginner" | "intermediate" | "advanced" | "expert")[] | undefined;
     assessmentTypes?: ("other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts")[] | undefined;
-    communityTypes?: ("general_discussion" | "church_planting_cohort" | "leadership_development" | "theological_study" | "ministry_collaboration" | "regional_network")[] | undefined;
+    communityTypes?: ("general_discussion" | "church_planting_cohort" | "leadership_development" | "theological_study" | "regional_network" | "ministry_collaboration")[] | undefined;
     dateFrom?: string | undefined;
     dateTo?: string | undefined;
     minEngagement?: number | undefined;
     hasComments?: boolean | undefined;
     hasCollaborations?: boolean | undefined;
 }, {
-    query?: string | undefined;
-    theologicalThemes?: string[] | undefined;
-    limit?: number | undefined;
-    organizationContext?: {
-        [x: string]: any;
-        organizationId?: unknown;
-        userRole?: unknown;
-        permissions?: unknown;
-    } | undefined;
     page?: number | undefined;
-    sortBy?: string | undefined;
+    limit?: number | undefined;
+    theologicalThemes?: string[] | undefined;
+    query?: string | undefined;
     sortOrder?: "asc" | "desc" | undefined;
-    ministryRoles?: any[] | undefined;
-    culturalContexts?: any[] | undefined;
-    organizationTypes?: any[] | undefined;
-    contentTypes?: ("article" | "video" | "podcast" | "framework" | "tool" | "case_study")[] | undefined;
-    difficultyLevels?: ("intermediate" | "beginner" | "advanced" | "expert")[] | undefined;
+    organizationContext?: {
+        organizationId: string;
+        permissions: string[];
+        userRole: "owner" | "admin" | "member" | "viewer";
+    } | undefined;
+    sortBy?: string | undefined;
+    ministryRoles?: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[] | undefined;
+    culturalContexts?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[] | undefined;
+    organizationTypes?: ("church" | "denomination" | "seminary" | "ministry_network" | "nonprofit" | "business" | "other")[] | undefined;
+    contentTypes?: ("video" | "article" | "podcast" | "framework" | "tool" | "case_study")[] | undefined;
+    difficultyLevels?: ("beginner" | "intermediate" | "advanced" | "expert")[] | undefined;
     assessmentTypes?: ("other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts")[] | undefined;
-    communityTypes?: ("general_discussion" | "church_planting_cohort" | "leadership_development" | "theological_study" | "ministry_collaboration" | "regional_network")[] | undefined;
+    communityTypes?: ("general_discussion" | "church_planting_cohort" | "leadership_development" | "theological_study" | "regional_network" | "ministry_collaboration")[] | undefined;
     dateFrom?: string | undefined;
     dateTo?: string | undefined;
     minEngagement?: number | undefined;
@@ -93,33 +89,33 @@ export declare const createMinistryAssessmentRequestSchema: z.ZodObject<{
     culturalAdaptation: z.ZodDefault<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "universal"]>>;
     researchBacked: z.ZodDefault<z.ZodBoolean>;
     ministryContext: z.ZodObject<{
-        targetMinistryRoles: z.ZodDefault<z.ZodArray<any, "many">>;
-        culturalAdaptations: z.ZodDefault<z.ZodArray<any, "many">>;
+        targetMinistryRoles: z.ZodDefault<z.ZodArray<z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>, "many">>;
+        culturalAdaptations: z.ZodDefault<z.ZodArray<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "mixed", "global"]>, "many">>;
         theologicalAlignment: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         practicalApplication: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
-        targetMinistryRoles: any[];
-        culturalAdaptations: any[];
+        targetMinistryRoles: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[];
+        culturalAdaptations: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[];
         theologicalAlignment: string[];
         practicalApplication: string[];
     }, {
-        targetMinistryRoles?: any[] | undefined;
-        culturalAdaptations?: any[] | undefined;
+        targetMinistryRoles?: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[] | undefined;
+        culturalAdaptations?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[] | undefined;
         theologicalAlignment?: string[] | undefined;
         practicalApplication?: string[] | undefined;
     }>;
     organizationId: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
+    status: "active" | "draft" | "archived" | "under_review";
     name: string;
     description: string;
-    status: "draft" | "archived" | "under_review" | "active";
     assessmentType: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts";
     language: string;
-    culturalAdaptation: "universal" | "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic";
+    culturalAdaptation: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal";
     researchBacked: boolean;
     ministryContext: {
-        targetMinistryRoles: any[];
-        culturalAdaptations: any[];
+        targetMinistryRoles: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[];
+        culturalAdaptations: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[];
         theologicalAlignment: string[];
         practicalApplication: string[];
     };
@@ -129,15 +125,15 @@ export declare const createMinistryAssessmentRequestSchema: z.ZodObject<{
     description: string;
     assessmentType: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts";
     ministryContext: {
-        targetMinistryRoles?: any[] | undefined;
-        culturalAdaptations?: any[] | undefined;
+        targetMinistryRoles?: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[] | undefined;
+        culturalAdaptations?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[] | undefined;
         theologicalAlignment?: string[] | undefined;
         practicalApplication?: string[] | undefined;
     };
     organizationId?: string | undefined;
-    status?: "draft" | "archived" | "under_review" | "active" | undefined;
+    status?: "active" | "draft" | "archived" | "under_review" | undefined;
     language?: string | undefined;
-    culturalAdaptation?: "universal" | "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | undefined;
+    culturalAdaptation?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | undefined;
     researchBacked?: boolean | undefined;
 }>;
 export declare const updateMinistryAssessmentRequestSchema: z.ZodObject<{
@@ -149,49 +145,49 @@ export declare const updateMinistryAssessmentRequestSchema: z.ZodObject<{
     culturalAdaptation: z.ZodOptional<z.ZodDefault<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "universal"]>>>;
     researchBacked: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
     ministryContext: z.ZodOptional<z.ZodObject<{
-        targetMinistryRoles: z.ZodDefault<z.ZodArray<any, "many">>;
-        culturalAdaptations: z.ZodDefault<z.ZodArray<any, "many">>;
+        targetMinistryRoles: z.ZodDefault<z.ZodArray<z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>, "many">>;
+        culturalAdaptations: z.ZodDefault<z.ZodArray<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "mixed", "global"]>, "many">>;
         theologicalAlignment: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         practicalApplication: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
-        targetMinistryRoles: any[];
-        culturalAdaptations: any[];
+        targetMinistryRoles: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[];
+        culturalAdaptations: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[];
         theologicalAlignment: string[];
         practicalApplication: string[];
     }, {
-        targetMinistryRoles?: any[] | undefined;
-        culturalAdaptations?: any[] | undefined;
+        targetMinistryRoles?: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[] | undefined;
+        culturalAdaptations?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[] | undefined;
         theologicalAlignment?: string[] | undefined;
         practicalApplication?: string[] | undefined;
     }>>;
     organizationId: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
-    name?: string | undefined;
     organizationId?: string | undefined;
+    status?: "active" | "draft" | "archived" | "under_review" | undefined;
+    name?: string | undefined;
     description?: string | undefined;
-    status?: "draft" | "archived" | "under_review" | "active" | undefined;
     assessmentType?: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts" | undefined;
     language?: string | undefined;
-    culturalAdaptation?: "universal" | "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | undefined;
+    culturalAdaptation?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | undefined;
     researchBacked?: boolean | undefined;
     ministryContext?: {
-        targetMinistryRoles: any[];
-        culturalAdaptations: any[];
+        targetMinistryRoles: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[];
+        culturalAdaptations: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[];
         theologicalAlignment: string[];
         practicalApplication: string[];
     } | undefined;
 }, {
-    name?: string | undefined;
     organizationId?: string | undefined;
+    status?: "active" | "draft" | "archived" | "under_review" | undefined;
+    name?: string | undefined;
     description?: string | undefined;
-    status?: "draft" | "archived" | "under_review" | "active" | undefined;
     assessmentType?: "other" | "apest" | "mdna" | "cultural_intelligence" | "leadership_style" | "spiritual_gifts" | undefined;
     language?: string | undefined;
-    culturalAdaptation?: "universal" | "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | undefined;
+    culturalAdaptation?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | undefined;
     researchBacked?: boolean | undefined;
     ministryContext?: {
-        targetMinistryRoles?: any[] | undefined;
-        culturalAdaptations?: any[] | undefined;
+        targetMinistryRoles?: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[] | undefined;
+        culturalAdaptations?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[] | undefined;
         theologicalAlignment?: string[] | undefined;
         practicalApplication?: string[] | undefined;
     } | undefined;
@@ -228,24 +224,24 @@ export declare const completeMinistryAssessmentRequestSchema: z.ZodObject<{
     completedAt: z.ZodString;
     organizationId: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
+    userId: string;
+    assessmentId: string;
+    completedAt: string;
     responses: {
         questionId: string;
         answer: string | number | string[];
         timeSpent?: number | undefined;
     }[];
-    userId: string;
-    assessmentId: string;
-    completedAt: string;
     organizationId?: string | undefined;
 }, {
+    userId: string;
+    assessmentId: string;
+    completedAt: string;
     responses: {
         questionId: string;
         answer: string | number | string[];
         timeSpent?: number | undefined;
     }[];
-    userId: string;
-    assessmentId: string;
-    completedAt: string;
     organizationId?: string | undefined;
 }>;
 export declare const createMinistryContentRequestSchema: z.ZodObject<{
@@ -257,20 +253,20 @@ export declare const createMinistryContentRequestSchema: z.ZodObject<{
     language: z.ZodDefault<z.ZodString>;
     difficultyLevel: z.ZodDefault<z.ZodEnum<["beginner", "intermediate", "advanced", "expert"]>>;
     ministryContext: z.ZodObject<{
-        targetMinistryRoles: z.ZodDefault<z.ZodArray<any, "many">>;
+        targetMinistryRoles: z.ZodDefault<z.ZodArray<z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>, "many">>;
         theologicalDepth: z.ZodDefault<z.ZodEnum<["introductory", "intermediate", "advanced", "scholarly"]>>;
         practicalApplication: z.ZodDefault<z.ZodEnum<["theory", "practical", "hands_on", "case_study"]>>;
-        culturalRelevance: z.ZodDefault<z.ZodArray<any, "many">>;
+        culturalRelevance: z.ZodDefault<z.ZodArray<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "mixed", "global"]>, "many">>;
     }, "strip", z.ZodTypeAny, {
-        targetMinistryRoles: any[];
-        practicalApplication: "practical" | "case_study" | "theory" | "hands_on";
+        targetMinistryRoles: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[];
+        practicalApplication: "case_study" | "practical" | "theory" | "hands_on";
         theologicalDepth: "intermediate" | "advanced" | "introductory" | "scholarly";
-        culturalRelevance: any[];
+        culturalRelevance: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[];
     }, {
-        targetMinistryRoles?: any[] | undefined;
-        practicalApplication?: "practical" | "case_study" | "theory" | "hands_on" | undefined;
+        targetMinistryRoles?: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[] | undefined;
+        practicalApplication?: "case_study" | "practical" | "theory" | "hands_on" | undefined;
         theologicalDepth?: "intermediate" | "advanced" | "introductory" | "scholarly" | undefined;
-        culturalRelevance?: any[] | undefined;
+        culturalRelevance?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[] | undefined;
     }>;
     categoryId: z.ZodOptional<z.ZodString>;
     seriesId: z.ZodOptional<z.ZodString>;
@@ -278,39 +274,39 @@ export declare const createMinistryContentRequestSchema: z.ZodObject<{
     publishedAt: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     status: "draft" | "published" | "archived" | "under_review" | "scheduled";
-    title: string;
     excerpt: string;
     content: string;
-    contentType: "article" | "video" | "podcast" | "framework" | "tool" | "case_study";
+    title: string;
+    contentType: "video" | "article" | "podcast" | "framework" | "tool" | "case_study";
     language: string;
     ministryContext: {
-        targetMinistryRoles: any[];
-        practicalApplication: "practical" | "case_study" | "theory" | "hands_on";
+        targetMinistryRoles: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[];
+        practicalApplication: "case_study" | "practical" | "theory" | "hands_on";
         theologicalDepth: "intermediate" | "advanced" | "introductory" | "scholarly";
-        culturalRelevance: any[];
+        culturalRelevance: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[];
     };
-    difficultyLevel: "intermediate" | "beginner" | "advanced" | "expert";
+    difficultyLevel: "beginner" | "intermediate" | "advanced" | "expert";
     organizationId?: string | undefined;
     seriesId?: string | undefined;
     publishedAt?: string | undefined;
     categoryId?: string | undefined;
 }, {
-    title: string;
     excerpt: string;
     content: string;
-    contentType: "article" | "video" | "podcast" | "framework" | "tool" | "case_study";
+    title: string;
+    contentType: "video" | "article" | "podcast" | "framework" | "tool" | "case_study";
     ministryContext: {
-        targetMinistryRoles?: any[] | undefined;
-        practicalApplication?: "practical" | "case_study" | "theory" | "hands_on" | undefined;
+        targetMinistryRoles?: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[] | undefined;
+        practicalApplication?: "case_study" | "practical" | "theory" | "hands_on" | undefined;
         theologicalDepth?: "intermediate" | "advanced" | "introductory" | "scholarly" | undefined;
-        culturalRelevance?: any[] | undefined;
+        culturalRelevance?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[] | undefined;
     };
     organizationId?: string | undefined;
     status?: "draft" | "published" | "archived" | "under_review" | "scheduled" | undefined;
     seriesId?: string | undefined;
     publishedAt?: string | undefined;
     language?: string | undefined;
-    difficultyLevel?: "intermediate" | "beginner" | "advanced" | "expert" | undefined;
+    difficultyLevel?: "beginner" | "intermediate" | "advanced" | "expert" | undefined;
     categoryId?: string | undefined;
 }>;
 export declare const updateMinistryContentRequestSchema: z.ZodObject<{
@@ -322,20 +318,20 @@ export declare const updateMinistryContentRequestSchema: z.ZodObject<{
     language: z.ZodOptional<z.ZodDefault<z.ZodString>>;
     difficultyLevel: z.ZodOptional<z.ZodDefault<z.ZodEnum<["beginner", "intermediate", "advanced", "expert"]>>>;
     ministryContext: z.ZodOptional<z.ZodObject<{
-        targetMinistryRoles: z.ZodDefault<z.ZodArray<any, "many">>;
+        targetMinistryRoles: z.ZodDefault<z.ZodArray<z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>, "many">>;
         theologicalDepth: z.ZodDefault<z.ZodEnum<["introductory", "intermediate", "advanced", "scholarly"]>>;
         practicalApplication: z.ZodDefault<z.ZodEnum<["theory", "practical", "hands_on", "case_study"]>>;
-        culturalRelevance: z.ZodDefault<z.ZodArray<any, "many">>;
+        culturalRelevance: z.ZodDefault<z.ZodArray<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "mixed", "global"]>, "many">>;
     }, "strip", z.ZodTypeAny, {
-        targetMinistryRoles: any[];
-        practicalApplication: "practical" | "case_study" | "theory" | "hands_on";
+        targetMinistryRoles: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[];
+        practicalApplication: "case_study" | "practical" | "theory" | "hands_on";
         theologicalDepth: "intermediate" | "advanced" | "introductory" | "scholarly";
-        culturalRelevance: any[];
+        culturalRelevance: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[];
     }, {
-        targetMinistryRoles?: any[] | undefined;
-        practicalApplication?: "practical" | "case_study" | "theory" | "hands_on" | undefined;
+        targetMinistryRoles?: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[] | undefined;
+        practicalApplication?: "case_study" | "practical" | "theory" | "hands_on" | undefined;
         theologicalDepth?: "intermediate" | "advanced" | "introductory" | "scholarly" | undefined;
-        culturalRelevance?: any[] | undefined;
+        culturalRelevance?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[] | undefined;
     }>>;
     categoryId: z.ZodOptional<z.ZodOptional<z.ZodString>>;
     seriesId: z.ZodOptional<z.ZodOptional<z.ZodString>>;
@@ -344,38 +340,38 @@ export declare const updateMinistryContentRequestSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     organizationId?: string | undefined;
     status?: "draft" | "published" | "archived" | "under_review" | "scheduled" | undefined;
-    title?: string | undefined;
     excerpt?: string | undefined;
     content?: string | undefined;
-    contentType?: "article" | "video" | "podcast" | "framework" | "tool" | "case_study" | undefined;
     seriesId?: string | undefined;
     publishedAt?: string | undefined;
+    title?: string | undefined;
+    contentType?: "video" | "article" | "podcast" | "framework" | "tool" | "case_study" | undefined;
     language?: string | undefined;
     ministryContext?: {
-        targetMinistryRoles: any[];
-        practicalApplication: "practical" | "case_study" | "theory" | "hands_on";
+        targetMinistryRoles: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[];
+        practicalApplication: "case_study" | "practical" | "theory" | "hands_on";
         theologicalDepth: "intermediate" | "advanced" | "introductory" | "scholarly";
-        culturalRelevance: any[];
+        culturalRelevance: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[];
     } | undefined;
-    difficultyLevel?: "intermediate" | "beginner" | "advanced" | "expert" | undefined;
+    difficultyLevel?: "beginner" | "intermediate" | "advanced" | "expert" | undefined;
     categoryId?: string | undefined;
 }, {
     organizationId?: string | undefined;
     status?: "draft" | "published" | "archived" | "under_review" | "scheduled" | undefined;
-    title?: string | undefined;
     excerpt?: string | undefined;
     content?: string | undefined;
-    contentType?: "article" | "video" | "podcast" | "framework" | "tool" | "case_study" | undefined;
     seriesId?: string | undefined;
     publishedAt?: string | undefined;
+    title?: string | undefined;
+    contentType?: "video" | "article" | "podcast" | "framework" | "tool" | "case_study" | undefined;
     language?: string | undefined;
     ministryContext?: {
-        targetMinistryRoles?: any[] | undefined;
-        practicalApplication?: "practical" | "case_study" | "theory" | "hands_on" | undefined;
+        targetMinistryRoles?: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[] | undefined;
+        practicalApplication?: "case_study" | "practical" | "theory" | "hands_on" | undefined;
         theologicalDepth?: "intermediate" | "advanced" | "introductory" | "scholarly" | undefined;
-        culturalRelevance?: any[] | undefined;
+        culturalRelevance?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global")[] | undefined;
     } | undefined;
-    difficultyLevel?: "intermediate" | "beginner" | "advanced" | "expert" | undefined;
+    difficultyLevel?: "beginner" | "intermediate" | "advanced" | "expert" | undefined;
     categoryId?: string | undefined;
 }>;
 export declare const createMinistryCommunityRequestSchema: z.ZodObject<{
@@ -384,32 +380,32 @@ export declare const createMinistryCommunityRequestSchema: z.ZodObject<{
     communityType: z.ZodEnum<["general_discussion", "church_planting_cohort", "leadership_development", "theological_study", "ministry_collaboration", "regional_network"]>;
     status: z.ZodDefault<z.ZodEnum<["active", "inactive", "archived", "private"]>>;
     ministryContext: z.ZodObject<{
-        targetMinistryRoles: z.ZodDefault<z.ZodArray<any, "many">>;
+        targetMinistryRoles: z.ZodDefault<z.ZodArray<z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>, "many">>;
         theologicalFocus: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         ministryStage: z.ZodDefault<z.ZodEnum<["exploring", "developing", "established", "multiplying"]>>;
         geographicScope: z.ZodDefault<z.ZodEnum<["local", "regional", "national", "global"]>>;
     }, "strip", z.ZodTypeAny, {
         theologicalFocus: string[];
-        targetMinistryRoles: any[];
-        ministryStage: "developing" | "exploring" | "established" | "multiplying";
+        targetMinistryRoles: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[];
+        ministryStage: "exploring" | "developing" | "established" | "multiplying";
         geographicScope: "global" | "local" | "regional" | "national";
     }, {
         theologicalFocus?: string[] | undefined;
-        targetMinistryRoles?: any[] | undefined;
-        ministryStage?: "developing" | "exploring" | "established" | "multiplying" | undefined;
+        targetMinistryRoles?: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[] | undefined;
+        ministryStage?: "exploring" | "developing" | "established" | "multiplying" | undefined;
         geographicScope?: "global" | "local" | "regional" | "national" | undefined;
     }>;
     organizationId: z.ZodOptional<z.ZodString>;
     isPrivate: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
+    status: "private" | "active" | "inactive" | "archived";
     name: string;
     description: string;
-    status: "private" | "archived" | "active" | "inactive";
-    communityType: "general_discussion" | "church_planting_cohort" | "leadership_development" | "theological_study" | "ministry_collaboration" | "regional_network";
+    communityType: "general_discussion" | "church_planting_cohort" | "leadership_development" | "theological_study" | "regional_network" | "ministry_collaboration";
     ministryContext: {
         theologicalFocus: string[];
-        targetMinistryRoles: any[];
-        ministryStage: "developing" | "exploring" | "established" | "multiplying";
+        targetMinistryRoles: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[];
+        ministryStage: "exploring" | "developing" | "established" | "multiplying";
         geographicScope: "global" | "local" | "regional" | "national";
     };
     isPrivate: boolean;
@@ -417,15 +413,15 @@ export declare const createMinistryCommunityRequestSchema: z.ZodObject<{
 }, {
     name: string;
     description: string;
-    communityType: "general_discussion" | "church_planting_cohort" | "leadership_development" | "theological_study" | "ministry_collaboration" | "regional_network";
+    communityType: "general_discussion" | "church_planting_cohort" | "leadership_development" | "theological_study" | "regional_network" | "ministry_collaboration";
     ministryContext: {
         theologicalFocus?: string[] | undefined;
-        targetMinistryRoles?: any[] | undefined;
-        ministryStage?: "developing" | "exploring" | "established" | "multiplying" | undefined;
+        targetMinistryRoles?: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[] | undefined;
+        ministryStage?: "exploring" | "developing" | "established" | "multiplying" | undefined;
         geographicScope?: "global" | "local" | "regional" | "national" | undefined;
     };
     organizationId?: string | undefined;
-    status?: "private" | "archived" | "active" | "inactive" | undefined;
+    status?: "private" | "active" | "inactive" | "archived" | undefined;
     isPrivate?: boolean | undefined;
 }>;
 export declare const updateMinistryCommunityRequestSchema: z.ZodObject<{
@@ -434,46 +430,46 @@ export declare const updateMinistryCommunityRequestSchema: z.ZodObject<{
     communityType: z.ZodOptional<z.ZodEnum<["general_discussion", "church_planting_cohort", "leadership_development", "theological_study", "ministry_collaboration", "regional_network"]>>;
     status: z.ZodOptional<z.ZodDefault<z.ZodEnum<["active", "inactive", "archived", "private"]>>>;
     ministryContext: z.ZodOptional<z.ZodObject<{
-        targetMinistryRoles: z.ZodDefault<z.ZodArray<any, "many">>;
+        targetMinistryRoles: z.ZodDefault<z.ZodArray<z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>, "many">>;
         theologicalFocus: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         ministryStage: z.ZodDefault<z.ZodEnum<["exploring", "developing", "established", "multiplying"]>>;
         geographicScope: z.ZodDefault<z.ZodEnum<["local", "regional", "national", "global"]>>;
     }, "strip", z.ZodTypeAny, {
         theologicalFocus: string[];
-        targetMinistryRoles: any[];
-        ministryStage: "developing" | "exploring" | "established" | "multiplying";
+        targetMinistryRoles: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[];
+        ministryStage: "exploring" | "developing" | "established" | "multiplying";
         geographicScope: "global" | "local" | "regional" | "national";
     }, {
         theologicalFocus?: string[] | undefined;
-        targetMinistryRoles?: any[] | undefined;
-        ministryStage?: "developing" | "exploring" | "established" | "multiplying" | undefined;
+        targetMinistryRoles?: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[] | undefined;
+        ministryStage?: "exploring" | "developing" | "established" | "multiplying" | undefined;
         geographicScope?: "global" | "local" | "regional" | "national" | undefined;
     }>>;
     organizationId: z.ZodOptional<z.ZodOptional<z.ZodString>>;
     isPrivate: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 }, "strip", z.ZodTypeAny, {
-    name?: string | undefined;
     organizationId?: string | undefined;
+    status?: "private" | "active" | "inactive" | "archived" | undefined;
+    name?: string | undefined;
     description?: string | undefined;
-    status?: "private" | "archived" | "active" | "inactive" | undefined;
-    communityType?: "general_discussion" | "church_planting_cohort" | "leadership_development" | "theological_study" | "ministry_collaboration" | "regional_network" | undefined;
+    communityType?: "general_discussion" | "church_planting_cohort" | "leadership_development" | "theological_study" | "regional_network" | "ministry_collaboration" | undefined;
     ministryContext?: {
         theologicalFocus: string[];
-        targetMinistryRoles: any[];
-        ministryStage: "developing" | "exploring" | "established" | "multiplying";
+        targetMinistryRoles: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[];
+        ministryStage: "exploring" | "developing" | "established" | "multiplying";
         geographicScope: "global" | "local" | "regional" | "national";
     } | undefined;
     isPrivate?: boolean | undefined;
 }, {
-    name?: string | undefined;
     organizationId?: string | undefined;
+    status?: "private" | "active" | "inactive" | "archived" | undefined;
+    name?: string | undefined;
     description?: string | undefined;
-    status?: "private" | "archived" | "active" | "inactive" | undefined;
-    communityType?: "general_discussion" | "church_planting_cohort" | "leadership_development" | "theological_study" | "ministry_collaboration" | "regional_network" | undefined;
+    communityType?: "general_discussion" | "church_planting_cohort" | "leadership_development" | "theological_study" | "regional_network" | "ministry_collaboration" | undefined;
     ministryContext?: {
         theologicalFocus?: string[] | undefined;
-        targetMinistryRoles?: any[] | undefined;
-        ministryStage?: "developing" | "exploring" | "established" | "multiplying" | undefined;
+        targetMinistryRoles?: ("other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher")[] | undefined;
+        ministryStage?: "exploring" | "developing" | "established" | "multiplying" | undefined;
         geographicScope?: "global" | "local" | "regional" | "national" | undefined;
     } | undefined;
     isPrivate?: boolean | undefined;
@@ -481,25 +477,23 @@ export declare const updateMinistryCommunityRequestSchema: z.ZodObject<{
 export declare const joinMinistryCommunityRequestSchema: z.ZodObject<{
     communityId: z.ZodString;
     userId: z.ZodString;
-    role: any;
+    role: z.ZodDefault<z.ZodEnum<["owner", "admin", "member", "viewer"]>>;
     organizationId: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    [x: string]: any;
-    communityId?: unknown;
-    userId?: unknown;
-    role?: unknown;
-    organizationId?: unknown;
+    userId: string;
+    role: "owner" | "admin" | "member" | "viewer";
+    communityId: string;
+    organizationId?: string | undefined;
 }, {
-    [x: string]: any;
-    communityId?: unknown;
-    userId?: unknown;
-    role?: unknown;
-    organizationId?: unknown;
+    userId: string;
+    communityId: string;
+    organizationId?: string | undefined;
+    role?: "owner" | "admin" | "member" | "viewer" | undefined;
 }>;
 export declare const createMinistryOrganizationRequestSchema: z.ZodObject<{
     name: z.ZodString;
     description: z.ZodString;
-    organizationType: any;
+    organizationType: z.ZodEnum<["church", "denomination", "seminary", "ministry_network", "nonprofit", "business", "other"]>;
     status: z.ZodDefault<z.ZodEnum<["active", "inactive", "pending", "suspended"]>>;
     ministryFocus: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     theologicalTradition: z.ZodOptional<z.ZodString>;
@@ -514,49 +508,59 @@ export declare const createMinistryOrganizationRequestSchema: z.ZodObject<{
         zipCode: z.ZodOptional<z.ZodString>;
         country: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
-        street?: string | undefined;
+        country?: string | undefined;
         city?: string | undefined;
+        street?: string | undefined;
         state?: string | undefined;
         zipCode?: string | undefined;
-        country?: string | undefined;
     }, {
-        street?: string | undefined;
+        country?: string | undefined;
         city?: string | undefined;
+        street?: string | undefined;
         state?: string | undefined;
         zipCode?: string | undefined;
-        country?: string | undefined;
     }>>;
 }, "strip", z.ZodTypeAny, {
-    [x: string]: any;
-    name?: unknown;
-    description?: unknown;
-    organizationType?: unknown;
-    status?: unknown;
-    ministryFocus?: unknown;
-    theologicalTradition?: unknown;
-    denominationalAffiliation?: unknown;
-    website?: unknown;
-    email?: unknown;
-    phone?: unknown;
-    address?: unknown;
+    status: "active" | "suspended" | "pending" | "inactive";
+    name: string;
+    description: string;
+    organizationType: "church" | "denomination" | "seminary" | "ministry_network" | "nonprofit" | "business" | "other";
+    ministryFocus: string[];
+    website?: string | undefined;
+    address?: {
+        country?: string | undefined;
+        city?: string | undefined;
+        street?: string | undefined;
+        state?: string | undefined;
+        zipCode?: string | undefined;
+    } | undefined;
+    email?: string | undefined;
+    phone?: string | undefined;
+    theologicalTradition?: string | undefined;
+    denominationalAffiliation?: string | undefined;
 }, {
-    [x: string]: any;
-    name?: unknown;
-    description?: unknown;
-    organizationType?: unknown;
-    status?: unknown;
-    ministryFocus?: unknown;
-    theologicalTradition?: unknown;
-    denominationalAffiliation?: unknown;
-    website?: unknown;
-    email?: unknown;
-    phone?: unknown;
-    address?: unknown;
+    name: string;
+    description: string;
+    organizationType: "church" | "denomination" | "seminary" | "ministry_network" | "nonprofit" | "business" | "other";
+    status?: "active" | "suspended" | "pending" | "inactive" | undefined;
+    website?: string | undefined;
+    address?: {
+        country?: string | undefined;
+        city?: string | undefined;
+        street?: string | undefined;
+        state?: string | undefined;
+        zipCode?: string | undefined;
+    } | undefined;
+    email?: string | undefined;
+    phone?: string | undefined;
+    theologicalTradition?: string | undefined;
+    ministryFocus?: string[] | undefined;
+    denominationalAffiliation?: string | undefined;
 }>;
 export declare const updateMinistryOrganizationRequestSchema: z.ZodObject<{
     name: z.ZodOptional<z.ZodString>;
     description: z.ZodOptional<z.ZodString>;
-    organizationType: z.ZodOptional<any>;
+    organizationType: z.ZodOptional<z.ZodEnum<["church", "denomination", "seminary", "ministry_network", "nonprofit", "business", "other"]>>;
     status: z.ZodOptional<z.ZodDefault<z.ZodEnum<["active", "inactive", "pending", "suspended"]>>>;
     ministryFocus: z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodString, "many">>>;
     theologicalTradition: z.ZodOptional<z.ZodOptional<z.ZodString>>;
@@ -571,62 +575,70 @@ export declare const updateMinistryOrganizationRequestSchema: z.ZodObject<{
         zipCode: z.ZodOptional<z.ZodString>;
         country: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
-        street?: string | undefined;
+        country?: string | undefined;
         city?: string | undefined;
+        street?: string | undefined;
         state?: string | undefined;
         zipCode?: string | undefined;
-        country?: string | undefined;
     }, {
-        street?: string | undefined;
+        country?: string | undefined;
         city?: string | undefined;
+        street?: string | undefined;
         state?: string | undefined;
         zipCode?: string | undefined;
-        country?: string | undefined;
     }>>>;
 }, "strip", z.ZodTypeAny, {
-    [x: string]: any;
-    name?: unknown;
-    description?: unknown;
-    organizationType?: unknown;
-    status?: unknown;
-    ministryFocus?: unknown;
-    theologicalTradition?: unknown;
-    denominationalAffiliation?: unknown;
-    website?: unknown;
-    email?: unknown;
-    phone?: unknown;
-    address?: unknown;
+    status?: "active" | "suspended" | "pending" | "inactive" | undefined;
+    name?: string | undefined;
+    description?: string | undefined;
+    website?: string | undefined;
+    address?: {
+        country?: string | undefined;
+        city?: string | undefined;
+        street?: string | undefined;
+        state?: string | undefined;
+        zipCode?: string | undefined;
+    } | undefined;
+    organizationType?: "church" | "denomination" | "seminary" | "ministry_network" | "nonprofit" | "business" | "other" | undefined;
+    email?: string | undefined;
+    phone?: string | undefined;
+    theologicalTradition?: string | undefined;
+    ministryFocus?: string[] | undefined;
+    denominationalAffiliation?: string | undefined;
 }, {
-    [x: string]: any;
-    name?: unknown;
-    description?: unknown;
-    organizationType?: unknown;
-    status?: unknown;
-    ministryFocus?: unknown;
-    theologicalTradition?: unknown;
-    denominationalAffiliation?: unknown;
-    website?: unknown;
-    email?: unknown;
-    phone?: unknown;
-    address?: unknown;
+    status?: "active" | "suspended" | "pending" | "inactive" | undefined;
+    name?: string | undefined;
+    description?: string | undefined;
+    website?: string | undefined;
+    address?: {
+        country?: string | undefined;
+        city?: string | undefined;
+        street?: string | undefined;
+        state?: string | undefined;
+        zipCode?: string | undefined;
+    } | undefined;
+    organizationType?: "church" | "denomination" | "seminary" | "ministry_network" | "nonprofit" | "business" | "other" | undefined;
+    email?: string | undefined;
+    phone?: string | undefined;
+    theologicalTradition?: string | undefined;
+    ministryFocus?: string[] | undefined;
+    denominationalAffiliation?: string | undefined;
 }>;
 export declare const inviteOrganizationMemberRequestSchema: z.ZodObject<{
     email: z.ZodString;
-    role: any;
-    ministryRole: any;
+    role: z.ZodDefault<z.ZodEnum<["owner", "admin", "member", "viewer"]>>;
+    ministryRole: z.ZodOptional<z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>>;
     message: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    [x: string]: any;
-    email?: unknown;
-    role?: unknown;
-    ministryRole?: unknown;
-    message?: unknown;
+    role: "owner" | "admin" | "member" | "viewer";
+    email: string;
+    ministryRole?: "other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | undefined;
+    message?: string | undefined;
 }, {
-    [x: string]: any;
-    email?: unknown;
-    role?: unknown;
-    ministryRole?: unknown;
-    message?: unknown;
+    email: string;
+    ministryRole?: "other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | undefined;
+    message?: string | undefined;
+    role?: "owner" | "admin" | "member" | "viewer" | undefined;
 }>;
 export declare const ministryAnalyticsRequestSchema: z.ZodObject<{
     organizationId: z.ZodOptional<z.ZodString>;
@@ -643,18 +655,18 @@ export declare const ministryAnalyticsRequestSchema: z.ZodObject<{
     includePredictions: boolean;
     organizationId?: string | undefined;
     userId?: string | undefined;
+    groupBy?: "day" | "week" | "month" | "quarter" | "year" | undefined;
     dateFrom?: string | undefined;
     dateTo?: string | undefined;
     metricTypes?: string[] | undefined;
-    groupBy?: "day" | "week" | "month" | "quarter" | "year" | undefined;
     filters?: Record<string, any> | undefined;
 }, {
     organizationId?: string | undefined;
     userId?: string | undefined;
+    groupBy?: "day" | "week" | "month" | "quarter" | "year" | undefined;
     dateFrom?: string | undefined;
     dateTo?: string | undefined;
     metricTypes?: string[] | undefined;
-    groupBy?: "day" | "week" | "month" | "quarter" | "year" | undefined;
     includeComparisons?: boolean | undefined;
     includePredictions?: boolean | undefined;
     filters?: Record<string, any> | undefined;
@@ -669,8 +681,8 @@ export declare const createMinistryCollaborationRequestSchema: z.ZodObject<{
     startDate: z.ZodOptional<z.ZodString>;
     endDate: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    description: string;
     status: "active" | "cancelled" | "completed" | "planning";
+    description: string;
     title: string;
     collaborationType: "project" | "study_group" | "mentorship" | "partnership";
     participants: string[];
@@ -698,21 +710,21 @@ export declare const updateMinistryCollaborationRequestSchema: z.ZodObject<{
     endDate: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
     organizationId?: string | undefined;
-    description?: string | undefined;
     status?: "active" | "cancelled" | "completed" | "planning" | undefined;
+    description?: string | undefined;
     title?: string | undefined;
     collaborationType?: "project" | "study_group" | "mentorship" | "partnership" | undefined;
-    participants?: string[] | undefined;
     startDate?: string | undefined;
+    participants?: string[] | undefined;
     endDate?: string | undefined;
 }, {
     organizationId?: string | undefined;
-    description?: string | undefined;
     status?: "active" | "cancelled" | "completed" | "planning" | undefined;
+    description?: string | undefined;
     title?: string | undefined;
     collaborationType?: "project" | "study_group" | "mentorship" | "partnership" | undefined;
-    participants?: string[] | undefined;
     startDate?: string | undefined;
+    participants?: string[] | undefined;
     endDate?: string | undefined;
 }>;
 export declare const createMinistrySubscriptionRequestSchema: z.ZodObject<{
@@ -723,8 +735,8 @@ export declare const createMinistrySubscriptionRequestSchema: z.ZodObject<{
     couponCode: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     organizationId: string;
-    billingCycle: "monthly" | "yearly";
     planId: string;
+    billingCycle: "monthly" | "yearly";
     paymentMethodId?: string | undefined;
     couponCode?: string | undefined;
 }, {
@@ -740,54 +752,52 @@ export declare const updateMinistrySubscriptionRequestSchema: z.ZodObject<{
     status: z.ZodOptional<z.ZodEnum<["active", "cancelled", "past_due", "unpaid", "trialing", "paused"]>>;
 }, "strip", z.ZodTypeAny, {
     status?: "active" | "cancelled" | "past_due" | "unpaid" | "trialing" | "paused" | undefined;
-    billingCycle?: "monthly" | "yearly" | undefined;
     planId?: string | undefined;
+    billingCycle?: "monthly" | "yearly" | undefined;
 }, {
     status?: "active" | "cancelled" | "past_due" | "unpaid" | "trialing" | "paused" | undefined;
-    billingCycle?: "monthly" | "yearly" | undefined;
     planId?: string | undefined;
+    billingCycle?: "monthly" | "yearly" | undefined;
 }>;
 export declare const updateMinistryUserProfileRequestSchema: z.ZodObject<{
     firstName: z.ZodOptional<z.ZodString>;
     lastName: z.ZodOptional<z.ZodString>;
     displayName: z.ZodOptional<z.ZodString>;
     bio: z.ZodOptional<z.ZodString>;
-    ministryRole: any;
+    ministryRole: z.ZodOptional<z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>>;
     organizationId: z.ZodOptional<z.ZodString>;
-    culturalContext: any;
+    culturalContext: z.ZodOptional<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "mixed", "global"]>>;
     ministrySpecialization: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     targetAudience: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     ministryGoals: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     website: z.ZodOptional<z.ZodString>;
     socialMedia: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
-    [x: string]: any;
-    firstName?: unknown;
-    lastName?: unknown;
-    displayName?: unknown;
-    bio?: unknown;
-    ministryRole?: unknown;
-    organizationId?: unknown;
-    culturalContext?: unknown;
-    ministrySpecialization?: unknown;
-    targetAudience?: unknown;
-    ministryGoals?: unknown;
-    website?: unknown;
-    socialMedia?: unknown;
+    organizationId?: string | undefined;
+    ministryRole?: "other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    website?: string | undefined;
+    displayName?: string | undefined;
+    bio?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    targetAudience?: string[] | undefined;
+    ministrySpecialization?: string[] | undefined;
+    ministryGoals?: string[] | undefined;
+    socialMedia?: Record<string, string> | undefined;
 }, {
-    [x: string]: any;
-    firstName?: unknown;
-    lastName?: unknown;
-    displayName?: unknown;
-    bio?: unknown;
-    ministryRole?: unknown;
-    organizationId?: unknown;
-    culturalContext?: unknown;
-    ministrySpecialization?: unknown;
-    targetAudience?: unknown;
-    ministryGoals?: unknown;
-    website?: unknown;
-    socialMedia?: unknown;
+    organizationId?: string | undefined;
+    ministryRole?: "other" | "emerging_leader" | "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    website?: string | undefined;
+    displayName?: string | undefined;
+    bio?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    targetAudience?: string[] | undefined;
+    ministrySpecialization?: string[] | undefined;
+    ministryGoals?: string[] | undefined;
+    socialMedia?: Record<string, string> | undefined;
 }>;
 export type MinistryPlatformSearchRequest = z.infer<typeof ministryPlatformSearchRequestSchema>;
 export type CreateMinistryAssessmentRequest = z.infer<typeof createMinistryAssessmentRequestSchema>;

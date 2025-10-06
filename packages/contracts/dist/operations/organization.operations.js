@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CreateOrganizationMembershipSchema, CreateOrganizationSchema, OrganizationInvitationSchema, OrganizationMembershipQuerySchema, OrganizationQuerySchema, UpdateOrganizationMembershipSchema, UpdateOrganizationSchema, } from '../entities/organization.schema';
+import { createOrganizationMembershipSchema as CreateOrganizationMembershipSchema, createOrganizationSchema as CreateOrganizationSchema, organizationInvitationSchema as OrganizationInvitationSchema, organizationMembershipQuerySchema as OrganizationMembershipQuerySchema, organizationQuerySchema as OrganizationQuerySchema, updateOrganizationMembershipSchema as UpdateOrganizationMembershipSchema, updateOrganizationSchema as UpdateOrganizationSchema, } from '../entities/organization.schema';
 // ============================================================================
 // ORGANIZATION OPERATIONS - DERIVED FROM ENTITY SCHEMAS
 // ============================================================================

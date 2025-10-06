@@ -3,10 +3,7 @@
 // ============================================================================
 // Type-safe API endpoints for organization membership management
 
-import {
-  createPaginatedRouteHandler,
-  createPostHandler,
-} from '../../../../../../lib/api/route-handler';
+import { createPostHandler } from '../../../../../../lib/api/route-handlers';
 import { organizationService } from '../../../../../../lib/services';
 
 // ============================================================================

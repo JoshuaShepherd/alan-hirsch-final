@@ -1,3 +1,14 @@
+import {
+  crossEntityValidationSchema,
+  ministryAssessmentSchema,
+  ministryMetricsSchema,
+  ministryOrganizationSchema,
+  ministrySearchSchema,
+  ministryUserProfileSchema,
+  organizationContextSchema,
+  organizationScopedRequestSchema,
+  roleBasedValidationSchema,
+} from '@platform/shared/contracts';
 import { describe, expect, it } from 'vitest';
 import {
   ministryAssessmentResponseSchema,
@@ -9,17 +20,6 @@ import {
   ministryPlatformFixtures,
   runValidationTests,
 } from '../../lib/mocks/ministry-platform';
-import {
-  crossEntityValidationSchema,
-  ministryAssessmentSchema,
-  ministryMetricsSchema,
-  ministryOrganizationSchema,
-  ministrySearchSchema,
-  ministryUserProfileSchema,
-  organizationContextSchema,
-  organizationScopedRequestSchema,
-  roleBasedValidationSchema,
-} from '../../validations/ministry-platform';
 
 // ============================================================================
 // MINISTRY PLATFORM VALIDATION TESTS

@@ -1,5 +1,5 @@
+import type { TestUser } from '@platform/shared/test-utils';
 import { vi } from 'vitest';
-import type { TestUser } from '@/lib/test-utils';
 
 /**
  * Centralized Supabase Mock Utilities

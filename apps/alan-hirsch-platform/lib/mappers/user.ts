@@ -45,7 +45,8 @@ export function toUserProfileEntity(row: UserProfile): UserProfileEntity {
       culturalContext: row.culturalContext ?? undefined,
 
       // APEST Assessment Scores
-      assessmentMovementAlignment: row.assessmentMovementAlignment ?? undefined,
+      assessmentMovementAlignment:
+        row.assessmentMovementAlignment ?? undefined,
       assessmentAudienceEngagement:
         row.assessmentAudienceEngagement ?? undefined,
       assessmentContentReadiness: row.assessmentContentReadiness ?? undefined,
@@ -297,7 +298,8 @@ export function fromUpdateUserProfile(
     updateData.subscriptionTier = data.subscriptionTier;
   if (data.theologicalFocus !== undefined)
     updateData.theologicalFocus = data.theologicalFocus;
-  if (data.brandColors !== undefined) updateData.brandColors = data.brandColors;
+  if (data.brandColors !== undefined)
+    updateData.brandColors = data.brandColors;
   if (data.emailNotifications !== undefined)
     updateData.emailNotifications = data.emailNotifications;
   if (data.privacySettings !== undefined)
@@ -309,7 +311,7 @@ export function fromUpdateUserProfile(
   if (data.accountStatus !== undefined)
     updateData.accountStatus = data.accountStatus;
 
-  // Always update the updated_at timestamp
+  // Always update the updatedAt timestamp
   updateData.updatedAt = new Date();
 
   return updateData;

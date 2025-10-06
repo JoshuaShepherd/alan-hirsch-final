@@ -3,3 +3,113 @@
 > @platform/database@0.1.0 lint /Users/joshshepherd/Projects/alan-hirsch-final/packages/database
 > eslint src --ext .ts
 
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/queries.ts[24m[0m
+[0m  [2m413:39[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/queries/assessments.ts[24m[0m
+[0m  [2m388:35[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/queries/communities.ts[24m[0m
+[0m  [2m449:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m590:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m614:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/queries/content.ts[24m[0m
+[0m  [2m394:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m529:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m550:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m607:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m636:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m660:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m679:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m697:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m713:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m776:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m795:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/queries/monitoring.ts[24m[0m
+[0m  [2m255:3[22m   [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m467:41[22m  [33mwarning[39m  Unexpected any. Specify a different type                                   [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m507:68[22m  [33mwarning[39m  Unexpected any. Specify a different type                                   [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/queries/organizations.ts[24m[0m
+[0m  [2m438:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m455:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m501:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m520:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/queries/subscriptions.ts[24m[0m
+[0m   [2m40:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m61:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m130:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m154:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m173:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m191:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m207:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m250:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m372:9[22m  [33mwarning[39m  'timeCondition' is assigned a value but never used                         [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m429:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m453:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m520:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m605:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m629:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m652:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m666:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m689:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m713:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m732:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/queries/users.ts[24m[0m
+[0m  [2m339:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m388:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m474:3[22m  [33mwarning[39m  'context' is defined but never used. Allowed unused args must match /^_/u  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/schema/ai.ts[24m[0m
+[0m  [2m130:56[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m141:48[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/schema/analytics.ts[24m[0m
+[0m   [2m83:56[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m202:52[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m224:44[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/schema/community.ts[24m[0m
+[0m  [2m104:30[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/schema/content.ts[24m[0m
+[0m  [2m15:33[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/schema/subscriptions.ts[24m[0m
+[0m  [2m159:52[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/schema/system.ts[24m[0m
+[0m   [2m29:55[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m30:55[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m43:52[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m66:46[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m73:14[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m   [2m75:12[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m107:31[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/seed.ts[24m[0m
+[0m   [2m22:11[22m  [33mwarning[39m  'plans' is assigned a value but never used               [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m65:12[22m  [33mwarning[39m  Unexpected any. Specify a different type                 [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m179:11[22m  [33mwarning[39m  'questions' is assigned a value but never used           [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m609:11[22m  [33mwarning[39m  'contentItemsResult' is assigned a value but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/setup.ts[24m[0m
+[0m   [2m37:14[22m  [33mwarning[39m  'error' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m56:16[22m  [33mwarning[39m  'error' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m   [2m63:12[22m  [33mwarning[39m  'error' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m103:12[22m  [33mwarning[39m  'error' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m142:12[22m  [33mwarning[39m  'error' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4m/Users/joshshepherd/Projects/alan-hirsch-final/packages/database/src/db/type-guards.ts[24m[0m
+[0m  [2m42:35[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m55:39[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m68:43[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m81:43[22m  [33mwarning[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[33m[1m✖ 73 problems (0 errors, 73 warnings)[22m[39m[0m
+[0m[33m[1m[22m[39m[0m

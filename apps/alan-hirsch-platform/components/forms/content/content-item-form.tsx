@@ -5,7 +5,7 @@ import {
   contentItemFormSchema,
   type ContentItemForm,
   type ContentItemResponse,
-} from '@platform/shared/contracts';
+} from '@platform/contracts';
 import { BaseForm } from '@platform/shared/forms/base-form';
 import { FormFieldGroup, FormSection } from '@platform/shared/forms/form-field';
 import { Button } from '@platform/ui/button';

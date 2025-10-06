@@ -18,7 +18,6 @@ import {
   createPutHandler,
   validatePathParams,
 } from '../../../../../lib/api/route-handlers';
-import { toUserProfileResponseDTO } from '../../../../../lib/mappers/user';
 import { userService } from '../../../../../lib/services';
 
 // ============================================================================
@@ -43,18 +42,18 @@ export const GET = createGetHandler({
     const pathParams = validatePathParams(
       context.request,
       UserIdPathSchema,
-      routeParams?.params || {}
+      routeParams?.params ?? {}
     );
 
     // Call service layer with validated input and tenant-scoped context
     const result = await userService.findById(pathParams.id, context);
 
-    if (!result) {
+    if (!result.success || !result.data) {
       throw new NotFoundError('User');
     }
 
-    // Transform DB row to response DTO using mappers (egress validation)
-    return toUserProfileResponseDTO(result);
+    // Service already returns mapped response DTO
+    return result.data;
   },
 });
 
@@ -72,22 +71,32 @@ export const PUT = createPutHandler({
     const pathParams = validatePathParams(
       context.request,
       UserIdPathSchema,
-      routeParams?.params || {}
+      routeParams?.params ?? {}
     );
+
+    // Ensure brandColors has all required properties if provided
+    const processedData = { ...validatedData };
+    if (processedData.brandColors) {
+      processedData.brandColors = {
+        primary: processedData.brandColors.primary ?? '#2563eb',
+        secondary: processedData.brandColors.secondary ?? '#64748b',
+        accent: processedData.brandColors.accent ?? '#059669',
+      };
+    }
 
     // Call service layer with validated input and tenant-scoped context
     const result = await userService.update(
       pathParams.id,
-      validatedData,
+      processedData as any, // Type assertion to handle brandColors transformation
       context
     );
 
-    if (!result) {
+    if (!result.success || !result.data) {
       throw new NotFoundError('User');
     }
 
-    // Transform DB row to response DTO using mappers (egress validation)
-    return toUserProfileResponseDTO(result);
+    // Service already returns mapped response DTO
+    return result.data;
   },
 });
 
@@ -108,16 +117,16 @@ export const DELETE = createDeleteHandler({
     const pathParams = validatePathParams(
       context.request,
       UserIdPathSchema,
-      routeParams?.params || {}
+      routeParams?.params ?? {}
     );
 
-    // Use confirmation from body or default
-    const confirmation = validatedData?.confirmation || 'DELETE';
+    // Use confirmation from body or default (for future use)
+    const _confirmation = validatedData?.confirmation ?? 'DELETE';
 
     // Call service layer with validated input and tenant-scoped context
-    const success = await userService.delete(pathParams.id, context);
+    const result = await userService.delete(pathParams.id, context);
 
-    if (!success) {
+    if (!result.success) {
       throw new NotFoundError('User');
     }
 

@@ -13,7 +13,7 @@ import {
   createGetListHandler,
   createPostHandler,
 } from '../../../../lib/api/route-handlers';
-import { toOrganizationResponseDTO } from '../../../../lib/mappers/organization';
+import { toOrganizationEntity } from '../../../../lib/mappers/organization';
 import { organizationService } from '../../../../lib/services';
 
 // ============================================================================
@@ -29,14 +29,26 @@ export const GET = createGetListHandler({
     // Call service layer with validated input and tenant-scoped context
     const result = await organizationService.findMany(validatedQuery, context);
 
+    // Check if service call was successful
+    if (!result.success || !result.data) {
+      throw new Error(result.error?.message || 'Failed to fetch organizations');
+    }
+
     // Transform DB rows to response DTOs using mappers (egress validation)
     const transformedData = result.data.map(organization =>
-      toOrganizationResponseDTO(organization)
+      toOrganizationEntity(organization)
     );
 
     return {
       data: transformedData,
-      pagination: result.pagination,
+      pagination: {
+        page: result.pagination?.page || 1,
+        limit: result.pagination?.limit || 10,
+        total: result.pagination?.total || 0,
+        totalPages: result.pagination?.totalPages || 0,
+        hasNext: result.pagination?.hasMore || false,
+        hasPrev: (result.pagination?.page || 1) > 1,
+      },
     };
   },
 });
@@ -54,7 +66,12 @@ export const POST = createPostHandler({
     // Call service layer with validated input and tenant-scoped context
     const result = await organizationService.create(validatedData, context);
 
+    // Check if service call was successful
+    if (!result.success || !result.data) {
+      throw new Error(result.error?.message || 'Failed to create organization');
+    }
+
     // Transform DB row to response DTO using mappers (egress validation)
-    return toOrganizationResponseDTO(result);
+    return toOrganizationEntity(result.data);
   },
 });

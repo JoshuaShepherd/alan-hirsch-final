@@ -26,4 +26,12 @@ module.exports = {
 
   // Configuration files
   '*.{toml,ini,cfg,conf}': ['prettier --write'],
+
+  // Mapper files - run schema validation
+  '**/lib/mappers/**/*.ts': [
+    'eslint --cache --fix',
+    'prettier --write',
+    'bash -c "npx tsc --noEmit"',
+    'bash -c "npm run validate:schemas"',
+  ],
 };

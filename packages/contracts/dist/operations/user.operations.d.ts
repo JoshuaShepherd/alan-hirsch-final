@@ -8,252 +8,264 @@ import { z } from 'zod';
  * Derived from CreateUserSchema with operation-specific validation
  */
 export declare const CreateUserOperationSchema: z.ZodObject<{
-    denomination: z.ZodOptional<z.ZodString>;
-    display_name: z.ZodOptional<z.ZodString>;
+    passwordHash: z.ZodOptional<z.ZodString>;
+    displayName: z.ZodOptional<z.ZodString>;
     bio: z.ZodOptional<z.ZodString>;
-    avatar_url: z.ZodOptional<z.ZodString>;
-    ministry_role: z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>;
-    organization_name: z.ZodOptional<z.ZodString>;
-    years_in_ministry: z.ZodOptional<z.ZodNumber>;
-    country_code: z.ZodOptional<z.ZodString>;
+    avatarUrl: z.ZodOptional<z.ZodString>;
+    denomination: z.ZodOptional<z.ZodString>;
+    organizationName: z.ZodOptional<z.ZodString>;
+    yearsInMinistry: z.ZodOptional<z.ZodNumber>;
+    countryCode: z.ZodOptional<z.ZodString>;
     timezone: z.ZodOptional<z.ZodString>;
-    language_primary: z.ZodDefault<z.ZodString>;
-    cultural_context: z.ZodOptional<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "universal", "global"]>>;
-    assessment_movement_alignment: z.ZodOptional<z.ZodNumber>;
-    assessment_audience_engagement: z.ZodOptional<z.ZodNumber>;
-    assessment_content_readiness: z.ZodOptional<z.ZodNumber>;
-    assessment_revenue_potential: z.ZodOptional<z.ZodNumber>;
-    assessment_network_effects: z.ZodOptional<z.ZodNumber>;
-    assessment_strategic_fit: z.ZodOptional<z.ZodNumber>;
-    assessment_total: z.ZodOptional<z.ZodNumber>;
-    leader_tier: z.ZodOptional<z.ZodEnum<["core", "network", "emerging", "community"]>>;
+    languagePrimary: z.ZodDefault<z.ZodString>;
+    culturalContext: z.ZodOptional<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "mixed", "global"]>>;
+    assessmentMovementAlignment: z.ZodOptional<z.ZodNumber>;
+    assessmentAudienceEngagement: z.ZodOptional<z.ZodNumber>;
+    assessmentContentReadiness: z.ZodOptional<z.ZodNumber>;
+    assessmentRevenuePotential: z.ZodOptional<z.ZodNumber>;
+    assessmentNetworkEffects: z.ZodOptional<z.ZodNumber>;
+    assessmentStrategicFit: z.ZodOptional<z.ZodNumber>;
+    leaderTier: z.ZodOptional<z.ZodEnum<["core", "network", "emerging", "community"]>>;
     subdomain: z.ZodOptional<z.ZodString>;
-    custom_domain: z.ZodOptional<z.ZodString>;
-    platform_title: z.ZodOptional<z.ZodString>;
-    subscription_tier: z.ZodDefault<z.ZodEnum<["free", "individual", "professional", "leader", "institutional"]>>;
-    theological_focus: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    brand_colors: z.ZodOptional<z.ZodObject<{
-        primary: z.ZodString;
-        secondary: z.ZodString;
-        accent: z.ZodString;
+    customDomain: z.ZodOptional<z.ZodString>;
+    platformTitle: z.ZodOptional<z.ZodString>;
+    subscriptionTier: z.ZodDefault<z.ZodEnum<["free", "individual", "professional", "leader", "institutional"]>>;
+    theologicalFocus: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    brandColors: z.ZodDefault<z.ZodObject<{
+        primary: z.ZodDefault<z.ZodString>;
+        secondary: z.ZodDefault<z.ZodString>;
+        accent: z.ZodDefault<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         primary: string;
         secondary: string;
         accent: string;
     }, {
-        primary: string;
-        secondary: string;
-        accent: string;
+        primary?: string | undefined;
+        secondary?: string | undefined;
+        accent?: string | undefined;
     }>>;
-    email_notifications: z.ZodOptional<z.ZodObject<{
-        dailyDigest: z.ZodBoolean;
-        collaborationRequests: z.ZodBoolean;
-        revenueReports: z.ZodBoolean;
-        communityUpdates: z.ZodBoolean;
+    emailNotifications: z.ZodDefault<z.ZodObject<{
+        dailyDigest: z.ZodDefault<z.ZodBoolean>;
+        collaborationRequests: z.ZodDefault<z.ZodBoolean>;
+        revenueReports: z.ZodDefault<z.ZodBoolean>;
+        communityUpdates: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         dailyDigest: boolean;
         collaborationRequests: boolean;
         revenueReports: boolean;
         communityUpdates: boolean;
     }, {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
+        dailyDigest?: boolean | undefined;
+        collaborationRequests?: boolean | undefined;
+        revenueReports?: boolean | undefined;
+        communityUpdates?: boolean | undefined;
     }>>;
-    privacy_settings: z.ZodOptional<z.ZodObject<{
-        publicProfile: z.ZodBoolean;
-        showAssessmentResults: z.ZodBoolean;
-        allowNetworking: z.ZodBoolean;
-        shareAnalytics: z.ZodBoolean;
+    privacySettings: z.ZodDefault<z.ZodObject<{
+        publicProfile: z.ZodDefault<z.ZodBoolean>;
+        showAssessmentResults: z.ZodDefault<z.ZodBoolean>;
+        allowNetworking: z.ZodDefault<z.ZodBoolean>;
+        shareAnalytics: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         publicProfile: boolean;
         showAssessmentResults: boolean;
         allowNetworking: boolean;
         shareAnalytics: boolean;
     }, {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
+        publicProfile?: boolean | undefined;
+        showAssessmentResults?: boolean | undefined;
+        allowNetworking?: boolean | undefined;
+        shareAnalytics?: boolean | undefined;
     }>>;
-    account_status: z.ZodDefault<z.ZodEnum<["active", "inactive", "suspended", "pending_verification"]>>;
-    last_active_at: z.ZodOptional<z.ZodString>;
+    onboardingCompleted: z.ZodDefault<z.ZodBoolean>;
+    onboardingStep: z.ZodDefault<z.ZodNumber>;
+    accountStatus: z.ZodDefault<z.ZodEnum<["active", "inactive", "suspended", "pending_verification"]>>;
+    firstName: z.ZodString;
+    lastName: z.ZodString;
+    ministryRole: z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>;
 } & {
     email: z.ZodEffects<z.ZodString, string, string>;
     first_name: z.ZodEffects<z.ZodString, string, string>;
     last_name: z.ZodEffects<z.ZodString, string, string>;
 }, "strip", z.ZodTypeAny, {
     email: string;
-    first_name: string;
-    last_name: string;
-    ministry_role: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
-    language_primary: string;
-    subscription_tier: "free" | "individual" | "professional" | "leader" | "institutional";
-    theological_focus: string[];
-    account_status: "active" | "inactive" | "suspended" | "pending_verification";
-    denomination?: string | undefined;
-    display_name?: string | undefined;
-    bio?: string | undefined;
-    avatar_url?: string | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string | undefined;
-    timezone?: string | undefined;
-    cultural_context?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: "core" | "network" | "emerging" | "community" | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    platform_title?: string | undefined;
-    brand_colors?: {
+    firstName: string;
+    lastName: string;
+    ministryRole: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
+    languagePrimary: string;
+    subscriptionTier: "free" | "individual" | "professional" | "leader" | "institutional";
+    theologicalFocus: string[];
+    brandColors: {
         primary: string;
         secondary: string;
         accent: string;
-    } | undefined;
-    email_notifications?: {
+    };
+    emailNotifications: {
         dailyDigest: boolean;
         collaborationRequests: boolean;
         revenueReports: boolean;
         communityUpdates: boolean;
-    } | undefined;
-    privacy_settings?: {
+    };
+    privacySettings: {
         publicProfile: boolean;
         showAssessmentResults: boolean;
         allowNetworking: boolean;
         shareAnalytics: boolean;
-    } | undefined;
-    last_active_at?: string | undefined;
+    };
+    onboardingCompleted: boolean;
+    onboardingStep: number;
+    accountStatus: "active" | "inactive" | "suspended" | "pending_verification";
+    first_name: string;
+    last_name: string;
+    passwordHash?: string | undefined;
+    displayName?: string | undefined;
+    bio?: string | undefined;
+    avatarUrl?: string | undefined;
+    denomination?: string | undefined;
+    organizationName?: string | undefined;
+    yearsInMinistry?: number | undefined;
+    countryCode?: string | undefined;
+    timezone?: string | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    assessmentMovementAlignment?: number | undefined;
+    assessmentAudienceEngagement?: number | undefined;
+    assessmentContentReadiness?: number | undefined;
+    assessmentRevenuePotential?: number | undefined;
+    assessmentNetworkEffects?: number | undefined;
+    assessmentStrategicFit?: number | undefined;
+    leaderTier?: "core" | "network" | "emerging" | "community" | undefined;
+    subdomain?: string | undefined;
+    customDomain?: string | undefined;
+    platformTitle?: string | undefined;
 }, {
     email: string;
+    firstName: string;
+    lastName: string;
+    ministryRole: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
     first_name: string;
     last_name: string;
-    ministry_role: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
-    denomination?: string | undefined;
-    display_name?: string | undefined;
+    passwordHash?: string | undefined;
+    displayName?: string | undefined;
     bio?: string | undefined;
-    avatar_url?: string | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string | undefined;
+    avatarUrl?: string | undefined;
+    denomination?: string | undefined;
+    organizationName?: string | undefined;
+    yearsInMinistry?: number | undefined;
+    countryCode?: string | undefined;
     timezone?: string | undefined;
-    language_primary?: string | undefined;
-    cultural_context?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: "core" | "network" | "emerging" | "community" | undefined;
+    languagePrimary?: string | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    assessmentMovementAlignment?: number | undefined;
+    assessmentAudienceEngagement?: number | undefined;
+    assessmentContentReadiness?: number | undefined;
+    assessmentRevenuePotential?: number | undefined;
+    assessmentNetworkEffects?: number | undefined;
+    assessmentStrategicFit?: number | undefined;
+    leaderTier?: "core" | "network" | "emerging" | "community" | undefined;
     subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    platform_title?: string | undefined;
-    subscription_tier?: "free" | "individual" | "professional" | "leader" | "institutional" | undefined;
-    theological_focus?: string[] | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
+    customDomain?: string | undefined;
+    platformTitle?: string | undefined;
+    subscriptionTier?: "free" | "individual" | "professional" | "leader" | "institutional" | undefined;
+    theologicalFocus?: string[] | undefined;
+    brandColors?: {
+        primary?: string | undefined;
+        secondary?: string | undefined;
+        accent?: string | undefined;
     } | undefined;
-    email_notifications?: {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
+    emailNotifications?: {
+        dailyDigest?: boolean | undefined;
+        collaborationRequests?: boolean | undefined;
+        revenueReports?: boolean | undefined;
+        communityUpdates?: boolean | undefined;
     } | undefined;
-    privacy_settings?: {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
+    privacySettings?: {
+        publicProfile?: boolean | undefined;
+        showAssessmentResults?: boolean | undefined;
+        allowNetworking?: boolean | undefined;
+        shareAnalytics?: boolean | undefined;
     } | undefined;
-    account_status?: "active" | "inactive" | "suspended" | "pending_verification" | undefined;
-    last_active_at?: string | undefined;
+    onboardingCompleted?: boolean | undefined;
+    onboardingStep?: number | undefined;
+    accountStatus?: "active" | "inactive" | "suspended" | "pending_verification" | undefined;
 }>;
 /**
  * Create User with Organization Operation Schema
  * Extends create user with organization context
  */
 export declare const CreateUserWithOrganizationOperationSchema: z.ZodObject<{
-    denomination: z.ZodOptional<z.ZodString>;
-    display_name: z.ZodOptional<z.ZodString>;
+    passwordHash: z.ZodOptional<z.ZodString>;
+    displayName: z.ZodOptional<z.ZodString>;
     bio: z.ZodOptional<z.ZodString>;
-    avatar_url: z.ZodOptional<z.ZodString>;
-    ministry_role: z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>;
-    organization_name: z.ZodOptional<z.ZodString>;
-    years_in_ministry: z.ZodOptional<z.ZodNumber>;
-    country_code: z.ZodOptional<z.ZodString>;
+    avatarUrl: z.ZodOptional<z.ZodString>;
+    denomination: z.ZodOptional<z.ZodString>;
+    organizationName: z.ZodOptional<z.ZodString>;
+    yearsInMinistry: z.ZodOptional<z.ZodNumber>;
+    countryCode: z.ZodOptional<z.ZodString>;
     timezone: z.ZodOptional<z.ZodString>;
-    language_primary: z.ZodDefault<z.ZodString>;
-    cultural_context: z.ZodOptional<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "universal", "global"]>>;
-    assessment_movement_alignment: z.ZodOptional<z.ZodNumber>;
-    assessment_audience_engagement: z.ZodOptional<z.ZodNumber>;
-    assessment_content_readiness: z.ZodOptional<z.ZodNumber>;
-    assessment_revenue_potential: z.ZodOptional<z.ZodNumber>;
-    assessment_network_effects: z.ZodOptional<z.ZodNumber>;
-    assessment_strategic_fit: z.ZodOptional<z.ZodNumber>;
-    assessment_total: z.ZodOptional<z.ZodNumber>;
-    leader_tier: z.ZodOptional<z.ZodEnum<["core", "network", "emerging", "community"]>>;
+    languagePrimary: z.ZodDefault<z.ZodString>;
+    culturalContext: z.ZodOptional<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "mixed", "global"]>>;
+    assessmentMovementAlignment: z.ZodOptional<z.ZodNumber>;
+    assessmentAudienceEngagement: z.ZodOptional<z.ZodNumber>;
+    assessmentContentReadiness: z.ZodOptional<z.ZodNumber>;
+    assessmentRevenuePotential: z.ZodOptional<z.ZodNumber>;
+    assessmentNetworkEffects: z.ZodOptional<z.ZodNumber>;
+    assessmentStrategicFit: z.ZodOptional<z.ZodNumber>;
+    leaderTier: z.ZodOptional<z.ZodEnum<["core", "network", "emerging", "community"]>>;
     subdomain: z.ZodOptional<z.ZodString>;
-    custom_domain: z.ZodOptional<z.ZodString>;
-    platform_title: z.ZodOptional<z.ZodString>;
-    subscription_tier: z.ZodDefault<z.ZodEnum<["free", "individual", "professional", "leader", "institutional"]>>;
-    theological_focus: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    brand_colors: z.ZodOptional<z.ZodObject<{
-        primary: z.ZodString;
-        secondary: z.ZodString;
-        accent: z.ZodString;
+    customDomain: z.ZodOptional<z.ZodString>;
+    platformTitle: z.ZodOptional<z.ZodString>;
+    subscriptionTier: z.ZodDefault<z.ZodEnum<["free", "individual", "professional", "leader", "institutional"]>>;
+    theologicalFocus: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    brandColors: z.ZodDefault<z.ZodObject<{
+        primary: z.ZodDefault<z.ZodString>;
+        secondary: z.ZodDefault<z.ZodString>;
+        accent: z.ZodDefault<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         primary: string;
         secondary: string;
         accent: string;
     }, {
-        primary: string;
-        secondary: string;
-        accent: string;
+        primary?: string | undefined;
+        secondary?: string | undefined;
+        accent?: string | undefined;
     }>>;
-    email_notifications: z.ZodOptional<z.ZodObject<{
-        dailyDigest: z.ZodBoolean;
-        collaborationRequests: z.ZodBoolean;
-        revenueReports: z.ZodBoolean;
-        communityUpdates: z.ZodBoolean;
+    emailNotifications: z.ZodDefault<z.ZodObject<{
+        dailyDigest: z.ZodDefault<z.ZodBoolean>;
+        collaborationRequests: z.ZodDefault<z.ZodBoolean>;
+        revenueReports: z.ZodDefault<z.ZodBoolean>;
+        communityUpdates: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         dailyDigest: boolean;
         collaborationRequests: boolean;
         revenueReports: boolean;
         communityUpdates: boolean;
     }, {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
+        dailyDigest?: boolean | undefined;
+        collaborationRequests?: boolean | undefined;
+        revenueReports?: boolean | undefined;
+        communityUpdates?: boolean | undefined;
     }>>;
-    privacy_settings: z.ZodOptional<z.ZodObject<{
-        publicProfile: z.ZodBoolean;
-        showAssessmentResults: z.ZodBoolean;
-        allowNetworking: z.ZodBoolean;
-        shareAnalytics: z.ZodBoolean;
+    privacySettings: z.ZodDefault<z.ZodObject<{
+        publicProfile: z.ZodDefault<z.ZodBoolean>;
+        showAssessmentResults: z.ZodDefault<z.ZodBoolean>;
+        allowNetworking: z.ZodDefault<z.ZodBoolean>;
+        shareAnalytics: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         publicProfile: boolean;
         showAssessmentResults: boolean;
         allowNetworking: boolean;
         shareAnalytics: boolean;
     }, {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
+        publicProfile?: boolean | undefined;
+        showAssessmentResults?: boolean | undefined;
+        allowNetworking?: boolean | undefined;
+        shareAnalytics?: boolean | undefined;
     }>>;
-    account_status: z.ZodDefault<z.ZodEnum<["active", "inactive", "suspended", "pending_verification"]>>;
-    last_active_at: z.ZodOptional<z.ZodString>;
+    onboardingCompleted: z.ZodDefault<z.ZodBoolean>;
+    onboardingStep: z.ZodDefault<z.ZodNumber>;
+    accountStatus: z.ZodDefault<z.ZodEnum<["active", "inactive", "suspended", "pending_verification"]>>;
+    firstName: z.ZodString;
+    lastName: z.ZodString;
+    ministryRole: z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>;
 } & {
     email: z.ZodEffects<z.ZodString, string, string>;
     first_name: z.ZodEffects<z.ZodString, string, string>;
@@ -265,117 +277,123 @@ export declare const CreateUserWithOrganizationOperationSchema: z.ZodObject<{
         role: z.ZodDefault<z.ZodEnum<["owner", "admin", "member", "viewer"]>>;
     }, "strip", z.ZodTypeAny, {
         name: string;
-        organization_type: "other" | "church" | "denomination" | "seminary" | "nonprofit" | "ministry" | "business";
+        organization_type: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "ministry" | "business";
         role: "owner" | "admin" | "member" | "viewer";
     }, {
         name: string;
-        organization_type: "other" | "church" | "denomination" | "seminary" | "nonprofit" | "ministry" | "business";
+        organization_type: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "ministry" | "business";
         role?: "owner" | "admin" | "member" | "viewer" | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
     email: string;
-    first_name: string;
-    last_name: string;
-    ministry_role: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
-    language_primary: string;
-    subscription_tier: "free" | "individual" | "professional" | "leader" | "institutional";
-    theological_focus: string[];
-    account_status: "active" | "inactive" | "suspended" | "pending_verification";
+    firstName: string;
+    lastName: string;
+    ministryRole: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
+    languagePrimary: string;
+    subscriptionTier: "free" | "individual" | "professional" | "leader" | "institutional";
+    theologicalFocus: string[];
+    brandColors: {
+        primary: string;
+        secondary: string;
+        accent: string;
+    };
+    emailNotifications: {
+        dailyDigest: boolean;
+        collaborationRequests: boolean;
+        revenueReports: boolean;
+        communityUpdates: boolean;
+    };
+    privacySettings: {
+        publicProfile: boolean;
+        showAssessmentResults: boolean;
+        allowNetworking: boolean;
+        shareAnalytics: boolean;
+    };
+    onboardingCompleted: boolean;
+    onboardingStep: number;
+    accountStatus: "active" | "inactive" | "suspended" | "pending_verification";
     organization: {
         name: string;
-        organization_type: "other" | "church" | "denomination" | "seminary" | "nonprofit" | "ministry" | "business";
+        organization_type: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "ministry" | "business";
         role: "owner" | "admin" | "member" | "viewer";
     };
-    denomination?: string | undefined;
-    display_name?: string | undefined;
-    bio?: string | undefined;
-    avatar_url?: string | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string | undefined;
-    timezone?: string | undefined;
-    cultural_context?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: "core" | "network" | "emerging" | "community" | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    platform_title?: string | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
-    email_notifications?: {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
-    } | undefined;
-    privacy_settings?: {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
-    } | undefined;
-    last_active_at?: string | undefined;
-}, {
-    email: string;
     first_name: string;
     last_name: string;
-    ministry_role: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
+    passwordHash?: string | undefined;
+    displayName?: string | undefined;
+    bio?: string | undefined;
+    avatarUrl?: string | undefined;
+    denomination?: string | undefined;
+    organizationName?: string | undefined;
+    yearsInMinistry?: number | undefined;
+    countryCode?: string | undefined;
+    timezone?: string | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    assessmentMovementAlignment?: number | undefined;
+    assessmentAudienceEngagement?: number | undefined;
+    assessmentContentReadiness?: number | undefined;
+    assessmentRevenuePotential?: number | undefined;
+    assessmentNetworkEffects?: number | undefined;
+    assessmentStrategicFit?: number | undefined;
+    leaderTier?: "core" | "network" | "emerging" | "community" | undefined;
+    subdomain?: string | undefined;
+    customDomain?: string | undefined;
+    platformTitle?: string | undefined;
+}, {
+    email: string;
+    firstName: string;
+    lastName: string;
+    ministryRole: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
     organization: {
         name: string;
-        organization_type: "other" | "church" | "denomination" | "seminary" | "nonprofit" | "ministry" | "business";
+        organization_type: "other" | "denomination" | "church" | "seminary" | "nonprofit" | "ministry" | "business";
         role?: "owner" | "admin" | "member" | "viewer" | undefined;
     };
-    denomination?: string | undefined;
-    display_name?: string | undefined;
+    first_name: string;
+    last_name: string;
+    passwordHash?: string | undefined;
+    displayName?: string | undefined;
     bio?: string | undefined;
-    avatar_url?: string | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string | undefined;
+    avatarUrl?: string | undefined;
+    denomination?: string | undefined;
+    organizationName?: string | undefined;
+    yearsInMinistry?: number | undefined;
+    countryCode?: string | undefined;
     timezone?: string | undefined;
-    language_primary?: string | undefined;
-    cultural_context?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: "core" | "network" | "emerging" | "community" | undefined;
+    languagePrimary?: string | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    assessmentMovementAlignment?: number | undefined;
+    assessmentAudienceEngagement?: number | undefined;
+    assessmentContentReadiness?: number | undefined;
+    assessmentRevenuePotential?: number | undefined;
+    assessmentNetworkEffects?: number | undefined;
+    assessmentStrategicFit?: number | undefined;
+    leaderTier?: "core" | "network" | "emerging" | "community" | undefined;
     subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    platform_title?: string | undefined;
-    subscription_tier?: "free" | "individual" | "professional" | "leader" | "institutional" | undefined;
-    theological_focus?: string[] | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
+    customDomain?: string | undefined;
+    platformTitle?: string | undefined;
+    subscriptionTier?: "free" | "individual" | "professional" | "leader" | "institutional" | undefined;
+    theologicalFocus?: string[] | undefined;
+    brandColors?: {
+        primary?: string | undefined;
+        secondary?: string | undefined;
+        accent?: string | undefined;
     } | undefined;
-    email_notifications?: {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
+    emailNotifications?: {
+        dailyDigest?: boolean | undefined;
+        collaborationRequests?: boolean | undefined;
+        revenueReports?: boolean | undefined;
+        communityUpdates?: boolean | undefined;
     } | undefined;
-    privacy_settings?: {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
+    privacySettings?: {
+        publicProfile?: boolean | undefined;
+        showAssessmentResults?: boolean | undefined;
+        allowNetworking?: boolean | undefined;
+        shareAnalytics?: boolean | undefined;
     } | undefined;
-    account_status?: "active" | "inactive" | "suspended" | "pending_verification" | undefined;
-    last_active_at?: string | undefined;
+    onboardingCompleted?: boolean | undefined;
+    onboardingStep?: number | undefined;
+    accountStatus?: "active" | "inactive" | "suspended" | "pending_verification" | undefined;
 }>;
 /**
  * Get User by ID Operation Schema
@@ -413,89 +431,19 @@ export declare const GetUserByEmailOperationSchema: z.ZodObject<{
  * Paginated user listing with filters
  */
 export declare const ListUsersOperationSchema: z.ZodObject<{
-    id: z.ZodOptional<z.ZodString>;
-    email: z.ZodOptional<z.ZodString>;
-    first_name: z.ZodOptional<z.ZodString>;
-    last_name: z.ZodOptional<z.ZodString>;
-    display_name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    bio: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    avatar_url: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    denomination: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    organization_name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    years_in_ministry: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    timezone: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    language_primary: z.ZodOptional<z.ZodDefault<z.ZodString>>;
-    assessment_movement_alignment: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    assessment_audience_engagement: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    assessment_content_readiness: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    assessment_revenue_potential: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    assessment_network_effects: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    assessment_strategic_fit: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    assessment_total: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    subdomain: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    custom_domain: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    platform_title: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    theological_focus: z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodString, "many">>>;
-    brand_colors: z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        primary: z.ZodString;
-        secondary: z.ZodString;
-        accent: z.ZodString;
-    }, "strip", z.ZodTypeAny, {
-        primary: string;
-        secondary: string;
-        accent: string;
-    }, {
-        primary: string;
-        secondary: string;
-        accent: string;
-    }>>>;
-    email_notifications: z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        dailyDigest: z.ZodBoolean;
-        collaborationRequests: z.ZodBoolean;
-        revenueReports: z.ZodBoolean;
-        communityUpdates: z.ZodBoolean;
-    }, "strip", z.ZodTypeAny, {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
-    }, {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
-    }>>>;
-    privacy_settings: z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        publicProfile: z.ZodBoolean;
-        showAssessmentResults: z.ZodBoolean;
-        allowNetworking: z.ZodBoolean;
-        shareAnalytics: z.ZodBoolean;
-    }, "strip", z.ZodTypeAny, {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
-    }, {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
-    }>>>;
-    created_at: z.ZodOptional<z.ZodString>;
-    updated_at: z.ZodOptional<z.ZodString>;
-    last_active_at: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-} & {
     search: z.ZodOptional<z.ZodString>;
-    ministry_role: z.ZodOptional<z.ZodArray<z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>, "many">>;
-    country_code: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-    cultural_context: z.ZodOptional<z.ZodArray<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "universal", "global"]>, "many">>;
-    leader_tier: z.ZodOptional<z.ZodArray<z.ZodEnum<["core", "network", "emerging", "community"]>, "many">>;
-    subscription_tier: z.ZodOptional<z.ZodArray<z.ZodEnum<["free", "individual", "professional", "leader", "institutional"]>, "many">>;
-    account_status: z.ZodOptional<z.ZodArray<z.ZodEnum<["active", "inactive", "suspended", "pending_verification"]>, "many">>;
-    created_after: z.ZodOptional<z.ZodString>;
-    created_before: z.ZodOptional<z.ZodString>;
-    last_active_after: z.ZodOptional<z.ZodString>;
-    last_active_before: z.ZodOptional<z.ZodString>;
+    ministryRole: z.ZodOptional<z.ZodString>;
+    denomination: z.ZodOptional<z.ZodString>;
+    countryCode: z.ZodOptional<z.ZodString>;
+    culturalContext: z.ZodOptional<z.ZodString>;
+    accountStatus: z.ZodOptional<z.ZodString>;
+    subscriptionTier: z.ZodOptional<z.ZodString>;
+    leaderTier: z.ZodOptional<z.ZodString>;
+    sortBy: z.ZodDefault<z.ZodEnum<["createdAt", "updatedAt", "lastActiveAt", "firstName", "lastName", "email", "ministryRole", "assessmentTotal"]>>;
+    sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
+    organizationId: z.ZodOptional<z.ZodString>;
+    includeOrganization: z.ZodDefault<z.ZodBoolean>;
+    includeSubscription: z.ZodDefault<z.ZodBoolean>;
 } & {
     page: z.ZodDefault<z.ZodNumber>;
     limit: z.ZodDefault<z.ZodNumber>;
@@ -505,129 +453,47 @@ export declare const ListUsersOperationSchema: z.ZodObject<{
     include_organizations: z.ZodDefault<z.ZodBoolean>;
     include_assessments: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
-    include_organizations: boolean;
-    include_assessments: boolean;
     page: number;
     limit: number;
-    offset: number;
-    sort_by: "first_name" | "last_name" | "created_at" | "updated_at" | "last_active_at";
+    sortBy: "email" | "firstName" | "lastName" | "ministryRole" | "assessmentTotal" | "createdAt" | "updatedAt" | "lastActiveAt";
+    sortOrder: "asc" | "desc";
+    includeOrganization: boolean;
+    includeSubscription: boolean;
+    sort_by: "first_name" | "last_name" | "created_at" | "last_active_at" | "updated_at";
     sort_order: "asc" | "desc";
+    include_organizations: boolean;
+    include_assessments: boolean;
+    offset: number;
+    ministryRole?: string | undefined;
     denomination?: string | undefined;
-    id?: string | undefined;
-    email?: string | undefined;
-    first_name?: string | undefined;
-    last_name?: string | undefined;
-    display_name?: string | undefined;
-    bio?: string | undefined;
-    avatar_url?: string | undefined;
-    ministry_role?: ("senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other")[] | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string[] | undefined;
-    timezone?: string | undefined;
-    language_primary?: string | undefined;
-    cultural_context?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global")[] | undefined;
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: ("core" | "network" | "emerging" | "community")[] | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    platform_title?: string | undefined;
-    subscription_tier?: ("free" | "individual" | "professional" | "leader" | "institutional")[] | undefined;
-    theological_focus?: string[] | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
-    email_notifications?: {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
-    } | undefined;
-    privacy_settings?: {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
-    } | undefined;
-    account_status?: ("active" | "inactive" | "suspended" | "pending_verification")[] | undefined;
-    created_at?: string | undefined;
-    updated_at?: string | undefined;
-    last_active_at?: string | undefined;
+    countryCode?: string | undefined;
+    culturalContext?: string | undefined;
+    leaderTier?: string | undefined;
+    subscriptionTier?: string | undefined;
+    accountStatus?: string | undefined;
     search?: string | undefined;
-    created_after?: string | undefined;
-    created_before?: string | undefined;
-    last_active_after?: string | undefined;
-    last_active_before?: string | undefined;
+    organizationId?: string | undefined;
 }, {
+    ministryRole?: string | undefined;
     denomination?: string | undefined;
-    id?: string | undefined;
-    email?: string | undefined;
-    first_name?: string | undefined;
-    last_name?: string | undefined;
-    display_name?: string | undefined;
-    bio?: string | undefined;
-    avatar_url?: string | undefined;
-    ministry_role?: ("senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other")[] | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string[] | undefined;
-    timezone?: string | undefined;
-    language_primary?: string | undefined;
-    cultural_context?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global")[] | undefined;
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: ("core" | "network" | "emerging" | "community")[] | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    platform_title?: string | undefined;
-    subscription_tier?: ("free" | "individual" | "professional" | "leader" | "institutional")[] | undefined;
-    theological_focus?: string[] | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
-    email_notifications?: {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
-    } | undefined;
-    privacy_settings?: {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
-    } | undefined;
-    account_status?: ("active" | "inactive" | "suspended" | "pending_verification")[] | undefined;
-    created_at?: string | undefined;
-    updated_at?: string | undefined;
-    last_active_at?: string | undefined;
-    search?: string | undefined;
-    created_after?: string | undefined;
-    created_before?: string | undefined;
-    last_active_after?: string | undefined;
-    last_active_before?: string | undefined;
-    include_organizations?: boolean | undefined;
-    include_assessments?: boolean | undefined;
+    countryCode?: string | undefined;
+    culturalContext?: string | undefined;
+    leaderTier?: string | undefined;
+    subscriptionTier?: string | undefined;
+    accountStatus?: string | undefined;
     page?: number | undefined;
     limit?: number | undefined;
-    offset?: number | undefined;
-    sort_by?: "first_name" | "last_name" | "created_at" | "updated_at" | "last_active_at" | undefined;
+    search?: string | undefined;
+    sortBy?: "email" | "firstName" | "lastName" | "ministryRole" | "assessmentTotal" | "createdAt" | "updatedAt" | "lastActiveAt" | undefined;
+    sortOrder?: "asc" | "desc" | undefined;
+    organizationId?: string | undefined;
+    includeOrganization?: boolean | undefined;
+    includeSubscription?: boolean | undefined;
+    sort_by?: "first_name" | "last_name" | "created_at" | "last_active_at" | "updated_at" | undefined;
     sort_order?: "asc" | "desc" | undefined;
+    include_organizations?: boolean | undefined;
+    include_assessments?: boolean | undefined;
+    offset?: number | undefined;
 }>;
 /**
  * Search Users Operation Schema
@@ -646,394 +512,395 @@ export declare const SearchUsersOperationSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     page: number;
     limit: number;
-    sort_by: "created_at" | "last_active_at" | "relevance";
-    sort_order: "asc" | "desc";
     query: string;
+    sort_by: "relevance" | "created_at" | "last_active_at";
+    sort_order: "asc" | "desc";
     ministry_role?: ("senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other")[] | undefined;
     country_code?: string[] | undefined;
-    cultural_context?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global")[] | undefined;
+    cultural_context?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "global" | "universal")[] | undefined;
     leader_tier?: ("core" | "network" | "emerging" | "community")[] | undefined;
 }, {
     query: string;
-    ministry_role?: ("senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other")[] | undefined;
-    country_code?: string[] | undefined;
-    cultural_context?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global")[] | undefined;
-    leader_tier?: ("core" | "network" | "emerging" | "community")[] | undefined;
     page?: number | undefined;
     limit?: number | undefined;
-    sort_by?: "created_at" | "last_active_at" | "relevance" | undefined;
+    ministry_role?: ("senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other")[] | undefined;
+    country_code?: string[] | undefined;
+    cultural_context?: ("western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "global" | "universal")[] | undefined;
+    leader_tier?: ("core" | "network" | "emerging" | "community")[] | undefined;
+    sort_by?: "relevance" | "created_at" | "last_active_at" | undefined;
     sort_order?: "asc" | "desc" | undefined;
 }>;
 /**
  * Update User Operation Schema
  * Derived from UpdateUserSchema with operation-specific validation
  */
-export declare const UpdateUserOperationSchema: z.ZodEffects<z.ZodObject<{
-    denomination: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    email: z.ZodOptional<z.ZodString>;
-    first_name: z.ZodOptional<z.ZodString>;
-    last_name: z.ZodOptional<z.ZodString>;
-    display_name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+export declare const UpdateUserOperationSchema: z.ZodEffects<z.ZodObject<Omit<{
+    passwordHash: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    displayName: z.ZodOptional<z.ZodOptional<z.ZodString>>;
     bio: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    avatar_url: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    ministry_role: z.ZodOptional<z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>>;
-    organization_name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    years_in_ministry: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    country_code: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    avatarUrl: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    denomination: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    organizationName: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    yearsInMinistry: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    countryCode: z.ZodOptional<z.ZodOptional<z.ZodString>>;
     timezone: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    language_primary: z.ZodOptional<z.ZodDefault<z.ZodString>>;
-    cultural_context: z.ZodOptional<z.ZodOptional<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "universal", "global"]>>>;
-    assessment_movement_alignment: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    assessment_audience_engagement: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    assessment_content_readiness: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    assessment_revenue_potential: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    assessment_network_effects: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    assessment_strategic_fit: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    assessment_total: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
-    leader_tier: z.ZodOptional<z.ZodOptional<z.ZodEnum<["core", "network", "emerging", "community"]>>>;
+    languagePrimary: z.ZodOptional<z.ZodDefault<z.ZodString>>;
+    culturalContext: z.ZodOptional<z.ZodOptional<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "mixed", "global"]>>>;
+    assessmentMovementAlignment: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    assessmentAudienceEngagement: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    assessmentContentReadiness: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    assessmentRevenuePotential: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    assessmentNetworkEffects: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    assessmentStrategicFit: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    leaderTier: z.ZodOptional<z.ZodOptional<z.ZodEnum<["core", "network", "emerging", "community"]>>>;
     subdomain: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    custom_domain: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    platform_title: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    subscription_tier: z.ZodOptional<z.ZodDefault<z.ZodEnum<["free", "individual", "professional", "leader", "institutional"]>>>;
-    theological_focus: z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodString, "many">>>;
-    brand_colors: z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        primary: z.ZodString;
-        secondary: z.ZodString;
-        accent: z.ZodString;
+    customDomain: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    platformTitle: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    subscriptionTier: z.ZodOptional<z.ZodDefault<z.ZodEnum<["free", "individual", "professional", "leader", "institutional"]>>>;
+    theologicalFocus: z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodString, "many">>>;
+    brandColors: z.ZodOptional<z.ZodDefault<z.ZodObject<{
+        primary: z.ZodDefault<z.ZodString>;
+        secondary: z.ZodDefault<z.ZodString>;
+        accent: z.ZodDefault<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         primary: string;
         secondary: string;
         accent: string;
     }, {
-        primary: string;
-        secondary: string;
-        accent: string;
+        primary?: string | undefined;
+        secondary?: string | undefined;
+        accent?: string | undefined;
     }>>>;
-    email_notifications: z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        dailyDigest: z.ZodBoolean;
-        collaborationRequests: z.ZodBoolean;
-        revenueReports: z.ZodBoolean;
-        communityUpdates: z.ZodBoolean;
+    emailNotifications: z.ZodOptional<z.ZodDefault<z.ZodObject<{
+        dailyDigest: z.ZodDefault<z.ZodBoolean>;
+        collaborationRequests: z.ZodDefault<z.ZodBoolean>;
+        revenueReports: z.ZodDefault<z.ZodBoolean>;
+        communityUpdates: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         dailyDigest: boolean;
         collaborationRequests: boolean;
         revenueReports: boolean;
         communityUpdates: boolean;
     }, {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
+        dailyDigest?: boolean | undefined;
+        collaborationRequests?: boolean | undefined;
+        revenueReports?: boolean | undefined;
+        communityUpdates?: boolean | undefined;
     }>>>;
-    privacy_settings: z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        publicProfile: z.ZodBoolean;
-        showAssessmentResults: z.ZodBoolean;
-        allowNetworking: z.ZodBoolean;
-        shareAnalytics: z.ZodBoolean;
+    privacySettings: z.ZodOptional<z.ZodDefault<z.ZodObject<{
+        publicProfile: z.ZodDefault<z.ZodBoolean>;
+        showAssessmentResults: z.ZodDefault<z.ZodBoolean>;
+        allowNetworking: z.ZodDefault<z.ZodBoolean>;
+        shareAnalytics: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         publicProfile: boolean;
         showAssessmentResults: boolean;
         allowNetworking: boolean;
         shareAnalytics: boolean;
     }, {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
+        publicProfile?: boolean | undefined;
+        showAssessmentResults?: boolean | undefined;
+        allowNetworking?: boolean | undefined;
+        shareAnalytics?: boolean | undefined;
     }>>>;
-    account_status: z.ZodOptional<z.ZodDefault<z.ZodEnum<["active", "inactive", "suspended", "pending_verification"]>>>;
-    last_active_at: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-}, "strip", z.ZodTypeAny, {
-    denomination?: string | undefined;
-    email?: string | undefined;
-    first_name?: string | undefined;
-    last_name?: string | undefined;
-    display_name?: string | undefined;
+    onboardingCompleted: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+    onboardingStep: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
+    accountStatus: z.ZodOptional<z.ZodDefault<z.ZodEnum<["active", "inactive", "suspended", "pending_verification"]>>>;
+    email: z.ZodOptional<z.ZodString>;
+    firstName: z.ZodOptional<z.ZodString>;
+    lastName: z.ZodOptional<z.ZodString>;
+    ministryRole: z.ZodOptional<z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>>;
+}, "email">, "strip", z.ZodTypeAny, {
+    passwordHash?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    displayName?: string | undefined;
     bio?: string | undefined;
-    avatar_url?: string | undefined;
-    ministry_role?: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other" | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string | undefined;
+    avatarUrl?: string | undefined;
+    ministryRole?: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other" | undefined;
+    denomination?: string | undefined;
+    organizationName?: string | undefined;
+    yearsInMinistry?: number | undefined;
+    countryCode?: string | undefined;
     timezone?: string | undefined;
-    language_primary?: string | undefined;
-    cultural_context?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: "core" | "network" | "emerging" | "community" | undefined;
+    languagePrimary?: string | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    assessmentMovementAlignment?: number | undefined;
+    assessmentAudienceEngagement?: number | undefined;
+    assessmentContentReadiness?: number | undefined;
+    assessmentRevenuePotential?: number | undefined;
+    assessmentNetworkEffects?: number | undefined;
+    assessmentStrategicFit?: number | undefined;
+    leaderTier?: "core" | "network" | "emerging" | "community" | undefined;
     subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    platform_title?: string | undefined;
-    subscription_tier?: "free" | "individual" | "professional" | "leader" | "institutional" | undefined;
-    theological_focus?: string[] | undefined;
-    brand_colors?: {
+    customDomain?: string | undefined;
+    platformTitle?: string | undefined;
+    subscriptionTier?: "free" | "individual" | "professional" | "leader" | "institutional" | undefined;
+    theologicalFocus?: string[] | undefined;
+    brandColors?: {
         primary: string;
         secondary: string;
         accent: string;
     } | undefined;
-    email_notifications?: {
+    emailNotifications?: {
         dailyDigest: boolean;
         collaborationRequests: boolean;
         revenueReports: boolean;
         communityUpdates: boolean;
     } | undefined;
-    privacy_settings?: {
+    privacySettings?: {
         publicProfile: boolean;
         showAssessmentResults: boolean;
         allowNetworking: boolean;
         shareAnalytics: boolean;
     } | undefined;
-    account_status?: "active" | "inactive" | "suspended" | "pending_verification" | undefined;
-    last_active_at?: string | undefined;
+    onboardingCompleted?: boolean | undefined;
+    onboardingStep?: number | undefined;
+    accountStatus?: "active" | "inactive" | "suspended" | "pending_verification" | undefined;
 }, {
-    denomination?: string | undefined;
-    email?: string | undefined;
-    first_name?: string | undefined;
-    last_name?: string | undefined;
-    display_name?: string | undefined;
+    passwordHash?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    displayName?: string | undefined;
     bio?: string | undefined;
-    avatar_url?: string | undefined;
-    ministry_role?: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other" | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string | undefined;
+    avatarUrl?: string | undefined;
+    ministryRole?: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other" | undefined;
+    denomination?: string | undefined;
+    organizationName?: string | undefined;
+    yearsInMinistry?: number | undefined;
+    countryCode?: string | undefined;
     timezone?: string | undefined;
-    language_primary?: string | undefined;
-    cultural_context?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: "core" | "network" | "emerging" | "community" | undefined;
+    languagePrimary?: string | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    assessmentMovementAlignment?: number | undefined;
+    assessmentAudienceEngagement?: number | undefined;
+    assessmentContentReadiness?: number | undefined;
+    assessmentRevenuePotential?: number | undefined;
+    assessmentNetworkEffects?: number | undefined;
+    assessmentStrategicFit?: number | undefined;
+    leaderTier?: "core" | "network" | "emerging" | "community" | undefined;
     subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    platform_title?: string | undefined;
-    subscription_tier?: "free" | "individual" | "professional" | "leader" | "institutional" | undefined;
-    theological_focus?: string[] | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
+    customDomain?: string | undefined;
+    platformTitle?: string | undefined;
+    subscriptionTier?: "free" | "individual" | "professional" | "leader" | "institutional" | undefined;
+    theologicalFocus?: string[] | undefined;
+    brandColors?: {
+        primary?: string | undefined;
+        secondary?: string | undefined;
+        accent?: string | undefined;
     } | undefined;
-    email_notifications?: {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
+    emailNotifications?: {
+        dailyDigest?: boolean | undefined;
+        collaborationRequests?: boolean | undefined;
+        revenueReports?: boolean | undefined;
+        communityUpdates?: boolean | undefined;
     } | undefined;
-    privacy_settings?: {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
+    privacySettings?: {
+        publicProfile?: boolean | undefined;
+        showAssessmentResults?: boolean | undefined;
+        allowNetworking?: boolean | undefined;
+        shareAnalytics?: boolean | undefined;
     } | undefined;
-    account_status?: "active" | "inactive" | "suspended" | "pending_verification" | undefined;
-    last_active_at?: string | undefined;
+    onboardingCompleted?: boolean | undefined;
+    onboardingStep?: number | undefined;
+    accountStatus?: "active" | "inactive" | "suspended" | "pending_verification" | undefined;
 }>, {
-    denomination?: string | undefined;
-    email?: string | undefined;
-    first_name?: string | undefined;
-    last_name?: string | undefined;
-    display_name?: string | undefined;
+    passwordHash?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    displayName?: string | undefined;
     bio?: string | undefined;
-    avatar_url?: string | undefined;
-    ministry_role?: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other" | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string | undefined;
+    avatarUrl?: string | undefined;
+    ministryRole?: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other" | undefined;
+    denomination?: string | undefined;
+    organizationName?: string | undefined;
+    yearsInMinistry?: number | undefined;
+    countryCode?: string | undefined;
     timezone?: string | undefined;
-    language_primary?: string | undefined;
-    cultural_context?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: "core" | "network" | "emerging" | "community" | undefined;
+    languagePrimary?: string | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    assessmentMovementAlignment?: number | undefined;
+    assessmentAudienceEngagement?: number | undefined;
+    assessmentContentReadiness?: number | undefined;
+    assessmentRevenuePotential?: number | undefined;
+    assessmentNetworkEffects?: number | undefined;
+    assessmentStrategicFit?: number | undefined;
+    leaderTier?: "core" | "network" | "emerging" | "community" | undefined;
     subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    platform_title?: string | undefined;
-    subscription_tier?: "free" | "individual" | "professional" | "leader" | "institutional" | undefined;
-    theological_focus?: string[] | undefined;
-    brand_colors?: {
+    customDomain?: string | undefined;
+    platformTitle?: string | undefined;
+    subscriptionTier?: "free" | "individual" | "professional" | "leader" | "institutional" | undefined;
+    theologicalFocus?: string[] | undefined;
+    brandColors?: {
         primary: string;
         secondary: string;
         accent: string;
     } | undefined;
-    email_notifications?: {
+    emailNotifications?: {
         dailyDigest: boolean;
         collaborationRequests: boolean;
         revenueReports: boolean;
         communityUpdates: boolean;
     } | undefined;
-    privacy_settings?: {
+    privacySettings?: {
         publicProfile: boolean;
         showAssessmentResults: boolean;
         allowNetworking: boolean;
         shareAnalytics: boolean;
     } | undefined;
-    account_status?: "active" | "inactive" | "suspended" | "pending_verification" | undefined;
-    last_active_at?: string | undefined;
+    onboardingCompleted?: boolean | undefined;
+    onboardingStep?: number | undefined;
+    accountStatus?: "active" | "inactive" | "suspended" | "pending_verification" | undefined;
 }, {
-    denomination?: string | undefined;
-    email?: string | undefined;
-    first_name?: string | undefined;
-    last_name?: string | undefined;
-    display_name?: string | undefined;
+    passwordHash?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    displayName?: string | undefined;
     bio?: string | undefined;
-    avatar_url?: string | undefined;
-    ministry_role?: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other" | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string | undefined;
+    avatarUrl?: string | undefined;
+    ministryRole?: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other" | undefined;
+    denomination?: string | undefined;
+    organizationName?: string | undefined;
+    yearsInMinistry?: number | undefined;
+    countryCode?: string | undefined;
     timezone?: string | undefined;
-    language_primary?: string | undefined;
-    cultural_context?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: "core" | "network" | "emerging" | "community" | undefined;
+    languagePrimary?: string | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    assessmentMovementAlignment?: number | undefined;
+    assessmentAudienceEngagement?: number | undefined;
+    assessmentContentReadiness?: number | undefined;
+    assessmentRevenuePotential?: number | undefined;
+    assessmentNetworkEffects?: number | undefined;
+    assessmentStrategicFit?: number | undefined;
+    leaderTier?: "core" | "network" | "emerging" | "community" | undefined;
     subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    platform_title?: string | undefined;
-    subscription_tier?: "free" | "individual" | "professional" | "leader" | "institutional" | undefined;
-    theological_focus?: string[] | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
+    customDomain?: string | undefined;
+    platformTitle?: string | undefined;
+    subscriptionTier?: "free" | "individual" | "professional" | "leader" | "institutional" | undefined;
+    theologicalFocus?: string[] | undefined;
+    brandColors?: {
+        primary?: string | undefined;
+        secondary?: string | undefined;
+        accent?: string | undefined;
     } | undefined;
-    email_notifications?: {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
+    emailNotifications?: {
+        dailyDigest?: boolean | undefined;
+        collaborationRequests?: boolean | undefined;
+        revenueReports?: boolean | undefined;
+        communityUpdates?: boolean | undefined;
     } | undefined;
-    privacy_settings?: {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
+    privacySettings?: {
+        publicProfile?: boolean | undefined;
+        showAssessmentResults?: boolean | undefined;
+        allowNetworking?: boolean | undefined;
+        shareAnalytics?: boolean | undefined;
     } | undefined;
-    account_status?: "active" | "inactive" | "suspended" | "pending_verification" | undefined;
-    last_active_at?: string | undefined;
+    onboardingCompleted?: boolean | undefined;
+    onboardingStep?: number | undefined;
+    accountStatus?: "active" | "inactive" | "suspended" | "pending_verification" | undefined;
 }>;
 /**
  * Update User Profile Operation Schema
  * Specific to profile updates with additional validation
  */
 export declare const UpdateUserProfileOperationSchema: z.ZodObject<{
-    denomination: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodString>>>;
-    first_name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    last_name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-    display_name: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodString>>>;
+    firstName: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    lastName: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    displayName: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodString>>>;
     bio: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodString>>>;
-    avatar_url: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodString>>>;
-    ministry_role: z.ZodOptional<z.ZodOptional<z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>>>;
-    organization_name: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodString>>>;
-    years_in_ministry: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
-    country_code: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodString>>>;
+    avatarUrl: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodString>>>;
+    ministryRole: z.ZodOptional<z.ZodOptional<z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>>>;
+    denomination: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodString>>>;
+    organizationName: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodString>>>;
+    yearsInMinistry: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
+    countryCode: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodString>>>;
     timezone: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodString>>>;
-    language_primary: z.ZodOptional<z.ZodOptional<z.ZodDefault<z.ZodString>>>;
-    cultural_context: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "universal", "global"]>>>>;
-    platform_title: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodString>>>;
-    theological_focus: z.ZodOptional<z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodString, "many">>>>;
-    brand_colors: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        primary: z.ZodString;
-        secondary: z.ZodString;
-        accent: z.ZodString;
+    languagePrimary: z.ZodOptional<z.ZodOptional<z.ZodDefault<z.ZodString>>>;
+    culturalContext: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "mixed", "global"]>>>>;
+    platformTitle: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodString>>>;
+    theologicalFocus: z.ZodOptional<z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodString, "many">>>>;
+    brandColors: z.ZodOptional<z.ZodOptional<z.ZodDefault<z.ZodObject<{
+        primary: z.ZodDefault<z.ZodString>;
+        secondary: z.ZodDefault<z.ZodString>;
+        accent: z.ZodDefault<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         primary: string;
         secondary: string;
         accent: string;
     }, {
-        primary: string;
-        secondary: string;
-        accent: string;
+        primary?: string | undefined;
+        secondary?: string | undefined;
+        accent?: string | undefined;
     }>>>>;
-    privacy_settings: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        publicProfile: z.ZodBoolean;
-        showAssessmentResults: z.ZodBoolean;
-        allowNetworking: z.ZodBoolean;
-        shareAnalytics: z.ZodBoolean;
+    privacySettings: z.ZodOptional<z.ZodOptional<z.ZodDefault<z.ZodObject<{
+        publicProfile: z.ZodDefault<z.ZodBoolean>;
+        showAssessmentResults: z.ZodDefault<z.ZodBoolean>;
+        allowNetworking: z.ZodDefault<z.ZodBoolean>;
+        shareAnalytics: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         publicProfile: boolean;
         showAssessmentResults: boolean;
         allowNetworking: boolean;
         shareAnalytics: boolean;
     }, {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
+        publicProfile?: boolean | undefined;
+        showAssessmentResults?: boolean | undefined;
+        allowNetworking?: boolean | undefined;
+        shareAnalytics?: boolean | undefined;
     }>>>>;
 }, "strip", z.ZodTypeAny, {
-    denomination?: string | undefined;
-    first_name?: string | undefined;
-    last_name?: string | undefined;
-    display_name?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    displayName?: string | undefined;
     bio?: string | undefined;
-    avatar_url?: string | undefined;
-    ministry_role?: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other" | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string | undefined;
+    avatarUrl?: string | undefined;
+    ministryRole?: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other" | undefined;
+    denomination?: string | undefined;
+    organizationName?: string | undefined;
+    yearsInMinistry?: number | undefined;
+    countryCode?: string | undefined;
     timezone?: string | undefined;
-    language_primary?: string | undefined;
-    cultural_context?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    platform_title?: string | undefined;
-    theological_focus?: string[] | undefined;
-    brand_colors?: {
+    languagePrimary?: string | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    platformTitle?: string | undefined;
+    theologicalFocus?: string[] | undefined;
+    brandColors?: {
         primary: string;
         secondary: string;
         accent: string;
     } | undefined;
-    privacy_settings?: {
+    privacySettings?: {
         publicProfile: boolean;
         showAssessmentResults: boolean;
         allowNetworking: boolean;
         shareAnalytics: boolean;
     } | undefined;
 }, {
-    denomination?: string | undefined;
-    first_name?: string | undefined;
-    last_name?: string | undefined;
-    display_name?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    displayName?: string | undefined;
     bio?: string | undefined;
-    avatar_url?: string | undefined;
-    ministry_role?: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other" | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string | undefined;
+    avatarUrl?: string | undefined;
+    ministryRole?: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other" | undefined;
+    denomination?: string | undefined;
+    organizationName?: string | undefined;
+    yearsInMinistry?: number | undefined;
+    countryCode?: string | undefined;
     timezone?: string | undefined;
-    language_primary?: string | undefined;
-    cultural_context?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    platform_title?: string | undefined;
-    theological_focus?: string[] | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
+    languagePrimary?: string | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    platformTitle?: string | undefined;
+    theologicalFocus?: string[] | undefined;
+    brandColors?: {
+        primary?: string | undefined;
+        secondary?: string | undefined;
+        accent?: string | undefined;
     } | undefined;
-    privacy_settings?: {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
+    privacySettings?: {
+        publicProfile?: boolean | undefined;
+        showAssessmentResults?: boolean | undefined;
+        allowNetworking?: boolean | undefined;
+        shareAnalytics?: boolean | undefined;
     } | undefined;
 }>;
 /**
@@ -1041,86 +908,86 @@ export declare const UpdateUserProfileOperationSchema: z.ZodObject<{
  * Specific to settings updates
  */
 export declare const UpdateUserSettingsOperationSchema: z.ZodObject<{
-    brand_colors: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        primary: z.ZodString;
-        secondary: z.ZodString;
-        accent: z.ZodString;
+    brandColors: z.ZodOptional<z.ZodOptional<z.ZodDefault<z.ZodObject<{
+        primary: z.ZodDefault<z.ZodString>;
+        secondary: z.ZodDefault<z.ZodString>;
+        accent: z.ZodDefault<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         primary: string;
         secondary: string;
         accent: string;
     }, {
-        primary: string;
-        secondary: string;
-        accent: string;
+        primary?: string | undefined;
+        secondary?: string | undefined;
+        accent?: string | undefined;
     }>>>>;
-    email_notifications: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        dailyDigest: z.ZodBoolean;
-        collaborationRequests: z.ZodBoolean;
-        revenueReports: z.ZodBoolean;
-        communityUpdates: z.ZodBoolean;
+    emailNotifications: z.ZodOptional<z.ZodOptional<z.ZodDefault<z.ZodObject<{
+        dailyDigest: z.ZodDefault<z.ZodBoolean>;
+        collaborationRequests: z.ZodDefault<z.ZodBoolean>;
+        revenueReports: z.ZodDefault<z.ZodBoolean>;
+        communityUpdates: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         dailyDigest: boolean;
         collaborationRequests: boolean;
         revenueReports: boolean;
         communityUpdates: boolean;
     }, {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
+        dailyDigest?: boolean | undefined;
+        collaborationRequests?: boolean | undefined;
+        revenueReports?: boolean | undefined;
+        communityUpdates?: boolean | undefined;
     }>>>>;
-    privacy_settings: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        publicProfile: z.ZodBoolean;
-        showAssessmentResults: z.ZodBoolean;
-        allowNetworking: z.ZodBoolean;
-        shareAnalytics: z.ZodBoolean;
+    privacySettings: z.ZodOptional<z.ZodOptional<z.ZodDefault<z.ZodObject<{
+        publicProfile: z.ZodDefault<z.ZodBoolean>;
+        showAssessmentResults: z.ZodDefault<z.ZodBoolean>;
+        allowNetworking: z.ZodDefault<z.ZodBoolean>;
+        shareAnalytics: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         publicProfile: boolean;
         showAssessmentResults: boolean;
         allowNetworking: boolean;
         shareAnalytics: boolean;
     }, {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
+        publicProfile?: boolean | undefined;
+        showAssessmentResults?: boolean | undefined;
+        allowNetworking?: boolean | undefined;
+        shareAnalytics?: boolean | undefined;
     }>>>>;
 }, "strip", z.ZodTypeAny, {
-    brand_colors?: {
+    brandColors?: {
         primary: string;
         secondary: string;
         accent: string;
     } | undefined;
-    email_notifications?: {
+    emailNotifications?: {
         dailyDigest: boolean;
         collaborationRequests: boolean;
         revenueReports: boolean;
         communityUpdates: boolean;
     } | undefined;
-    privacy_settings?: {
+    privacySettings?: {
         publicProfile: boolean;
         showAssessmentResults: boolean;
         allowNetworking: boolean;
         shareAnalytics: boolean;
     } | undefined;
 }, {
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
+    brandColors?: {
+        primary?: string | undefined;
+        secondary?: string | undefined;
+        accent?: string | undefined;
     } | undefined;
-    email_notifications?: {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
+    emailNotifications?: {
+        dailyDigest?: boolean | undefined;
+        collaborationRequests?: boolean | undefined;
+        revenueReports?: boolean | undefined;
+        communityUpdates?: boolean | undefined;
     } | undefined;
-    privacy_settings?: {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
+    privacySettings?: {
+        publicProfile?: boolean | undefined;
+        showAssessmentResults?: boolean | undefined;
+        allowNetworking?: boolean | undefined;
+        shareAnalytics?: boolean | undefined;
     } | undefined;
 }>;
 /**
@@ -1128,32 +995,29 @@ export declare const UpdateUserSettingsOperationSchema: z.ZodObject<{
  * Specific to assessment score updates
  */
 export declare const UpdateUserAssessmentScoresOperationSchema: z.ZodObject<{
-    assessment_movement_alignment: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
-    assessment_audience_engagement: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
-    assessment_content_readiness: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
-    assessment_revenue_potential: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
-    assessment_network_effects: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
-    assessment_strategic_fit: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
-    assessment_total: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
-    leader_tier: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodEnum<["core", "network", "emerging", "community"]>>>>;
+    assessmentMovementAlignment: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
+    assessmentAudienceEngagement: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
+    assessmentContentReadiness: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
+    assessmentRevenuePotential: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
+    assessmentNetworkEffects: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
+    assessmentStrategicFit: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodNumber>>>;
+    leaderTier: z.ZodOptional<z.ZodOptional<z.ZodOptional<z.ZodEnum<["core", "network", "emerging", "community"]>>>>;
 }, "strip", z.ZodTypeAny, {
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: "core" | "network" | "emerging" | "community" | undefined;
+    assessmentMovementAlignment?: number | undefined;
+    assessmentAudienceEngagement?: number | undefined;
+    assessmentContentReadiness?: number | undefined;
+    assessmentRevenuePotential?: number | undefined;
+    assessmentNetworkEffects?: number | undefined;
+    assessmentStrategicFit?: number | undefined;
+    leaderTier?: "core" | "network" | "emerging" | "community" | undefined;
 }, {
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: "core" | "network" | "emerging" | "community" | undefined;
+    assessmentMovementAlignment?: number | undefined;
+    assessmentAudienceEngagement?: number | undefined;
+    assessmentContentReadiness?: number | undefined;
+    assessmentRevenuePotential?: number | undefined;
+    assessmentNetworkEffects?: number | undefined;
+    assessmentStrategicFit?: number | undefined;
+    leaderTier?: "core" | "network" | "emerging" | "community" | undefined;
 }>;
 /**
  * Delete User Operation Schema
@@ -1223,284 +1087,166 @@ export declare const UserLoginOperationSchema: z.ZodObject<{
  * New user registration with validation
  */
 export declare const UserRegistrationOperationSchema: z.ZodEffects<z.ZodObject<{
-    denomination: z.ZodOptional<z.ZodString>;
-    email: z.ZodString;
-    first_name: z.ZodString;
-    last_name: z.ZodString;
-    display_name: z.ZodOptional<z.ZodString>;
+    firstName: z.ZodString;
+    lastName: z.ZodString;
+    displayName: z.ZodOptional<z.ZodString>;
     bio: z.ZodOptional<z.ZodString>;
-    avatar_url: z.ZodOptional<z.ZodString>;
-    ministry_role: z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>;
-    organization_name: z.ZodOptional<z.ZodString>;
-    years_in_ministry: z.ZodOptional<z.ZodNumber>;
-    country_code: z.ZodOptional<z.ZodString>;
+    ministryRole: z.ZodEnum<["senior_pastor", "associate_pastor", "church_planter", "denominational_leader", "seminary_professor", "seminary_student", "ministry_staff", "missionary", "marketplace_minister", "nonprofit_leader", "consultant", "academic_researcher", "emerging_leader", "other"]>;
+    denomination: z.ZodOptional<z.ZodString>;
+    organizationName: z.ZodOptional<z.ZodString>;
+    yearsInMinistry: z.ZodOptional<z.ZodNumber>;
+    countryCode: z.ZodOptional<z.ZodString>;
     timezone: z.ZodOptional<z.ZodString>;
-    language_primary: z.ZodDefault<z.ZodString>;
-    cultural_context: z.ZodOptional<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "universal", "global"]>>;
-    assessment_movement_alignment: z.ZodOptional<z.ZodNumber>;
-    assessment_audience_engagement: z.ZodOptional<z.ZodNumber>;
-    assessment_content_readiness: z.ZodOptional<z.ZodNumber>;
-    assessment_revenue_potential: z.ZodOptional<z.ZodNumber>;
-    assessment_network_effects: z.ZodOptional<z.ZodNumber>;
-    assessment_strategic_fit: z.ZodOptional<z.ZodNumber>;
-    assessment_total: z.ZodOptional<z.ZodNumber>;
-    leader_tier: z.ZodOptional<z.ZodEnum<["core", "network", "emerging", "community"]>>;
-    subdomain: z.ZodOptional<z.ZodString>;
-    custom_domain: z.ZodOptional<z.ZodString>;
-    platform_title: z.ZodOptional<z.ZodString>;
-    subscription_tier: z.ZodDefault<z.ZodEnum<["free", "individual", "professional", "leader", "institutional"]>>;
-    theological_focus: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    brand_colors: z.ZodOptional<z.ZodObject<{
-        primary: z.ZodString;
-        secondary: z.ZodString;
-        accent: z.ZodString;
-    }, "strip", z.ZodTypeAny, {
-        primary: string;
-        secondary: string;
-        accent: string;
-    }, {
-        primary: string;
-        secondary: string;
-        accent: string;
-    }>>;
-    email_notifications: z.ZodOptional<z.ZodObject<{
-        dailyDigest: z.ZodBoolean;
-        collaborationRequests: z.ZodBoolean;
-        revenueReports: z.ZodBoolean;
-        communityUpdates: z.ZodBoolean;
-    }, "strip", z.ZodTypeAny, {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
-    }, {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
-    }>>;
-    privacy_settings: z.ZodOptional<z.ZodObject<{
-        publicProfile: z.ZodBoolean;
-        showAssessmentResults: z.ZodBoolean;
-        allowNetworking: z.ZodBoolean;
-        shareAnalytics: z.ZodBoolean;
+    culturalContext: z.ZodOptional<z.ZodEnum<["western", "eastern", "african", "latin_american", "middle_eastern", "oceanic", "mixed", "global"]>>;
+    platformTitle: z.ZodOptional<z.ZodString>;
+    languagePrimary: z.ZodDefault<z.ZodString>;
+    privacySettings: z.ZodObject<{
+        publicProfile: z.ZodDefault<z.ZodBoolean>;
+        shareAnalytics: z.ZodDefault<z.ZodBoolean>;
+        allowNetworking: z.ZodDefault<z.ZodBoolean>;
+        showAssessmentResults: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         publicProfile: boolean;
         showAssessmentResults: boolean;
         allowNetworking: boolean;
         shareAnalytics: boolean;
     }, {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
-    }>>;
-    account_status: z.ZodDefault<z.ZodEnum<["active", "inactive", "suspended", "pending_verification"]>>;
-    last_active_at: z.ZodOptional<z.ZodString>;
-    terms_accepted: z.ZodEffects<z.ZodBoolean, boolean, boolean>;
+        publicProfile?: boolean | undefined;
+        showAssessmentResults?: boolean | undefined;
+        allowNetworking?: boolean | undefined;
+        shareAnalytics?: boolean | undefined;
+    }>;
+    emailNotifications: z.ZodObject<{
+        dailyDigest: z.ZodDefault<z.ZodBoolean>;
+        revenueReports: z.ZodDefault<z.ZodBoolean>;
+        communityUpdates: z.ZodDefault<z.ZodBoolean>;
+        collaborationRequests: z.ZodDefault<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        dailyDigest: boolean;
+        collaborationRequests: boolean;
+        revenueReports: boolean;
+        communityUpdates: boolean;
+    }, {
+        dailyDigest?: boolean | undefined;
+        collaborationRequests?: boolean | undefined;
+        revenueReports?: boolean | undefined;
+        communityUpdates?: boolean | undefined;
+    }>;
 } & {
     password: z.ZodString;
     confirm_password: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    email: string;
-    first_name: string;
-    last_name: string;
-    ministry_role: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
-    language_primary: string;
-    subscription_tier: "free" | "individual" | "professional" | "leader" | "institutional";
-    theological_focus: string[];
-    account_status: "active" | "inactive" | "suspended" | "pending_verification";
-    confirm_password: string;
-    terms_accepted: boolean;
-    password: string;
-    denomination?: string | undefined;
-    display_name?: string | undefined;
-    bio?: string | undefined;
-    avatar_url?: string | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string | undefined;
-    timezone?: string | undefined;
-    cultural_context?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: "core" | "network" | "emerging" | "community" | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    platform_title?: string | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
-    email_notifications?: {
+    firstName: string;
+    lastName: string;
+    ministryRole: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
+    languagePrimary: string;
+    emailNotifications: {
         dailyDigest: boolean;
         collaborationRequests: boolean;
         revenueReports: boolean;
         communityUpdates: boolean;
-    } | undefined;
-    privacy_settings?: {
+    };
+    privacySettings: {
         publicProfile: boolean;
         showAssessmentResults: boolean;
         allowNetworking: boolean;
         shareAnalytics: boolean;
-    } | undefined;
-    last_active_at?: string | undefined;
+    };
+    password: string;
+    confirm_password: string;
+    displayName?: string | undefined;
+    bio?: string | undefined;
+    denomination?: string | undefined;
+    organizationName?: string | undefined;
+    yearsInMinistry?: number | undefined;
+    countryCode?: string | undefined;
+    timezone?: string | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    platformTitle?: string | undefined;
 }, {
-    email: string;
-    first_name: string;
-    last_name: string;
-    ministry_role: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
-    confirm_password: string;
-    terms_accepted: boolean;
+    firstName: string;
+    lastName: string;
+    ministryRole: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
+    emailNotifications: {
+        dailyDigest?: boolean | undefined;
+        collaborationRequests?: boolean | undefined;
+        revenueReports?: boolean | undefined;
+        communityUpdates?: boolean | undefined;
+    };
+    privacySettings: {
+        publicProfile?: boolean | undefined;
+        showAssessmentResults?: boolean | undefined;
+        allowNetworking?: boolean | undefined;
+        shareAnalytics?: boolean | undefined;
+    };
     password: string;
-    denomination?: string | undefined;
-    display_name?: string | undefined;
+    confirm_password: string;
+    displayName?: string | undefined;
     bio?: string | undefined;
-    avatar_url?: string | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string | undefined;
+    denomination?: string | undefined;
+    organizationName?: string | undefined;
+    yearsInMinistry?: number | undefined;
+    countryCode?: string | undefined;
     timezone?: string | undefined;
-    language_primary?: string | undefined;
-    cultural_context?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: "core" | "network" | "emerging" | "community" | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    platform_title?: string | undefined;
-    subscription_tier?: "free" | "individual" | "professional" | "leader" | "institutional" | undefined;
-    theological_focus?: string[] | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
-    email_notifications?: {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
-    } | undefined;
-    privacy_settings?: {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
-    } | undefined;
-    account_status?: "active" | "inactive" | "suspended" | "pending_verification" | undefined;
-    last_active_at?: string | undefined;
+    languagePrimary?: string | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    platformTitle?: string | undefined;
 }>, {
-    email: string;
-    first_name: string;
-    last_name: string;
-    ministry_role: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
-    language_primary: string;
-    subscription_tier: "free" | "individual" | "professional" | "leader" | "institutional";
-    theological_focus: string[];
-    account_status: "active" | "inactive" | "suspended" | "pending_verification";
-    confirm_password: string;
-    terms_accepted: boolean;
-    password: string;
-    denomination?: string | undefined;
-    display_name?: string | undefined;
-    bio?: string | undefined;
-    avatar_url?: string | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string | undefined;
-    timezone?: string | undefined;
-    cultural_context?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: "core" | "network" | "emerging" | "community" | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    platform_title?: string | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
-    email_notifications?: {
+    firstName: string;
+    lastName: string;
+    ministryRole: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
+    languagePrimary: string;
+    emailNotifications: {
         dailyDigest: boolean;
         collaborationRequests: boolean;
         revenueReports: boolean;
         communityUpdates: boolean;
-    } | undefined;
-    privacy_settings?: {
+    };
+    privacySettings: {
         publicProfile: boolean;
         showAssessmentResults: boolean;
         allowNetworking: boolean;
         shareAnalytics: boolean;
-    } | undefined;
-    last_active_at?: string | undefined;
+    };
+    password: string;
+    confirm_password: string;
+    displayName?: string | undefined;
+    bio?: string | undefined;
+    denomination?: string | undefined;
+    organizationName?: string | undefined;
+    yearsInMinistry?: number | undefined;
+    countryCode?: string | undefined;
+    timezone?: string | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    platformTitle?: string | undefined;
 }, {
-    email: string;
-    first_name: string;
-    last_name: string;
-    ministry_role: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
-    confirm_password: string;
-    terms_accepted: boolean;
+    firstName: string;
+    lastName: string;
+    ministryRole: "senior_pastor" | "associate_pastor" | "church_planter" | "denominational_leader" | "seminary_professor" | "seminary_student" | "ministry_staff" | "missionary" | "marketplace_minister" | "nonprofit_leader" | "consultant" | "academic_researcher" | "emerging_leader" | "other";
+    emailNotifications: {
+        dailyDigest?: boolean | undefined;
+        collaborationRequests?: boolean | undefined;
+        revenueReports?: boolean | undefined;
+        communityUpdates?: boolean | undefined;
+    };
+    privacySettings: {
+        publicProfile?: boolean | undefined;
+        showAssessmentResults?: boolean | undefined;
+        allowNetworking?: boolean | undefined;
+        shareAnalytics?: boolean | undefined;
+    };
     password: string;
-    denomination?: string | undefined;
-    display_name?: string | undefined;
+    confirm_password: string;
+    displayName?: string | undefined;
     bio?: string | undefined;
-    avatar_url?: string | undefined;
-    organization_name?: string | undefined;
-    years_in_ministry?: number | undefined;
-    country_code?: string | undefined;
+    denomination?: string | undefined;
+    organizationName?: string | undefined;
+    yearsInMinistry?: number | undefined;
+    countryCode?: string | undefined;
     timezone?: string | undefined;
-    language_primary?: string | undefined;
-    cultural_context?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "universal" | "global" | undefined;
-    assessment_movement_alignment?: number | undefined;
-    assessment_audience_engagement?: number | undefined;
-    assessment_content_readiness?: number | undefined;
-    assessment_revenue_potential?: number | undefined;
-    assessment_network_effects?: number | undefined;
-    assessment_strategic_fit?: number | undefined;
-    assessment_total?: number | undefined;
-    leader_tier?: "core" | "network" | "emerging" | "community" | undefined;
-    subdomain?: string | undefined;
-    custom_domain?: string | undefined;
-    platform_title?: string | undefined;
-    subscription_tier?: "free" | "individual" | "professional" | "leader" | "institutional" | undefined;
-    theological_focus?: string[] | undefined;
-    brand_colors?: {
-        primary: string;
-        secondary: string;
-        accent: string;
-    } | undefined;
-    email_notifications?: {
-        dailyDigest: boolean;
-        collaborationRequests: boolean;
-        revenueReports: boolean;
-        communityUpdates: boolean;
-    } | undefined;
-    privacy_settings?: {
-        publicProfile: boolean;
-        showAssessmentResults: boolean;
-        allowNetworking: boolean;
-        shareAnalytics: boolean;
-    } | undefined;
-    account_status?: "active" | "inactive" | "suspended" | "pending_verification" | undefined;
-    last_active_at?: string | undefined;
+    languagePrimary?: string | undefined;
+    culturalContext?: "western" | "eastern" | "african" | "latin_american" | "middle_eastern" | "oceanic" | "mixed" | "global" | undefined;
+    platformTitle?: string | undefined;
 }>;
 /**
  * User Password Reset Operation Schema

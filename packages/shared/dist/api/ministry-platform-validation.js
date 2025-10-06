@@ -1,4 +1,4 @@
-import { crossEntityValidationSchema, ministryPlatformErrorSchema, organizationScopedRequestSchema, roleBasedValidationSchema, } from '@/lib/contracts';
+import { crossEntityValidationSchema, ministryPlatformErrorSchema, organizationScopedRequestSchema, roleBasedValidationSchema, } from '@platform/contracts';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 // ============================================================================
@@ -319,7 +319,7 @@ function getFieldPermissions(role) {
             'analytics.all': false,
         },
     };
-    return fieldPermissions[role] || fieldPermissions.viewer;
+    return fieldPermissions[role] || fieldPermissions['viewer'];
 }
 // ============================================================================
 // MIDDLEWARE COMPOSITION

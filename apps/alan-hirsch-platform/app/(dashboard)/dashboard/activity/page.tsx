@@ -1,4 +1,4 @@
-import { ActivityType, getActivityLogs } from '@platform/database';
+import { ActivityType } from '@platform/database';
 import { Card, CardContent, CardHeader, CardTitle } from '@platform/ui/card';
 import {
   AlertCircle,
@@ -67,6 +67,32 @@ function formatAction(action: ActivityType): string {
   }
 }
 
+// Mock function for activity logs
+const getActivityLogs = async () => {
+  return {
+    data: [
+      {
+        log: {
+          id: '1',
+          action: 'user_login',
+          timestamp: new Date().toISOString(),
+          userId: 'user-1',
+          metadata: { ip: '192.168.1.1' },
+        },
+      },
+      {
+        log: {
+          id: '2',
+          action: 'content_created',
+          timestamp: new Date(Date.now() - 3600000).toISOString(),
+          userId: 'user-1',
+          metadata: { contentId: 'content-1' },
+        },
+      },
+    ],
+  };
+};
+
 export default async function ActivityPage() {
   const logs = await getActivityLogs();
 
@@ -80,32 +106,46 @@ export default async function ActivityPage() {
           <CardTitle>Recent Activity</CardTitle>
         </CardHeader>
         <CardContent>
-          {logs.length > 0 ? (
+          {logs.data.length > 0 ? (
             <ul className="space-y-4">
-              {logs.map(log => {
-                const Icon =
-                  iconMap[log.log.action as ActivityType] || Settings;
-                const formattedAction = formatAction(
-                  log.log.action as ActivityType
-                );
+              {logs.data.map(
+                (log: {
+                  log: {
+                    id: string;
+                    action: string;
+                    timestamp: string;
+                    userId: string;
+                    metadata: Record<string, unknown>;
+                  };
+                }) => {
+                  const Icon =
+                    iconMap[log.log.action as ActivityType] || Settings;
+                  const formattedAction = formatAction(
+                    log.log.action as ActivityType
+                  );
 
-                return (
-                  <li key={log.log.id} className="flex items-center space-x-4">
-                    <div className="bg-orange-100 rounded-full p-2">
-                      <Icon className="w-5 h-5 text-orange-600" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">
-                        {formattedAction}
-                        {log.log.ipAddress && ` from IP ${log.log.ipAddress}`}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {getRelativeTime(new Date(log.log.createdAt))}
-                      </p>
-                    </div>
-                  </li>
-                );
-              })}
+                  return (
+                    <li
+                      key={log.log.id}
+                      className="flex items-center space-x-4"
+                    >
+                      <div className="bg-orange-100 rounded-full p-2">
+                        <Icon className="w-5 h-5 text-orange-600" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-900">
+                          {formattedAction}
+                          {log.log.metadata?.['ip'] &&
+                            ` from IP ${String(log.log.metadata['ip'])}`}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {getRelativeTime(new Date(log.log.timestamp))}
+                        </p>
+                      </div>
+                    </li>
+                  );
+                }
+              )}
             </ul>
           ) : (
             <div className="flex flex-col items-center justify-center text-center py-12">

@@ -1,0 +1,1040 @@
+import { z } from 'zod';
+export declare const apiKeyEntitySchema: z.ZodObject<{
+    id: z.ZodString;
+    name: z.ZodString;
+    keyHash: z.ZodString;
+    permissions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    isActive: z.ZodDefault<z.ZodBoolean>;
+    lastUsedAt: z.ZodOptional<z.ZodString>;
+    expiresAt: z.ZodOptional<z.ZodString>;
+    createdBy: z.ZodString;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    name: string;
+    id: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+    permissions: string[];
+    keyHash: string;
+    createdBy: string;
+    lastUsedAt?: string | undefined;
+    expiresAt?: string | undefined;
+}, {
+    name: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    keyHash: string;
+    createdBy: string;
+    isActive?: boolean | undefined;
+    permissions?: string[] | undefined;
+    lastUsedAt?: string | undefined;
+    expiresAt?: string | undefined;
+}>;
+export declare const auditLogEntitySchema: z.ZodObject<{
+    id: z.ZodString;
+    userId: z.ZodOptional<z.ZodString>;
+    organizationId: z.ZodOptional<z.ZodString>;
+    action: z.ZodString;
+    resourceType: z.ZodString;
+    resourceId: z.ZodOptional<z.ZodString>;
+    details: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    ipAddress: z.ZodOptional<z.ZodString>;
+    userAgent: z.ZodOptional<z.ZodString>;
+    timestamp: z.ZodString;
+    createdAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    createdAt: string;
+    timestamp: string;
+    action: string;
+    resourceType: string;
+    userId?: string | undefined;
+    organizationId?: string | undefined;
+    details?: Record<string, unknown> | undefined;
+    userAgent?: string | undefined;
+    ipAddress?: string | undefined;
+    resourceId?: string | undefined;
+}, {
+    id: string;
+    createdAt: string;
+    timestamp: string;
+    action: string;
+    resourceType: string;
+    userId?: string | undefined;
+    organizationId?: string | undefined;
+    details?: Record<string, unknown> | undefined;
+    userAgent?: string | undefined;
+    ipAddress?: string | undefined;
+    resourceId?: string | undefined;
+}>;
+export declare const featureFlagEntitySchema: z.ZodObject<{
+    id: z.ZodString;
+    name: z.ZodString;
+    description: z.ZodOptional<z.ZodString>;
+    isEnabled: z.ZodDefault<z.ZodBoolean>;
+    rolloutPercentage: z.ZodDefault<z.ZodNumber>;
+    targetUsers: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    targetOrganizations: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    conditions: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    createdBy: z.ZodString;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    name: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    createdBy: string;
+    isEnabled: boolean;
+    rolloutPercentage: number;
+    targetUsers: string[];
+    targetOrganizations: string[];
+    description?: string | undefined;
+    conditions?: Record<string, unknown> | undefined;
+}, {
+    name: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    createdBy: string;
+    description?: string | undefined;
+    isEnabled?: boolean | undefined;
+    rolloutPercentage?: number | undefined;
+    targetUsers?: string[] | undefined;
+    targetOrganizations?: string[] | undefined;
+    conditions?: Record<string, unknown> | undefined;
+}>;
+export declare const userFeatureFlagEntitySchema: z.ZodObject<{
+    id: z.ZodString;
+    userId: z.ZodString;
+    featureFlagId: z.ZodString;
+    isEnabled: z.ZodBoolean;
+    reason: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: string;
+    isEnabled: boolean;
+    featureFlagId: string;
+    reason?: string | undefined;
+}, {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: string;
+    isEnabled: boolean;
+    featureFlagId: string;
+    reason?: string | undefined;
+}>;
+export declare const userConsentEntitySchema: z.ZodObject<{
+    id: z.ZodString;
+    userId: z.ZodString;
+    consentType: z.ZodEnum<["privacy", "marketing", "analytics", "cookies", "terms"]>;
+    granted: z.ZodBoolean;
+    version: z.ZodString;
+    grantedAt: z.ZodOptional<z.ZodString>;
+    revokedAt: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: string;
+    version: string;
+    consentType: "privacy" | "marketing" | "analytics" | "cookies" | "terms";
+    granted: boolean;
+    grantedAt?: string | undefined;
+    revokedAt?: string | undefined;
+}, {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: string;
+    version: string;
+    consentType: "privacy" | "marketing" | "analytics" | "cookies" | "terms";
+    granted: boolean;
+    grantedAt?: string | undefined;
+    revokedAt?: string | undefined;
+}>;
+export declare const systemNotificationEntitySchema: z.ZodObject<{
+    id: z.ZodString;
+    title: z.ZodString;
+    message: z.ZodString;
+    type: z.ZodEnum<["info", "warning", "error", "success"]>;
+    priority: z.ZodDefault<z.ZodEnum<["low", "medium", "high", "urgent"]>>;
+    targetUsers: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    targetOrganizations: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    isActive: z.ZodDefault<z.ZodBoolean>;
+    scheduledAt: z.ZodOptional<z.ZodString>;
+    expiresAt: z.ZodOptional<z.ZodString>;
+    createdBy: z.ZodString;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    type: "success" | "error" | "info" | "warning";
+    message: string;
+    id: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+    title: string;
+    createdBy: string;
+    targetUsers: string[];
+    targetOrganizations: string[];
+    priority: "medium" | "low" | "high" | "urgent";
+    scheduledAt?: string | undefined;
+    expiresAt?: string | undefined;
+}, {
+    type: "success" | "error" | "info" | "warning";
+    message: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    title: string;
+    createdBy: string;
+    isActive?: boolean | undefined;
+    scheduledAt?: string | undefined;
+    expiresAt?: string | undefined;
+    targetUsers?: string[] | undefined;
+    targetOrganizations?: string[] | undefined;
+    priority?: "medium" | "low" | "high" | "urgent" | undefined;
+}>;
+export declare const userNotificationStatusEntitySchema: z.ZodObject<{
+    id: z.ZodString;
+    userId: z.ZodString;
+    notificationId: z.ZodString;
+    status: z.ZodDefault<z.ZodEnum<["unread", "read", "dismissed"]>>;
+    readAt: z.ZodOptional<z.ZodString>;
+    dismissedAt: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    status: "unread" | "read" | "dismissed";
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: string;
+    notificationId: string;
+    readAt?: string | undefined;
+    dismissedAt?: string | undefined;
+}, {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: string;
+    notificationId: string;
+    status?: "unread" | "read" | "dismissed" | undefined;
+    readAt?: string | undefined;
+    dismissedAt?: string | undefined;
+}>;
+export declare const createApiKeySchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    name: z.ZodString;
+    keyHash: z.ZodString;
+    permissions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    isActive: z.ZodDefault<z.ZodBoolean>;
+    lastUsedAt: z.ZodOptional<z.ZodString>;
+    expiresAt: z.ZodOptional<z.ZodString>;
+    createdBy: z.ZodString;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "id" | "createdAt" | "updatedAt">, "strip", z.ZodTypeAny, {
+    name: string;
+    isActive: boolean;
+    permissions: string[];
+    keyHash: string;
+    createdBy: string;
+    lastUsedAt?: string | undefined;
+    expiresAt?: string | undefined;
+}, {
+    name: string;
+    keyHash: string;
+    createdBy: string;
+    isActive?: boolean | undefined;
+    permissions?: string[] | undefined;
+    lastUsedAt?: string | undefined;
+    expiresAt?: string | undefined;
+}>;
+export declare const createAuditLogSchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    userId: z.ZodOptional<z.ZodString>;
+    organizationId: z.ZodOptional<z.ZodString>;
+    action: z.ZodString;
+    resourceType: z.ZodString;
+    resourceId: z.ZodOptional<z.ZodString>;
+    details: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    ipAddress: z.ZodOptional<z.ZodString>;
+    userAgent: z.ZodOptional<z.ZodString>;
+    timestamp: z.ZodString;
+    createdAt: z.ZodString;
+}, "id" | "createdAt">, "strip", z.ZodTypeAny, {
+    timestamp: string;
+    action: string;
+    resourceType: string;
+    userId?: string | undefined;
+    organizationId?: string | undefined;
+    details?: Record<string, unknown> | undefined;
+    userAgent?: string | undefined;
+    ipAddress?: string | undefined;
+    resourceId?: string | undefined;
+}, {
+    timestamp: string;
+    action: string;
+    resourceType: string;
+    userId?: string | undefined;
+    organizationId?: string | undefined;
+    details?: Record<string, unknown> | undefined;
+    userAgent?: string | undefined;
+    ipAddress?: string | undefined;
+    resourceId?: string | undefined;
+}>;
+export declare const createFeatureFlagSchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    name: z.ZodString;
+    description: z.ZodOptional<z.ZodString>;
+    isEnabled: z.ZodDefault<z.ZodBoolean>;
+    rolloutPercentage: z.ZodDefault<z.ZodNumber>;
+    targetUsers: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    targetOrganizations: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    conditions: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    createdBy: z.ZodString;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "id" | "createdAt" | "updatedAt">, "strip", z.ZodTypeAny, {
+    name: string;
+    createdBy: string;
+    isEnabled: boolean;
+    rolloutPercentage: number;
+    targetUsers: string[];
+    targetOrganizations: string[];
+    description?: string | undefined;
+    conditions?: Record<string, unknown> | undefined;
+}, {
+    name: string;
+    createdBy: string;
+    description?: string | undefined;
+    isEnabled?: boolean | undefined;
+    rolloutPercentage?: number | undefined;
+    targetUsers?: string[] | undefined;
+    targetOrganizations?: string[] | undefined;
+    conditions?: Record<string, unknown> | undefined;
+}>;
+export declare const createUserFeatureFlagSchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    userId: z.ZodString;
+    featureFlagId: z.ZodString;
+    isEnabled: z.ZodBoolean;
+    reason: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "id" | "createdAt" | "updatedAt">, "strip", z.ZodTypeAny, {
+    userId: string;
+    isEnabled: boolean;
+    featureFlagId: string;
+    reason?: string | undefined;
+}, {
+    userId: string;
+    isEnabled: boolean;
+    featureFlagId: string;
+    reason?: string | undefined;
+}>;
+export declare const createUserConsentSchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    userId: z.ZodString;
+    consentType: z.ZodEnum<["privacy", "marketing", "analytics", "cookies", "terms"]>;
+    granted: z.ZodBoolean;
+    version: z.ZodString;
+    grantedAt: z.ZodOptional<z.ZodString>;
+    revokedAt: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "id" | "createdAt" | "updatedAt">, "strip", z.ZodTypeAny, {
+    userId: string;
+    version: string;
+    consentType: "privacy" | "marketing" | "analytics" | "cookies" | "terms";
+    granted: boolean;
+    grantedAt?: string | undefined;
+    revokedAt?: string | undefined;
+}, {
+    userId: string;
+    version: string;
+    consentType: "privacy" | "marketing" | "analytics" | "cookies" | "terms";
+    granted: boolean;
+    grantedAt?: string | undefined;
+    revokedAt?: string | undefined;
+}>;
+export declare const createSystemNotificationSchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    title: z.ZodString;
+    message: z.ZodString;
+    type: z.ZodEnum<["info", "warning", "error", "success"]>;
+    priority: z.ZodDefault<z.ZodEnum<["low", "medium", "high", "urgent"]>>;
+    targetUsers: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    targetOrganizations: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    isActive: z.ZodDefault<z.ZodBoolean>;
+    scheduledAt: z.ZodOptional<z.ZodString>;
+    expiresAt: z.ZodOptional<z.ZodString>;
+    createdBy: z.ZodString;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "id" | "createdAt" | "updatedAt">, "strip", z.ZodTypeAny, {
+    type: "success" | "error" | "info" | "warning";
+    message: string;
+    isActive: boolean;
+    title: string;
+    createdBy: string;
+    targetUsers: string[];
+    targetOrganizations: string[];
+    priority: "medium" | "low" | "high" | "urgent";
+    scheduledAt?: string | undefined;
+    expiresAt?: string | undefined;
+}, {
+    type: "success" | "error" | "info" | "warning";
+    message: string;
+    title: string;
+    createdBy: string;
+    isActive?: boolean | undefined;
+    scheduledAt?: string | undefined;
+    expiresAt?: string | undefined;
+    targetUsers?: string[] | undefined;
+    targetOrganizations?: string[] | undefined;
+    priority?: "medium" | "low" | "high" | "urgent" | undefined;
+}>;
+export declare const createUserNotificationStatusSchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    userId: z.ZodString;
+    notificationId: z.ZodString;
+    status: z.ZodDefault<z.ZodEnum<["unread", "read", "dismissed"]>>;
+    readAt: z.ZodOptional<z.ZodString>;
+    dismissedAt: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "id" | "createdAt" | "updatedAt">, "strip", z.ZodTypeAny, {
+    status: "unread" | "read" | "dismissed";
+    userId: string;
+    notificationId: string;
+    readAt?: string | undefined;
+    dismissedAt?: string | undefined;
+}, {
+    userId: string;
+    notificationId: string;
+    status?: "unread" | "read" | "dismissed" | undefined;
+    readAt?: string | undefined;
+    dismissedAt?: string | undefined;
+}>;
+export declare const updateApiKeySchema: z.ZodObject<{
+    name: z.ZodOptional<z.ZodString>;
+    isActive: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+    permissions: z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodString, "many">>>;
+    keyHash: z.ZodOptional<z.ZodString>;
+    lastUsedAt: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    expiresAt: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    createdBy: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    name?: string | undefined;
+    isActive?: boolean | undefined;
+    permissions?: string[] | undefined;
+    keyHash?: string | undefined;
+    lastUsedAt?: string | undefined;
+    expiresAt?: string | undefined;
+    createdBy?: string | undefined;
+}, {
+    name?: string | undefined;
+    isActive?: boolean | undefined;
+    permissions?: string[] | undefined;
+    keyHash?: string | undefined;
+    lastUsedAt?: string | undefined;
+    expiresAt?: string | undefined;
+    createdBy?: string | undefined;
+}>;
+export declare const updateFeatureFlagSchema: z.ZodObject<{
+    name: z.ZodOptional<z.ZodString>;
+    description: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    createdBy: z.ZodOptional<z.ZodString>;
+    isEnabled: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+    rolloutPercentage: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
+    targetUsers: z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodString, "many">>>;
+    targetOrganizations: z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodString, "many">>>;
+    conditions: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>>;
+}, "strip", z.ZodTypeAny, {
+    name?: string | undefined;
+    description?: string | undefined;
+    createdBy?: string | undefined;
+    isEnabled?: boolean | undefined;
+    rolloutPercentage?: number | undefined;
+    targetUsers?: string[] | undefined;
+    targetOrganizations?: string[] | undefined;
+    conditions?: Record<string, unknown> | undefined;
+}, {
+    name?: string | undefined;
+    description?: string | undefined;
+    createdBy?: string | undefined;
+    isEnabled?: boolean | undefined;
+    rolloutPercentage?: number | undefined;
+    targetUsers?: string[] | undefined;
+    targetOrganizations?: string[] | undefined;
+    conditions?: Record<string, unknown> | undefined;
+}>;
+export declare const updateUserFeatureFlagSchema: z.ZodObject<{
+    userId: z.ZodOptional<z.ZodString>;
+    isEnabled: z.ZodOptional<z.ZodBoolean>;
+    featureFlagId: z.ZodOptional<z.ZodString>;
+    reason: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    userId?: string | undefined;
+    isEnabled?: boolean | undefined;
+    featureFlagId?: string | undefined;
+    reason?: string | undefined;
+}, {
+    userId?: string | undefined;
+    isEnabled?: boolean | undefined;
+    featureFlagId?: string | undefined;
+    reason?: string | undefined;
+}>;
+export declare const updateUserConsentSchema: z.ZodObject<{
+    userId: z.ZodOptional<z.ZodString>;
+    version: z.ZodOptional<z.ZodString>;
+    consentType: z.ZodOptional<z.ZodEnum<["privacy", "marketing", "analytics", "cookies", "terms"]>>;
+    granted: z.ZodOptional<z.ZodBoolean>;
+    grantedAt: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    revokedAt: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    userId?: string | undefined;
+    version?: string | undefined;
+    consentType?: "privacy" | "marketing" | "analytics" | "cookies" | "terms" | undefined;
+    granted?: boolean | undefined;
+    grantedAt?: string | undefined;
+    revokedAt?: string | undefined;
+}, {
+    userId?: string | undefined;
+    version?: string | undefined;
+    consentType?: "privacy" | "marketing" | "analytics" | "cookies" | "terms" | undefined;
+    granted?: boolean | undefined;
+    grantedAt?: string | undefined;
+    revokedAt?: string | undefined;
+}>;
+export declare const updateSystemNotificationSchema: z.ZodObject<{
+    type: z.ZodOptional<z.ZodEnum<["info", "warning", "error", "success"]>>;
+    message: z.ZodOptional<z.ZodString>;
+    isActive: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+    title: z.ZodOptional<z.ZodString>;
+    scheduledAt: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    expiresAt: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    createdBy: z.ZodOptional<z.ZodString>;
+    targetUsers: z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodString, "many">>>;
+    targetOrganizations: z.ZodOptional<z.ZodDefault<z.ZodArray<z.ZodString, "many">>>;
+    priority: z.ZodOptional<z.ZodDefault<z.ZodEnum<["low", "medium", "high", "urgent"]>>>;
+}, "strip", z.ZodTypeAny, {
+    type?: "success" | "error" | "info" | "warning" | undefined;
+    message?: string | undefined;
+    isActive?: boolean | undefined;
+    title?: string | undefined;
+    scheduledAt?: string | undefined;
+    expiresAt?: string | undefined;
+    createdBy?: string | undefined;
+    targetUsers?: string[] | undefined;
+    targetOrganizations?: string[] | undefined;
+    priority?: "medium" | "low" | "high" | "urgent" | undefined;
+}, {
+    type?: "success" | "error" | "info" | "warning" | undefined;
+    message?: string | undefined;
+    isActive?: boolean | undefined;
+    title?: string | undefined;
+    scheduledAt?: string | undefined;
+    expiresAt?: string | undefined;
+    createdBy?: string | undefined;
+    targetUsers?: string[] | undefined;
+    targetOrganizations?: string[] | undefined;
+    priority?: "medium" | "low" | "high" | "urgent" | undefined;
+}>;
+export declare const updateUserNotificationStatusSchema: z.ZodObject<{
+    status: z.ZodOptional<z.ZodDefault<z.ZodEnum<["unread", "read", "dismissed"]>>>;
+    userId: z.ZodOptional<z.ZodString>;
+    notificationId: z.ZodOptional<z.ZodString>;
+    readAt: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    dismissedAt: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    status?: "unread" | "read" | "dismissed" | undefined;
+    userId?: string | undefined;
+    notificationId?: string | undefined;
+    readAt?: string | undefined;
+    dismissedAt?: string | undefined;
+}, {
+    status?: "unread" | "read" | "dismissed" | undefined;
+    userId?: string | undefined;
+    notificationId?: string | undefined;
+    readAt?: string | undefined;
+    dismissedAt?: string | undefined;
+}>;
+export type ApiKeyEntity = z.infer<typeof apiKeyEntitySchema>;
+export type AuditLogEntity = z.infer<typeof auditLogEntitySchema>;
+export type FeatureFlagEntity = z.infer<typeof featureFlagEntitySchema>;
+export type UserFeatureFlagEntity = z.infer<typeof userFeatureFlagEntitySchema>;
+export type UserConsentEntity = z.infer<typeof userConsentEntitySchema>;
+export type SystemNotificationEntity = z.infer<typeof systemNotificationEntitySchema>;
+export type UserNotificationStatusEntity = z.infer<typeof userNotificationStatusEntitySchema>;
+export type CreateApiKey = z.infer<typeof createApiKeySchema>;
+export type CreateAuditLog = z.infer<typeof createAuditLogSchema>;
+export type CreateFeatureFlag = z.infer<typeof createFeatureFlagSchema>;
+export type CreateUserFeatureFlag = z.infer<typeof createUserFeatureFlagSchema>;
+export type CreateUserConsent = z.infer<typeof createUserConsentSchema>;
+export type CreateSystemNotification = z.infer<typeof createSystemNotificationSchema>;
+export type CreateUserNotificationStatus = z.infer<typeof createUserNotificationStatusSchema>;
+export type UpdateApiKey = z.infer<typeof updateApiKeySchema>;
+export type UpdateFeatureFlag = z.infer<typeof updateFeatureFlagSchema>;
+export type UpdateUserFeatureFlag = z.infer<typeof updateUserFeatureFlagSchema>;
+export type UpdateUserConsent = z.infer<typeof updateUserConsentSchema>;
+export type UpdateSystemNotification = z.infer<typeof updateSystemNotificationSchema>;
+export type UpdateUserNotificationStatus = z.infer<typeof updateUserNotificationStatusSchema>;
+export declare const apiKeySchema: z.ZodObject<{
+    id: z.ZodString;
+    name: z.ZodString;
+    keyHash: z.ZodString;
+    permissions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    isActive: z.ZodDefault<z.ZodBoolean>;
+    lastUsedAt: z.ZodOptional<z.ZodString>;
+    expiresAt: z.ZodOptional<z.ZodString>;
+    createdBy: z.ZodString;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    name: string;
+    id: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+    permissions: string[];
+    keyHash: string;
+    createdBy: string;
+    lastUsedAt?: string | undefined;
+    expiresAt?: string | undefined;
+}, {
+    name: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    keyHash: string;
+    createdBy: string;
+    isActive?: boolean | undefined;
+    permissions?: string[] | undefined;
+    lastUsedAt?: string | undefined;
+    expiresAt?: string | undefined;
+}>;
+export declare const auditLogSchema: z.ZodObject<{
+    id: z.ZodString;
+    userId: z.ZodOptional<z.ZodString>;
+    organizationId: z.ZodOptional<z.ZodString>;
+    action: z.ZodString;
+    resourceType: z.ZodString;
+    resourceId: z.ZodOptional<z.ZodString>;
+    details: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    ipAddress: z.ZodOptional<z.ZodString>;
+    userAgent: z.ZodOptional<z.ZodString>;
+    timestamp: z.ZodString;
+    createdAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    createdAt: string;
+    timestamp: string;
+    action: string;
+    resourceType: string;
+    userId?: string | undefined;
+    organizationId?: string | undefined;
+    details?: Record<string, unknown> | undefined;
+    userAgent?: string | undefined;
+    ipAddress?: string | undefined;
+    resourceId?: string | undefined;
+}, {
+    id: string;
+    createdAt: string;
+    timestamp: string;
+    action: string;
+    resourceType: string;
+    userId?: string | undefined;
+    organizationId?: string | undefined;
+    details?: Record<string, unknown> | undefined;
+    userAgent?: string | undefined;
+    ipAddress?: string | undefined;
+    resourceId?: string | undefined;
+}>;
+export declare const featureFlagSchema: z.ZodObject<{
+    id: z.ZodString;
+    name: z.ZodString;
+    description: z.ZodOptional<z.ZodString>;
+    isEnabled: z.ZodDefault<z.ZodBoolean>;
+    rolloutPercentage: z.ZodDefault<z.ZodNumber>;
+    targetUsers: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    targetOrganizations: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    conditions: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    createdBy: z.ZodString;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    name: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    createdBy: string;
+    isEnabled: boolean;
+    rolloutPercentage: number;
+    targetUsers: string[];
+    targetOrganizations: string[];
+    description?: string | undefined;
+    conditions?: Record<string, unknown> | undefined;
+}, {
+    name: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    createdBy: string;
+    description?: string | undefined;
+    isEnabled?: boolean | undefined;
+    rolloutPercentage?: number | undefined;
+    targetUsers?: string[] | undefined;
+    targetOrganizations?: string[] | undefined;
+    conditions?: Record<string, unknown> | undefined;
+}>;
+export declare const userFeatureFlagSchema: z.ZodObject<{
+    id: z.ZodString;
+    userId: z.ZodString;
+    featureFlagId: z.ZodString;
+    isEnabled: z.ZodBoolean;
+    reason: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: string;
+    isEnabled: boolean;
+    featureFlagId: string;
+    reason?: string | undefined;
+}, {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: string;
+    isEnabled: boolean;
+    featureFlagId: string;
+    reason?: string | undefined;
+}>;
+export declare const userConsentSchema: z.ZodObject<{
+    id: z.ZodString;
+    userId: z.ZodString;
+    consentType: z.ZodEnum<["privacy", "marketing", "analytics", "cookies", "terms"]>;
+    granted: z.ZodBoolean;
+    version: z.ZodString;
+    grantedAt: z.ZodOptional<z.ZodString>;
+    revokedAt: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: string;
+    version: string;
+    consentType: "privacy" | "marketing" | "analytics" | "cookies" | "terms";
+    granted: boolean;
+    grantedAt?: string | undefined;
+    revokedAt?: string | undefined;
+}, {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: string;
+    version: string;
+    consentType: "privacy" | "marketing" | "analytics" | "cookies" | "terms";
+    granted: boolean;
+    grantedAt?: string | undefined;
+    revokedAt?: string | undefined;
+}>;
+export declare const systemNotificationSchema: z.ZodObject<{
+    id: z.ZodString;
+    title: z.ZodString;
+    message: z.ZodString;
+    type: z.ZodEnum<["info", "warning", "error", "success"]>;
+    priority: z.ZodDefault<z.ZodEnum<["low", "medium", "high", "urgent"]>>;
+    targetUsers: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    targetOrganizations: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    isActive: z.ZodDefault<z.ZodBoolean>;
+    scheduledAt: z.ZodOptional<z.ZodString>;
+    expiresAt: z.ZodOptional<z.ZodString>;
+    createdBy: z.ZodString;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    type: "success" | "error" | "info" | "warning";
+    message: string;
+    id: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+    title: string;
+    createdBy: string;
+    targetUsers: string[];
+    targetOrganizations: string[];
+    priority: "medium" | "low" | "high" | "urgent";
+    scheduledAt?: string | undefined;
+    expiresAt?: string | undefined;
+}, {
+    type: "success" | "error" | "info" | "warning";
+    message: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    title: string;
+    createdBy: string;
+    isActive?: boolean | undefined;
+    scheduledAt?: string | undefined;
+    expiresAt?: string | undefined;
+    targetUsers?: string[] | undefined;
+    targetOrganizations?: string[] | undefined;
+    priority?: "medium" | "low" | "high" | "urgent" | undefined;
+}>;
+export declare const userNotificationStatusSchema: z.ZodObject<{
+    id: z.ZodString;
+    userId: z.ZodString;
+    notificationId: z.ZodString;
+    status: z.ZodDefault<z.ZodEnum<["unread", "read", "dismissed"]>>;
+    readAt: z.ZodOptional<z.ZodString>;
+    dismissedAt: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    status: "unread" | "read" | "dismissed";
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: string;
+    notificationId: string;
+    readAt?: string | undefined;
+    dismissedAt?: string | undefined;
+}, {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: string;
+    notificationId: string;
+    status?: "unread" | "read" | "dismissed" | undefined;
+    readAt?: string | undefined;
+    dismissedAt?: string | undefined;
+}>;
+export declare const newApiKeySchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    name: z.ZodString;
+    keyHash: z.ZodString;
+    permissions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    isActive: z.ZodDefault<z.ZodBoolean>;
+    lastUsedAt: z.ZodOptional<z.ZodString>;
+    expiresAt: z.ZodOptional<z.ZodString>;
+    createdBy: z.ZodString;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "id" | "createdAt" | "updatedAt">, "strip", z.ZodTypeAny, {
+    name: string;
+    isActive: boolean;
+    permissions: string[];
+    keyHash: string;
+    createdBy: string;
+    lastUsedAt?: string | undefined;
+    expiresAt?: string | undefined;
+}, {
+    name: string;
+    keyHash: string;
+    createdBy: string;
+    isActive?: boolean | undefined;
+    permissions?: string[] | undefined;
+    lastUsedAt?: string | undefined;
+    expiresAt?: string | undefined;
+}>;
+export declare const newAuditLogSchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    userId: z.ZodOptional<z.ZodString>;
+    organizationId: z.ZodOptional<z.ZodString>;
+    action: z.ZodString;
+    resourceType: z.ZodString;
+    resourceId: z.ZodOptional<z.ZodString>;
+    details: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    ipAddress: z.ZodOptional<z.ZodString>;
+    userAgent: z.ZodOptional<z.ZodString>;
+    timestamp: z.ZodString;
+    createdAt: z.ZodString;
+}, "id" | "createdAt">, "strip", z.ZodTypeAny, {
+    timestamp: string;
+    action: string;
+    resourceType: string;
+    userId?: string | undefined;
+    organizationId?: string | undefined;
+    details?: Record<string, unknown> | undefined;
+    userAgent?: string | undefined;
+    ipAddress?: string | undefined;
+    resourceId?: string | undefined;
+}, {
+    timestamp: string;
+    action: string;
+    resourceType: string;
+    userId?: string | undefined;
+    organizationId?: string | undefined;
+    details?: Record<string, unknown> | undefined;
+    userAgent?: string | undefined;
+    ipAddress?: string | undefined;
+    resourceId?: string | undefined;
+}>;
+export declare const newFeatureFlagSchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    name: z.ZodString;
+    description: z.ZodOptional<z.ZodString>;
+    isEnabled: z.ZodDefault<z.ZodBoolean>;
+    rolloutPercentage: z.ZodDefault<z.ZodNumber>;
+    targetUsers: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    targetOrganizations: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    conditions: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    createdBy: z.ZodString;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "id" | "createdAt" | "updatedAt">, "strip", z.ZodTypeAny, {
+    name: string;
+    createdBy: string;
+    isEnabled: boolean;
+    rolloutPercentage: number;
+    targetUsers: string[];
+    targetOrganizations: string[];
+    description?: string | undefined;
+    conditions?: Record<string, unknown> | undefined;
+}, {
+    name: string;
+    createdBy: string;
+    description?: string | undefined;
+    isEnabled?: boolean | undefined;
+    rolloutPercentage?: number | undefined;
+    targetUsers?: string[] | undefined;
+    targetOrganizations?: string[] | undefined;
+    conditions?: Record<string, unknown> | undefined;
+}>;
+export declare const newSystemNotificationSchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    title: z.ZodString;
+    message: z.ZodString;
+    type: z.ZodEnum<["info", "warning", "error", "success"]>;
+    priority: z.ZodDefault<z.ZodEnum<["low", "medium", "high", "urgent"]>>;
+    targetUsers: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    targetOrganizations: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    isActive: z.ZodDefault<z.ZodBoolean>;
+    scheduledAt: z.ZodOptional<z.ZodString>;
+    expiresAt: z.ZodOptional<z.ZodString>;
+    createdBy: z.ZodString;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "id" | "createdAt" | "updatedAt">, "strip", z.ZodTypeAny, {
+    type: "success" | "error" | "info" | "warning";
+    message: string;
+    isActive: boolean;
+    title: string;
+    createdBy: string;
+    targetUsers: string[];
+    targetOrganizations: string[];
+    priority: "medium" | "low" | "high" | "urgent";
+    scheduledAt?: string | undefined;
+    expiresAt?: string | undefined;
+}, {
+    type: "success" | "error" | "info" | "warning";
+    message: string;
+    title: string;
+    createdBy: string;
+    isActive?: boolean | undefined;
+    scheduledAt?: string | undefined;
+    expiresAt?: string | undefined;
+    targetUsers?: string[] | undefined;
+    targetOrganizations?: string[] | undefined;
+    priority?: "medium" | "low" | "high" | "urgent" | undefined;
+}>;
+export declare const newUserConsentSchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    userId: z.ZodString;
+    consentType: z.ZodEnum<["privacy", "marketing", "analytics", "cookies", "terms"]>;
+    granted: z.ZodBoolean;
+    version: z.ZodString;
+    grantedAt: z.ZodOptional<z.ZodString>;
+    revokedAt: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "id" | "createdAt" | "updatedAt">, "strip", z.ZodTypeAny, {
+    userId: string;
+    version: string;
+    consentType: "privacy" | "marketing" | "analytics" | "cookies" | "terms";
+    granted: boolean;
+    grantedAt?: string | undefined;
+    revokedAt?: string | undefined;
+}, {
+    userId: string;
+    version: string;
+    consentType: "privacy" | "marketing" | "analytics" | "cookies" | "terms";
+    granted: boolean;
+    grantedAt?: string | undefined;
+    revokedAt?: string | undefined;
+}>;
+export declare const newUserFeatureFlagSchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    userId: z.ZodString;
+    featureFlagId: z.ZodString;
+    isEnabled: z.ZodBoolean;
+    reason: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "id" | "createdAt" | "updatedAt">, "strip", z.ZodTypeAny, {
+    userId: string;
+    isEnabled: boolean;
+    featureFlagId: string;
+    reason?: string | undefined;
+}, {
+    userId: string;
+    isEnabled: boolean;
+    featureFlagId: string;
+    reason?: string | undefined;
+}>;
+export declare const newUserNotificationStatusSchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    userId: z.ZodString;
+    notificationId: z.ZodString;
+    status: z.ZodDefault<z.ZodEnum<["unread", "read", "dismissed"]>>;
+    readAt: z.ZodOptional<z.ZodString>;
+    dismissedAt: z.ZodOptional<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "id" | "createdAt" | "updatedAt">, "strip", z.ZodTypeAny, {
+    status: "unread" | "read" | "dismissed";
+    userId: string;
+    notificationId: string;
+    readAt?: string | undefined;
+    dismissedAt?: string | undefined;
+}, {
+    userId: string;
+    notificationId: string;
+    status?: "unread" | "read" | "dismissed" | undefined;
+    readAt?: string | undefined;
+    dismissedAt?: string | undefined;
+}>;
+export type ApiKey = ApiKeyEntity;
+export type AuditLog = AuditLogEntity;
+export type FeatureFlag = FeatureFlagEntity;
+export type UserFeatureFlag = UserFeatureFlagEntity;
+export type UserConsent = UserConsentEntity;
+export type SystemNotification = SystemNotificationEntity;
+export type UserNotificationStatus = UserNotificationStatusEntity;
+export type NewApiKey = CreateApiKey;
+export type NewAuditLog = CreateAuditLog;
+export type NewFeatureFlag = CreateFeatureFlag;
+export type NewUserFeatureFlag = CreateUserFeatureFlag;
+export type NewUserConsent = CreateUserConsent;
+export type NewSystemNotification = CreateSystemNotification;
+export type NewUserNotificationStatus = CreateUserNotificationStatus;
+//# sourceMappingURL=system.schema.d.ts.map

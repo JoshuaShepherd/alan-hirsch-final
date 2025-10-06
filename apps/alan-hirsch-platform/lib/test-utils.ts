@@ -316,7 +316,11 @@ export const testDataFactories = {
     isRequired: true,
     weight: 1.0,
     reverseScored: false,
-    answerOptions: ['Option 1', 'Option 2', 'Option 3'],
+    answerOptions: [
+      { value: 1, label: 'Option 1' },
+      { value: 2, label: 'Option 2' },
+      { value: 3, label: 'Option 3' },
+    ],
     ...overrides,
   }),
 
@@ -331,7 +335,11 @@ export const testDataFactories = {
     isRequired: true,
     weight: 1.0,
     reverseScored: false,
-    answerOptions: ['Option 1', 'Option 2', 'Option 3'],
+    answerOptions: [
+      { value: 1, label: 'Option 1' },
+      { value: 2, label: 'Option 2' },
+      { value: 3, label: 'Option 3' },
+    ],
     createdAt: '2024-01-01T00:00:00Z',
     updatedAt: '2024-01-01T00:00:00Z',
     ...overrides,
@@ -426,7 +434,12 @@ export const testDataFactories = {
     startedAt: '2024-01-01T00:00:00Z',
     // completionPercentage: 0, // Removed - not part of CreateUserAssessment schema
     culturalAdjustmentApplied: false,
-    personalizedRecommendations: [],
+    personalizedRecommendations: {
+      strengths: ['Strong communication skills'],
+      growthAreas: ['Leadership development'],
+      actionItems: ['Join leadership training program'],
+      contentRecommendations: ['Leadership articles'],
+    },
     suggestedPeers: [],
     complementaryGifts: [],
     ...overrides,
@@ -443,7 +456,12 @@ export const testDataFactories = {
     completionPercentage: 0,
     totalScore: undefined,
     culturalAdjustmentApplied: false,
-    personalizedRecommendations: [],
+    personalizedRecommendations: {
+      strengths: ['Strong communication skills'],
+      growthAreas: ['Leadership development'],
+      actionItems: ['Join leadership training program'],
+      contentRecommendations: ['Leadership articles'],
+    },
     suggestedPeers: [],
     complementaryGifts: [],
     createdAt: '2024-01-01T00:00:00Z',

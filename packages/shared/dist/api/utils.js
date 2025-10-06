@@ -1,13 +1,12 @@
+import { createSupabaseServerClient, db } from '@platform/database';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { db } from '@/lib/db/drizzle';
-import { createClient } from '@/lib/supabase/server';
 // Create type-safe API route with input/output validation
 export function createApiRoute(inputSchema, outputSchema, handler) {
     return async (request) => {
         try {
             // Get authenticated user
-            const supabase = await createClient();
+            const supabase = await createSupabaseServerClient();
             const { data: { user }, error: authError, } = await supabase.auth.getUser();
             if (authError || !user) {
                 return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -52,7 +51,7 @@ export function createApiRouteInputOnly(inputSchema, handler) {
     return async (request) => {
         try {
             // Get authenticated user
-            const supabase = await createClient();
+            const supabase = await createSupabaseServerClient();
             const { data: { user }, error: authError, } = await supabase.auth.getUser();
             if (authError || !user) {
                 return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -98,7 +97,7 @@ export function createPaginatedApiRoute(inputSchema, outputSchema, handler) {
     return async (request) => {
         try {
             // Get authenticated user
-            const supabase = await createClient();
+            const supabase = await createSupabaseServerClient();
             const { data: { user }, error: authError, } = await supabase.auth.getUser();
             if (authError || !user) {
                 return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

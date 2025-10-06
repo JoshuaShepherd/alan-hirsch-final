@@ -10,9 +10,21 @@
     "noEmit": false,
     "module": "ESNext",
     "moduleResolution": "node",
-    "isolatedModules": false,
-    "skipLibCheck": true
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "target": "ESNext",
+    "lib": ["esnext"]
   },
   "include": ["src/**/*"],
-  "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.test.tsx"]
+  "exclude": [
+    "dist",
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "../contracts/src/**/*",
+    "../shared/src/**/*",
+    "../ui/src/**/*"
+  ]
 }

@@ -1,5 +1,5 @@
-import type { NewContentCategory, NewContentItem, NewContentSeries } from '@/lib/contracts';
 import { contentCategories, contentItems, contentSeries, userProfiles } from '../schema';
+import type { NewContentCategory, NewContentItem, NewContentSeries } from '../schema/content';
 export interface QueryContext {
     organizationId?: string;
     userId?: string;

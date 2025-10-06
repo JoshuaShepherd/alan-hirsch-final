@@ -64,6 +64,8 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@platform/contracts": "workspace:*",
+    "@platform/database": "workspace:*",
     "zod": "^3.25.76"
   },
   "devDependencies": {

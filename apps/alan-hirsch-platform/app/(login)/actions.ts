@@ -1,6 +1,12 @@
 'use server';
 
 import {
+  ministryRoleSchema,
+  type NewOrganization,
+  type NewOrganizationMembership,
+  type UserProfileEntity,
+} from '@platform/contracts';
+import {
   createSupabaseServerClient,
   db,
   getUserByEmail,
@@ -12,12 +18,6 @@ import {
   validatedAction,
   validatedActionWithUser,
 } from '@platform/shared/auth/middleware';
-import {
-  ministryRoleSchema,
-  type NewOrganization,
-  type NewOrganizationMembership,
-  type NewUserProfile,
-} from '@platform/shared/contracts';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
@@ -78,7 +78,7 @@ const signUpSchema = z.object({
 
 export const signIn = validatedAction(signInSchema, async (data, _formData) => {
   // Development logging - remove in production
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env['NODE_ENV'] === 'development') {
     console.log('🔐 SignIn Action Started:', {
       email: data.email,
       hasPassword: !!data.password,
@@ -92,12 +92,12 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
 
   try {
     const supabase = await createSupabaseServerClient();
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 Supabase Client Created');
     }
 
     // Sign in with Supabase Auth
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 Attempting Supabase Auth SignIn');
     }
     const { data: authData, error: authError } =
@@ -106,7 +106,7 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
         password,
       });
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 Supabase Auth Response:', {
         hasUser: !!authData?.user,
         userId: authData?.user?.id,
@@ -118,7 +118,7 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
     }
 
     if (authError || !authData.user) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env['NODE_ENV'] === 'development') {
         console.error('🔐 Supabase Auth Failed:', {
           error: authError,
           hasUser: !!authData?.user,
@@ -132,12 +132,16 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
     }
 
     // Find user profile
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 Looking up user profile by email:', email);
     }
-    const foundUser = await getUserByEmail(email);
+    const foundUser = await getUserByEmail(email, {
+      userId: '',
+      organizationId: '',
+      role: 'viewer',
+    });
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 User Profile Lookup Result:', {
         foundUser: !!foundUser,
         userId: foundUser?.id,
@@ -147,7 +151,7 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
     }
 
     if (!foundUser) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env['NODE_ENV'] === 'development') {
         console.error('🔐 User Profile Not Found:', { email });
       }
       return {
@@ -158,7 +162,7 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
     }
 
     // Check if user account is active
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 Checking account status:', {
         status: foundUser.accountStatus,
         isActive: foundUser.accountStatus === 'active',
@@ -166,7 +170,7 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
     }
 
     if (foundUser.accountStatus !== 'active') {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env['NODE_ENV'] === 'development') {
         console.error('🔐 Account Not Active:', {
           status: foundUser.accountStatus,
           email,
@@ -180,7 +184,7 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
     }
 
     // Update last active timestamp
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 Updating last active timestamp');
     }
     await db
@@ -188,13 +192,13 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
       .set({ lastActiveAt: new Date() })
       .where(eq(userProfiles.id, foundUser.id));
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 SignIn Successful - Redirecting to dashboard');
     }
 
     redirect('/dashboard/');
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.error('🔐 SignIn Action Error:', {
         error: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined,
@@ -211,7 +215,7 @@ export const signIn = validatedAction(signInSchema, async (data, _formData) => {
 });
 
 export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env['NODE_ENV'] === 'development') {
     console.log('🔐 SignUp Action Started:', {
       email: data.email,
       firstName: data.firstName,
@@ -236,17 +240,21 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
 
   try {
     const supabase = await createSupabaseServerClient();
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 Supabase Client Created for SignUp');
     }
 
     // Check if user already exists
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 Checking if user already exists:', email);
     }
-    const existingUser = await getUserByEmail(email);
+    const existingUser = await getUserByEmail(email, {
+      userId: '',
+      organizationId: '',
+      role: 'viewer',
+    });
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 Existing User Check Result:', {
         exists: !!existingUser,
         userId: existingUser?.id,
@@ -255,7 +263,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
     }
 
     if (existingUser) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env['NODE_ENV'] === 'development') {
         console.log('🔐 User Already Exists:', { email });
       }
       return {
@@ -269,7 +277,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
     }
 
     // Sign up with Supabase Auth
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 Creating Supabase Auth user');
     }
     const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -277,7 +285,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
       password,
     });
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 Supabase SignUp Response:', {
         hasUser: !!authData?.user,
         userId: authData?.user?.id,
@@ -289,7 +297,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
     }
 
     if (authError || !authData.user) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env['NODE_ENV'] === 'development') {
         console.error('🔐 Supabase SignUp Failed:', {
           error: authError,
           hasUser: !!authData?.user,
@@ -305,10 +313,10 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
     }
 
     // Create user profile
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 Creating user profile');
     }
-    const newUserProfile: NewUserProfile = {
+    const newUserProfile: UserProfileEntity = {
       id: authData.user.id!, // Use Supabase Auth user ID (non-null assertion since we just created the user)
       email,
       firstName,
@@ -341,7 +349,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
       },
     };
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 User Profile Data:', {
         id: newUserProfile.id,
         email: newUserProfile.email,
@@ -356,7 +364,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
       .values(newUserProfile as any)
       .returning();
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 User Profile Creation Result:', {
         success: !!createdUser,
         userId: createdUser?.id,
@@ -365,7 +373,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
     }
 
     if (!createdUser) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env['NODE_ENV'] === 'development') {
         console.error('🔐 Failed to create user profile');
       }
       return {
@@ -379,7 +387,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
 
     if (organizationId) {
       // User is joining an existing organization
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env['NODE_ENV'] === 'development') {
         console.log('🔐 User joining existing organization:', organizationId);
       }
       const [existingOrg] = await db
@@ -388,7 +396,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
         .where(eq(organizations.id, organizationId))
         .limit(1);
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env['NODE_ENV'] === 'development') {
         console.log('🔐 Existing Organization Lookup:', {
           found: !!existingOrg,
           orgId: existingOrg?.id,
@@ -398,7 +406,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
 
       if (existingOrg) {
         // Create organization membership
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env['NODE_ENV'] === 'development') {
           console.log('🔐 Creating organization membership for existing org');
         }
         const newMembership: NewOrganizationMembership = {
@@ -407,17 +415,16 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
           role: 'member',
           status: 'active',
           permissions: [],
-          joinedAt: new Date(),
         };
 
         await db.insert(organizationMemberships).values(newMembership);
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env['NODE_ENV'] === 'development') {
           console.log('🔐 Organization membership created');
         }
       }
     } else if (organizationName) {
       // Create a new organization for the user
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env['NODE_ENV'] === 'development') {
         console.log('🔐 Creating new organization:', organizationName);
       }
       const newOrg: NewOrganization = {
@@ -430,7 +437,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
         maxUsers: 1,
       };
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env['NODE_ENV'] === 'development') {
         console.log('🔐 New Organization Data:', {
           name: newOrg.name,
           slug: newOrg.slug,
@@ -444,7 +451,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
         .values(newOrg)
         .returning();
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env['NODE_ENV'] === 'development') {
         console.log('🔐 Organization Creation Result:', {
           success: !!createdOrg,
           orgId: createdOrg?.id,
@@ -454,7 +461,7 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
 
       if (createdOrg) {
         // Create organization membership as owner
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env['NODE_ENV'] === 'development') {
           console.log('🔐 Creating organization membership as owner');
         }
         const newMembership: NewOrganizationMembership = {
@@ -467,23 +474,23 @@ export const signUp = validatedAction(signUpSchema, async (data, _formData) => {
         };
 
         await db.insert(organizationMemberships).values(newMembership);
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env['NODE_ENV'] === 'development') {
           console.log('🔐 Organization membership created as owner');
         }
       }
     } else {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env['NODE_ENV'] === 'development') {
         console.log('🔐 No organization specified - user will be standalone');
       }
     }
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log('🔐 SignUp Successful - Redirecting to dashboard');
     }
 
     redirect('/dashboard/');
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.error('🔐 SignUp Action Error:', {
         error: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined,

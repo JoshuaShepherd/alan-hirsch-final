@@ -1,5 +1,7 @@
 'use client';
 
+import { EntityListProps } from '@/lib/types/component-props';
+import { cn } from '@platform/shared/utils';
 import { Button } from '@platform/ui/button';
 import { Input } from '@platform/ui/input';
 import {
@@ -9,11 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@platform/ui/select';
-import { EntityListProps } from '@/lib/types/component-props';
-import { cn } from '@platform/shared/utils';
 import { Filter, Grid, List, RefreshCw, Search, Table } from 'lucide-react';
 import React from 'react';
-import { ErrorBoundary } from './error-boundary';
 import { LoadingSkeleton } from './loading-skeleton';
 
 export function EntityList<T extends Record<string, any>>({
@@ -37,21 +36,16 @@ export function EntityList<T extends Record<string, any>>({
   // Error state
   if (error) {
     return (
-      <ErrorBoundary
-        error={error}
-        fallback={
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="text-destructive mb-4">
-              <h3 className="text-lg font-semibold">Error loading items</h3>
-              <p className="text-sm text-muted-foreground">{error.message}</p>
-            </div>
-            <Button variant="outline" onClick={() => window.location.reload()}>
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Try Again
-            </Button>
-          </div>
-        }
-      />
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="text-destructive mb-4">
+          <h3 className="text-lg font-semibold">Error loading items</h3>
+          <p className="text-sm text-muted-foreground">{error.message}</p>
+        </div>
+        <Button variant="outline" onClick={() => window.location.reload()}>
+          <RefreshCw className="mr-2 h-4 w-4" />
+          Try Again
+        </Button>
+      </div>
     );
   }
 
@@ -75,7 +69,7 @@ export function EntityList<T extends Record<string, any>>({
 
   return (
     <div className={cn('space-y-4', className)}>
-      {items.map((item, index) => (
+      {items.map((item: T, index: number) => (
         <div key={index}>{renderItem(item, index)}</div>
       ))}
     </div>
@@ -282,7 +276,7 @@ export function EntityGrid<T extends Record<string, any>>({
         className
       )}
     >
-      {items.map((item, index) => (
+      {items.map((item: T, index: number) => (
         <div key={index}>{renderItem(item, index)}</div>
       ))}
     </div>
@@ -321,7 +315,7 @@ export function EntityTable<T extends Record<string, any>>({
           </tr>
         </thead>
         <tbody className="divide-y">
-          {items.map((item, index) => (
+          {items.map((item: T, index: number) => (
             <tr key={index} className="hover:bg-muted/50">
               {columns.map(column => (
                 <td key={String(column.key)} className="px-4 py-3">

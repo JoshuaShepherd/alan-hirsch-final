@@ -1,6 +1,6 @@
-import { pgTable, uuid, text, timestamp, integer, jsonb, boolean, decimal, } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
-import { userProfiles, organizations } from './auth';
+import { boolean, decimal, integer, jsonb, pgTable, text, timestamp, uuid, } from 'drizzle-orm/pg-core';
+import { organizations, userProfiles } from './auth';
 // Subscription Plans - Tiered access plans with feature matrices
 export const subscriptionPlans = pgTable('subscription_plans', {
     id: uuid('id').primaryKey().defaultRandom(),
@@ -9,7 +9,14 @@ export const subscriptionPlans = pgTable('subscription_plans', {
     description: text('description'),
     // Plan Classification
     planType: text('plan_type', {
-        enum: ['free', 'individual', 'professional', 'leader', 'institutional', 'enterprise']
+        enum: [
+            'free',
+            'individual',
+            'professional',
+            'leader',
+            'institutional',
+            'enterprise',
+        ],
     }).notNull(),
     // Pricing
     priceMonthly: decimal('price_monthly', { precision: 8, scale: 2 }),
@@ -17,10 +24,12 @@ export const subscriptionPlans = pgTable('subscription_plans', {
     currency: text('currency').default('USD'),
     // Access Levels
     contentAccessLevel: text('content_access_level', {
-        enum: ['free', 'premium', 'vip', 'leader', 'all']
+        enum: ['free', 'premium', 'vip', 'leader', 'all'],
     }).notNull(),
     // Feature Matrix
-    features: jsonb('features').$type().notNull(),
+    features: jsonb('features')
+        .$type()
+        .notNull(),
     // Limits & Quotas
     maxUsers: integer('max_users').default(1), // For organizational plans
     storageLimit: integer('storage_limit'), // GB
@@ -42,20 +51,24 @@ export const subscriptionPlans = pgTable('subscription_plans', {
 // User Subscriptions - Active subscriptions with network leader attribution
 export const userSubscriptions = pgTable('user_subscriptions', {
     id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').notNull().references(() => userProfiles.id, { onDelete: 'cascade' }),
-    planId: uuid('plan_id').notNull().references(() => subscriptionPlans.id),
+    userId: uuid('user_id')
+        .notNull()
+        .references(() => userProfiles.id, { onDelete: 'cascade' }),
+    planId: uuid('plan_id')
+        .notNull()
+        .references(() => subscriptionPlans.id),
     // Network Attribution (for revenue sharing)
     leaderProfileId: uuid('leader_profile_id').references(() => userProfiles.id),
     organizationId: uuid('organization_id').references(() => organizations.id),
     // Subscription Details
     status: text('status', {
-        enum: ['active', 'cancelled', 'past_due', 'unpaid', 'trialing', 'paused']
+        enum: ['active', 'cancelled', 'past_due', 'unpaid', 'trialing', 'paused'],
     }).notNull(),
     // Pricing & Billing
     amount: decimal('amount', { precision: 8, scale: 2 }).notNull(),
     currency: text('currency').default('USD'),
     billingCycle: text('billing_cycle', {
-        enum: ['monthly', 'annual']
+        enum: ['monthly', 'annual'],
     }).notNull(),
     // Usage Tracking
     aiInteractionsUsed: integer('ai_interactions_used').default(0),
@@ -66,6 +79,7 @@ export const userSubscriptions = pgTable('user_subscriptions', {
     currentPeriodStart: timestamp('current_period_start').notNull(),
     currentPeriodEnd: timestamp('current_period_end').notNull(),
     cancelledAt: timestamp('cancelled_at'),
+    cancellationReason: text('cancellation_reason'),
     cancelAtPeriodEnd: boolean('cancel_at_period_end').default(false),
     // Stripe Integration
     stripeSubscriptionId: text('stripe_subscription_id').unique(),
@@ -80,11 +94,19 @@ export const userSubscriptions = pgTable('user_subscriptions', {
 // Transactions - Complete financial history with revenue attribution
 export const transactions = pgTable('transactions', {
     id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').notNull().references(() => userProfiles.id),
+    userId: uuid('user_id')
+        .notNull()
+        .references(() => userProfiles.id),
     subscriptionId: uuid('subscription_id').references(() => userSubscriptions.id),
     // Transaction Classification
     transactionType: text('transaction_type', {
-        enum: ['subscription', 'one_time_purchase', 'refund', 'chargeback', 'credit']
+        enum: [
+            'subscription',
+            'one_time_purchase',
+            'refund',
+            'chargeback',
+            'credit',
+        ],
     }).notNull(),
     // Financial Details
     grossAmount: decimal('gross_amount', { precision: 10, scale: 2 }).notNull(),
@@ -96,13 +118,21 @@ export const transactions = pgTable('transactions', {
     organizationId: uuid('organization_id').references(() => organizations.id),
     // Network Effects
     attributedToNetworkEffect: boolean('attributed_to_network_effect').default(false),
-    networkAmplificationFactor: decimal('network_amplification_factor', { precision: 3, scale: 2 }).default('1.0'),
+    networkAmplificationFactor: decimal('network_amplification_factor', {
+        precision: 3,
+        scale: 2,
+    }).default('1.0'),
     // Payment Processing
+    status: text('status', {
+        enum: ['pending', 'succeeded', 'failed', 'cancelled', 'refunded'],
+    })
+        .notNull()
+        .default('pending'),
     paymentStatus: text('payment_status', {
-        enum: ['pending', 'succeeded', 'failed', 'cancelled', 'refunded']
+        enum: ['pending', 'succeeded', 'failed', 'cancelled', 'refunded'],
     }).notNull(),
     paymentMethod: text('payment_method', {
-        enum: ['card', 'bank_transfer', 'paypal', 'other']
+        enum: ['card', 'bank_transfer', 'paypal', 'other'],
     }),
     // Stripe Integration
     stripePaymentIntentId: text('stripe_payment_intent_id'),
@@ -113,14 +143,17 @@ export const transactions = pgTable('transactions', {
     // Timestamps
     processedAt: timestamp('processed_at').notNull().defaultNow(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 // Payment Methods - Stored payment methods for users
 export const paymentMethods = pgTable('payment_methods', {
     id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').notNull().references(() => userProfiles.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+        .notNull()
+        .references(() => userProfiles.id, { onDelete: 'cascade' }),
     // Payment Method Details
     type: text('type', {
-        enum: ['card', 'bank_account', 'paypal']
+        enum: ['card', 'bank_account', 'paypal'],
     }).notNull(),
     // Card Details (masked)
     last4: text('last4'),
@@ -144,9 +177,12 @@ export const coupons = pgTable('coupons', {
     description: text('description'),
     // Discount Configuration
     discountType: text('discount_type', {
-        enum: ['percentage', 'fixed_amount']
+        enum: ['percentage', 'fixed_amount'],
     }).notNull(),
-    discountValue: decimal('discount_value', { precision: 8, scale: 2 }).notNull(),
+    discountValue: decimal('discount_value', {
+        precision: 8,
+        scale: 2,
+    }).notNull(),
     currency: text('currency').default('USD'),
     // Usage Limits
     maxUses: integer('max_uses'),

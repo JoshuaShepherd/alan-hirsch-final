@@ -14,12 +14,17 @@ export * from './user';
 
 // Re-export commonly used types
 export type {
+  AssessmentCardProps,
   BaseComponentProps,
   ColumnDef,
+  ContentItemCardProps,
   DataTableProps,
   EmptyStateProps,
   EntityCardProps,
-  EntityDisplayProps,
   EntityListProps,
-  LoadingStateProps,
+  LoadingState,
+  PaginationInfo,
+  PaginationProps,
+  TableColumn,
+  UserCardProps,
 } from '@/lib/types/component-props';

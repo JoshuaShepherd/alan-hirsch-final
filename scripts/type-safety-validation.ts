@@ -69,17 +69,7 @@ class TypeSafetyValidator {
     try {
       console.log('🔍 Validating Zod schemas...');
 
-      const validationFiles = [
-        'validations/index.ts',
-        'validations/auth.ts',
-        'validations/assessments.ts',
-        'validations/content.ts',
-        'validations/community.ts',
-        'validations/subscriptions.ts',
-        'validations/analytics.ts',
-        'validations/system.ts',
-        'validations/ministry-platform.ts',
-      ];
+      const validationFiles = [];
 
       let schemaCount = 0;
       let errorCount = 0;

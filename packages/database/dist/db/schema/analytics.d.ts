@@ -223,6 +223,40 @@ export declare const userAnalyticsEvents: import("drizzle-orm/pg-core").PgTableW
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
+        organizationId: import("drizzle-orm/pg-core").PgColumn<{
+            name: "organization_id";
+            tableName: "user_analytics_events";
+            dataType: "string";
+            columnType: "PgUUID";
+            data: string;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        communityId: import("drizzle-orm/pg-core").PgColumn<{
+            name: "community_id";
+            tableName: "user_analytics_events";
+            dataType: "string";
+            columnType: "PgUUID";
+            data: string;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
         sessionId: import("drizzle-orm/pg-core").PgColumn<{
             name: "session_id";
             tableName: "user_analytics_events";
@@ -664,6 +698,23 @@ export declare const userContentInteractions: import("drizzle-orm/pg-core").PgTa
             data: string;
             driverParam: string;
             notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        communityId: import("drizzle-orm/pg-core").PgColumn<{
+            name: "community_id";
+            tableName: "user_content_interactions";
+            dataType: "string";
+            columnType: "PgUUID";
+            data: string;
+            driverParam: string;
+            notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
             isAutoincrement: false;

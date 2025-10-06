@@ -1,14 +1,13 @@
 import {
-  createPaginatedRouteHandler,
+  ContentItemWithAuthorApiResponseSchema,
+  CreateContentItemApiRequestSchema,
+} from '@platform/contracts';
+import { z } from 'zod';
+import {
   createQuerySchema,
   createRouteHandler,
-} from '@platform/shared/api/route-handler';
-import {
-  createMinistryContentRequestSchema,
-  ministryContentItemResponseSchema,
-} from '@platform/shared/contracts';
-import { contentService } from '@platform/shared/services';
-import { z } from 'zod';
+} from '../../../../../lib/api/route-handlers';
+import { contentService } from '../../../../../lib/services';
 
 // ============================================================================
 // MINISTRY CONTENT API ROUTES
@@ -43,41 +42,37 @@ const ministryContentQuerySchema = createQuerySchema({
 });
 
 // GET /api/ministry/content - List ministry content with enhanced filtering
-export const GET = createPaginatedRouteHandler({
+export const GET = createRouteHandler({
   inputSchema: ministryContentQuerySchema,
-  outputSchema: ministryContentItemResponseSchema,
+  outputSchema: ContentItemWithAuthorApiResponseSchema.array(),
   method: 'GET',
   handler: async (query, context) => {
-    // Add ministry-specific filtering and context
-    const ministryQuery = {
-      ...query,
-      ministryContext: {
-        userMinistryRole: context.user.ministryRole,
-        organizationId: context.user.organizationId,
-        culturalContext: context.user.culturalContext,
-      },
-    };
+    const result = await contentService.findMany(query, context);
 
-    return await contentService.searchMinistryContent(ministryQuery, context);
+    if (!result.success || !result.data) {
+      throw new Error(
+        result.error?.message || 'Failed to fetch ministry content'
+      );
+    }
+
+    return result.data;
   },
 });
 
 // POST /api/ministry/content - Create new ministry content
 export const POST = createRouteHandler({
-  inputSchema: createMinistryContentRequestSchema,
-  outputSchema: ministryContentItemResponseSchema,
+  inputSchema: CreateContentItemApiRequestSchema,
+  outputSchema: ContentItemWithAuthorApiResponseSchema,
   method: 'POST',
   handler: async (data, context) => {
-    // Add ministry context to creation data
-    const ministryData = {
-      ...data,
-      ministryContext: {
-        createdBy: context.user.id,
-        organizationId: context.user.organizationId,
-        userMinistryRole: context.user.ministryRole,
-      },
-    };
+    const result = await contentService.create(data, context);
 
-    return await contentService.createMinistryContent(ministryData, context);
+    if (!result.success || !result.data) {
+      throw new Error(
+        result.error?.message || 'Failed to create ministry content'
+      );
+    }
+
+    return result.data;
   },
 });

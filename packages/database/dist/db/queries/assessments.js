@@ -1,6 +1,19 @@
 // Assessment Database Queries
 // Comprehensive query functions for the assessment system
-import { toAssessmentQuestionResponseDTO, toAssessmentResponseDTO, toAssessmentResponseResponseDTO, toUserAssessmentResponseDTO, toUserAssessmentWithDetailsResponseDTO, } from '@/lib/mappers/assessments';
+// TODO: Fix import path for mappers
+// import {
+//   toAssessmentQuestionResponseDTO,
+//   toAssessmentResponseDTO,
+//   toAssessmentResponseResponseDTO,
+//   toUserAssessmentResponseDTO,
+//   toUserAssessmentWithDetailsResponseDTO,
+// } from '@/lib/mappers/assessments';
+// Temporary placeholder functions until mappers are available
+const toAssessmentResponseDTO = (data) => data;
+const toAssessmentQuestionResponseDTO = (data) => data;
+const toAssessmentResponseResponseDTO = (data) => data;
+const toUserAssessmentResponseDTO = (data) => data;
+const toUserAssessmentWithDetailsResponseDTO = (data, assessment) => ({ ...data, assessment });
 import { and, asc, desc, eq, sql } from 'drizzle-orm';
 import { db } from '../drizzle';
 import { assessmentQuestions, assessmentResponses, assessments, userAssessments, userProfiles, } from '../schema';

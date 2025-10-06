@@ -1,14 +1,15 @@
 'use client';
 
+import {
+  UserCardProps,
+  userCardPropsSchema,
+  validateComponentProps,
+} from '@/lib/types/component-props';
+import { cn } from '@platform/shared/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@platform/ui/avatar';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '@platform/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@platform/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,12 +17,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@platform/ui/dropdown-menu';
-import {
-  UserCardProps,
-  userCardPropsSchema,
-  validateComponentProps,
-} from '@/lib/types/component-props';
-import { cn } from '@platform/shared/utils';
 import {
   Award,
   Calendar,
@@ -347,7 +342,7 @@ export function UserCard({
         )}
 
         {/* Stats */}
-        {showStats && variant !== 'minimal' && (
+        {showStats && (variant === 'default' || variant === 'detailed') && (
           <div className="grid grid-cols-3 gap-2 mt-3">
             <div className="text-center">
               <div className="text-sm font-medium">

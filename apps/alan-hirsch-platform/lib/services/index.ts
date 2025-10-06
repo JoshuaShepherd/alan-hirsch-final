@@ -108,6 +108,13 @@ export type {
   UpdateTheologicalConceptOutput,
 } from './ai.service';
 
+// Analytics Services
+export * from './analytics.service';
+export type {
+  MinistryAnalyticsInput,
+  MinistryAnalyticsOutput,
+} from './analytics.service';
+
 // ============================================================================
 // SERVICE FACTORY
 // ============================================================================
@@ -119,6 +126,7 @@ import {
   AiMessageService,
   TheologicalConceptService,
 } from './ai.service';
+import { AnalyticsService } from './analytics.service';
 import {
   AssessmentQuestionService,
   AssessmentResponseService,
@@ -215,6 +223,13 @@ export class ServiceFactory {
   static createTheologicalConceptService(): TheologicalConceptService {
     return new TheologicalConceptService();
   }
+
+  /**
+   * Analytics Services
+   */
+  static createAnalyticsService(): AnalyticsService {
+    return new AnalyticsService();
+  }
 }
 
 // ============================================================================
@@ -250,7 +265,32 @@ export const services = {
   aiContentJob: new AiContentJobService(),
   aiCrossReferenceSuggestion: new AiCrossReferenceSuggestionService(),
   theologicalConcept: new TheologicalConceptService(),
+
+  // Analytics Services
+  analytics: new AnalyticsService(),
 };
+
+// ============================================================================
+// INDIVIDUAL SERVICE EXPORTS
+// ============================================================================
+
+// Export service instances for direct import
+export const userService = new UserService();
+export const contentService = new ContentItemService();
+export const assessmentService = new AssessmentService();
+export const organizationService = new OrganizationService();
+export const aiService = new AiConversationService();
+export const analyticsService = new AnalyticsService();
+
+// Import additional services from shared package
+import {
+  CommunityService as SharedCommunityService,
+  uploadService as sharedUploadService,
+} from '@platform/shared/services';
+
+// Export additional service instances for API routes
+export const communityService = new SharedCommunityService();
+export const uploadService = sharedUploadService;
 
 // ============================================================================
 // SERVICE UTILITIES

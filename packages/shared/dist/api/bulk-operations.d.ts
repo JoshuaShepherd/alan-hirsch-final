@@ -100,12 +100,12 @@ export declare function createBulkOperationResponseSchema<T>(itemSchema: z.ZodSc
         failed: z.ZodNumber;
     }, "strip", z.ZodTypeAny, {
         total: number;
-        successful: number;
         failed: number;
+        successful: number;
     }, {
         total: number;
-        successful: number;
         failed: number;
+        successful: number;
     }>;
 }, "strip", z.ZodTypeAny, {
     results: (z.objectUtil.addQuestionMarks<z.baseObjectOutputType<{
@@ -121,8 +121,8 @@ export declare function createBulkOperationResponseSchema<T>(itemSchema: z.ZodSc
     }>, any>[k]; } : never)[];
     summary: {
         total: number;
-        successful: number;
         failed: number;
+        successful: number;
     };
 }, {
     results: (z.baseObjectInputType<{
@@ -138,8 +138,8 @@ export declare function createBulkOperationResponseSchema<T>(itemSchema: z.ZodSc
     }>[k_1]; } : never)[];
     summary: {
         total: number;
-        successful: number;
         failed: number;
+        successful: number;
     };
 }>;
 /**
@@ -169,34 +169,33 @@ export declare const createFileUploadSchema: (config: FileUploadConfig) => z.Zod
         size: z.ZodNumber;
         data: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        name: string;
-        data: string;
         type: string;
+        data: string;
+        name: string;
         size: number;
     }, {
-        name: string;
-        data: string;
         type: string;
+        data: string;
+        name: string;
         size: number;
     }>, "many">;
     metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
 }, "strip", z.ZodTypeAny, {
     files: {
-        name: string;
-        data: string;
         type: string;
+        data: string;
+        name: string;
         size: number;
     }[];
     metadata?: Record<string, unknown> | undefined;
 }, {
     files: {
-        name: string;
-        data: string;
         type: string;
+        data: string;
+        name: string;
         size: number;
     }[];
     metadata?: Record<string, unknown> | undefined;
 }>;
 export declare const defaultFileUploadConfig: FileUploadConfig;
-export type { BulkOperation, BulkOperationResponse, BulkOperationResult, FileUploadConfig, };
 //# sourceMappingURL=bulk-operations.d.ts.map

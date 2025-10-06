@@ -1,8 +1,8 @@
 'use client';
 
+import { cn } from '@platform/shared/utils';
 import { Button } from '@platform/ui/button';
 import { Card, CardContent } from '@platform/ui/card';
-import { cn } from '@platform/shared/utils';
 import {
   BookOpen,
   Building,
@@ -113,7 +113,7 @@ export function EmptyState({
       return icon;
     }
 
-    const IconComponent = icon || defaultIcon;
+    const IconComponent = (icon as LucideIcon) || defaultIcon;
     return (
       <IconComponent className={cn(config.icon, 'text-muted-foreground')} />
     );

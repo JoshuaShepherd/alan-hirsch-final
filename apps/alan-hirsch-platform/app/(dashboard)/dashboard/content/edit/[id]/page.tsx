@@ -3,9 +3,8 @@
 import { PublishingWorkflow } from '@/components/content/publishing-workflow';
 import { useContentById, useContentCategories } from '@/hooks/useContent';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { updateContentItemRequestSchema } from '@platform/contracts';
 import { createSupabaseClient } from '@platform/database';
-import type { UpdateContentItemRequest } from '@platform/shared/contracts/content.request';
-import { updateContentItemRequestSchema } from '@platform/shared/contracts/content.request';
 import { Badge } from '@platform/ui/badge';
 import { Button } from '@platform/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@platform/ui/card';

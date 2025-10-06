@@ -299,7 +299,16 @@ export abstract class BaseService<
   protected abstract executeFindMany(
     query: TQueryInput,
     context: ServiceContext
-  ): Promise<{ data: unknown[]; pagination: unknown }>;
+  ): Promise<{
+    data: unknown[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasMore: boolean;
+    };
+  }>;
 
   /**
    * Execute update operation in query module

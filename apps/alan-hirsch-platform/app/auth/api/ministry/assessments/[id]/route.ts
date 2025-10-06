@@ -1,10 +1,10 @@
-import { createRouteHandler } from '@platform/shared/api/route-handler';
 import {
-  ministryAssessmentResponseSchema,
-  updateMinistryAssessmentRequestSchema,
-} from '@platform/shared/contracts';
-import { assessmentService } from '@platform/shared/services';
+  AssessmentApiResponseSchema,
+  UpdateAssessmentApiRequestSchema,
+} from '@platform/contracts';
 import { z } from 'zod';
+import { createRouteHandler } from '../../../../../../lib/api/route-handlers';
+import { assessmentService } from '../../../../../../lib/services';
 
 // ============================================================================
 // MINISTRY ASSESSMENT BY ID API ROUTES
@@ -13,66 +13,79 @@ import { z } from 'zod';
 // GET /api/ministry/assessments/[id] - Get ministry assessment by ID
 export const GET = createRouteHandler({
   inputSchema: z.object({}),
-  outputSchema: ministryAssessmentResponseSchema,
+  outputSchema: AssessmentApiResponseSchema,
   method: 'GET',
-  handler: async (_, context) => {
-    const id = context.params?.id;
-    if (!id) {
+  handler: async (_, context, routeParams) => {
+    const assessmentId = routeParams?.params?.['id'];
+    if (!assessmentId || typeof assessmentId !== 'string') {
       throw new Error('Assessment ID is required');
     }
 
-    const assessment = await assessmentService.getMinistryAssessmentById(
-      id,
+    const result = await assessmentService.getMinistryAssessmentById(
+      assessmentId,
       context
     );
-    if (!assessment) {
-      throw new Error('Ministry assessment not found');
+
+    if (!result.success || !result.data) {
+      throw new Error(result.error?.message || 'Ministry assessment not found');
     }
 
-    return assessment;
+    return result.data;
   },
 });
 
 // PUT /api/ministry/assessments/[id] - Update ministry assessment
 export const PUT = createRouteHandler({
-  inputSchema: updateMinistryAssessmentRequestSchema,
-  outputSchema: ministryAssessmentResponseSchema,
+  inputSchema: UpdateAssessmentApiRequestSchema,
+  outputSchema: AssessmentApiResponseSchema,
   method: 'PUT',
-  handler: async (data, context) => {
-    const id = context.params?.id;
-    if (!id) {
+  handler: async (data, context, routeParams) => {
+    const assessmentId = routeParams?.params?.['id'];
+    if (!assessmentId || typeof assessmentId !== 'string') {
       throw new Error('Assessment ID is required');
     }
 
-    // Add ministry context to update data
-    const ministryData = {
-      ...data,
-      ministryContext: {
-        updatedBy: context.user.id,
-        organizationId: context.user.organizationId,
-        userMinistryRole: context.user.ministryRole,
-      },
-    };
-
-    return await assessmentService.updateMinistryAssessment(
-      id,
-      ministryData,
+    const result = await assessmentService.updateMinistryAssessment(
+      assessmentId,
+      data,
       context
     );
+
+    if (!result.success || !result.data) {
+      throw new Error(
+        result.error?.message || 'Failed to update ministry assessment'
+      );
+    }
+
+    return result.data;
   },
 });
 
 // DELETE /api/ministry/assessments/[id] - Delete ministry assessment
 export const DELETE = createRouteHandler({
   inputSchema: z.object({}),
+  outputSchema: z.object({
+    success: z.boolean(),
+    message: z.string(),
+  }),
   method: 'DELETE',
-  handler: async (_, context) => {
-    const id = context.params?.id;
-    if (!id) {
+  handler: async (_, context, routeParams) => {
+    const assessmentId = routeParams?.params?.['id'];
+    if (!assessmentId || typeof assessmentId !== 'string') {
       throw new Error('Assessment ID is required');
     }
 
-    await assessmentService.deleteMinistryAssessment(id, context);
+    const result = await assessmentService.deleteMinistryAssessment(
+      assessmentId,
+      context
+    );
+
+    if (!result.success) {
+      throw new Error(
+        result.error?.message || 'Failed to delete ministry assessment'
+      );
+    }
+
     return {
       success: true,
       message: 'Ministry assessment deleted successfully',

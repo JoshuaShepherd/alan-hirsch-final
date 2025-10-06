@@ -14,40 +14,27 @@ export const newUserProfileSchema = z.object({
   displayName: z.string().optional(),
   bio: z.string().optional(),
   avatarUrl: z.string().url().optional(),
-  ministryRole: z.enum([
-    'senior_pastor',
-    'associate_pastor',
-    'church_planter',
-    'denominational_leader',
-    'seminary_professor',
-    'seminary_student',
-    'ministry_staff',
-    'missionary',
-    'marketplace_minister',
-    'nonprofit_leader',
-    'consultant',
-    'academic_researcher',
-    'emerging_leader',
-    'other',
-  ]),
+  ministryRole: z.string(),
   denomination: z.string().optional(),
   organizationName: z.string().optional(),
   yearsInMinistry: z.number().int().positive().optional(),
   countryCode: z.string().length(2).optional(),
   timezone: z.string().optional(),
   languagePrimary: z.string().default('en'),
-  culturalContext: z
-    .enum([
-      'western',
-      'eastern',
-      'african',
-      'latin_american',
-      'middle_eastern',
-      'oceanic',
-      'mixed',
-      'global',
-    ])
-    .optional(),
+  culturalContext: z.string().optional(),
+  // APEST assessment scores
+  assessmentMovementAlignment: z.number().int().min(0).max(100).optional(),
+  assessmentAudienceEngagement: z.number().int().min(0).max(100).optional(),
+  assessmentContentReadiness: z.number().int().min(0).max(100).optional(),
+  assessmentRevenuePotential: z.number().int().min(0).max(100).optional(),
+  assessmentNetworkEffects: z.number().int().min(0).max(100).optional(),
+  assessmentStrategicFit: z.number().int().min(0).max(100).optional(),
+  assessmentTotal: z.number().int().min(0).max(500).optional(),
+  // Leadership & platform
+  leaderTier: z.enum(['core', 'network', 'emerging', 'community']).optional(),
+  subdomain: z.string().optional(),
+  customDomain: z.string().optional(),
+  platformTitle: z.string().optional(),
   subscriptionTier: z
     .enum(['free', 'individual', 'professional', 'leader', 'institutional'])
     .default('free'),
@@ -281,15 +268,7 @@ export const newOrganizationSchema = z.object({
   description: z.string().optional(),
   website: z.string().url().optional(),
   logoUrl: z.string().url().optional(),
-  organizationType: z.enum([
-    'other',
-    'denomination',
-    'church',
-    'seminary',
-    'ministry_network',
-    'nonprofit',
-    'business',
-  ]),
+  organizationType: z.string(),
   sizeCategory: z
     .enum(['small', 'startup', 'medium', 'large', 'enterprise'])
     .optional(),
@@ -502,6 +481,17 @@ export const newCommunitySchema = z.object({
   ]),
   visibility: z.enum(['public', 'private', 'unlisted']).default('public'),
   isActive: z.boolean().default(true),
+  // Additional community fields
+  maxMembers: z.number().int().positive().optional(),
+  guidelines: z.string().optional(),
+  geographicFocus: z.array(z.string()).default([]),
+  culturalContext: z.string().default('global'),
+  languagePrimary: z.string().default('en'),
+  languagesSupported: z.array(z.string()).default(['en']),
+  joinApprovalRequired: z.boolean().default(false),
+  allowGuestPosts: z.boolean().default(false),
+  moderationLevel: z.enum(['none', 'moderated', 'strict']).default('moderated'),
+  rules: z.array(z.string()).default([]),
 });
 
 export const updateCommunitySchema = newCommunitySchema
@@ -521,6 +511,81 @@ export const queryCommunitySchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
+// Community Membership Schemas
+export const newCommunityMembershipSchema = z.object({
+  communityId: z.string().uuid(),
+  userId: z.string().uuid(),
+  role: z.enum(['owner', 'admin', 'moderator', 'member']).default('member'),
+  status: z
+    .enum(['pending', 'active', 'inactive', 'banned'])
+    .default('pending'),
+  joinedAt: z.string().datetime().optional(),
+  invitedAt: z.string().datetime().optional(),
+  invitedBy: z.string().uuid().optional(),
+});
+
+export const updateCommunityMembershipSchema = newCommunityMembershipSchema
+  .partial()
+  .omit({ communityId: true, userId: true });
+
+export const queryCommunityMembershipSchema = z.object({
+  communityId: z.string().uuid().optional(),
+  userId: z.string().uuid().optional(),
+  role: z.string().optional(),
+  status: z.string().optional(),
+  sortBy: z.enum(['joinedAt', 'role', 'status']).default('joinedAt'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
+});
+
+// Community Post Schemas
+export const newCommunityPostSchema = z.object({
+  communityId: z.string().uuid(),
+  authorId: z.string().uuid(),
+  title: z.string().min(1),
+  content: z.string().min(1),
+  postType: z
+    .enum(['discussion', 'announcement', 'question', 'resource'])
+    .default('discussion'),
+  tags: z.array(z.string()).default([]),
+  isPinned: z.boolean().default(false),
+  isLocked: z.boolean().default(false),
+  visibility: z
+    .enum(['public', 'members_only', 'moderators_only'])
+    .default('public'),
+});
+
+export const updateCommunityPostSchema = newCommunityPostSchema
+  .partial()
+  .omit({ communityId: true, authorId: true });
+
+export const queryCommunityPostSchema = z.object({
+  communityId: z.string().uuid().optional(),
+  authorId: z.string().uuid().optional(),
+  postType: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  isPinned: z.boolean().optional(),
+  isLocked: z.boolean().optional(),
+  visibility: z.string().optional(),
+  sortBy: z
+    .enum(['createdAt', 'updatedAt', 'title', 'likeCount', 'commentCount'])
+    .default('createdAt'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
+});
+
 export type NewCommunity = z.infer<typeof newCommunitySchema>;
 export type UpdateCommunity = z.infer<typeof updateCommunitySchema>;
 export type QueryCommunity = z.infer<typeof queryCommunitySchema>;
+
+export type NewCommunityMembership = z.infer<
+  typeof newCommunityMembershipSchema
+>;
+export type UpdateCommunityMembership = z.infer<
+  typeof updateCommunityMembershipSchema
+>;
+export type QueryCommunityMembership = z.infer<
+  typeof queryCommunityMembershipSchema
+>;
+
+export type NewCommunityPost = z.infer<typeof newCommunityPostSchema>;
+export type UpdateCommunityPost = z.infer<typeof updateCommunityPostSchema>;
+export type QueryCommunityPost = z.infer<typeof queryCommunityPostSchema>;

@@ -1,8 +1,8 @@
 'use client';
 
+import { cn } from '@platform/shared/utils';
 import { Alert, AlertDescription, AlertTitle } from '@platform/ui/alert';
 import { Button } from '@platform/ui/button';
-import { cn } from '@platform/shared/utils';
 import { AlertTriangle, Bug, Home, RefreshCw } from 'lucide-react';
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
@@ -30,12 +30,12 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.setState({ error, errorInfo });
     this.props.onError?.(error, errorInfo);
 
     // Log error to console in development
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.error('ErrorBoundary caught an error:', error, errorInfo);
     }
   }
@@ -80,7 +80,7 @@ export class ErrorBoundary extends Component<Props, State> {
       });
   };
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       // Use custom fallback if provided
       if (this.props.fallback) {
@@ -119,7 +119,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </Button>
           </div>
 
-          {process.env.NODE_ENV === 'development' && this.state.error && (
+          {process.env['NODE_ENV'] === 'development' && this.state.error && (
             <details className="mt-6 max-w-2xl w-full">
               <summary className="cursor-pointer text-sm font-medium text-muted-foreground hover:text-foreground">
                 Error Details (Development)

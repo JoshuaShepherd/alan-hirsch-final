@@ -1,154 +1,39 @@
 import { z } from 'zod';
 // ============================================================================
-// CONTENT ENUMS AND TYPES
+// CONTENT CATEGORY ENTITY SCHEMA
 // ============================================================================
-export const contentTypeSchema = z.enum([
-    'article',
-    'video',
-    'audio',
-    'podcast',
-    'book',
-    'course',
-    'webinar',
-    'other',
-]);
-export const contentFormatSchema = z.enum(['text', 'html', 'markdown']);
-export const contentStatusSchema = z.enum([
-    'draft',
-    'published',
-    'archived',
-    'scheduled',
-    'under_review',
-]);
-export const visibilitySchema = z.enum([
-    'public',
-    'private',
-    'organization',
-    'invite_only',
-]);
-export const licenseTypeSchema = z.enum([
-    'all_rights_reserved',
-    'creative_commons',
-    'public_domain',
-    'custom',
-]);
-export const theologicalDisciplineSchema = z.enum([
-    'systematic',
-    'biblical',
-    'practical',
-    'historical',
-    'philosophical',
-    'missional',
-    'pastoral',
-]);
-export const seriesTypeSchema = z.enum([
-    'course',
-    'learning_path',
-    'book_series',
-    'podcast_series',
-    'video_series',
-    'framework',
-]);
-export const difficultySchema = z.enum([
-    'beginner',
-    'intermediate',
-    'advanced',
-    'expert',
-]);
-export const attachmentSchema = z.object({
-    name: z.string(),
-    url: z.string().url(),
-    type: z.string(),
-    size: z.number().int().min(0),
-});
-// ============================================================================
-// CONTENT ENTITY SCHEMAS - SINGLE SOURCE OF TRUTH
-// ============================================================================
-/**
- * Complete Content Item Entity Schema
- * This is the single source of truth for all content item data structures
- */
-export const ContentItemEntitySchema = z.object({
+// Aligned with content_categories table from database schema
+export const contentCategoryEntitySchema = z.object({
     // Core Identity
     id: z.string().uuid(),
-    title: z.string().min(1).max(500),
-    slug: z.string().regex(/^[a-z0-9-]+$/),
-    excerpt: z.string().max(2000).optional(),
-    content: z.string().min(1),
-    // Content Classification
-    content_type: contentTypeSchema,
-    format: contentFormatSchema.default('text'),
-    // Metrics
-    word_count: z.number().int().min(0).optional(),
-    estimated_reading_time: z.number().int().min(0).optional(), // minutes
-    view_count: z.number().int().min(0).default(0),
-    like_count: z.number().int().min(0).default(0),
-    share_count: z.number().int().min(0).default(0),
-    comment_count: z.number().int().min(0).default(0),
-    bookmark_count: z.number().int().min(0).default(0),
-    // Categorization
-    primary_category_id: z.string().uuid().optional(),
-    secondary_categories: z.array(z.string().uuid()).default([]),
-    tags: z.array(z.string()).default([]),
-    theological_themes: z.array(z.string()).default([]),
-    // Series Information
-    series_id: z.string().uuid().optional(),
-    series_order: z.number().int().min(1).optional(),
-    // Visibility & Status
-    visibility: visibilitySchema.default('public'),
-    status: contentStatusSchema.default('draft'),
-    // Network & Engagement
-    network_amplification_score: z.number().min(0).max(100).default(0),
-    cross_reference_count: z.number().int().min(0).default(0),
-    // AI Enhancement
-    ai_enhanced: z.boolean().default(false),
-    ai_summary: z.string().max(1000).optional(),
-    ai_key_points: z.array(z.string()).default([]),
-    // Media
-    featured_image_url: z.string().url().optional(),
-    video_url: z.string().url().optional(),
-    audio_url: z.string().url().optional(),
-    attachments: z.array(attachmentSchema).default([]),
-    // SEO & Metadata
-    meta_title: z.string().max(255).optional(),
-    meta_description: z.string().max(500).optional(),
-    canonical_url: z.string().url().optional(),
-    original_source: z.string().max(500).optional(),
-    // Publishing
-    published_at: z.string().datetime().optional(),
-    scheduled_at: z.string().datetime().optional(),
-    // Licensing
-    license_type: licenseTypeSchema.default('all_rights_reserved'),
-    attribution_required: z.boolean().default(true),
-    // Timestamps
-    created_at: z.string().datetime(),
-    updated_at: z.string().datetime(),
-});
-/**
- * Complete Content Category Entity Schema
- * This is the single source of truth for all content category data structures
- */
-export const ContentCategoryEntitySchema = z.object({
-    // Core Identity
-    id: z.string().uuid(),
-    name: z.string().min(1).max(255),
-    slug: z.string().regex(/^[a-z0-9-]+$/),
-    description: z.string().max(2000).optional(),
+    name: z.string().min(1).max(200),
+    slug: z.string().min(1).max(100),
+    description: z.string().max(1000).optional(),
     // Hierarchy
-    parent_id: z.string().uuid().optional(),
-    order_index: z.number().int().min(0).default(0),
+    parentId: z.string().uuid().optional(),
+    orderIndex: z.number().int().min(0).default(0),
     // Theological Classification
-    theological_discipline: theologicalDisciplineSchema.optional(),
+    theologicalDiscipline: z
+        .enum([
+        'systematic',
+        'biblical',
+        'practical',
+        'historical',
+        'philosophical',
+        'missional',
+        'pastoral',
+    ])
+        .optional(),
     // Movement Relevance (1-10 scale)
-    movement_relevance_score: z.number().int().min(1).max(10).default(5),
+    movementRelevanceScore: z.number().int().min(1).max(10).default(5),
     // APEST Relevance Scoring
-    apest_relevance: z
+    apestRelevance: z
         .object({
-        apostolic: z.number().min(1).max(10),
-        prophetic: z.number().min(1).max(10),
-        evangelistic: z.number().min(1).max(10),
-        shepherding: z.number().min(1).max(10),
-        teaching: z.number().min(1).max(10),
+        apostolic: z.number().int().min(1).max(10).default(5),
+        prophetic: z.number().int().min(1).max(10).default(5),
+        evangelistic: z.number().int().min(1).max(10).default(5),
+        shepherding: z.number().int().min(1).max(10).default(5),
+        teaching: z.number().int().min(1).max(10).default(5),
     })
         .default({
         apostolic: 5,
@@ -158,218 +43,545 @@ export const ContentCategoryEntitySchema = z.object({
         teaching: 5,
     }),
     // SEO & Discovery
-    meta_description: z.string().max(500).optional(),
+    metaDescription: z.string().max(500).optional(),
     keywords: z.array(z.string()).default([]),
     // Status
-    is_active: z.boolean().default(true),
+    isActive: z.boolean().default(true),
     // Timestamps
-    created_at: z.string().datetime(),
-    updated_at: z.string().datetime(),
+    createdAt: z.string().datetime(),
+    updatedAt: z.string().datetime(),
 });
-/**
- * Complete Content Series Entity Schema
- * This is the single source of truth for all content series data structures
- */
-export const ContentSeriesEntitySchema = z.object({
+// ============================================================================
+// CONTENT ITEM ENTITY SCHEMA
+// ============================================================================
+// Based on content_items table from database documentation
+export const contentItemEntitySchema = z.object({
     // Core Identity
     id: z.string().uuid(),
-    title: z.string().min(1).max(255),
-    slug: z.string().regex(/^[a-z0-9-]+$/),
-    description: z.string().max(2000).optional(),
-    excerpt: z.string().max(1000).optional(),
-    // Series Classification
-    series_type: seriesTypeSchema,
-    difficulty: difficultySchema.optional(),
-    // Content Information
-    total_items: z.number().int().min(0).default(0),
-    estimated_duration: z.number().int().min(0).optional(), // minutes
-    completion_rate: z.number().min(0).max(100).default(0),
-    // Categorization
-    primary_category_id: z.string().uuid().optional(),
-    tags: z.array(z.string()).default([]),
-    theological_themes: z.array(z.string()).default([]),
-    // Visibility & Status
-    visibility: visibilitySchema.default('public'),
-    status: contentStatusSchema.default('draft'),
-    // Media
-    featured_image_url: z.string().url().optional(),
-    thumbnail_url: z.string().url().optional(),
-    // SEO & Metadata
-    meta_title: z.string().max(255).optional(),
-    meta_description: z.string().max(500).optional(),
-    // Publishing
-    published_at: z.string().datetime().optional(),
-    scheduled_at: z.string().datetime().optional(),
-    // Timestamps
-    created_at: z.string().datetime(),
-    updated_at: z.string().datetime(),
-});
-/**
- * Complete Content Cross Reference Entity Schema
- * This is the single source of truth for all content cross reference data structures
- */
-export const ContentCrossReferenceEntitySchema = z.object({
-    // Core Identity
-    id: z.string().uuid(),
-    source_content_id: z.string().uuid(),
-    target_content_id: z.string().uuid(),
-    // Reference Details
-    reference_type: z.enum([
-        'citation',
-        'quotation',
-        'expansion',
-        'contradiction',
-        'support',
+    title: z.string().min(1).max(300),
+    slug: z.string().min(1).max(200),
+    excerpt: z.string().max(500).optional(),
+    content: z.string().optional(),
+    // Author Information
+    authorId: z.string().uuid(),
+    coAuthors: z.array(z.string()).default([]),
+    // Content Classification
+    contentType: z.enum([
+        'article',
+        'video',
+        'podcast',
+        'framework',
+        'tool',
+        'case_study',
+        'interview',
+        'course_lesson',
     ]),
-    relevance_score: z.number().min(0).max(100).default(50),
-    context: z.string().max(1000).optional(),
-    // AI Generated
-    ai_generated: z.boolean().default(false),
-    confidence_score: z.number().min(0).max(1).optional(),
+    format: z
+        .enum(['text', 'video', 'audio', 'interactive', 'pdf', 'presentation'])
+        .default('text'),
+    // Content Metrics
+    wordCount: z.number().int().min(0).optional(),
+    estimatedReadingTime: z.number().int().min(0).optional(),
+    // Engagement Metrics
+    viewCount: z.number().int().min(0).default(0),
+    likeCount: z.number().int().min(0).default(0),
+    shareCount: z.number().int().min(0).default(0),
+    commentCount: z.number().int().min(0).default(0),
+    bookmarkCount: z.number().int().min(0).default(0),
+    // Categorization
+    primaryCategoryId: z.string().uuid().optional(),
+    secondaryCategories: z.array(z.string()).default([]),
+    tags: z.array(z.string()).default([]),
+    theologicalThemes: z.array(z.string()).default([]),
+    // Series Information
+    seriesId: z.string().uuid().optional(),
+    seriesOrder: z.number().int().min(0).optional(),
+    // Visibility & Status
+    visibility: z
+        .enum([
+        'public',
+        'premium',
+        'vip',
+        'private',
+        'organization',
+        'invite_only',
+    ])
+        .default('public'),
+    status: z
+        .enum(['draft', 'published', 'archived', 'under_review', 'scheduled'])
+        .default('draft'),
+    // AI Enhancement
+    networkAmplificationScore: z.number().min(0).max(10).default(0),
+    crossReferenceCount: z.number().int().min(0).default(0),
+    aiEnhanced: z.boolean().default(false),
+    aiSummary: z.string().optional(),
+    aiKeyPoints: z.array(z.string()).default([]),
+    // Media & Attachments
+    featuredImageUrl: z.string().url().optional(),
+    videoUrl: z.string().url().optional(),
+    audioUrl: z.string().url().optional(),
+    attachments: z
+        .array(z.object({
+        name: z.string(),
+        url: z.string().url(),
+        type: z.string(),
+        size: z.number().int().min(0),
+    }))
+        .default([]),
+    // SEO & Metadata
+    metaTitle: z.string().max(100).optional(),
+    metaDescription: z.string().max(200).optional(),
+    canonicalUrl: z.string().url().optional(),
+    originalSource: z.string().max(500).optional(),
+    // Publication & Scheduling
+    publishedAt: z.string().datetime().optional(),
+    scheduledAt: z.string().datetime().optional(),
+    // Licensing
+    licenseType: z
+        .enum([
+        'all_rights_reserved',
+        'creative_commons',
+        'public_domain',
+        'fair_use',
+    ])
+        .default('all_rights_reserved'),
+    attributionRequired: z.boolean().default(true),
     // Timestamps
-    created_at: z.string().datetime(),
-    updated_at: z.string().datetime(),
+    createdAt: z.string().datetime(),
+    updatedAt: z.string().datetime(),
 });
 // ============================================================================
-// DERIVED SCHEMAS - NO DUPLICATION
+// CONTENT SERIES ENTITY SCHEMA
 // ============================================================================
-/**
- * Create Content Item Schema - Derived from Entity
- * Omits auto-generated fields
- */
-export const CreateContentItemSchema = ContentItemEntitySchema.omit({
-    id: true,
-    created_at: true,
-    updated_at: true,
+export const contentSeriesEntitySchema = z.object({
+    // Core Identity
+    id: z.string().uuid(),
+    title: z.string().min(1).max(300),
+    slug: z.string().min(1).max(200),
+    description: z.string().max(1000).optional(),
+    // Series Details
+    authorId: z.string().uuid(),
+    collaborators: z.array(z.string()).default([]), // User IDs
+    primaryCategoryId: z.string().uuid().optional(),
+    // Series Configuration
+    seriesType: z.enum([
+        'course',
+        'learning_path',
+        'book_series',
+        'podcast_series',
+        'video_series',
+        'framework',
+    ]),
+    difficulty: z
+        .enum(['beginner', 'intermediate', 'advanced', 'expert'])
+        .default('intermediate'),
+    totalItems: z.number().int().min(0).default(0),
+    estimatedDuration: z.number().int().min(0).optional(), // in minutes
+    // Categorization
+    tags: z.array(z.string()).default([]),
+    // Visibility & Status
+    visibility: z
+        .enum([
+        'public',
+        'premium',
+        'vip',
+        'private',
+        'organization',
+        'invite_only',
+    ])
+        .default('public'),
+    status: z
+        .enum(['draft', 'published', 'archived', 'under_review'])
+        .default('draft'),
+    // SEO & Media
+    featuredImageUrl: z.string().url().optional(),
+    metaDescription: z.string().max(500).optional(),
+    // Publication
+    publishedAt: z.string().datetime().optional(),
+    // Timestamps
+    createdAt: z.string().datetime(),
+    updatedAt: z.string().datetime(),
 });
-/**
- * Update Content Item Schema - Derived from Create Schema
- * Makes all fields optional for partial updates
- */
-export const UpdateContentItemSchema = CreateContentItemSchema.partial();
-/**
- * Content Item Query Schema - For filtering and searching
- * Extends entity with optional filters
- */
-export const ContentItemQuerySchema = ContentItemEntitySchema.partial().extend({
-    // Search fields
-    search: z.string().optional(),
-    // Filter fields
-    content_type: z.array(contentTypeSchema).optional(),
-    status: z.array(contentStatusSchema).optional(),
-    visibility: z.array(visibilitySchema).optional(),
-    primary_category_id: z.array(z.string().uuid()).optional(),
-    tags: z.array(z.string()).optional(),
-    theological_themes: z.array(z.string()).optional(),
-    series_id: z.array(z.string().uuid()).optional(),
-    ai_enhanced: z.boolean().optional(),
-    // Date range filters
-    created_after: z.string().datetime().optional(),
-    created_before: z.string().datetime().optional(),
-    published_after: z.string().datetime().optional(),
-    published_before: z.string().datetime().optional(),
-    // Engagement filters
-    view_count_min: z.number().int().min(0).optional(),
-    view_count_max: z.number().int().min(0).optional(),
-    like_count_min: z.number().int().min(0).optional(),
-    like_count_max: z.number().int().min(0).optional(),
+// ============================================================================
+// CONTENT CROSS REFERENCE ENTITY SCHEMA
+// ============================================================================
+export const contentCrossReferenceEntitySchema = z.object({
+    // Core Identity
+    id: z.string().uuid(),
+    sourceContentId: z.string().uuid(),
+    targetContentId: z.string().uuid(),
+    // Reference Classification
+    referenceType: z.enum([
+        'builds_on',
+        'contradicts',
+        'supports',
+        'extends',
+        'applies',
+        'critiques',
+        'synthesizes',
+    ]),
+    relevanceScore: z.number().int().min(0).max(10).default(5),
+    qualityScore: z.number().int().min(0).max(10).default(5),
+    contextDescription: z.string().max(500).optional(),
+    isAuthorApproved: z.boolean().default(false),
+    isAiGenerated: z.boolean().default(false),
+    clickCount: z.number().int().min(0).default(0),
+    // Timestamps
+    createdAt: z.string().datetime(),
+    updatedAt: z.string().datetime(),
 });
-/**
- * Create Content Category Schema - Derived from Entity
- * Omits auto-generated fields
- */
-export const CreateContentCategorySchema = ContentCategoryEntitySchema.omit({
-    id: true,
-    created_at: true,
-    updated_at: true,
-});
-/**
- * Update Content Category Schema - Derived from Create Schema
- * Makes all fields optional for partial updates
- */
-export const UpdateContentCategorySchema = CreateContentCategorySchema.partial();
-/**
- * Content Category Query Schema - For filtering and searching
- * Extends entity with optional filters
- */
-export const ContentCategoryQuerySchema = ContentCategoryEntitySchema.partial().extend({
-    // Search fields
-    search: z.string().optional(),
-    // Filter fields
-    parent_id: z.array(z.string().uuid()).optional(),
-    theological_discipline: z.array(theologicalDisciplineSchema).optional(),
-    is_active: z.boolean().optional(),
-    // Date range filters
-    created_after: z.string().datetime().optional(),
-    created_before: z.string().datetime().optional(),
-});
-/**
- * Create Content Series Schema - Derived from Entity
- * Omits auto-generated fields
- */
-export const CreateContentSeriesSchema = ContentSeriesEntitySchema.omit({
-    id: true,
-    created_at: true,
-    updated_at: true,
-});
-/**
- * Update Content Series Schema - Derived from Create Schema
- * Makes all fields optional for partial updates
- */
-export const UpdateContentSeriesSchema = CreateContentSeriesSchema.partial();
-/**
- * Content Series Query Schema - For filtering and searching
- * Extends entity with optional filters
- */
-export const ContentSeriesQuerySchema = ContentSeriesEntitySchema.partial().extend({
-    // Search fields
-    search: z.string().optional(),
-    // Filter fields
-    series_type: z.array(seriesTypeSchema).optional(),
-    difficulty: z.array(difficultySchema).optional(),
-    status: z.array(contentStatusSchema).optional(),
-    visibility: z.array(visibilitySchema).optional(),
-    primary_category_id: z.array(z.string().uuid()).optional(),
-    // Date range filters
-    created_after: z.string().datetime().optional(),
-    created_before: z.string().datetime().optional(),
-    published_after: z.string().datetime().optional(),
-    published_before: z.string().datetime().optional(),
-});
-/**
- * Create Content Cross Reference Schema - Derived from Entity
- * Omits auto-generated fields
- */
-export const CreateContentCrossReferenceSchema = ContentCrossReferenceEntitySchema.omit({
-    id: true,
-    created_at: true,
-    updated_at: true,
-});
-/**
- * Update Content Cross Reference Schema - Derived from Create Schema
- * Makes all fields optional for partial updates
- */
-export const UpdateContentCrossReferenceSchema = CreateContentCrossReferenceSchema.partial();
-/**
- * Content Cross Reference Query Schema - For filtering and searching
- * Extends entity with optional filters
- */
-export const ContentCrossReferenceQuerySchema = ContentCrossReferenceEntitySchema.partial().extend({
-    // Filter fields
-    source_content_id: z.array(z.string().uuid()).optional(),
-    target_content_id: z.array(z.string().uuid()).optional(),
-    reference_type: z
-        .array(z.enum([
-        'citation',
-        'quotation',
-        'expansion',
-        'contradiction',
-        'support',
-    ]))
+// ============================================================================
+// CONTENT RESPONSE SCHEMAS (with computed fields)
+// ============================================================================
+export const contentCategoryResponseSchema = contentCategoryEntitySchema.extend({
+    // Computed fields
+    isActive: z.boolean(),
+    hasParent: z.boolean(),
+    hasChildren: z.boolean(),
+    childCount: z.number().int().min(0),
+    contentCount: z.number().int().min(0),
+    displayName: z.string(),
+    breadcrumb: z.array(z.object({
+        id: z.string().uuid(),
+        name: z.string(),
+        slug: z.string(),
+    })),
+    // Related data
+    parent: z
+        .object({
+        id: z.string().uuid(),
+        name: z.string(),
+        slug: z.string(),
+    })
         .optional(),
-    ai_generated: z.boolean().optional(),
-    // Date range filters
-    created_after: z.string().datetime().optional(),
-    created_before: z.string().datetime().optional(),
+    children: z
+        .array(z.object({
+        id: z.string().uuid(),
+        name: z.string(),
+        slug: z.string(),
+        contentCount: z.number().int().min(0),
+    }))
+        .optional(),
 });
+export const contentItemResponseSchema = contentItemEntitySchema.extend({
+    // Computed fields
+    isPublished: z.boolean(),
+    isDraft: z.boolean(),
+    isScheduled: z.boolean(),
+    isArchived: z.boolean(),
+    hasFeaturedImage: z.boolean(),
+    hasVideo: z.boolean(),
+    hasAudio: z.boolean(),
+    hasAttachments: z.boolean(),
+    isAiEnhanced: z.boolean(),
+    readingTimeText: z.string(),
+    viewCountText: z.string(),
+    engagementScore: z.number().min(0).max(10),
+    // Related data
+    author: z.object({
+        id: z.string().uuid(),
+        firstName: z.string(),
+        lastName: z.string(),
+        displayName: z.string().optional(),
+        avatarUrl: z.string().url().optional(),
+    }),
+    primaryCategory: z
+        .object({
+        id: z.string().uuid(),
+        name: z.string(),
+        slug: z.string(),
+    })
+        .optional(),
+    series: z
+        .object({
+        id: z.string().uuid(),
+        title: z.string(),
+        slug: z.string(),
+        totalEpisodes: z.number().int().min(0),
+    })
+        .optional(),
+    coAuthors: z.array(z.object({
+        id: z.string().uuid(),
+        firstName: z.string(),
+        lastName: z.string(),
+        displayName: z.string().optional(),
+    })),
+});
+export const contentSeriesResponseSchema = contentSeriesEntitySchema.extend({
+    // Computed fields
+    isPublished: z.boolean(),
+    isDraft: z.boolean(),
+    hasFeaturedImage: z.boolean(),
+    completionPercentage: z.number().min(0).max(100),
+    estimatedDurationText: z.string().optional(),
+    // Related data
+    author: z.object({
+        id: z.string().uuid(),
+        firstName: z.string(),
+        lastName: z.string(),
+        displayName: z.string().optional(),
+    }),
+    category: z
+        .object({
+        id: z.string().uuid(),
+        name: z.string(),
+        slug: z.string(),
+    })
+        .optional(),
+    episodes: z
+        .array(z.object({
+        id: z.string().uuid(),
+        title: z.string(),
+        slug: z.string(),
+        order: z.number().int().min(0),
+        status: z.string(),
+        publishedAt: z.string().datetime().optional(),
+    }))
+        .optional(),
+});
+// ============================================================================
+// CONTENT CREATE SCHEMAS
+// ============================================================================
+export const createContentCategorySchema = contentCategoryEntitySchema
+    .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+})
+    .extend({
+    name: z.string().min(1, 'Category name is required').max(200),
+    slug: z.string().min(1, 'Category slug is required').max(100),
+});
+export const createContentItemSchema = contentItemEntitySchema
+    .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    viewCount: true,
+    likeCount: true,
+    shareCount: true,
+    commentCount: true,
+    bookmarkCount: true,
+})
+    .extend({
+    title: z.string().min(1, 'Content title is required').max(300),
+    slug: z.string().min(1, 'Content slug is required').max(200),
+    contentType: z.enum([
+        'article',
+        'video',
+        'podcast',
+        'framework',
+        'tool',
+        'case_study',
+        'interview',
+        'course_lesson',
+    ]),
+});
+export const createContentSeriesSchema = contentSeriesEntitySchema
+    .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    totalItems: true,
+})
+    .extend({
+    title: z.string().min(1, 'Series title is required').max(300),
+    slug: z.string().min(1, 'Series slug is required').max(200),
+    seriesType: z.enum([
+        'course',
+        'learning_path',
+        'book_series',
+        'podcast_series',
+        'video_series',
+        'framework',
+    ]),
+});
+// ============================================================================
+// CONTENT UPDATE SCHEMAS
+// ============================================================================
+export const updateContentCategorySchema = createContentCategorySchema
+    .partial()
+    .omit({
+    slug: true, // Slug cannot be changed after creation
+});
+export const updateContentItemSchema = createContentItemSchema.partial().omit({
+    slug: true, // Slug cannot be changed after creation
+});
+export const updateContentSeriesSchema = createContentSeriesSchema
+    .partial()
+    .omit({
+    slug: true, // Slug cannot be changed after creation
+});
+// ============================================================================
+// CONTENT QUERY SCHEMAS
+// ============================================================================
+export const contentCategoryQuerySchema = z.object({
+    // Pagination
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(10),
+    // Search
+    search: z.string().optional(),
+    // Filters
+    parentId: z.string().uuid().optional(),
+    theologicalDiscipline: z.string().optional(),
+    isActive: z.boolean().optional(),
+    // Sorting
+    sortBy: z
+        .enum(['createdAt', 'updatedAt', 'name', 'orderIndex', 'contentCount'])
+        .default('orderIndex'),
+    sortOrder: z.enum(['asc', 'desc']).default('asc'),
+    // Include related data
+    includeParent: z.boolean().default(false),
+    includeChildren: z.boolean().default(false),
+    includeContentCount: z.boolean().default(true),
+});
+export const contentItemQuerySchema = z.object({
+    // Pagination
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(10),
+    // Search
+    search: z.string().optional(),
+    // Filters
+    authorId: z.string().uuid().optional(),
+    contentType: z.string().optional(),
+    categoryId: z.string().uuid().optional(),
+    seriesId: z.string().uuid().optional(),
+    status: z.string().optional(),
+    visibility: z.string().optional(),
+    tags: z.array(z.string()).optional(),
+    theologicalThemes: z.array(z.string()).optional(),
+    aiEnhanced: z.boolean().optional(),
+    // Date filters
+    publishedAfter: z.string().datetime().optional(),
+    publishedBefore: z.string().datetime().optional(),
+    // Sorting
+    sortBy: z
+        .enum([
+        'createdAt',
+        'updatedAt',
+        'publishedAt',
+        'title',
+        'viewCount',
+        'likeCount',
+        'wordCount',
+    ])
+        .default('publishedAt'),
+    sortOrder: z.enum(['asc', 'desc']).default('desc'),
+    // Include related data
+    includeAuthor: z.boolean().default(true),
+    includeCategory: z.boolean().default(true),
+    includeSeries: z.boolean().default(false),
+    includeCoAuthors: z.boolean().default(false),
+});
+export const contentSeriesQuerySchema = z.object({
+    // Pagination
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(10),
+    // Search
+    search: z.string().optional(),
+    // Filters
+    authorId: z.string().uuid().optional(),
+    categoryId: z.string().uuid().optional(),
+    status: z.string().optional(),
+    visibility: z.string().optional(),
+    // Sorting
+    sortBy: z
+        .enum(['createdAt', 'updatedAt', 'publishedAt', 'title', 'totalEpisodes'])
+        .default('publishedAt'),
+    sortOrder: z.enum(['asc', 'desc']).default('desc'),
+    // Include related data
+    includeAuthor: z.boolean().default(true),
+    includeCategory: z.boolean().default(true),
+    includeEpisodes: z.boolean().default(false),
+});
+// ============================================================================
+// CONTENT FORM SCHEMAS (for UI forms)
+// ============================================================================
+export const contentItemFormSchema = z.object({
+    // Basic Info
+    title: z.string().min(1, 'Title is required').max(300),
+    excerpt: z.string().max(500).optional(),
+    content: z.string().optional(),
+    // Classification
+    contentType: z.enum([
+        'article',
+        'video',
+        'podcast',
+        'framework',
+        'tool',
+        'case_study',
+        'interview',
+        'course_lesson',
+    ]),
+    format: z
+        .enum(['text', 'video', 'audio', 'interactive', 'pdf', 'presentation'])
+        .default('text'),
+    // Categorization
+    primaryCategoryId: z.string().uuid().optional(),
+    secondaryCategories: z.array(z.string()).default([]),
+    tags: z.array(z.string()).default([]),
+    theologicalThemes: z.array(z.string()).default([]),
+    // Series
+    seriesId: z.string().uuid().optional(),
+    seriesOrder: z.coerce.number().int().min(0).optional(),
+    // Visibility & Status
+    visibility: z
+        .enum([
+        'public',
+        'premium',
+        'vip',
+        'private',
+        'organization',
+        'invite_only',
+    ])
+        .default('public'),
+    status: z
+        .enum(['draft', 'published', 'archived', 'under_review', 'scheduled'])
+        .default('draft'),
+    // Media
+    featuredImageUrl: z.string().url().optional(),
+    videoUrl: z.string().url().optional(),
+    audioUrl: z.string().url().optional(),
+    // SEO
+    metaTitle: z.string().max(100).optional(),
+    metaDescription: z.string().max(200).optional(),
+    // Publication
+    publishedAt: z.string().datetime().optional(),
+    scheduledAt: z.string().datetime().optional(),
+    // Licensing
+    licenseType: z
+        .enum([
+        'all_rights_reserved',
+        'creative_commons',
+        'public_domain',
+        'fair_use',
+    ])
+        .default('all_rights_reserved'),
+    attributionRequired: z.boolean().default(true),
+});
+// ============================================================================
+// ADDITIONAL SCHEMAS FOR SHARED PACKAGE COMPATIBILITY
+// ============================================================================
+// Content Cross Reference Create Schema
+export const createContentCrossReferenceSchema = contentCrossReferenceEntitySchema.omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+});
+// Content Cross Reference Update Schema
+export const updateContentCrossReferenceSchema = createContentCrossReferenceSchema.partial();
+// Series Content Item Create Schema (alias)
+export const createSeriesContentItemSchema = createContentItemSchema;
+// Series Content Item Update Schema (alias)
+export const updateSeriesContentItemSchema = updateContentItemSchema;
+// ============================================================================
+// SCHEMA ALIASES FOR BACKWARD COMPATIBILITY
+// ============================================================================
+export const contentCategorySchema = contentCategoryEntitySchema;
+export const contentItemSchema = contentItemEntitySchema;
+export const contentSeriesSchema = contentSeriesEntitySchema;
+export const contentCrossReferenceSchema = contentCrossReferenceEntitySchema;
+export const seriesContentItemSchema = contentItemEntitySchema; // Alias for series content items
+export const newContentCrossReferenceSchema = createContentCrossReferenceSchema;
+export const newSeriesContentItemSchema = createSeriesContentItemSchema;
 //# sourceMappingURL=content.schema.js.map

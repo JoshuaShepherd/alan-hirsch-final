@@ -4,8 +4,8 @@
  * This file demonstrates how the new service layer integrates with existing API routes,
  * providing complete type safety from validation through database operations.
  */
-import { NotFoundError, ValidationError } from '@/types';
 import { NextResponse } from 'next/server';
+import { ApiError, createNotFoundError } from '../api/error-handler';
 import { ServiceUtils, services } from './index';
 // ============================================================================
 // EXAMPLE 1: USER API ROUTE INTEGRATION
@@ -29,7 +29,7 @@ export async function GET_USER_EXAMPLE(request, { params }) {
         });
     }
     catch (error) {
-        if (error instanceof ValidationError) {
+        if (error instanceof ApiError && error.name === 'ValidationError') {
             return NextResponse.json({ error: error.message, details: error.details }, { status: 400 });
         }
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -52,7 +52,7 @@ export async function POST_USER_EXAMPLE(request) {
         });
     }
     catch (error) {
-        if (error instanceof ValidationError) {
+        if (error instanceof ApiError && error.name === 'ValidationError') {
             return NextResponse.json({ error: error.message, details: error.details }, { status: 400 });
         }
         return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
@@ -75,10 +75,10 @@ export async function PUT_USER_EXAMPLE(request, { params }) {
         });
     }
     catch (error) {
-        if (error instanceof NotFoundError) {
+        if (error instanceof ApiError) {
             return NextResponse.json({ error: error.message }, { status: 404 });
         }
-        if (error instanceof ValidationError) {
+        if (error instanceof ApiError && error.name === 'ValidationError') {
             return NextResponse.json({ error: error.message, details: error.details }, { status: 400 });
         }
         return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
@@ -102,7 +102,7 @@ export async function COMPLETE_ASSESSMENT_EXAMPLE(request, { params }) {
             // 1. Get the user assessment
             const userAssessment = await userAssessmentService.findById(params.id);
             if (!userAssessment) {
-                throw new NotFoundError('UserAssessment', params.id);
+                throw createNotFoundError('UserAssessment', params.id);
             }
             // 2. Save all responses
             const savedResponses = await assessmentResponseService.bulkSaveResponses(params.id, responses);
@@ -121,10 +121,10 @@ export async function COMPLETE_ASSESSMENT_EXAMPLE(request, { params }) {
         });
     }
     catch (error) {
-        if (error instanceof NotFoundError) {
+        if (error instanceof ApiError) {
             return NextResponse.json({ error: error.message }, { status: 404 });
         }
-        if (error instanceof ValidationError) {
+        if (error instanceof ApiError && error.name === 'ValidationError') {
             return NextResponse.json({ error: error.message, details: error.details }, { status: 400 });
         }
         return NextResponse.json({ error: 'Failed to complete assessment' }, { status: 500 });
@@ -155,7 +155,7 @@ export async function CREATE_CONTENT_EXAMPLE(request) {
         });
     }
     catch (error) {
-        if (error instanceof ValidationError) {
+        if (error instanceof ApiError && error.name === 'ValidationError') {
             return NextResponse.json({ error: error.message, details: error.details }, { status: 400 });
         }
         return NextResponse.json({ error: 'Failed to create content' }, { status: 500 });
@@ -177,7 +177,7 @@ export async function PUBLISH_CONTENT_EXAMPLE(request, { params }) {
         });
     }
     catch (error) {
-        if (error instanceof NotFoundError) {
+        if (error instanceof ApiError) {
             return NextResponse.json({ error: error.message }, { status: 404 });
         }
         return NextResponse.json({ error: 'Failed to publish content' }, { status: 500 });
@@ -232,7 +232,7 @@ export async function SEARCH_CONTENT_EXAMPLE(request) {
         });
     }
     catch (error) {
-        if (error instanceof ValidationError) {
+        if (error instanceof ApiError && error.name === 'ValidationError') {
             return NextResponse.json({ error: error.message, details: error.details }, { status: 400 });
         }
         return NextResponse.json({ error: 'Failed to search content' }, { status: 500 });
@@ -259,7 +259,7 @@ export async function ADD_ORGANIZATION_MEMBER_EXAMPLE(request, { params }) {
         });
     }
     catch (error) {
-        if (error instanceof ValidationError) {
+        if (error instanceof ApiError && error.name === 'ValidationError') {
             return NextResponse.json({ error: error.message, details: error.details }, { status: 400 });
         }
         return NextResponse.json({ error: 'Failed to add member' }, { status: 500 });
@@ -284,7 +284,7 @@ export async function GET_USER_STATS_EXAMPLE(request, { params }) {
         });
     }
     catch (error) {
-        if (error instanceof NotFoundError) {
+        if (error instanceof ApiError) {
             return NextResponse.json({ error: error.message }, { status: 404 });
         }
         return NextResponse.json({ error: 'Failed to get user stats' }, { status: 500 });
@@ -344,8 +344,8 @@ function calculateAssessmentScores(responses) {
  *
  * ERROR HANDLING:
  *
- * - ValidationError: Input/output validation failures (400)
- * - NotFoundError: Resource not found (404)
+ * - ApiError (ValidationError): Input/output validation failures (400)
+ * - ApiError: Resource not found (404)
  * - ServiceError: Database or business logic errors (500)
  *
  * This service layer provides a robust foundation for all database operations

@@ -1,8 +1,10 @@
-import { getUser } from '@/lib/db/queries';
-import { toUserProfileDTO } from '@/lib/mappers/user-profiles';
+import { createSupabaseServerClient } from '@platform/database';
 export function validatedAction(schema, action) {
     return async (prevState, formData) => {
-        const formDataObj = Object.fromEntries(formData);
+        const formDataObj = {};
+        for (const [key, value] of formData) {
+            formDataObj[key] = value.toString();
+        }
         console.log('🔐 Validation: Form data received:', {
             formDataObj,
             timestamp: new Date().toISOString(),
@@ -57,28 +59,71 @@ export function validatedAction(schema, action) {
 }
 export function validatedActionWithUser(schema, action) {
     return async (prevState, formData) => {
-        const user = await getUser();
-        if (!user) {
+        const supabase = await createSupabaseServerClient();
+        const { data: { user: authUser }, error, } = await supabase.auth.getUser();
+        if (error || !authUser) {
             throw new Error('User is not authenticated');
         }
-        const result = schema.safeParse(Object.fromEntries(formData));
+        const formDataObj = {};
+        for (const [key, value] of formData) {
+            formDataObj[key] = value.toString();
+        }
+        const result = schema.safeParse(formDataObj);
         if (!result.success) {
             return { error: result.error.errors[0]?.message || 'Validation failed' };
         }
-        return action(result.data, formData, toUserProfileDTO(user));
+        // Create a minimal user profile from auth data for now
+        // In a real implementation, you might want to fetch the full user profile
+        const userProfile = {
+            id: authUser.id,
+            email: authUser.email || '',
+            firstName: authUser.user_metadata?.['first_name'] || '',
+            lastName: authUser.user_metadata?.['last_name'] || '',
+            ministryRole: authUser.user_metadata?.['ministry_role'] || 'other',
+            // Add all required fields with defaults
+            languagePrimary: 'en',
+            subscriptionTier: 'free',
+            theologicalFocus: [],
+            brandColors: {
+                accent: '#059669',
+                primary: '#2563eb',
+                secondary: '#64748b',
+            },
+            emailNotifications: {
+                dailyDigest: true,
+                revenueReports: true,
+                communityUpdates: true,
+                collaborationRequests: true,
+            },
+            privacySettings: {
+                publicProfile: true,
+                shareAnalytics: false,
+                allowNetworking: true,
+                showAssessmentResults: false,
+            },
+            onboardingCompleted: false,
+            onboardingStep: 1,
+            accountStatus: 'active',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            lastActiveAt: new Date().toISOString(),
+        };
+        return action(result.data, formData, userProfile);
     };
 }
 export function withTeam(action) {
     return async (formData) => {
-        const user = await getUser();
-        if (!user) {
+        const supabase = await createSupabaseServerClient();
+        const { data: { user: authUser }, error, } = await supabase.auth.getUser();
+        if (error || !authUser) {
             throw new Error('User is not authenticated');
         }
         // Get user's organization - you'll need to implement this based on your schema
         // For now, we'll create a placeholder organization object
         const organization = {
-            id: user.id, // Placeholder - should be actual organization ID
-            name: user.organizationName || 'Personal Organization',
+            id: authUser.id, // Placeholder - should be actual organization ID
+            name: authUser.user_metadata?.['organization_name'] ||
+                'Personal Organization',
             // Add other organization properties as needed
         };
         return action(formData, organization);

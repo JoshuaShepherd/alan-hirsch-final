@@ -69,6 +69,11 @@ export default function ContentApprovalPage() {
     page: 1,
     limit: 50,
     status: statusFilter,
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
+    includeAuthor: true,
+    includeCategory: true,
+    includeTags: true,
   });
 
   const contentItems = contentData || [];

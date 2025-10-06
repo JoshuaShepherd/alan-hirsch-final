@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PublicUserSchema, UserEntitySchema } from '../entities/user.schema';
+import { userProfileResponseSchema as PublicUserSchema, userProfileEntitySchema as UserEntitySchema, } from '../entities/user.schema';
 import { CreateUserOperationSchema, CreateUserWithOrganizationOperationSchema, DeactivateUserOperationSchema, DeleteUserOperationSchema, GetUserByEmailOperationSchema, GetUserByIdOperationSchema, ListUsersOperationSchema, SearchUsersOperationSchema, UpdateUserAssessmentScoresOperationSchema, UpdateUserProfileOperationSchema, UpdateUserSettingsOperationSchema, UserLoginOperationSchema, UserPasswordResetOperationSchema, UserPasswordUpdateOperationSchema, UserRegistrationOperationSchema, } from '../operations/user.operations';
 // ============================================================================
 // USER API CONTRACTS - DERIVED FROM OPERATIONS

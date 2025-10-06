@@ -1,5 +1,5 @@
-import type { NewSubscriptionPlan, NewTransaction, NewUserSubscription } from '@/lib/contracts';
 import { organizations, paymentMethods, subscriptionPlans, transactions, userProfiles, userSubscriptions } from '../schema';
+import type { NewSubscriptionPlan, NewTransaction, NewUserSubscription } from '../schema/subscriptions';
 export interface QueryContext {
     organizationId?: string;
     userId?: string;
@@ -46,7 +46,7 @@ export declare function getUserSubscriptionById(subscriptionId: string, context:
  */
 export declare function getUserActiveSubscription(userId: string, context: QueryContext): Promise<{
     subscription: typeof userSubscriptions.$inferSelect;
-    plan: typeof subscriptionPlans.$inferSelect;
+    plan: typeof subscriptionPlans.$inferSelect | null;
     leaderProfile: typeof userProfiles.$inferSelect | null;
     organization: typeof organizations.$inferSelect | null;
 } | null>;
@@ -119,7 +119,7 @@ export declare function getTransactionById(transactionId: string, context: Query
  * Get transactions by user
  */
 export declare function getTransactionsByUser(userId: string, context: QueryContext, options?: {
-    status?: 'pending' | 'completed' | 'failed' | 'refunded';
+    status?: 'pending' | 'succeeded' | 'failed' | 'refunded';
     limit?: number;
     offset?: number;
 }): Promise<(typeof transactions.$inferSelect)[]>;
@@ -127,7 +127,7 @@ export declare function getTransactionsByUser(userId: string, context: QueryCont
  * Get transactions by organization
  */
 export declare function getTransactionsByOrganization(organizationId: string, context: QueryContext, options?: {
-    status?: 'pending' | 'completed' | 'failed' | 'refunded';
+    status?: 'pending' | 'succeeded' | 'failed' | 'refunded';
     limit?: number;
     offset?: number;
 }): Promise<Array<{
@@ -156,7 +156,7 @@ export declare function getDefaultPaymentMethod(userId: string, context: QueryCo
 export declare function createPaymentMethod(paymentMethodData: {
     userId: string;
     stripePaymentMethodId: string;
-    type: string;
+    type: 'card' | 'bank_account' | 'paypal';
     isDefault?: boolean;
 }, context: QueryContext): Promise<typeof paymentMethods.$inferSelect>;
 /**

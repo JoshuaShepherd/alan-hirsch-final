@@ -12,6 +12,7 @@ The query modules provide:
 - **Performance optimization** with EXPLAIN plans and index recommendations
 - **Comprehensive logging and monitoring** for database operations
 - **Advanced search and analytics** capabilities
+- **Schema alignment** with updated enums and new columns (Category A implementation)
 
 ## Architecture
 
@@ -22,6 +23,17 @@ The query modules provide:
 3. **Type Safety**: Full TypeScript support with Drizzle ORM type inference
 4. **Performance First**: Optimized queries with monitoring and EXPLAIN plans
 5. **Comprehensive Logging**: All database operations are logged for audit and performance tracking
+
+### Recent Schema Updates (Category A)
+
+The database schema has been updated to align with contract schemas:
+
+- **Communities Table**: Added `status` and `focus` columns
+- **Organizations Table**: Updated enum values for `sizeCategory`, `licenseType`, and `status`
+- **User Profiles Table**: Added `password_hash` column for local authentication
+- **Organization Memberships**: Updated `status` enum values
+
+**Note**: Some query files may show TypeScript errors due to enum value changes. These will be resolved in subsequent phases of the type error resolution plan.
 
 ### Query Context
 

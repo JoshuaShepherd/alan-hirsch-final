@@ -14,7 +14,12 @@ export async function getContentItemById(contentId, context) {
     const conditions = [eq(contentItems.id, contentId)];
     // Add context-based filtering for draft content
     if (context.userId && context.role !== 'admin') {
-        conditions.push(or(eq(contentItems.status, 'published'), and(eq(contentItems.status, 'draft'), eq(contentItems.authorId, context.userId))));
+        const publishedCondition = eq(contentItems.status, 'published');
+        const draftCondition = and(eq(contentItems.status, 'draft'), eq(contentItems.authorId, context.userId));
+        const combinedCondition = or(publishedCondition, draftCondition);
+        if (combinedCondition) {
+            conditions.push(combinedCondition);
+        }
     }
     else {
         conditions.push(eq(contentItems.status, 'published'));
@@ -33,7 +38,12 @@ export async function getContentItemBySlug(slug, context) {
     const conditions = [eq(contentItems.slug, slug)];
     // Add context-based filtering for draft content
     if (context.userId && context.role !== 'admin') {
-        conditions.push(or(eq(contentItems.status, 'published'), and(eq(contentItems.status, 'draft'), eq(contentItems.authorId, context.userId))));
+        const publishedCondition = eq(contentItems.status, 'published');
+        const draftCondition = and(eq(contentItems.status, 'draft'), eq(contentItems.authorId, context.userId));
+        const combinedCondition = or(publishedCondition, draftCondition);
+        if (combinedCondition) {
+            conditions.push(combinedCondition);
+        }
     }
     else {
         conditions.push(eq(contentItems.status, 'published'));

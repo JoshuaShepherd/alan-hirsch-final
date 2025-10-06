@@ -1,9 +1,13 @@
-import { createRouteHandler } from '@platform/shared/api/route-handler';
+import {
+  createDeleteHandler,
+  createGetHandler,
+  createPutHandler,
+} from '@/lib/api/route-handlers';
+import { communityService } from '@/lib/services';
 import {
   communityResponseSchema,
   updateCommunityRequestSchema,
-} from '@platform/shared/contracts';
-import { communityService } from '@platform/shared/services';
+} from '@platform/contracts';
 import { z } from 'zod';
 
 // ============================================================================
@@ -11,12 +15,13 @@ import { z } from 'zod';
 // ============================================================================
 
 // GET /api/communities/[id] - Get community by ID
-export const GET = createRouteHandler({
+export const GET = createGetHandler({
   inputSchema: z.object({}),
   outputSchema: communityResponseSchema,
-  method: 'GET',
-  handler: async (_, context) => {
-    const id = context.params?.id;
+  requireAuth: true,
+  requirePermissions: ['read:communities'],
+  handler: async (_, context, routeParams) => {
+    const id = routeParams?.params?.['id'];
     if (!id) {
       throw new Error('Community ID is required');
     }
@@ -31,12 +36,13 @@ export const GET = createRouteHandler({
 });
 
 // PUT /api/communities/[id] - Update community
-export const PUT = createRouteHandler({
+export const PUT = createPutHandler({
   inputSchema: updateCommunityRequestSchema,
   outputSchema: communityResponseSchema,
-  method: 'PUT',
-  handler: async (data, context) => {
-    const id = context.params?.id;
+  requireAuth: true,
+  requirePermissions: ['update:communities'],
+  handler: async (data, context, routeParams) => {
+    const id = routeParams?.params?.['id'];
     if (!id) {
       throw new Error('Community ID is required');
     }
@@ -46,11 +52,12 @@ export const PUT = createRouteHandler({
 });
 
 // DELETE /api/communities/[id] - Delete community
-export const DELETE = createRouteHandler({
+export const DELETE = createDeleteHandler({
   inputSchema: z.object({}),
-  method: 'DELETE',
-  handler: async (_, context) => {
-    const id = context.params?.id;
+  requireAuth: true,
+  requirePermissions: ['delete:communities'],
+  handler: async (_, context, routeParams) => {
+    const id = routeParams?.params?.['id'];
     if (!id) {
       throw new Error('Community ID is required');
     }

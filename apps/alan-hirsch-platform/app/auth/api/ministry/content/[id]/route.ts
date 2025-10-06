@@ -1,10 +1,9 @@
-import { createRouteHandler } from '@platform/shared/api/route-handler';
 import {
   ministryContentItemResponseSchema,
   updateMinistryContentRequestSchema,
-} from '@platform/shared/contracts';
-import { contentService } from '@platform/shared/services';
+} from '@platform/contracts';
 import { z } from 'zod';
+import { contentService } from '../../../../../../lib/services';
 
 // ============================================================================
 // MINISTRY CONTENT BY ID API ROUTES

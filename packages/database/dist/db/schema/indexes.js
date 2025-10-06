@@ -1,7 +1,7 @@
 // Performance Indexes - Alan Hirsch Digital Platform
 // This file defines database indexes for optimal query performance
 import { index } from 'drizzle-orm/pg-core';
-import { assessmentQuestions, assessmentResponses, assessments, communities, communityMemberships, communityPostVotes, communityPosts, contentCategories, contentCrossReferences, contentItems, contentSeries, organizationMemberships, organizations, seriesContentItems, subscriptionPlans, userAssessments, userProfiles, userSubscriptions, } from './index';
+import { assessmentQuestions, assessmentResponses, assessments, collaborations, communities, communityMemberships, communityPostVotes, communityPosts, contentCategories, contentCrossReferences, contentItems, contentSeries, organizationMemberships, organizations, seriesContentItems, subscriptionPlans, userAssessments, userProfiles, userSubscriptions, } from './index';
 // User Profiles Indexes
 export const userProfilesIndexes = {
     emailIdx: index('user_profiles_email_idx').on(userProfiles.email),

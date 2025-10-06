@@ -163,7 +163,7 @@ export const GET = createGetListHandler({
   outputSchema: CommunityResponseSchema,
   requireAuth: true,
   requirePermissions: ['read:communities'],
-  handler: async (validatedQuery, context) => {
+  handler: async (validatedQuery, _context) => {
     // TODO: Implement actual community service call
     // This would typically call communityService.findMany(validatedQuery, context)
 
@@ -198,8 +198,8 @@ export const GET = createGetListHandler({
     return {
       data: mockCommunities,
       pagination: {
-        page: validatedQuery.page,
-        limit: validatedQuery.limit,
+        page: validatedQuery.page || 1,
+        limit: validatedQuery.limit || 20,
         total: mockCommunities.length,
         totalPages: 1,
         hasNext: false,
@@ -218,7 +218,7 @@ export const POST = createPostHandler({
   outputSchema: CommunityResponseSchema,
   requireAuth: true,
   requirePermissions: ['create:communities'],
-  handler: async (validatedData, context) => {
+  handler: async (validatedData, _context) => {
     // TODO: Implement actual community service call
     // This would typically call communityService.create(validatedData, context)
 
@@ -229,10 +229,10 @@ export const POST = createPostHandler({
       description: validatedData.description,
       communityType: validatedData.communityType,
       focus: validatedData.focus,
-      visibility: validatedData.visibility,
+      visibility: validatedData.visibility || 'public',
       status: 'active' as const,
       memberCount: 1, // Creator is the first member
-      tags: validatedData.tags,
+      tags: validatedData.tags || [],
       location: validatedData.location,
       settings: validatedData.settings,
       createdAt: new Date().toISOString(),

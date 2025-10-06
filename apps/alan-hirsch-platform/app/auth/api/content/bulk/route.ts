@@ -1,10 +1,6 @@
+import { contentItemResponseSchema } from '@platform/contracts';
 import { createBulkOperationHandler } from '@platform/shared/api/bulk-operations';
-import {
-  contentItemResponseSchema,
-  createContentItemRequestSchema,
-  updateContentItemRequestSchema,
-} from '@platform/shared/contracts';
-import { contentService } from '@platform/shared/services';
+import { contentService } from '../../../../../lib/services';
 
 // ============================================================================
 // Content Bulk Operations API Route - Type-Safe Implementation

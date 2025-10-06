@@ -267,16 +267,16 @@ export function transformApiResponse<T>(response: unknown): T {
 
     // If response has a 'data' field, extract it
     if ('data' in responseObj) {
-      return responseObj.data as T;
+      return responseObj['data'] as T;
     }
 
     // If response has a 'success' field and is successful, extract data
     if (
       'success' in responseObj &&
-      responseObj.success === true &&
+      responseObj['success'] === true &&
       'data' in responseObj
     ) {
-      return responseObj.data as T;
+      return responseObj['data'] as T;
     }
   }
 
@@ -495,7 +495,24 @@ export function createPaginatedFetcher<T>(
 
   return async (url: string): Promise<PaginatedResponse<T>> => {
     const { apiClient } = await import('../api-client');
-    return apiClient.getWithValidation(url, paginatedSchema);
+    const response = await apiClient.getWithValidation(url, paginatedSchema);
+
+    // Transform the response to match PaginatedResponse interface
+    return {
+      success: true,
+      data: response.data,
+      meta: {
+        pagination: {
+          page: response.meta.pagination.page,
+          limit: response.meta.pagination.limit,
+          total: response.meta.pagination.total,
+          total_pages: response.meta.pagination.total_pages,
+          has_next: response.meta.pagination.has_next,
+          has_prev: response.meta.pagination.has_prev,
+        },
+        timestamp: new Date().toISOString(),
+      },
+    };
   };
 }
 

@@ -2,7 +2,6 @@
 
 import { cn } from '@platform/shared/utils';
 import React from 'react';
-import { ErrorBoundary } from './error-boundary';
 import { LoadingSkeleton } from './loading-skeleton';
 
 interface AsyncDataProps<T> {
@@ -44,23 +43,16 @@ export function AsyncData<T>({
   // Error state
   if (error) {
     return (
-      <ErrorBoundary
-        error={error}
-        fallback={
-          <div className={className}>
-            {errorComponent || (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="text-destructive mb-4">
-                  <h3 className="text-lg font-semibold">Error loading data</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {error.message}
-                  </p>
-                </div>
-              </div>
-            )}
+      <div className={className}>
+        {errorComponent || (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="text-destructive mb-4">
+              <h3 className="text-lg font-semibold">Error loading data</h3>
+              <p className="text-sm text-muted-foreground">{error.message}</p>
+            </div>
           </div>
-        }
-      />
+        )}
+      </div>
     );
   }
 

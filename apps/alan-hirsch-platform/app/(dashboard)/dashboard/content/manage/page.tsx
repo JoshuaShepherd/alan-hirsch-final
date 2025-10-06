@@ -55,6 +55,11 @@ export default function ContentManagementPage() {
     page: 1,
     limit: 50,
     status: statusFilter === 'all' ? undefined : statusFilter,
+    sortBy: 'updatedAt',
+    sortOrder: 'desc',
+    includeAuthor: true,
+    includeCategory: true,
+    includeTags: true,
   });
 
   const contentItems = contentData || [];

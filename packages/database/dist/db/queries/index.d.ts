@@ -10,7 +10,7 @@ export * from './communities';
 export * from './assessments';
 export * from './subscriptions';
 export * from './analytics';
-export * from './search';
+export { globalSearch, searchAssessments, searchCommunities, searchContent, searchContentByTheologicalThemes, searchOrganizations, searchUsers, type SearchFilters, type SearchResult, } from './search';
 export * from './monitoring';
 export * from './performance';
 /**

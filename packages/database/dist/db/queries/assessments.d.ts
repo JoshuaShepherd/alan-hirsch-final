@@ -1,4 +1,4 @@
-import type { NewAssessment, NewAssessmentQuestion, NewAssessmentResponse, NewUserAssessment } from '@/lib/contracts';
+import type { NewAssessment, NewAssessmentQuestion, NewAssessmentResponse, NewUserAssessment } from '../schema/assessments';
 /**
  * Get all active assessments with optional filtering
  */
@@ -8,7 +8,7 @@ export declare function getAssessments(filters?: {
     language?: string;
     culturalAdaptation?: 'western' | 'eastern' | 'african' | 'latin_american' | 'middle_eastern' | 'oceanic' | 'universal' | 'global';
     researchBacked?: boolean;
-}): Promise<unknown[]>;
+}): Promise<any[]>;
 /**
  * Get a specific assessment by ID
  */
@@ -32,7 +32,7 @@ export declare function deleteAssessment(assessmentId: string): Promise<boolean>
 /**
  * Get all questions for a specific assessment
  */
-export declare function getAssessmentQuestions(assessmentId: string): Promise<unknown[]>;
+export declare function getAssessmentQuestions(assessmentId: string): Promise<any[]>;
 /**
  * Get a specific question by ID
  */
@@ -52,7 +52,7 @@ export declare function deleteAssessmentQuestion(questionId: string): Promise<bo
 /**
  * Get all assessments for a specific user
  */
-export declare function getUserAssessments(userId: string): Promise<unknown[]>;
+export declare function getUserAssessments(userId: string): Promise<any[]>;
 /**
  * Get all assessments for a specific user with assessment details
  */
@@ -97,7 +97,7 @@ export declare function deleteUserAssessment(userAssessmentId: string): Promise<
 /**
  * Get all responses for a user assessment
  */
-export declare function getAssessmentResponses(userAssessmentId: string): Promise<unknown[]>;
+export declare function getAssessmentResponses(userAssessmentId: string): Promise<any[]>;
 /**
  * Get a specific response by ID
  */
@@ -124,7 +124,7 @@ export declare function saveAssessmentResponses(userAssessmentId: string, respon
     responseTime?: number;
     confidence?: number;
     skipped?: boolean;
-}>): Promise<unknown[]>;
+}>): Promise<any[]>;
 /**
  * Get assessment completion statistics
  */

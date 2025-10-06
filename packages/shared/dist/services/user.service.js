@@ -1,6 +1,6 @@
-import { db } from '@/lib/db/drizzle';
-import { organizationMemberships, organizations, userProfiles, } from '@/lib/db/schema';
-import { CreateUserSchema, UpdateUserSchema, UserEntitySchema, UserQuerySchema, } from '@platform/contracts/entities';
+import { databaseUserProfileSchema } from '@platform/contracts/entities/user.schema';
+import { CreateUserOperationSchema as newUserProfileSchema, ListUsersOperationSchema as queryUserProfileSchema, UpdateUserOperationSchema as updateUserProfileSchema, } from '@platform/contracts/operations/user.operations';
+import { db, organizationMemberships, organizations, userProfiles, } from '@platform/database';
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { BaseService } from './base.service';
 // ============================================================================
@@ -9,10 +9,10 @@ import { BaseService } from './base.service';
 export class UserService extends BaseService {
     table = userProfiles;
     entityName = 'User';
-    createSchema = CreateUserSchema;
-    updateSchema = UpdateUserSchema;
-    querySchema = UserQuerySchema;
-    outputSchema = UserEntitySchema;
+    createSchema = newUserProfileSchema;
+    updateSchema = updateUserProfileSchema;
+    querySchema = queryUserProfileSchema;
+    outputSchema = databaseUserProfileSchema;
     /**
      * Find user by email address
      */
@@ -108,7 +108,7 @@ export class UserService extends BaseService {
             await db
                 .update(userProfiles)
                 .set({
-                password: hashedPassword,
+                // Password hash is managed by Supabase Auth, not in user_profiles table
                 updatedAt: new Date(),
             })
                 .where(eq(userProfiles.id, userId));

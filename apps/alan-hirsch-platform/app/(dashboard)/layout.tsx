@@ -13,7 +13,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@platform/ui/avatar';
 import { signOut } from '@/app/(login)/actions';
 import { useRouter } from 'next/navigation';
-import { UserProfile } from '@platform/shared/contracts';
+import { UserProfile } from '@platform/contracts';
 import { useUserProfileAdapter } from '@/hooks';
 import { mutate } from 'swr';
 
