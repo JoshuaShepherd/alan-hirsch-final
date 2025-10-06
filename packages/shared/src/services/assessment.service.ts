@@ -3,8 +3,6 @@ import {
   assessmentResponseEntitySchema as databaseAssessmentResponseSchema,
   assessmentEntitySchema as databaseAssessmentSchema,
   userAssessmentEntitySchema as databaseUserAssessmentSchema,
-} from '@platform/contracts/entities/assessment.schema';
-import {
   createAssessmentQuestionSchema as newAssessmentQuestionSchema,
   createAssessmentResponseSchema as newAssessmentResponseSchema,
   createAssessmentSchema as newAssessmentSchema,
@@ -12,18 +10,18 @@ import {
   assessmentQuestionQuerySchema as queryAssessmentQuestionSchema,
   assessmentResponseQuerySchema as queryAssessmentResponseSchema,
   assessmentQuerySchema as queryAssessmentSchema,
-  UpdateAssessmentQuestionOperationSchema as updateAssessmentQuestionSchema,
-  UpdateAssessmentResponseOperationSchema as updateAssessmentResponseSchema,
-  UpdateAssessmentOperationSchema as updateAssessmentSchema,
-  CompleteUserAssessmentOperationSchema as updateUserAssessmentSchema,
-} from '@platform/contracts/operations/assessment.operations';
-import { db } from '@platform/database/db/drizzle';
+  updateAssessmentQuestionSchema,
+  updateAssessmentResponseSchema,
+  updateAssessmentSchema,
+  updateUserAssessmentSchema,
+} from '@platform/contracts';
 import {
   assessmentQuestions,
   assessmentResponses,
   assessments,
+  db,
   userAssessments,
-} from '@platform/database/db/schema';
+} from '@platform/database';
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { BaseService } from './base.service';
@@ -36,15 +34,15 @@ export class AssessmentService extends BaseService<
   z.infer<typeof databaseAssessmentSchema>,
   z.infer<typeof newAssessmentSchema>,
   z.infer<typeof updateAssessmentSchema>,
-  any,
+  z.infer<typeof queryAssessmentSchema>,
   typeof assessments
 > {
   protected table = assessments;
   protected entityName = 'Assessment';
-  protected createSchema = newAssessmentSchema as any;
-  protected updateSchema = updateAssessmentSchema as any;
-  protected querySchema = queryAssessmentSchema as any;
-  protected outputSchema = databaseAssessmentSchema as any;
+  protected createSchema = newAssessmentSchema;
+  protected updateSchema = updateAssessmentSchema;
+  protected querySchema = queryAssessmentSchema;
+  protected outputSchema = databaseAssessmentSchema;
 
   /**
    * Find assessment by slug
@@ -257,15 +255,15 @@ export class AssessmentQuestionService extends BaseService<
   z.infer<typeof databaseAssessmentQuestionSchema>,
   z.infer<typeof newAssessmentQuestionSchema>,
   z.infer<typeof updateAssessmentQuestionSchema>,
-  any,
+  z.infer<typeof queryAssessmentQuestionSchema>,
   typeof assessmentQuestions
 > {
   protected table = assessmentQuestions;
   protected entityName = 'AssessmentQuestion';
-  protected createSchema = newAssessmentQuestionSchema as any;
-  protected updateSchema = updateAssessmentQuestionSchema as any;
-  protected querySchema = queryAssessmentQuestionSchema as any;
-  protected outputSchema = databaseAssessmentQuestionSchema as any;
+  protected createSchema = newAssessmentQuestionSchema;
+  protected updateSchema = updateAssessmentQuestionSchema;
+  protected querySchema = queryAssessmentQuestionSchema;
+  protected outputSchema = databaseAssessmentQuestionSchema;
 
   /**
    * Find questions by assessment
@@ -418,15 +416,15 @@ export class UserAssessmentService extends BaseService<
   z.infer<typeof databaseUserAssessmentSchema>,
   z.infer<typeof newUserAssessmentSchema>,
   z.infer<typeof updateUserAssessmentSchema>,
-  any,
+  z.infer<typeof queryAssessmentResponseSchema>,
   typeof userAssessments
 > {
   protected table = userAssessments;
   protected entityName = 'UserAssessment';
-  protected createSchema = newUserAssessmentSchema as any;
-  protected updateSchema = updateUserAssessmentSchema as any;
-  protected querySchema = queryAssessmentResponseSchema as any;
-  protected outputSchema = databaseUserAssessmentSchema as any;
+  protected createSchema = newUserAssessmentSchema;
+  protected updateSchema = updateUserAssessmentSchema;
+  protected querySchema = queryAssessmentResponseSchema;
+  protected outputSchema = databaseUserAssessmentSchema;
 
   /**
    * Find user assessment by user and assessment
@@ -803,15 +801,15 @@ export class AssessmentResponseService extends BaseService<
   z.infer<typeof databaseAssessmentResponseSchema>,
   z.infer<typeof newAssessmentResponseSchema>,
   z.infer<typeof updateAssessmentResponseSchema>,
-  any,
+  z.infer<typeof queryAssessmentResponseSchema>,
   typeof assessmentResponses
 > {
   protected table = assessmentResponses;
   protected entityName = 'AssessmentResponse';
-  protected createSchema = newAssessmentResponseSchema as any;
-  protected updateSchema = updateAssessmentResponseSchema as any;
-  protected querySchema = queryAssessmentResponseSchema as any;
-  protected outputSchema = databaseAssessmentResponseSchema as any;
+  protected createSchema = newAssessmentResponseSchema;
+  protected updateSchema = updateAssessmentResponseSchema;
+  protected querySchema = queryAssessmentResponseSchema;
+  protected outputSchema = databaseAssessmentResponseSchema;
 
   /**
    * Find responses by user assessment

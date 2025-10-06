@@ -58,10 +58,10 @@ export class CommunityService extends BaseService<
 > {
   protected table = communities;
   protected entityName = 'Community';
-  protected createSchema = newCommunitySchema as any;
-  protected updateSchema = updateCommunitySchema as any;
-  protected querySchema = queryCommunitySchema as any;
-  protected outputSchema = databaseCommunitySchema as any;
+  protected createSchema = newCommunitySchema;
+  protected updateSchema = updateCommunitySchema;
+  protected querySchema = queryCommunitySchema;
+  protected outputSchema = databaseCommunitySchema;
 
   /**
    * Find community by slug

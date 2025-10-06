@@ -28,6 +28,8 @@
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
     "test:ui": "vitest --ui",
+    "generate:pipeline": "tsx scripts/schema-to-pipeline-generator.ts",
+    "fix:schema-alignment": "tsx scripts/fix-schema-alignment.ts",
     "test:fast": "vitest run __tests__/simple.test.ts __tests__/basic-ui.test.tsx __tests__/api/basic-api.test.ts __tests__/ui/basic-component.test.tsx __tests__/utils/test-data-factories.test.ts __tests__/unit/math-utils.test.ts __tests__/integration/database-mock.test.ts --reporter=basic --no-coverage",
     "test:parallel": "vitest run --threads --maxConcurrency=4",
     "test:unit": "vitest run __tests__/unit/ --reporter=basic --no-coverage",

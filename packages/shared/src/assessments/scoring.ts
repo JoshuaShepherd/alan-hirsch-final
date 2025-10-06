@@ -3,7 +3,7 @@
 
 import type {
   AssessmentQuestion,
-  AssessmentResponse,
+  AssessmentResponseEntity,
 } from '@platform/contracts';
 
 // APEST dimensions
@@ -43,7 +43,7 @@ export interface AssessmentScoreResult {
  */
 export function calculateApestScores(
   questions: AssessmentQuestion[],
-  responses: AssessmentResponse[]
+  responses: AssessmentResponseEntity[]
 ): ApestScores {
   const scores: ApestScores = {
     apostolic: 0,
@@ -118,7 +118,7 @@ export function determineApestGifts(scores: ApestScores): {
  * Calculate response consistency (standard deviation of responses)
  */
 export function calculateResponseConsistency(
-  responses: AssessmentResponse[]
+  responses: AssessmentResponseEntity[]
 ): number {
   const values = responses
     .filter(r => !r.skipped && r.responseValue !== undefined)
@@ -142,7 +142,7 @@ export function calculateResponseConsistency(
  */
 export function calculateCompletionPercentage(
   questions: AssessmentQuestion[],
-  responses: AssessmentResponse[]
+  responses: AssessmentResponseEntity[]
 ): number {
   const totalQuestions = questions.filter(q => q.isRequired).length;
   const answeredQuestions = responses.filter(
@@ -195,7 +195,7 @@ export function calculateMaxPossibleScores(
  */
 export function scoreApestAssessment(
   questions: AssessmentQuestion[],
-  responses: AssessmentResponse[]
+  responses: AssessmentResponseEntity[]
 ): AssessmentScoreResult {
   // Calculate APEST scores
   const apestScores = calculateApestScores(questions, responses);

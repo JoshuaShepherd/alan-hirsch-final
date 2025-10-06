@@ -334,15 +334,10 @@ export function toAssessmentResponseResponseDTO(
 
     // Computed fields for UI
     isSkipped: row.skipped ?? false,
-    hasValue: row.responseValue !== null && row.responseValue !== undefined,
-    hasText:
-      row.responseText !== null &&
-      row.responseText !== undefined &&
-      row.responseText !== '',
+    hasResponse: row.responseValue !== null && row.responseValue !== undefined,
     responseTimeText: row.responseTime
       ? (formatResponseTime(row.responseTime) ?? undefined)
       : undefined,
-    confidenceDisplay: row.confidence ? `${row.confidence}/5` : undefined,
 
     // Related data - these would need to be passed from the parent or fetched separately
     question: {
@@ -350,13 +345,14 @@ export function toAssessmentResponseResponseDTO(
       questionText: '', // Would need to be passed from parent
       questionType: '', // Would need to be passed from parent
       orderIndex: 0, // Would need to be passed from parent
+      isRequired: true, // Default value, should be passed from parent
       apestDimension: undefined, // Would need to be passed from parent
     },
     userAssessment: {
       id: row.userAssessmentId,
       userId: '', // Would need to be passed from parent
       assessmentId: '', // Would need to be passed from parent
-      completedAt: undefined, // Would need to be passed from parent
+      status: 'in_progress', // Default value
     },
 
     // Timestamps

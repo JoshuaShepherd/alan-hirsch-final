@@ -1,9 +1,9 @@
-import { databaseUserProfileSchema } from '@platform/contracts/entities/user.schema';
 import {
-  CreateUserOperationSchema as newUserProfileSchema,
-  ListUsersOperationSchema as queryUserProfileSchema,
-  UpdateUserOperationSchema as updateUserProfileSchema,
-} from '@platform/contracts/operations/user.operations';
+  userProfileEntitySchema as databaseUserProfileSchema,
+  createUserProfileSchema as newUserProfileSchema,
+  userProfileQuerySchema as queryUserProfileSchema,
+  updateUserProfileSchema,
+} from '@platform/contracts';
 import {
   db,
   organizationMemberships,
@@ -27,10 +27,10 @@ export class UserService extends BaseService<
 > {
   protected table = userProfiles;
   protected entityName = 'User';
-  protected createSchema = newUserProfileSchema as any;
-  protected updateSchema = updateUserProfileSchema as any;
-  protected querySchema = queryUserProfileSchema as any;
-  protected outputSchema = databaseUserProfileSchema as any;
+  protected createSchema = newUserProfileSchema;
+  protected updateSchema = updateUserProfileSchema;
+  protected querySchema = queryUserProfileSchema;
+  protected outputSchema = databaseUserProfileSchema;
 
   /**
    * Find user by email address

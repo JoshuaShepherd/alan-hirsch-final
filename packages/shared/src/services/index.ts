@@ -5,15 +5,7 @@
 // BASE SERVICES
 // ============================================================================
 
-export {
-  BaseService,
-  QueryFiltersSchema,
-  type PaginatedResult,
-  type QueryFilters,
-  type QueryFiltersType,
-  type ServiceError,
-  type TransactionContext,
-} from './base.service';
+export { BaseService, type QueryFilters } from './base.service';
 
 // ============================================================================
 // ENTITY SERVICES

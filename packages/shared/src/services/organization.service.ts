@@ -1,13 +1,13 @@
 import {
+  createOrganizationMembershipSchema,
   organizationEntitySchema as databaseOrganizationSchema,
+  createOrganizationSchema as newOrganizationSchema,
   organizationMembershipEntitySchema,
-} from '@platform/contracts/entities/organization.schema';
-import {
-  CreateOrganizationMembershipOperationSchema as createOrganizationMembershipSchema,
-  CreateOrganizationOperationSchema as newOrganizationSchema,
-  UpdateOrganizationMembershipOperationSchema as updateOrganizationMembershipSchema,
-  UpdateOrganizationOperationSchema as updateOrganizationSchema,
-} from '@platform/contracts/operations/organization.operations';
+  organizationMembershipQuerySchema,
+  organizationQuerySchema,
+  updateOrganizationMembershipSchema,
+  updateOrganizationSchema,
+} from '@platform/contracts';
 import {
   db,
   organizationMemberships,
@@ -21,37 +21,6 @@ import { BaseService } from './base.service';
 // ============================================================================
 // ORGANIZATION SERVICE
 // ============================================================================
-
-// Create proper query schemas that match QueryFilters interface
-const organizationQuerySchema = z.object({
-  where: z.record(z.any()).optional(),
-  orderBy: z
-    .array(
-      z.object({
-        field: z.string(),
-        direction: z.enum(['asc', 'desc']),
-      })
-    )
-    .optional(),
-  limit: z.number().optional(),
-  offset: z.number().optional(),
-  include: z.array(z.string()).optional(),
-});
-
-const organizationMembershipQuerySchema = z.object({
-  where: z.record(z.any()).optional(),
-  orderBy: z
-    .array(
-      z.object({
-        field: z.string(),
-        direction: z.enum(['asc', 'desc']),
-      })
-    )
-    .optional(),
-  limit: z.number().optional(),
-  offset: z.number().optional(),
-  include: z.array(z.string()).optional(),
-});
 
 export class OrganizationService extends BaseService<
   z.infer<typeof databaseOrganizationSchema>,

@@ -1,85 +1,55 @@
-import { db } from '@platform/database';
-import { and, count, desc, eq, sql, type SQL } from 'drizzle-orm';
-import { z } from 'zod';
-import { ApiError, ErrorCode } from '../api/error-handler';
+// Base Service - Database Integration Layer
+// Provides common database operations for all services
 
-// ============================================================================
-// TYPES AND INTERFACES
-// ============================================================================
+import { db } from '@platform/database';
+import { and, asc, desc, eq } from 'drizzle-orm';
+import type { PgTable } from 'drizzle-orm/pg-core';
+import { z } from 'zod';
 
 export interface QueryFilters {
   where?: Record<string, any>;
-  orderBy?: { field: string; direction: 'asc' | 'desc' }[];
+  orderBy?: Array<{
+    field: string;
+    direction: 'asc' | 'desc';
+  }>;
   limit?: number;
   offset?: number;
   include?: string[];
 }
 
-export interface PaginatedResult<T> {
-  data: T[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-    hasMore: boolean;
-  };
-}
-
-export interface ServiceError {
-  message: string;
-  code: string;
-  type: 'VALIDATION' | 'NOT_FOUND' | 'DATABASE' | 'BUSINESS_RULE';
-}
-
-export interface TransactionContext {
-  executeInTransaction<T>(operations: (tx: any) => Promise<T>): Promise<T>;
-}
-
-// ============================================================================
-// BASE SERVICE CLASS
-// ============================================================================
-
 export abstract class BaseService<
   TEntity,
-  TCreateInput extends Record<string, any>,
-  TUpdateInput extends Record<string, any>,
-  TQueryInput extends QueryFilters = QueryFilters,
-  TTable = any,
+  TCreate,
+  TUpdate,
+  TQuery extends QueryFilters,
+  TTable extends PgTable,
 > {
   protected abstract table: TTable;
   protected abstract entityName: string;
   protected abstract createSchema: z.ZodSchema<any>;
   protected abstract updateSchema: z.ZodSchema<any>;
-  protected abstract querySchema?: z.ZodSchema<any>;
+  protected abstract querySchema: z.ZodSchema<any>;
   protected abstract outputSchema: z.ZodSchema<any>;
 
   /**
-   * Create a new entity with validation
+   * Create a new entity
    */
-  async create(data: TCreateInput): Promise<TEntity> {
+  async create(data: TCreate): Promise<TEntity> {
     try {
       // Validate input data
       const validatedData = this.createSchema.parse(data);
 
-      // Insert into database
       const [result] = await db
         .insert(this.table as any)
-        .values(validatedData as any)
+        .values({
+          ...validatedData,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        } as any)
         .returning();
 
-      // Validate output
-      const validatedResult = this.outputSchema.parse(result);
-
-      return validatedResult;
+      return this.outputSchema.parse(result);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        throw new ApiError(
-          `Invalid ${this.entityName} data`,
-          ErrorCode.VALIDATION_ERROR,
-          400
-        );
-      }
       throw this.handleDatabaseError(error, 'create');
     }
   }
@@ -97,130 +67,93 @@ export abstract class BaseService<
 
       if (!result) return null;
 
-      // Validate output
       return this.outputSchema.parse(result);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        throw new ApiError(
-          `Invalid ${this.entityName} data from database`,
-          ErrorCode.VALIDATION_ERROR,
-          400
-        );
-      }
       throw this.handleDatabaseError(error, 'findById');
     }
   }
 
   /**
-   * Find multiple entities with filtering, pagination, and sorting
+   * Find all entities with optional filters
    */
-  async findMany(filters?: QueryFilters): Promise<PaginatedResult<TEntity>> {
+  async findAll(filters?: TQuery): Promise<TEntity[]> {
     try {
-      // Validate query filters if schema provided
-      let validatedFilters: QueryFilters = {};
-      if (this.querySchema && filters) {
-        validatedFilters = this.querySchema.parse(filters) as QueryFilters;
-      } else if (filters) {
-        validatedFilters = filters;
+      const query = db.select().from(this.table as any);
+
+      if (filters) {
+        const validatedFilters = this.querySchema.parse(filters);
+
+        // Apply where conditions
+        if (validatedFilters.where) {
+          const whereConditions = Object.entries(validatedFilters.where).map(
+            ([key, value]) => {
+              const column = (this.table as any)[key];
+              if (!column) {
+                throw new Error(
+                  `Column ${key} not found in table ${this.entityName}`
+                );
+              }
+              return eq(column, value);
+            }
+          );
+          query.where(and(...whereConditions));
+        }
+
+        // Apply ordering
+        if (validatedFilters.orderBy && validatedFilters.orderBy.length > 0) {
+          const orderConditions = validatedFilters.orderBy.map(
+            ({ field, direction }: any) => {
+              const column = (this.table as any)[field];
+              if (!column) {
+                throw new Error(
+                  `Column ${field} not found in table ${this.entityName}`
+                );
+              }
+              return direction === 'asc' ? asc(column) : desc(column);
+            }
+          );
+          query.orderBy(...orderConditions);
+        }
+
+        // Apply pagination
+        if (validatedFilters.limit) {
+          query.limit(validatedFilters.limit);
+        }
+        if (validatedFilters.offset) {
+          query.offset(validatedFilters.offset);
+        }
       }
 
-      const {
-        where = {},
-        orderBy = [{ field: 'created_at', direction: 'desc' as const }],
-        limit = 20,
-        offset = 0,
-      } = validatedFilters;
-
-      // Build where conditions
-      const whereConditions = this.buildWhereConditions(where);
-
-      // Build order by conditions
-      const orderConditions = this.buildOrderConditions(orderBy);
-
-      // Execute query
-      const [results, totalCountResult] = await Promise.all([
-        db
-          .select()
-          .from(this.table as any)
-          .where(whereConditions)
-          .orderBy(...orderConditions)
-          .limit(limit)
-          .offset(offset),
-        db
-          .select({ count: count() })
-          .from(this.table as any)
-          .where(whereConditions),
-      ]);
-
-      const total = totalCountResult[0]?.count || 0;
-      const page = Math.floor(offset / limit) + 1;
-      const totalPages = Math.ceil(total / limit);
-
-      // Validate outputs
-      const validatedResults = results.map(result =>
-        this.outputSchema.parse(result)
-      );
-
-      return {
-        data: validatedResults,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages,
-          hasMore: page < totalPages,
-        },
-      };
+      const results = await query;
+      return results.map(result => this.outputSchema.parse(result));
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        throw new ApiError(
-          `Invalid ${this.entityName} query or data`,
-          ErrorCode.VALIDATION_ERROR,
-          400
-        );
-      }
-      throw this.handleDatabaseError(error, 'findMany');
+      throw this.handleDatabaseError(error, 'findAll');
     }
   }
 
   /**
    * Update entity by ID
    */
-  async update(id: string, data: TUpdateInput): Promise<TEntity> {
+  async update(id: string, data: TUpdate): Promise<TEntity> {
     try {
       // Validate input data
       const validatedData = this.updateSchema.parse(data);
 
-      // Check if entity exists
-      const existing = await this.findById(id);
-      if (!existing) {
-        throw new ApiError(
-          `${this.entityName} not found`,
-          ErrorCode.NOT_FOUND,
-          404
-        );
-      }
-
-      // Update in database
       const [result] = await db
         .update(this.table as any)
-        .set({ ...validatedData, updated_at: new Date() })
+        .set({
+          ...validatedData,
+          updatedAt: new Date(),
+        } as any)
         .where(eq((this.table as any).id, id))
         .returning();
 
-      // Validate output
+      if (!result) {
+        throw new Error(`${this.entityName} with ID ${id} not found`);
+      }
+
       return this.outputSchema.parse(result);
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      if (error instanceof z.ZodError) {
-        throw new ApiError(
-          `Invalid ${this.entityName} update data`,
-          ErrorCode.VALIDATION_ERROR,
-          400
-        );
-      }
       throw this.handleDatabaseError(error, 'update');
     }
   }
@@ -230,285 +163,50 @@ export abstract class BaseService<
    */
   async delete(id: string): Promise<boolean> {
     try {
-      // Check if entity exists
-      const existing = await this.findById(id);
-      if (!existing) {
-        throw new ApiError(
-          `${this.entityName} not found`,
-          ErrorCode.NOT_FOUND,
-          404
-        );
-      }
-
-      // Delete from database
       const result = await db
         .delete(this.table as any)
-        .where(eq((this.table as any).id, id));
+        .where(eq((this.table as any).id, id))
+        .returning({ id: (this.table as any).id });
 
-      return true;
+      return result.length > 0;
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      }
       throw this.handleDatabaseError(error, 'delete');
     }
   }
 
   /**
-   * Soft delete entity by ID (if supported by table)
+   * Execute database operations in a transaction
    */
-  async softDelete(id: string): Promise<TEntity> {
+  protected async executeInTransaction<T>(
+    callback: (tx: any) => Promise<T>
+  ): Promise<T> {
     try {
-      // Check if entity exists
-      const existing = await this.findById(id);
-      if (!existing) {
-        throw new ApiError(
-          `${this.entityName} not found`,
-          ErrorCode.NOT_FOUND,
-          404
-        );
-      }
-
-      // Check if table supports soft delete
-      const tableColumns = Object.keys((this.table as any)._.columns);
-      if (
-        !tableColumns.includes('deleted_at') &&
-        !tableColumns.includes('is_active')
-      ) {
-        throw new Error(
-          `Table ${this.entityName} does not support soft delete`
-        );
-      }
-
-      // Perform soft delete
-      const updateData: any = { updated_at: new Date() };
-      if (tableColumns.includes('deleted_at')) {
-        updateData.deleted_at = new Date();
-      }
-      if (tableColumns.includes('is_active')) {
-        updateData.is_active = false;
-      }
-
-      const [result] = await db
-        .update(this.table as any)
-        .set(updateData)
-        .where(eq((this.table as any).id, id))
-        .returning();
-
-      return this.outputSchema.parse(result);
+      return await db.transaction(callback);
     } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      throw this.handleDatabaseError(error, 'softDelete');
+      throw this.handleDatabaseError(error, 'transaction');
     }
   }
 
   /**
-   * Check if entity exists
+   * Handle database errors with proper logging and error transformation
    */
-  async exists(id: string): Promise<boolean> {
-    try {
-      const result = await this.findById(id);
-      return result !== null;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  /**
-   * Count entities with filters
-   */
-  async count(filters?: QueryFilters): Promise<number> {
-    try {
-      const where = filters?.where || {};
-      const whereConditions = this.buildWhereConditions(where);
-
-      const [result] = await db
-        .select({ count: count() })
-        .from(this.table as any)
-        .where(whereConditions);
-
-      return result.count;
-    } catch (error) {
-      throw this.handleDatabaseError(error, 'count');
-    }
-  }
-
-  // ============================================================================
-  // PROTECTED HELPER METHODS
-  // ============================================================================
-
-  /**
-   * Build where conditions from filter object
-   */
-  protected buildWhereConditions(where: Record<string, any>): SQL | undefined {
-    const conditions: SQL[] = [];
-
-    for (const [field, value] of Object.entries(where)) {
-      if (value === null || value === undefined) continue;
-
-      const column = (this.table as any)[field];
-      if (!column) continue;
-
-      if (Array.isArray(value)) {
-        conditions.push(sql`${column} = ANY(${value})`);
-      } else if (typeof value === 'object' && value.operator) {
-        // Support for operators like { operator: 'gt', value: 10 }
-        switch (value.operator) {
-          case 'gt':
-            conditions.push(sql`${column} > ${value.value}`);
-            break;
-          case 'gte':
-            conditions.push(sql`${column} >= ${value.value}`);
-            break;
-          case 'lt':
-            conditions.push(sql`${column} < ${value.value}`);
-            break;
-          case 'lte':
-            conditions.push(sql`${column} <= ${value.value}`);
-            break;
-          case 'like':
-            conditions.push(sql`${column} LIKE ${`%${value.value}%`}`);
-            break;
-          case 'ilike':
-            conditions.push(sql`${column} ILIKE ${`%${value.value}%`}`);
-            break;
-          case 'in':
-            conditions.push(sql`${column} = ANY(${value.value})`);
-            break;
-          case 'not_in':
-            conditions.push(sql`${column} != ALL(${value.value})`);
-            break;
-          default:
-            conditions.push(eq(column, value.value));
-        }
-      } else {
-        conditions.push(eq(column, value));
-      }
-    }
-
-    return conditions.length > 0 ? and(...conditions) : undefined;
-  }
-
-  /**
-   * Build order by conditions from sort array
-   */
-  protected buildOrderConditions(
-    orderBy: { field: string; direction: 'asc' | 'desc' }[]
-  ): any[] {
-    const conditions: any[] = [];
-
-    for (const { field, direction } of orderBy) {
-      const column = (this.table as any)[field];
-      if (!column) continue;
-
-      if (direction === 'desc') {
-        conditions.push(desc(column));
-      } else {
-        conditions.push(column);
-      }
-    }
-
-    return conditions.length > 0
-      ? conditions
-      : [desc((this.table as any).created_at)];
-  }
-
-  /**
-   * Handle database errors consistently
-   */
-  protected handleDatabaseError(error: unknown, operation: string): ApiError {
-    const message = `${this.entityName} ${operation} failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
+  protected handleDatabaseError(error: unknown, operation: string): Error {
+    console.error(`Database error in ${this.entityName}.${operation}:`, error);
 
     if (error instanceof Error) {
-      // Check for common database errors
+      // Handle specific database errors
       if (error.message.includes('duplicate key')) {
-        return new ApiError(
-          `${this.entityName} already exists`,
-          ErrorCode.CONFLICT,
-          409
-        );
+        return new Error(`${this.entityName} already exists`);
       }
       if (error.message.includes('foreign key')) {
-        return new ApiError(
-          `Invalid reference in ${this.entityName}`,
-          ErrorCode.VALIDATION_ERROR,
-          400
-        );
+        return new Error(`Referenced ${this.entityName} not found`);
       }
       if (error.message.includes('not null')) {
-        return new ApiError(
-          `Required field missing in ${this.entityName}`,
-          ErrorCode.VALIDATION_ERROR,
-          400
-        );
+        return new Error(`Required field missing for ${this.entityName}`);
       }
+      return error;
     }
 
-    return new ApiError(message, ErrorCode.INTERNAL_SERVER_ERROR, 500);
-  }
-
-  /**
-   * Execute operations within a transaction
-   */
-  async executeInTransaction<T>(
-    operations: (tx: any) => Promise<T>
-  ): Promise<T> {
-    return db.transaction(operations);
+    return new Error(`Database operation failed for ${this.entityName}`);
   }
 }
-
-// ============================================================================
-// TRANSACTION SERVICE
-// ============================================================================
-
-export class TransactionService {
-  /**
-   * Execute multiple operations within a single transaction
-   */
-  async executeInTransaction<T>(
-    operations: (tx: any) => Promise<T>
-  ): Promise<T> {
-    return db.transaction(operations);
-  }
-
-  /**
-   * Execute multiple operations in parallel within a transaction
-   */
-  async executeInParallel<T extends readonly unknown[]>(
-    operations: readonly ((tx: any) => Promise<unknown>)[]
-  ): Promise<T> {
-    return db.transaction(async tx => {
-      const results = await Promise.all(operations.map(op => op(tx)));
-      return results as unknown as T;
-    });
-  }
-}
-
-// ============================================================================
-// QUERY VALIDATION SCHEMAS
-// ============================================================================
-
-export const QueryFiltersSchema = z.object({
-  where: z.record(z.any()).optional(),
-  orderBy: z
-    .array(
-      z.object({
-        field: z.string(),
-        direction: z.enum(['asc', 'desc']),
-      })
-    )
-    .optional(),
-  limit: z.number().int().positive().max(1000).default(20),
-  offset: z.number().int().nonnegative().default(0),
-  include: z.array(z.string()).optional(),
-});
-
-export type QueryFiltersType = z.infer<typeof QueryFiltersSchema>;
-
-// ============================================================================
-// EXPORTS
-// ============================================================================
-
-// Export types - these are already defined above, no need to re-export

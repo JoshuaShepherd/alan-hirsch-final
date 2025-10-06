@@ -1,13 +1,13 @@
 import {
+  contentCategoryQuerySchema,
+  contentItemQuerySchema,
   contentCategoryEntitySchema as databaseContentCategorySchema,
   contentItemEntitySchema as databaseContentItemSchema,
-} from '@platform/contracts/entities/content.schema';
-import {
-  CreateContentCategoryOperationSchema as newContentCategorySchema,
-  CreateContentItemOperationSchema as newContentItemSchema,
-  UpdateContentCategoryOperationSchema as updateContentCategorySchema,
-  UpdateContentItemOperationSchema as updateContentItemSchema,
-} from '@platform/contracts/operations/content.operations';
+  createContentCategorySchema as newContentCategorySchema,
+  createContentItemSchema as newContentItemSchema,
+  updateContentCategorySchema,
+  updateContentItemSchema,
+} from '@platform/contracts';
 import {
   contentCategories,
   contentItems,
@@ -22,22 +22,6 @@ import { BaseService } from './base.service';
 // CONTENT ITEM SERVICE
 // ============================================================================
 
-// Create proper query schema that matches QueryFilters interface
-const contentItemQuerySchema = z.object({
-  where: z.record(z.any()).optional(),
-  orderBy: z
-    .array(
-      z.object({
-        field: z.string(),
-        direction: z.enum(['asc', 'desc']),
-      })
-    )
-    .optional(),
-  limit: z.number().optional(),
-  offset: z.number().optional(),
-  include: z.array(z.string()).optional(),
-});
-
 export class ContentItemService extends BaseService<
   z.infer<typeof databaseContentItemSchema>,
   z.infer<typeof newContentItemSchema>,
@@ -51,6 +35,15 @@ export class ContentItemService extends BaseService<
   protected updateSchema = updateContentItemSchema;
   protected querySchema = contentItemQuerySchema;
   protected outputSchema = databaseContentItemSchema;
+
+  /**
+   * Alias for findAll for backward compatibility
+   */
+  async findMany(
+    filters?: any
+  ): Promise<z.infer<typeof databaseContentItemSchema>[]> {
+    return this.findAll(filters);
+  }
 
   /**
    * Find content by slug
@@ -520,22 +513,6 @@ export class ContentItemService extends BaseService<
 // ============================================================================
 // CONTENT CATEGORY SERVICE
 // ============================================================================
-
-// Create proper query schema for content categories
-const contentCategoryQuerySchema = z.object({
-  where: z.record(z.any()).optional(),
-  orderBy: z
-    .array(
-      z.object({
-        field: z.string(),
-        direction: z.enum(['asc', 'desc']),
-      })
-    )
-    .optional(),
-  limit: z.number().optional(),
-  offset: z.number().optional(),
-  include: z.array(z.string()).optional(),
-});
 
 export class ContentCategoryService extends BaseService<
   z.infer<typeof databaseContentCategorySchema>,
