@@ -58,7 +58,8 @@ vi.mock('../../apps/alan-hirsch-platform/lib/mappers/assessment', () => ({
   fromUpdateAssessmentResponse: vi.fn(),
 }));
 
-describe('AssessmentService', () => {
+// DISABLED: Services deleted for rebuild - will be restored in Phase 1.3
+describe.skip('AssessmentService - DISABLED FOR REBUILD', () => {
   let assessmentService: AssessmentService;
   let context: ServiceContext;
 

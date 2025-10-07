@@ -71,7 +71,7 @@ module.exports = [
     },
   },
   {
-    files: ['app/api/**/*.ts'],
+    files: ['src/app/api/**/*.ts'],
     rules: {
       'no-console': 'warn',
     },

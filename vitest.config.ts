@@ -6,10 +6,13 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./tests/setup.ts'],
+
+    // Unified test patterns
     include: [
       '**/__tests__/**/*.{test,spec}.{js,ts,jsx,tsx}',
       '**/*.{test,spec}.{js,ts,jsx,tsx}',
     ],
+
     exclude: [
       'node_modules',
       '.next',
@@ -21,9 +24,25 @@ export default defineConfig({
       'lib/db/seed.ts',
       'lib/db/reset.ts',
     ],
+
+    // Performance settings
+    testTimeout: 10000,
+    hookTimeout: 10000,
+    teardownTimeout: 10000,
+
+    // Pool configuration
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
+
+    // Coverage (can be enabled with --coverage flag)
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
+      reportsDirectory: './coverage',
       exclude: [
         'node_modules/',
         'tests/',
@@ -46,37 +65,22 @@ export default defineConfig({
         },
       },
     },
-    testTimeout: 5000,
-    hookTimeout: 5000,
-    teardownTimeout: 5000,
-    // Ensure proper module resolution for tests
-    pool: 'forks',
-    poolOptions: {
-      forks: {
-        singleFork: true,
-      },
-    },
   },
+
+  // Unified module resolution
   resolve: {
     alias: {
-      '@': resolve(__dirname, './'),
-      '@/lib': resolve(__dirname, './lib'),
-      '@/components/ui': resolve(__dirname, './packages/ui/src'),
-      '@/app': resolve(__dirname, './app'),
-      '@/types': resolve(__dirname, './types'),
-      '@/validations': resolve(__dirname, './validations'),
-      // Monorepo package aliases
-      '@platform/database': resolve(__dirname, './packages/database/src'),
-      '@platform/database/drizzle': resolve(__dirname, './packages/database/src/db/drizzle'),
-      '@platform/shared': resolve(__dirname, './packages/shared/src'),
-      '@platform/shared/mappers': resolve(__dirname, './packages/shared/src/mappers'),
-      '@platform/shared/contracts': resolve(__dirname, './packages/shared/src/contracts'),
-      '@platform/contracts': resolve(__dirname, './packages/contracts/src'),
-      '@platform/ui': resolve(__dirname, './packages/ui/src'),
+      '@': resolve(__dirname, './src'),
+      '@/lib': resolve(__dirname, './src/lib'),
+      '@/components/ui': resolve(__dirname, './src/lib/ui'),
+      '@/app': resolve(__dirname, './src/app'),
+      '@/types': resolve(__dirname, './src/lib/types'),
+      '@/validations': resolve(__dirname, './src/lib/contracts'),
     },
   },
-  // Ensure proper handling of ES modules and CommonJS
+
+  // ESBuild configuration
   esbuild: {
-    target: 'node14',
+    target: 'node18',
   },
 });

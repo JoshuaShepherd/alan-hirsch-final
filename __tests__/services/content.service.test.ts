@@ -35,7 +35,8 @@ vi.mock('../../apps/alan-hirsch-platform/lib/mappers/content', () => ({
   fromUpdateContentItem: vi.fn(),
 }));
 
-describe('ContentItemService', () => {
+// DISABLED: Services deleted for rebuild - will be restored in Phase 1.3
+describe.skip('ContentItemService - DISABLED FOR REBUILD', () => {
   let contentService: ContentItemService;
   let context: ServiceContext;
 

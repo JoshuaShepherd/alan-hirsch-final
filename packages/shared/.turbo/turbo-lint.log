@@ -1,6 +1,0 @@
-
-
-> @platform/shared@0.1.0 lint /Users/joshshepherd/Projects/alan-hirsch-final/packages/shared
-> eslint src --ext .ts
-
-[41m[30m ELIFECYCLE [39m[49m [31mCommand failed.[39m

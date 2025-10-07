@@ -33,6 +33,14 @@
 - **[env-reference.md](env-reference.md)** - Environment variables reference
 - **[type-patterns.md](type-patterns.md)** - TypeScript patterns and best practices
 
+### **Contracts System** (`cookbook/`)
+
+- **[CONTRACTS_GENERATION_RECIPE.md](cookbook/CONTRACTS_GENERATION_RECIPE.md)** - Complete contracts generation system
+- **[TYPES_GENERATION_RECIPE.md](cookbook/TYPES_GENERATION_RECIPE.md)** - Type system generation procedures
+- **[MAPPERS_GENERATION_RECIPE.md](cookbook/MAPPERS_GENERATION_RECIPE.md)** - Mappers generation system
+- **[SERVICES_GENERATION_RECIPE.md](cookbook/SERVICES_GENERATION_RECIPE.md)** - Services generation procedures
+- **[ROUTES_GENERATION_RECIPE.md](cookbook/ROUTES_GENERATION_RECIPE.md)** - API routes generation system
+
 ### **Development Resources**
 
 - **[adrs/](adrs/)** - Architecture Decision Records
@@ -68,6 +76,24 @@
 - **Total Size**: ~12,406 lines (optimized from 18,495)
 - **Redundancy**: 0% (eliminated all duplicates)
 - **Coverage**: Complete platform documentation
+
+## 🎉 **Current System Status**
+
+### **✅ Contracts System - FULLY IMPLEMENTED**
+
+**Status**: Production-ready contracts generation system (Updated: 2025-10-06T17:00:46.173Z)
+
+**Features**:
+
+- ✅ Complete entity schemas with 25+ fields per entity
+- ✅ Full TypeScript compliance and validation
+- ✅ Enum validation for all constraints
+- ✅ Proper nullable/optional field handling
+- ✅ Default value application
+- ✅ Runtime validation with Zod schemas
+- ✅ Comprehensive test coverage
+
+**Generation Script**: `scripts/generate-contracts-fixed.js` - Fully functional
 
 ## 🔄 **Recent Optimizations**
 

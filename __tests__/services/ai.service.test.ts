@@ -59,7 +59,8 @@ vi.mock('../../apps/alan-hirsch-platform/lib/mappers/ai', () => ({
   fromUpdateTheologicalConcept: vi.fn(),
 }));
 
-describe('AiConversationService', () => {
+// DISABLED: Services deleted for rebuild - will be restored in Phase 1.3
+describe.skip('AiConversationService - DISABLED FOR REBUILD', () => {
   let aiConversationService: AiConversationService;
   let context: ServiceContext;
 

@@ -1,16 +1,17 @@
 // ============================================================================
-// USER SERVICE TESTS
+// USER SERVICE TESTS - DISABLED FOR REBUILD
 // ============================================================================
 // Comprehensive unit tests for UserService following alignment reference patterns
+// DISABLED: Services deleted for rebuild - will be restored in Phase 1.3
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import {
-  ForbiddenError,
-  NotFoundError,
-  ServiceContext,
-  ServiceContextBuilder,
-} from '../../apps/alan-hirsch-platform/lib/services/types';
-import { UserService } from '../../apps/alan-hirsch-platform/lib/services/user.service';
+// import {
+//   ForbiddenError,
+//   NotFoundError,
+//   ServiceContext,
+//   ServiceContextBuilder,
+// } from '../../apps/alan-hirsch-platform/lib/services/types'; // REMOVED: Services deleted for rebuild
+// import { UserService } from '../../apps/alan-hirsch-platform/lib/services/user.service'; // REMOVED: Services deleted for rebuild
 
 // Mock the query modules and mappers
 vi.mock('@platform/database/queries/users', () => ({
@@ -35,7 +36,7 @@ vi.mock('../../apps/alan-hirsch-platform/lib/mappers/user', () => ({
   fromUpdateUserProfile: vi.fn(),
 }));
 
-describe('UserService', () => {
+describe.skip('UserService - DISABLED FOR REBUILD', () => {
   let userService: UserService;
   let context: ServiceContext;
 

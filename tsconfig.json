@@ -1,62 +1,43 @@
 {
-  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "types": ["vitest/globals"],
+    "lib": ["dom", "dom.iterable", "es6"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
     "plugins": [
       {
         "name": "next"
       }
     ],
+    "baseUrl": "./src",
     "paths": {
       "@/*": ["./*"],
-      "@platform/contracts": [
-        "./packages/contracts/src",
-        "./packages/contracts/dist"
-      ],
-      "@platform/contracts/*": [
-        "./packages/contracts/src/*",
-        "./packages/contracts/dist/*"
-      ],
-      "@platform/ui": ["./packages/ui/src", "./packages/ui/dist"],
-      "@platform/ui/*": ["./packages/ui/src/*", "./packages/ui/dist/*"],
-      "@platform/database": [
-        "./packages/database/src",
-        "./packages/database/dist"
-      ],
-      "@platform/database/*": [
-        "./packages/database/src/*",
-        "./packages/database/dist/*"
-      ],
-      "@platform/shared": ["./packages/shared/src", "./packages/shared/dist"],
-      "@platform/shared/*": [
-        "./packages/shared/src/*",
-        "./packages/shared/dist/*"
-      ]
-    }
+      "@/lib/*": ["./lib/*"],
+      "@/app/*": ["./app/*"],
+      "@/components/*": ["./components/*"],
+      "@/hooks/*": ["./hooks/*"],
+      "@/types/*": ["./types/*"]
+    },
+    "target": "ES2017"
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": [
     "node_modules",
-    "__tests__/**/*",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx",
-    "packages/**/*"
-  ],
-  "references": [
-    { "path": "./packages/contracts" },
-    { "path": "./packages/ui" },
-    { "path": "./packages/database" },
-    { "path": "./packages/shared" },
-    { "path": "./apps/alan-hirsch-platform" }
+    ".next",
+    "dist",
+    "coverage",
+    "test-results",
+    "playwright-report",
+    "scripts",
+    "__tests__",
+    "tests"
   ]
 }

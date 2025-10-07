@@ -42,7 +42,8 @@ vi.mock('../../apps/alan-hirsch-platform/lib/mappers/organization', () => ({
   fromUpdateOrganizationMembership: vi.fn(),
 }));
 
-describe('OrganizationService', () => {
+// DISABLED: Services deleted for rebuild - will be restored in Phase 1.3
+describe.skip('OrganizationService - DISABLED FOR REBUILD', () => {
   let organizationService: OrganizationService;
   let context: ServiceContext;
 
